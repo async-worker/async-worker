@@ -1,7 +1,6 @@
 import unittest
 
-from tom.queue import ExternalQueue
-from tom.tests.utils import fetcher_js_b2w_msg
+from easyqueue.queue import ExternalQueue
 
 
 class QueueTests(unittest.TestCase):
@@ -11,7 +10,6 @@ class QueueTests(unittest.TestCase):
     utils.MockedAMQPConnection
     """
     routing_key = 'api'
-    mock_message = fetcher_js_b2w_msg
 
     def setUp(self):
         self.queue = ExternalQueue(host="10.168.26.113",
