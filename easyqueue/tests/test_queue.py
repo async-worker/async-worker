@@ -154,12 +154,21 @@ class QueueTests(unittest.TestCase):
         messages = [self._make_message('{"a":"%s"}' % i)
                     for i in ('spam', 'ham',)]
         self.channel.basic_get.side_effect = messages
-        # when there is no message, return None
 
         expected = (({'a': 'spam'}, 0), ({'a': 'ham'}, 0),)
         actual = self.queue.get_many(2)
 
         self.assertIsInstance(actual, types.GeneratorType)
+        self.assertEqual(expected, tuple(actual))
+
+    def test_getmany_returns_less_than_total_messages_from_queue(self):
+        messages = [self._make_message('{"a":"%s"}' % i)
+                    for i in ('spam', 'ham',)]
+        self.channel.basic_get.side_effect = messages
+
+        expected = (({'a': 'spam'}, 0),)
+        actual = self.queue.get_many(1)
+
         self.assertEqual(expected, tuple(actual))
 
     def test_getmany_stops_when_there_is_no_message_left(self):
