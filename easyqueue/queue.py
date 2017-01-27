@@ -8,7 +8,7 @@ from amqp import AMQPError
 Message = Tuple[Dict, int]
 
 
-class DeliveryModes(object):
+class DeliveryModes:
     NON_PERSISTENT = 1
     PERSISTENT = 2
 
@@ -17,12 +17,16 @@ class EmptyQueueException(Exception):
     """No message to get"""
 
 
+class UndecodableMessageException(Exception):
+    """Can't decode as JSON"""
+
+
 class ExternalQueue(object):
     content_type = 'application/json'
 
     def __init__(self, host: str, username: str, password: str,
                  virtual_host: str='/', exchange: str=None, queue_name=None,
-                 heartbeat: int=0):
+                 heartbeat: int=0, redeliver_to_garbage_queue=False):
         self.host = host
         self.username = username
         self.password = password
@@ -30,15 +34,11 @@ class ExternalQueue(object):
         self.heartbeat = heartbeat
         self.exchange = exchange
         self.queue_name = queue_name
-        self.garbage_routing_key = NotImplementedError
+        self.garbage_routing_key = queue_name + '_garbage'
+        self.redeliver_to_garbage_queue = redeliver_to_garbage_queue
 
         self.__connection = self._connect()
         self._channel = self.__connection.channel()
-        # self.__assert_garbage_queue_exists()
-
-    def __assert_garbage_queue_exists(self):
-        garbage_queue_name = self.queue_name + '_garbage'
-        raise NotImplementedError
 
     @property
     def connection_parameters(self):
@@ -51,7 +51,6 @@ class ExternalQueue(object):
         }
 
     def __enter__(self):
-        # self.__connection.connect()
         return self
 
     def __exit__(self, exc_type, exc_val, exc_tb):
@@ -75,8 +74,10 @@ class ExternalQueue(object):
             return json.loads(body.decode())
         except json.decoder.JSONDecodeError as e:
             # garbage
-            self.put(message, routing_key=self.garbage_routing_key)
-            raise NotImplementedError
+            if self.redeliver_to_garbage_queue:
+                self.put(message, routing_key=self.garbage_routing_key)
+            raise UndecodableMessageException('"{body}" can\'t be decoded as JSON'
+                                          .format(body=body))
 
     def get(self) -> Tuple[dict, int]:
         message = self._channel.basic_get(queue=self.queue_name)
@@ -95,14 +96,18 @@ class ExternalQueue(object):
             except EmptyQueueException:
                 break
 
-    def put(self, body: dict, routing_key: str, priority: int = 0):
+    def put(self, body: any, routing_key: str, priority: int=0):
         """
         :rtype: vine.promise
         """
-        message = amqp.Message(json.dumps(body),
-                               delivery_mode=DeliveryModes.PERSISTENT,
-                               content_type=self.content_type,
-                               priority=priority)
+        if isinstance(body, amqp.Message):
+            message = body  # publish as is
+        else:
+            body = json.dumps(body) if isinstance(body, dict) else body
+            message = amqp.Message(body,
+                                   delivery_mode=DeliveryModes.PERSISTENT,
+                                   content_type=self.content_type,
+                                   priority=priority)
 
         return self._channel.basic_publish(msg=message,
                                            exchange=self.exchange,
@@ -123,10 +128,4 @@ class ExternalQueue(object):
         Acks a message from the queue.
         :param delivery_tag: second value on the tuple returned from get().
         """
-        try:
-            ret = self._channel.basic_ack(delivery_tag)
-            return ret
-        except AMQPError as e:
-            # There's nothing we can do, we can't ack the message in
-            # a different channel than the one we got it from
-            raise NotImplementedError
+        return self._channel.basic_ack(delivery_tag)
