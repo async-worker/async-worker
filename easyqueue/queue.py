@@ -96,6 +96,18 @@ class ExternalQueue(object):
 
     def put(self, body: any, routing_key: str, priority: int=0):
         """
+        Enqueues message.
+
+        :param body: Can be one of three options:
+            - amqp.Message: The message itself will be published
+            - Dict: Will be encoded with json.dumps and included inside an
+                    amqp.Message as its body
+            - Any: If not amqp.Message or Dict, the body will be included
+                   as is in a amqp.Message as its body
+
+        :param routing_key: Routing key used to publish the message.
+        :param priority: Priority when publishing the message.
+
         :rtype: vine.promise
         """
         if isinstance(body, amqp.Message):
