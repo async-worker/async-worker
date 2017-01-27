@@ -4,7 +4,8 @@ import unittest
 from unittest.mock import patch, call, ANY
 import amqp
 
-from easyqueue.queue import ExternalQueue, DeliveryModes, UndecodableMessageException, EmptyQueueException
+from easyqueue.queue import ExternalQueue, DeliveryModes,\
+    UndecodableMessageException, EmptyQueueException
 
 
 class QueueTests(unittest.TestCase):
