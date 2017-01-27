@@ -4,8 +4,8 @@ substituir o projeto [hived](https://bitbucket.org/sievetech/hived):
 
 # Run tests
 *Simple test run:*  
-`python -m unittest discover`
+`py.test`
 
 *Show coverage*  
-`coverage run --source=easyqueue --omit=easyqueue/tests/* -m unittest discover`
-`coverage report -m`
+`py.test --cov=easyqueue`
+

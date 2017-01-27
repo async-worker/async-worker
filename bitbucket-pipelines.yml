@@ -8,5 +8,5 @@ pipelines:
           - pip --version
           - pip install -r requirements.txt
           - pip install -r requirements-dev.txt
-          - coverage run --source="easyqueue" --omit="easyqueue/tests/*" -m unittest discover -v
-          - coverage report -m
+          - py.test --cov=easyqueue
+
