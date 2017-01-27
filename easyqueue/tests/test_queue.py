@@ -82,6 +82,12 @@ class QueueTests(unittest.TestCase):
 
         self.assertEqual(message, actual_message)
 
+    def test_put_accepts_exchange(self):
+        self.queue.put(body='', routing_key='wow', exchange='yay')
+
+        self.assertEqual([call(msg=ANY, exchange='yay', routing_key='wow')],
+                         self.channel.basic_publish.call_args_list)
+
     def test_rejects_message(self):
         self.queue.reject(delivery_tag=10)
 

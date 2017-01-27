@@ -94,7 +94,7 @@ class ExternalQueue(object):
             except EmptyQueueException:
                 break
 
-    def put(self, body: any, routing_key: str, priority: int=0):
+    def put(self, body: any, routing_key: str, exchange: str=None, priority: int=0):
         """
         Enqueues message.
 
@@ -120,7 +120,7 @@ class ExternalQueue(object):
                                    priority=priority)
 
         return self._channel.basic_publish(msg=message,
-                                           exchange=self.exchange,
+                                           exchange=exchange or self.exchange,
                                            routing_key=routing_key)
 
     def reject(self, delivery_tag: int):
