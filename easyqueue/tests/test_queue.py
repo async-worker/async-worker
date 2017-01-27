@@ -145,7 +145,7 @@ class QueueTests(unittest.TestCase):
 
         self.assertEqual([], self.channel.basic_publish.call_args_list)
 
-    def test_get_raises_empty_queue_error_is_no_message_is_returned(self):
+    def test_get_raises_empty_queue_error_if_no_message_is_returned(self):
         self.channel.basic_get.return_value = None
         self.assertRaises(EmptyQueueException, self.queue.get)
 
