@@ -73,7 +73,6 @@ class ExternalQueue(object):
         except TypeError:
             return json.loads(body.decode())
         except json.decoder.JSONDecodeError as e:
-            # garbage
             if self.redeliver_to_garbage_queue:
                 self.put(message, routing_key=self.garbage_routing_key)
             raise UndecodableMessageException('"{body}" can\'t be decoded as JSON'
@@ -89,7 +88,6 @@ class ExternalQueue(object):
         return content, message.delivery_tag
 
     def get_many(self, max_quantity: int) -> Generator[Message, None, None]:
-        # todo: Será que faz sentido ter algum método acessório pra isso ?
         for i in range(max_quantity):
             try:
                 yield self.get()
