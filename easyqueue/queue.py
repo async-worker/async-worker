@@ -2,7 +2,6 @@ import json
 from typing import Dict, Tuple, Any, Generator
 
 import amqp
-from amqp import AMQPError
 
 
 Message = Tuple[Dict, int]
@@ -26,7 +25,7 @@ class ExternalQueue(object):
 
     def __init__(self, host: str, username: str, password: str,
                  virtual_host: str='/', exchange: str=None, queue_name=None,
-                 heartbeat: int=0, redeliver_to_garbage_queue=False):
+                 heartbeat: int=60, redeliver_to_garbage_queue=False):
         self.host = host
         self.username = username
         self.password = password

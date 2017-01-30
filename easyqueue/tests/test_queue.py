@@ -26,7 +26,7 @@ class QueueTests(unittest.TestCase):
         self.Connection_patcher.stop()
 
     def test_connects_with_correct_args(self):
-        expected = call(heartbeat=0,
+        expected = call(heartbeat=60,
                         host='ip-address',
                         userid='guest',
                         password='passwd',
