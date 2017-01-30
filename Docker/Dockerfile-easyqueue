@@ -5,11 +5,9 @@ COPY . /opt/app
 
 WORKDIR /opt/app
 
-#RUN apk add --update --no-cache make g++ gcc \
 RUN pip install --upgrade pip \
 && pip install -r /tmp/requirements.txt \
 && pip install awscli \
-#&& apk del --purge gcc g++ make \
 && rm /tmp/requirements.txt \
 && python setup.py sdist \
 && aws s3 cp dist/easyqueue* s3://sieve.pip/ \
