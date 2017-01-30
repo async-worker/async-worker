@@ -1,1 +1,1 @@
--r requirements-base.txt
+amqp==2.1.4
