@@ -1,0 +1,11 @@
+image: python:3.5
+
+pipelines:
+  default:
+    - step:
+        script:
+          - python --version
+          - pip --version
+          - pip install -r requirements-dev.txt
+          - py.test --cov=easyqueue
+

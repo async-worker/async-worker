@@ -1,0 +1,14 @@
+FROM docker.sieve.com.br/alpine/py35:0.0.2
+
+COPY requirements.txt /tmp
+COPY . /opt/app
+
+WORKDIR /opt/app
+
+RUN pip install --upgrade pip \
+&& pip install -r /tmp/requirements.txt \
+&& pip install awscli \
+&& rm /tmp/requirements.txt \
+&& python setup.py sdist \
+&& aws s3 cp dist/easyqueue* s3://sieve.pip/ \
+&& rm -r dist/
