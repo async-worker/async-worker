@@ -205,6 +205,24 @@ class QueueTests(unittest.TestCase):
         with self.assertRaises(InvalidMessageSizeException):
             self.queue.get()
 
+    def test_InvalidMessageSizeException_is_raised_with_unparsed_message(self):
+        body = json.dumps({
+            'will you ever learn?': 666,
+            'stop reading me': 999,
+            "Who's crazier? I wrote that shit, but you're reading it!": 'you'
+        })
+        message = self._make_message(body)
+
+        self.queue.max_message_length = len(body) - 1
+        self.channel.basic_get.side_effect = [message]
+
+        try:
+            self.queue.get()
+        except InvalidMessageSizeException as e:
+            exception_msg = e.message
+            self.assertIsInstance(exception_msg, amqp.Message)
+            self.assertIsInstance(exception_msg.body, str)
+
     def _make_message(self, body,
                       delivery_mode=DeliveryModes.PERSISTENT,
                       content_type='application/json',

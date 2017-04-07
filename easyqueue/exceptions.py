@@ -7,4 +7,9 @@ class UndecodableMessageException(Exception):
 
 
 class InvalidMessageSizeException(ValueError):
-    """Message size if bigger than it should be"""
+    def __init__(self, message):
+        """
+        Message size if bigger than it should be
+        :type message: amqp.Message
+        """
+        self.message = message
