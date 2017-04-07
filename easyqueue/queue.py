@@ -17,9 +17,15 @@ class DeliveryModes:
 class ExternalQueue(object):
     content_type = 'application/json'
 
-    def __init__(self, host: str, username: str, password: str,
-                 virtual_host: str='/', exchange: str=None, queue_name=None,
-                 heartbeat: int=60, redeliver_to_garbage_queue=False,
+    def __init__(self,
+                 host: str,
+                 username: str,
+                 password: str,
+                 virtual_host: str='/',
+                 exchange: str=None,
+                 queue_name=None,
+                 heartbeat: int=60,
+                 redeliver_to_garbage_queue=False,
                  max_message_size: int=None):
         self.host = host
         self.username = username
