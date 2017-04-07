@@ -4,8 +4,9 @@ import unittest
 from unittest.mock import patch, call, ANY
 import amqp
 
-from easyqueue.queue import ExternalQueue, DeliveryModes,\
-    UndecodableMessageException, EmptyQueueException
+from easyqueue.queue import ExternalQueue, DeliveryModes
+from easyqueue.exceptions import EmptyQueueException, \
+    UndecodableMessageException, InvalidMessageSizeException
 
 
 class QueueTests(unittest.TestCase):
@@ -190,6 +191,19 @@ class QueueTests(unittest.TestCase):
     def test_ack_message(self):
         self.queue.ack(99)
         self.assertEqual([call(99)], self.channel.basic_ack.call_args_list)
+
+    def test_it_enforces_max_length_for_message(self):
+        body = json.dumps({
+            'i_will_be_bigger_than_max_length': 666,
+            'why are you wasting your time reading me?': 999,
+            'really!? Get a life!': ''
+        })
+        message = self._make_message(body)
+
+        self.queue.max_message_length = len(body) - 1
+        self.channel.basic_get.side_effect = [message]
+        with self.assertRaises(InvalidMessageSizeException):
+            self.queue.get()
 
     def _make_message(self, body,
                       delivery_mode=DeliveryModes.PERSISTENT,

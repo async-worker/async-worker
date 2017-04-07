@@ -1,8 +1,10 @@
 import json
-from typing import Dict, Tuple, Any, Generator
 
 import amqp
+from typing import Dict, Tuple, Any, Generator
 
+from easyqueue.exceptions import EmptyQueueException, \
+    UndecodableMessageException, InvalidMessageSizeException
 
 Message = Tuple[Dict, int]
 
@@ -12,20 +14,13 @@ class DeliveryModes:
     PERSISTENT = 2
 
 
-class EmptyQueueException(Exception):
-    """No message to get"""
-
-
-class UndecodableMessageException(Exception):
-    """Can't decode as JSON"""
-
-
 class ExternalQueue(object):
     content_type = 'application/json'
 
     def __init__(self, host: str, username: str, password: str,
                  virtual_host: str='/', exchange: str=None, queue_name=None,
-                 heartbeat: int=60, redeliver_to_garbage_queue=False):
+                 heartbeat: int=60, redeliver_to_garbage_queue=False,
+                 max_message_size: int=None):
         self.host = host
         self.username = username
         self.password = password
@@ -35,6 +30,7 @@ class ExternalQueue(object):
         self.queue_name = queue_name
         self.garbage_routing_key = queue_name + '_garbage'
         self.redeliver_to_garbage_queue = redeliver_to_garbage_queue
+        self.max_message_length = max_message_size
 
         self.__connection = self._connect()
         self._channel = self.__connection.channel()
@@ -75,12 +71,16 @@ class ExternalQueue(object):
             if self.redeliver_to_garbage_queue:
                 self.put(message, routing_key=self.garbage_routing_key)
             raise UndecodableMessageException('"{body}" can\'t be decoded as JSON'
-                                          .format(body=body))
+                                              .format(body=body))
 
     def get(self) -> Tuple[dict, int]:
         message = self._channel.basic_get(queue=self.queue_name)
         if not message:
             raise EmptyQueueException
+
+        if self.max_message_length:
+            if len(message.body) > self.max_message_length:
+                raise InvalidMessageSizeException
 
         content = self._parse_message(message)
 
