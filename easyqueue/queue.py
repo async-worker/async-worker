@@ -86,7 +86,7 @@ class ExternalQueue(object):
 
         if self.max_message_length:
             if len(message.body) > self.max_message_length:
-                raise InvalidMessageSizeException
+                raise InvalidMessageSizeException(message)
 
         content = self._parse_message(message)
 
@@ -128,13 +128,13 @@ class ExternalQueue(object):
                                            exchange=exchange or self.exchange,
                                            routing_key=routing_key)
 
-    def reject(self, delivery_tag: int):
+    def reject(self, delivery_tag: int, requeue=True):
         """
-        Rejects a message from the queue, i.e. returns it to the
+        Rejects a message from the queue, i.e. By default, returns it to the
         top of the queue.
         :param delivery_tag: second value on the tuple returned from `get()`.
         """
-        ret = self._channel.basic_reject(delivery_tag, requeue=True)
+        ret = self._channel.basic_reject(delivery_tag, requeue=requeue)
         # todo: ver retorno e documentar
         return ret
 
