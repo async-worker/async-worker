@@ -1,4 +1,6 @@
 import json
+import uuid
+from random import randint
 
 import aioamqp
 import asynctest
@@ -89,7 +91,8 @@ class AsyncQeueConnectionTests(AsyncBaseTestCase, asynctest.TestCase):
         self.assertFalse(self.queue.delegate.on_queue_error.called)
 
 
-class AsyncQeueConsumerTests(AsyncBaseTestCase, asynctest.TestCase):
+
+class AsyncQeueConsumerHandlerMethodsTests(AsyncBaseTestCase, asynctest.TestCase):
     consumer_tag = 666
 
     def get_consumer(self):
@@ -100,6 +103,8 @@ class AsyncQeueConsumerTests(AsyncBaseTestCase, asynctest.TestCase):
 
     async def setUp(self):
         super().setUp()
+        self.envelope = Mock(name='Envelope')
+        self.properties = Mock(name='Properties')
         await self.queue.connect()
 
         await self.queue.consume(queue_name=self.test_queue_name,
@@ -107,18 +112,16 @@ class AsyncQeueConsumerTests(AsyncBaseTestCase, asynctest.TestCase):
 
     async def test_it_calls_on_queue_error_if_message_isnt_a_valid_json(self):
         content = "Subirusdoitiozin"
-        envelope = Mock(name='Envelope')
-        properties = Mock(name='Properties')
         await self.queue._handle_message(channel=self.queue._channel,
                                          body=content,
-                                         envelope=envelope,
-                                         properties=properties)
+                                         envelope=self.envelope,
+                                         properties=self.properties)
 
         consumer = self.queue.delegate
         self.assertFalse(consumer.on_queue_message.called)
 
         expected = call(body=content,
-                        delivery_tag=envelope.delivery_tag,
+                        delivery_tag=self.envelope.delivery_tag,
                         error=typed_any(UndecodableMessageException),
                         queue=self.queue)
         self.assertEqual(consumer.on_queue_error.call_args_list, [expected])
@@ -129,18 +132,16 @@ class AsyncQeueConsumerTests(AsyncBaseTestCase, asynctest.TestCase):
             'song': 'Não enche',
             'album': 'Livro'
         }
-        envelope = Mock(name='Envelope')
-        properties = Mock(name='Properties')
         await self.queue._handle_message(channel=self.queue._channel,
                                          body=json.dumps(content),
-                                         envelope=envelope,
-                                         properties=properties)
+                                         envelope=self.envelope,
+                                         properties=self.properties)
 
         consumer = self.queue.delegate
         self.assertFalse(consumer.on_queue_error.called)
 
         expected = call(content=content,
-                        delivery_tag=envelope.delivery_tag,
+                        delivery_tag=self.envelope.delivery_tag,
                         queue=self.queue)
         self.assertEqual(consumer.on_queue_message.call_args_list, [expected])
 
