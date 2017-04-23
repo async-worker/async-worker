@@ -1,34 +1,40 @@
-import asyncio
-import unittest
-from unittest.mock import Mock, patch, call, ANY
-
-import asynctest
-from asynctest.mock import CoroutineMock
+import json
 
 import aioamqp
-
-from easyqueue.async import AsyncQueueConsumer, AsyncQueueConsumerDelegate
-from easyqueue.tests.utils import unittest_run_loop, make_mocked_coro
+import asynctest
+from asynctest.mock import CoroutineMock
+from unittest.mock import Mock, patch, call, ANY
+from easyqueue.async import AsyncQueue, AsyncQueueConsumerDelegate
+from easyqueue.exceptions import UndecodableMessageException
+from easyqueue.tests.utils import typed_any
 
 
 class AsyncBaseTestCase:
     test_queue_name = 'test_queue'
+    consumer_tag = 'consumer_666'
 
     def setUp(self):
         self.conn_params = dict(host='money.que.é.good',
-                                username='nos',
-                                password='nao',
+                                username='nós',
+                                password='não',
                                 virtual_host='have')
-        self.queue = AsyncQueueConsumer(**self.conn_params,
-                                        delegate=self.get_consumer())
+        self.queue = AsyncQueue(**self.conn_params,
+                                delegate=self.get_consumer())
         self.mock_connection()
 
     def tearDown(self):
         self._connect_patch.stop()
 
     def mock_connection(self):
+        class SubscriptableCoroutineMock(CoroutineMock):
+            def __getitem__(_, item):
+                if item == 'consumer_tag':
+                    return self.consumer_tag
+                raise NotImplementedError
+
         self._transport = CoroutineMock(name='transport')
         self._protocol = CoroutineMock(name='protocol')
+        self._protocol.channel = SubscriptableCoroutineMock()
         mocked_connection = CoroutineMock(return_value=[self._transport,
                                                         self._protocol])
         self._connect_patch = patch.object(aioamqp, 'connect', mocked_connection)
@@ -36,20 +42,17 @@ class AsyncBaseTestCase:
 
     def get_consumer(self) -> AsyncQueueConsumerDelegate:
         raise NotImplementedError
-    #
-    # async def create_queue(self):
-    #     await self.queue._channel.queue_declare(self.test_queue_name)
-    #
-    # async def _destroy_queue(self):
-    #     await self.queue._channel.queue_delete(self.test_queue_name)
+        #
+        # async def create_queue(self):
+        #     await self.queue._channel.queue_declare(self.test_queue_name)
+        #
+        # async def _destroy_queue(self):
+        #     await self.queue._channel.queue_delete(self.test_queue_name)
 
 
 class AsyncQeueConnectionTests(AsyncBaseTestCase, asynctest.TestCase):
     def get_consumer(self):
-        consumer = Mock()
-        consumer.on_queue_message = CoroutineMock()
-        consumer.on_queue_error = CoroutineMock()
-        return consumer
+        return Mock()
 
     async def test_connect_opens_a_connection_communication_channel(self):
         self.assertFalse(self.queue.is_connected)
@@ -73,4 +76,71 @@ class AsyncQeueConnectionTests(AsyncBaseTestCase, asynctest.TestCase):
 
         await self.queue.connect()
         self.assertEqual([expected], self._connect.call_args_list)
+
+    async def test_it_closes_the_connection(self):
+        await self.queue.connect()
+        await self.queue.close()
+
+        self.assertTrue(self._protocol.close.called)
+        self.assertTrue(self._transport.close.called)
+
+    async def test_it_dosent_call_consumer_handler_methods(self):
+        self.assertFalse(self.queue.delegate.on_queue_message.called)
+        self.assertFalse(self.queue.delegate.on_queue_error.called)
+
+
+class AsyncQeueConsumerTests(AsyncBaseTestCase, asynctest.TestCase):
+    consumer_tag = 666
+
+    def get_consumer(self):
+        consumer = Mock()
+        consumer.on_queue_message = CoroutineMock()
+        consumer.on_queue_error = CoroutineMock()
+        return consumer
+
+    async def setUp(self):
+        super().setUp()
+        await self.queue.connect()
+
+        await self.queue.consume(queue_name=self.test_queue_name,
+                                 consumer_name=self.__class__.__name__)
+
+    async def test_it_calls_on_queue_error_if_message_isnt_a_valid_json(self):
+        content = "Subirusdoitiozin"
+        envelope = Mock(name='Envelope')
+        properties = Mock(name='Properties')
+        await self.queue._handle_message(channel=self.queue._channel,
+                                         body=content,
+                                         envelope=envelope,
+                                         properties=properties)
+
+        consumer = self.queue.delegate
+        self.assertFalse(consumer.on_queue_message.called)
+
+        expected = call(body=content,
+                        delivery_tag=envelope.delivery_tag,
+                        error=typed_any(UndecodableMessageException),
+                        queue=self.queue)
+        self.assertEqual(consumer.on_queue_error.call_args_list, [expected])
+
+    async def test_it_calls_on_queue_message_if_message_is_a_valid_json(self):
+        content = {
+            'artist': 'Caetano Veloso',
+            'song': 'Não enche',
+            'album': 'Livro'
+        }
+        envelope = Mock(name='Envelope')
+        properties = Mock(name='Properties')
+        await self.queue._handle_message(channel=self.queue._channel,
+                                         body=json.dumps(content),
+                                         envelope=envelope,
+                                         properties=properties)
+
+        consumer = self.queue.delegate
+        self.assertFalse(consumer.on_queue_error.called)
+
+        expected = call(content=content,
+                        delivery_tag=envelope.delivery_tag,
+                        queue=self.queue)
+        self.assertEqual(consumer.on_queue_message.call_args_list, [expected])
 
