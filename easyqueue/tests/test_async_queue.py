@@ -91,6 +91,52 @@ class AsyncQeueConnectionTests(AsyncBaseTestCase, asynctest.TestCase):
         self.assertFalse(self.queue.delegate.on_queue_error.called)
 
 
+class AsynQueueConsumerTests(AsyncBaseTestCase, asynctest.TestCase):
+    consumer_tag = 666
+
+    def get_consumer(self):
+        return Mock()
+
+    async def test_calling_consume_without_a_connection_raises_an_error(self):
+        with self.assertRaises(ConnectionError):
+            await self.queue.consume(queue_name=Mock(),
+                                     consumer_name=Mock())
+
+    async def test_calling_consume_starts_message_consumption(self):
+        await self.queue.connect()
+        await self.queue.consume(Mock(), Mock())
+
+        self.queue._channel.basic_consume.assert_called_once()
+
+    async def test_calling_consume_binds_handler_method(self):
+        await self.queue.connect()
+
+        queue_name = Mock()
+        consumer_name = Mock()
+        expected_prefetch_count = 666
+
+        self.queue.prefetch_count = expected_prefetch_count
+        await self.queue.consume(queue_name, consumer_name)
+
+        expected = call(callback=self.queue._handle_message,
+                        queue_name=queue_name,
+                        consumer_tag=consumer_name)
+        self.assertEqual([expected],
+                         self.queue._channel.basic_consume.call_args_list)
+
+    async def test_calling_consume_sets_a_prefetch_qos(self):
+        await self.queue.connect()
+
+        expected_prefetch_count = 666
+        self.queue.prefetch_count = expected_prefetch_count
+        await self.queue.consume(Mock(), Mock())
+
+        expected = call(connection_global=ANY,
+                        prefetch_count=expected_prefetch_count,
+                        prefetch_size=0)
+        self.assertEqual([expected],
+                         self.queue._channel.basic_qos.call_args_list)
+
 
 class AsyncQeueConsumerHandlerMethodsTests(AsyncBaseTestCase, asynctest.TestCase):
     consumer_tag = 666
