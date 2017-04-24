@@ -135,8 +135,6 @@ class AsyncQueue(BaseJsonQueue):
 
     async def consume(self, queue_name: str, consumer_name='') -> str:
         """
-        :param on_message: A coroutine callback for handling messages
-        :param on_message: A coroutine callback for handling errors
         :param queue_name: queue to consume
         :return: the consumer tag. Useful for cancelling/stopping consumption
         """
