@@ -1,7 +1,4 @@
 import json
-import uuid
-from random import randint
-
 import aioamqp
 import asynctest
 from asynctest.mock import CoroutineMock
@@ -122,7 +119,8 @@ class AsyncQeueConnectionTests(AsyncBaseTestCase, asynctest.TestCase):
 
         tag = 666
         await self.queue.ack(delivery_tag=tag)
-        self.assertEqual([call(tag)], self.queue._channel.basic_client_ack.call_args_list)
+        self.assertEqual([call(tag)],
+                         self.queue._channel.basic_client_ack.call_args_list)
 
 
 class AsynQueueConsumerTests(AsyncBaseTestCase, asynctest.TestCase):
