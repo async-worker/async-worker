@@ -5,7 +5,7 @@ from easyqueue import __version__
 
 BASE_PATH = os.path.dirname(__file__)
 
-with open('requirements.txt') as f:
+with open(os.path.join(BASE_PATH, 'requirements.txt')) as f:
     required = f.read().splitlines()
 
 setup(
