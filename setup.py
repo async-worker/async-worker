@@ -3,7 +3,9 @@ from setuptools import setup, find_packages
 
 from easyqueue import __version__
 
+
 BASE_PATH = os.path.dirname(__file__)
+
 
 setup(
     name='easyqueue',
