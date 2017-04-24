@@ -5,9 +5,6 @@ from easyqueue import __version__
 
 BASE_PATH = os.path.dirname(__file__)
 
-with open(os.path.join(BASE_PATH, 'requirements.txt')) as f:
-    required = f.read().splitlines()
-
 setup(
     name='easyqueue',
     version=__version__,
@@ -19,7 +16,10 @@ setup(
                 "forget about the protocol.",
     url='https://bitbucket.org/sievetech/easyqueue',
     packages=find_packages(exclude=['easyqueue/tests']),
-    install_requires=required,
+    install_requires=[
+        "amqp==2.1.4",
+        "aioamqp==0.9.0"
+    ],
     test_suite='easyqueue.tests',
     classifiers=[
         'Development Status :: 4 - Beta',
