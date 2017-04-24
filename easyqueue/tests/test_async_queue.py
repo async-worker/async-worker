@@ -169,6 +169,21 @@ class AsynQueueConsumerTests(AsyncBaseTestCase, asynctest.TestCase):
         self.assertEqual([expected],
                          self.queue._channel.basic_qos.call_args_list)
 
+    async def test_calling_consume_starts_a_connection(self):
+        q_name = 'miles.davis_blue.in.green'
+
+        class Foo(AsyncQueueConsumerDelegate):
+            loop = self.loop
+            queue_name = q_name
+            queue = self.queue
+
+        consumer = Foo()
+        self.queue.delegate = consumer
+        with patch.object(self.queue, 'consume', side_effect=CoroutineMock()) as patched_consume:
+            await consumer._consume()
+            patched_consume.assert_called_once_with(queue_name=q_name)
+            self.assertTrue(self._connect.called)
+
 
 class AsyncQeueConsumerHandlerMethodsTests(AsyncBaseTestCase, asynctest.TestCase):
     consumer_tag = 666
