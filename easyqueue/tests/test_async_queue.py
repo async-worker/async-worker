@@ -44,12 +44,6 @@ class AsyncBaseTestCase:
 
     def get_consumer(self) -> AsyncQueueConsumerDelegate:
         raise NotImplementedError
-        #
-        # async def create_queue(self):
-        #     await self.queue._channel.queue_declare(self.test_queue_name)
-        #
-        # async def _destroy_queue(self):
-        #     await self.queue._channel.queue_delete(self.test_queue_name)
 
 
 class AsyncQeueConnectionTests(AsyncBaseTestCase, asynctest.TestCase):
@@ -172,6 +166,26 @@ class AsyncQeueConsumerHandlerMethodsTests(AsyncBaseTestCase, asynctest.TestCase
                         queue=self.queue)
         self.assertEqual(consumer.on_queue_error.call_args_list, [expected])
 
+    async def test_it_calls_on_queue_message_if_message_is_a_valid_json_as_bytes(self):
+        content = {
+            'artist': 'Caetano Veloso',
+            'song': 'Não enche',
+            'album': 'Livro'
+        }
+        body = bytes(json.dumps(content), encoding='utf-8')
+        await self.queue._handle_message(channel=self.queue._channel,
+                                         body=body,
+                                         envelope=self.envelope,
+                                         properties=self.properties)
+
+        consumer = self.queue.delegate
+        self.assertFalse(consumer.on_queue_error.called)
+
+        expected = call(content=content,
+                        delivery_tag=self.envelope.delivery_tag,
+                        queue=self.queue)
+        self.assertEqual(consumer.on_queue_message.call_args_list, [expected])
+
     async def test_it_calls_on_queue_message_if_message_is_a_valid_json(self):
         content = {
             'artist': 'Caetano Veloso',
@@ -190,4 +204,3 @@ class AsyncQeueConsumerHandlerMethodsTests(AsyncBaseTestCase, asynctest.TestCase
                         delivery_tag=self.envelope.delivery_tag,
                         queue=self.queue)
         self.assertEqual(consumer.on_queue_message.call_args_list, [expected])
-
