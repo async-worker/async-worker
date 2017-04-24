@@ -184,6 +184,23 @@ class AsynQueueConsumerTests(AsyncBaseTestCase, asynctest.TestCase):
             patched_consume.assert_called_once_with(queue_name=q_name)
             self.assertTrue(self._connect.called)
 
+    async def test_calling_run_starts_a_consumption_task(self):
+        q_name = 'dance.to.the.decadence.dance'
+        consumer_loop = CoroutineMock()
+
+        class Foo(AsyncQueueConsumerDelegate):
+            loop = consumer_loop
+            queue_name = q_name
+            queue = self.queue
+
+        consumer = Foo()
+        self.queue.delegate = consumer
+
+        consumer.run()
+
+        consumer_loop.create_task.assert_called_once()
+        consumer_loop.run_forever.assert_called_once()
+
 
 class AsyncQeueConsumerHandlerMethodsTests(AsyncBaseTestCase, asynctest.TestCase):
     consumer_tag = 666
