@@ -138,7 +138,7 @@ class AsynQueueConsumerTests(AsyncBaseTestCase, asynctest.TestCase):
         await self.queue.connect()
         await self.queue.consume(Mock(), Mock())
 
-        self.queue._channel.basic_consume.assert_called_once()
+        self.assertEqual(self.queue._channel.basic_consume.call_count, 1)
 
     async def test_calling_consume_binds_handler_method(self):
         await self.queue.connect()
@@ -198,8 +198,8 @@ class AsynQueueConsumerTests(AsyncBaseTestCase, asynctest.TestCase):
 
         consumer.run()
 
-        consumer_loop.create_task.assert_called_once()
-        consumer_loop.run_forever.assert_called_once()
+        self.assertEqual(consumer_loop.create_task.call_count, 1)
+        self.assertEqual(consumer_loop.run_forever.call_count, 1)
 
 
 class AsyncQeueConsumerHandlerMethodsTests(AsyncBaseTestCase, asynctest.TestCase):
