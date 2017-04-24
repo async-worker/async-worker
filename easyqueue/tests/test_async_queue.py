@@ -84,6 +84,46 @@ class AsyncQeueConnectionTests(AsyncBaseTestCase, asynctest.TestCase):
         self.assertFalse(self.queue.delegate.on_queue_message.called)
         self.assertFalse(self.queue.delegate.on_queue_error.called)
 
+    async def test_it_puts_messages_into_queue_as_json(self):
+        message = {
+            'artist': 'Great White',
+            'song': 'Once Bitten Twice Shy',
+            'album': 'Twice Shy'
+        }
+        exchange = Mock()
+        routing_key = Mock()
+        await self.queue.connect()
+        await self.queue.put(message,
+                             exchange=exchange,
+                             routing_key=routing_key)
+
+        expected = call(
+            payload=json.dumps(message),
+            routing_key=routing_key,
+            exchange_name=exchange
+        )
+        self.assertEqual([expected],
+                         self.queue._channel.publish.call_args_list)
+
+    async def test_it_raises_and_error_if_put_message_isnt_json_serializeable(self):
+        message = Mock()
+
+        exchange = Mock()
+        routing_key = Mock()
+        await self.queue.connect()
+        with self.assertRaises(TypeError):
+            await self.queue.put(message,
+                                 exchange=exchange,
+                                 routing_key=routing_key)
+        self.queue._channel.publish.assert_not_called()
+
+    async def test_it_acks_messages(self):
+        await self.queue.connect()
+
+        tag = 666
+        await self.queue.ack(delivery_tag=tag)
+        self.assertEqual([call(tag)], self.queue._channel.basic_client_ack.call_args_list)
+
 
 class AsynQueueConsumerTests(AsyncBaseTestCase, asynctest.TestCase):
     consumer_tag = 666
