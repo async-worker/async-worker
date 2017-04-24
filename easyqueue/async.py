@@ -113,6 +113,8 @@ class AsyncQueue(BaseJsonQueue):
     def _parse_message(self, body) -> Dict[str, Any]:
         try:
             return self.deserialize(body)
+        except TypeError as e:
+            return self._parse_message(body.decode())
         except JSONDecodeError as e:
             raise UndecodableMessageException('"{body}" can\'t be decoded as JSON'
                                               .format(body=body))
