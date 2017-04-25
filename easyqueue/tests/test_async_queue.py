@@ -43,7 +43,7 @@ class AsyncBaseTestCase:
         raise NotImplementedError
 
 
-class AsyncQeueConnectionTests(AsyncBaseTestCase, asynctest.TestCase):
+class AsyncQueueConnectionTests(AsyncBaseTestCase, asynctest.TestCase):
     def get_consumer(self):
         return Mock()
 
@@ -123,7 +123,7 @@ class AsyncQeueConnectionTests(AsyncBaseTestCase, asynctest.TestCase):
                          self.queue._channel.basic_client_ack.call_args_list)
 
 
-class AsynQueueConsumerTests(AsyncBaseTestCase, asynctest.TestCase):
+class AsyncQueueConsumerTests(AsyncBaseTestCase, asynctest.TestCase):
     consumer_tag = 666
 
     def get_consumer(self):
@@ -202,7 +202,7 @@ class AsynQueueConsumerTests(AsyncBaseTestCase, asynctest.TestCase):
         self.assertEqual(consumer_loop.run_forever.call_count, 1)
 
 
-class AsyncQeueConsumerHandlerMethodsTests(AsyncBaseTestCase, asynctest.TestCase):
+class AsyncQueueConsumerHandlerMethodsTests(AsyncBaseTestCase, asynctest.TestCase):
     consumer_tag = 666
 
     def get_consumer(self):
