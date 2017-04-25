@@ -142,7 +142,7 @@ class QueueTests(unittest.TestCase):
         expected_message = message
         actual_message = self.channel.basic_publish.call_args_list[0][1]['msg']
 
-        self.assertEqual(expected_message, actual_message)
+        self.assertEqual(expected_message.body, actual_message.body)
 
     def test_get_doesnt_republish_to_garbage_queue_if_body_cant_be_parsed_and_redeliver_to_garbage_queue_is_off(self):
         self.queue.redeliver_to_garbage_queue = False

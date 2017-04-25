@@ -1,5 +1,5 @@
+import abc
 import json
-
 import amqp
 from typing import Dict, Tuple, Any, Generator
 
@@ -14,9 +14,55 @@ class DeliveryModes:
     PERSISTENT = 2
 
 
-class ExternalQueue(object):
+class BaseQueue(metaclass=abc.ABCMeta):
+    @abc.abstractmethod
+    def serialize(self, body: Any) -> str:
+        raise NotImplementedError
+
+    @abc.abstractmethod
+    def deserialize(self, body: str) -> Any:
+        raise NotImplementedError
+
+    def _parse_message(self, content) -> Dict[str, Any]:
+        """
+        Gets the raw message body as an input, handles deserialization and 
+        outputs 
+        :param content: The raw message body
+        """
+        try:
+            return self.deserialize(content)
+        except TypeError:
+            return self.deserialize(content.decode())
+        except json.decoder.JSONDecodeError as e:
+            raise UndecodableMessageException('"{content}" can\'t be decoded as JSON'
+                                              .format(content=content))
+
+
+class BaseJsonQueue(BaseQueue):
     content_type = 'application/json'
 
+    def __init__(self,
+                 host: str,
+                 username: str,
+                 password: str,
+                 virtual_host: str='/',
+                 heartbeat: int=60,
+                 max_message_size: int=None):
+        self.host = host
+        self.username = username
+        self.password = password
+        self.virtual_host = virtual_host
+        self.heartbeat = heartbeat
+        self.max_message_length = max_message_size
+
+    def serialize(self, body: Any) -> str:
+        return json.dumps(body)
+
+    def deserialize(self, body: str) -> Any:
+        return json.loads(body)
+
+
+class ExternalQueue(BaseJsonQueue):
     def __init__(self,
                  host: str,
                  username: str,
@@ -27,17 +73,16 @@ class ExternalQueue(object):
                  heartbeat: int=60,
                  redeliver_to_garbage_queue=False,
                  max_message_size: int=None):
-        self.host = host
-        self.username = username
-        self.password = password
-        self.virtual_host = virtual_host
-        self.heartbeat = heartbeat
-        self.exchange = exchange
+        super().__init__(host,
+                         username,
+                         password,
+                         virtual_host,
+                         heartbeat,
+                         max_message_size)
         self.queue_name = queue_name
+        self.exchange = exchange
         self.garbage_routing_key = queue_name + '_garbage'
         self.redeliver_to_garbage_queue = redeliver_to_garbage_queue
-        self.max_message_length = max_message_size
-
         self.__connection = self._connect()
         self._channel = self.__connection.channel()
 
@@ -67,17 +112,13 @@ class ExternalQueue(object):
 
         return connection
 
-    def _parse_message(self, message) -> Dict[str, Any]:
-        body = message.body
+    def _parse_message(self, content) -> Dict[str, Any]:
         try:
-            return json.loads(body)
-        except TypeError:
-            return json.loads(body.decode())
-        except json.decoder.JSONDecodeError as e:
+            return super()._parse_message(content)
+        except UndecodableMessageException as e:
             if self.redeliver_to_garbage_queue:
-                self.put(message, routing_key=self.garbage_routing_key)
-            raise UndecodableMessageException('"{body}" can\'t be decoded as JSON'
-                                              .format(body=body))
+                self.put(content, routing_key=self.garbage_routing_key)
+            raise e
 
     def get(self) -> Tuple[dict, int]:
         message = self._channel.basic_get(queue=self.queue_name)
@@ -88,7 +129,7 @@ class ExternalQueue(object):
             if len(message.body) > self.max_message_length:
                 raise InvalidMessageSizeException(message)
 
-        content = self._parse_message(message)
+        content = self._parse_message(message.body)
 
         return content, message.delivery_tag
 
