@@ -4,7 +4,8 @@ import asynctest
 from asynctest.mock import CoroutineMock
 from unittest.mock import Mock, patch, call, ANY
 from easyqueue.async import AsyncQueue, AsyncQueueConsumerDelegate
-from easyqueue.exceptions import UndecodableMessageException
+from easyqueue.exceptions import UndecodableMessageException, \
+    InvalidMessageSizeException
 from easyqueue.tests.utils import typed_any
 
 
@@ -41,6 +42,38 @@ class AsyncBaseTestCase:
 
     def get_consumer(self) -> AsyncQueueConsumerDelegate:
         raise NotImplementedError
+
+
+class AsynQueueTests(asynctest.TestCase):
+    async def test_it_raises_value_error_if_max_message_length_is_a_negative_number(self):
+        invalid_value = -666
+        with self.assertRaises(ValueError):
+            AsyncQueue(host='Olha',
+                       username='a',
+                       password='explosão',
+                       loop=Mock(),
+                       delegate=Mock(),
+                       max_message_length=invalid_value)
+
+    async def test_it_doesnt_raise_value_error_if_max_message_length_is_a_positive_number(self):
+        valid_value = 666
+        queue = AsyncQueue(host='Essa',
+                           username='menina',
+                           password='é terrorista',
+                           loop=Mock(),
+                           delegate=Mock(),
+                           max_message_length=valid_value)
+        self.assertEqual(queue.max_message_length, valid_value)
+
+    async def test_it_doesnt_raise_value_error_if_max_message_length_is_zero(self):
+        valid_value = 0
+        queue = AsyncQueue(host='diogommartins.com',
+                           username='diogo',
+                           password='XablauBolado',
+                           loop=Mock(),
+                           delegate=Mock(),
+                           max_message_length=valid_value)
+        self.assertEqual(queue.max_message_length, valid_value)
 
 
 class AsyncQueueConnectionTests(AsyncBaseTestCase, asynctest.TestCase):
@@ -233,6 +266,31 @@ class AsyncQueueConsumerHandlerMethodsTests(AsyncBaseTestCase, asynctest.TestCas
         expected = call(body=content,
                         delivery_tag=self.envelope.delivery_tag,
                         error=typed_any(UndecodableMessageException),
+                        queue=self.queue)
+        self.assertEqual(consumer.on_queue_error.call_args_list, [expected])
+
+    async def test_it_calls_on_queue_error_if_message_length_is_too_big(self):
+        content = {
+            "artist": "Mr. Big",
+            "album": "Big, Bigger, Biggest! The Best of Mr. Big",
+            "song": "Rock & Roll Over"
+        }
+        json_content = json.dumps(content)
+
+        Actual_Size = len(json_content)
+        self.queue.max_message_length = Actual_Size - 1
+
+        await self.queue._handle_message(channel=self.queue._channel,
+                                         body=json_content,
+                                         envelope=self.envelope,
+                                         properties=self.properties)
+
+        consumer = self.queue.delegate
+        self.assertFalse(consumer.on_queue_message.called)
+
+        expected = call(body=json_content,
+                        delivery_tag=self.envelope.delivery_tag,
+                        error=typed_any(InvalidMessageSizeException),
                         queue=self.queue)
         self.assertEqual(consumer.on_queue_error.call_args_list, [expected])
 
