@@ -155,6 +155,22 @@ class AsyncQueueConnectionTests(AsyncBaseTestCase, asynctest.TestCase):
         self.assertEqual([call(tag)],
                          self.queue._channel.basic_client_ack.call_args_list)
 
+    async def test_it_rejects_messages_without_requeue(self):
+        await self.queue.connect()
+
+        tag = 666
+        await self.queue.reject(delivery_tag=tag)
+        self.assertEqual([call(delivery_tag=tag, requeue=False)],
+                         self.queue._channel.basic_reject.call_args_list)
+
+    async def test_it_rejects_messages_with_requeue(self):
+        await self.queue.connect()
+
+        tag = 666
+        await self.queue.reject(delivery_tag=tag, requeue=True)
+        self.assertEqual([call(delivery_tag=tag, requeue=True)],
+                         self.queue._channel.basic_reject.call_args_list)
+
 
 class AsyncQueueConsumerTests(AsyncBaseTestCase, asynctest.TestCase):
     consumer_tag = 666

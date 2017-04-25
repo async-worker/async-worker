@@ -107,6 +107,10 @@ class AsyncQueue(BaseJsonQueue):
     async def ack(self, delivery_tag: int):
         return await self._channel.basic_client_ack(delivery_tag)
 
+    async def reject(self, delivery_tag: int, requeue=False):
+        return await self._channel.basic_reject(delivery_tag=delivery_tag,
+                                                requeue=requeue)
+
     async def put(self, body: any, routing_key: str, exchange: str = '', priority: int = 0):
         if priority:
             raise NotImplementedError
