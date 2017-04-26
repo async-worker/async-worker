@@ -4,7 +4,8 @@ import asyncio
 from typing import Any, Dict
 from json.decoder import JSONDecodeError
 from easyqueue.queue import BaseJsonQueue
-from easyqueue.exceptions import UndecodableMessageException
+from easyqueue.exceptions import UndecodableMessageException, \
+    InvalidMessageSizeException, MessageError
 
 
 class AsyncQueueConsumerDelegate(metaclass=abc.ABCMeta):
@@ -61,15 +62,19 @@ class AsyncQueue(BaseJsonQueue):
                  virtual_host: str = '/',
                  heartbeat: int = 60,
                  prefetch_count: int=100,
-                 redeliver_to_garbage_queue=False,
+                 max_message_length=0,
                  loop=None):
 
-        super().__init__(host, username, password, virtual_host,
-                         heartbeat, redeliver_to_garbage_queue)
+        super().__init__(host, username, password, virtual_host, heartbeat)
 
         self.delegate = delegate
         self.loop = loop or asyncio.get_event_loop()
         self.prefetch_count = prefetch_count
+
+        if max_message_length < 0:
+            raise ValueError("max_message_length must be a positive integer")
+
+        self.max_message_length = max_message_length
 
         self._protocol = None  # type: aioamqp.protocol.AmqpProtocol
         self._transport = None  # type: asyncio.BaseTransport
@@ -102,6 +107,10 @@ class AsyncQueue(BaseJsonQueue):
     async def ack(self, delivery_tag: int):
         return await self._channel.basic_client_ack(delivery_tag)
 
+    async def reject(self, delivery_tag: int, requeue=False):
+        return await self._channel.basic_reject(delivery_tag=delivery_tag,
+                                                requeue=requeue)
+
     async def put(self, body: any, routing_key: str, exchange: str = '', priority: int = 0):
         if priority:
             raise NotImplementedError
@@ -111,6 +120,9 @@ class AsyncQueue(BaseJsonQueue):
                                            routing_key=routing_key)
 
     def _parse_message(self, body) -> Dict[str, Any]:
+        if self.max_message_length:
+            if len(body) > self.max_message_length:
+                raise InvalidMessageSizeException(body)
         try:
             return self.deserialize(body)
         except TypeError as e:
@@ -123,7 +135,7 @@ class AsyncQueue(BaseJsonQueue):
         tag = envelope.delivery_tag
         try:
             content = self._parse_message(body)
-        except UndecodableMessageException as e:
+        except MessageError as e:
             await self.delegate.on_queue_error(body=body,
                                                delivery_tag=tag,
                                                error=e,

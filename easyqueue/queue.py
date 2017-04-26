@@ -15,6 +15,18 @@ class DeliveryModes:
 
 
 class BaseQueue(metaclass=abc.ABCMeta):
+    def __init__(self,
+                 host: str,
+                 username: str,
+                 password: str,
+                 virtual_host: str = '/',
+                 heartbeat: int = 60):
+        self.host = host
+        self.username = username
+        self.password = password
+        self.virtual_host = virtual_host
+        self.heartbeat = heartbeat
+
     @abc.abstractmethod
     def serialize(self, body: Any) -> str:
         raise NotImplementedError
@@ -41,20 +53,6 @@ class BaseQueue(metaclass=abc.ABCMeta):
 class BaseJsonQueue(BaseQueue):
     content_type = 'application/json'
 
-    def __init__(self,
-                 host: str,
-                 username: str,
-                 password: str,
-                 virtual_host: str='/',
-                 heartbeat: int=60,
-                 max_message_size: int=None):
-        self.host = host
-        self.username = username
-        self.password = password
-        self.virtual_host = virtual_host
-        self.heartbeat = heartbeat
-        self.max_message_length = max_message_size
-
     def serialize(self, body: Any) -> str:
         return json.dumps(body)
 
@@ -77,8 +75,8 @@ class ExternalQueue(BaseJsonQueue):
                          username,
                          password,
                          virtual_host,
-                         heartbeat,
-                         max_message_size)
+                         heartbeat)
+        self.max_message_length = max_message_size
         self.queue_name = queue_name
         self.exchange = exchange
         self.garbage_routing_key = queue_name + '_garbage'

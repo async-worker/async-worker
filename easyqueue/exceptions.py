@@ -1,15 +1,16 @@
 class EmptyQueueException(Exception):
-    """No message to get"""
+    """ No message to get """
 
 
-class UndecodableMessageException(Exception):
-    """Can't decode as JSON"""
+class MessageError(ValueError):
+    """ Base for all message exceptions """
 
 
-class InvalidMessageSizeException(ValueError):
-    def __init__(self, message):
-        """
-        Message size if bigger than it should be
-        :type message: amqp.Message
-        """
+class UndecodableMessageException(MessageError):
+    """ Can't decode as JSON """
+
+
+class InvalidMessageSizeException(MessageError):
+    def __init__(self, message=None):
+        """ Message size if bigger than it should be """
         self.message = message
