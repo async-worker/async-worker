@@ -136,14 +136,15 @@ class AsyncQueue(BaseJsonQueue):
         try:
             content = self._parse_message(body)
         except MessageError as e:
-            await self.delegate.on_queue_error(body=body,
-                                               delivery_tag=tag,
-                                               error=e,
-                                               queue=self)
+            callback = self.delegate.on_queue_error(body=body,
+                                                    delivery_tag=tag,
+                                                    error=e,
+                                                    queue=self)
         else:
-            await self.delegate.on_queue_message(content=content,
-                                                 delivery_tag=tag,
-                                                 queue=self)
+            callback = self.delegate.on_queue_message(content=content,
+                                                      delivery_tag=tag,
+                                                      queue=self)
+        self.loop.create_task(callback)
 
     async def consume(self, queue_name: str, consumer_name='') -> str:
         """
