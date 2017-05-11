@@ -162,7 +162,7 @@ class AsyncQueue(BaseJsonQueue):
             callback = self.delegate.on_queue_message(content=content,
                                                       delivery_tag=tag,
                                                       queue=self)
-        self.loop.create_task(callback)
+        return self.loop.create_task(callback)
 
     async def consume(self, queue_name: str, consumer_name: str='') -> str:
         """
