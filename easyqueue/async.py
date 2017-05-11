@@ -17,19 +17,25 @@ class AsyncQueueConsumerDelegate(metaclass=abc.ABCMeta):
     @property
     @abc.abstractmethod
     def queue(self) -> 'AsyncQueue':
+        """ AsyncQueue instance to be used as a connection provider """
         raise NotImplementedError
 
     @property
     @abc.abstractmethod
     def queue_name(self) -> str:
+        """ Name of the input queue to consume """
         raise NotImplementedError
 
     async def _consume(self):
+        """ Coroutine that starts the connection and the queue consumption """
         await self.queue.connect()
         await self.queue.consume(queue_name=self.queue_name)
 
     async def on_queue_message(self, content, delivery_tag, queue):
         """
+        Callback called every time that a new, valid and deserialized message 
+        is ready to be handled.
+        
         :param delivery_tag: delivery_tag of the consumed message 
         :type delivery_tag: int
         :param content: parsed message body
@@ -40,17 +46,26 @@ class AsyncQueueConsumerDelegate(metaclass=abc.ABCMeta):
 
     async def on_queue_error(self, body, delivery_tag, error, queue):
         """
+        Callback called every time that an error occurred during the validation
+        or deserialization stage. 
+        
         :param body: unparsed, raw message content
         :type body: Any
         :param delivery_tag: delivery_tag of the consumed message 
         :type delivery_tag: int
+        :param error: THe error that caused the callback to be called
+        :type error: MessageError
         :type queue: AsyncQueue
         """
         raise NotImplementedError
 
     def run(self):
-        self.loop.create_task(self._consume())
+        consume_task = self.loop.create_task(self._consume())
         self.loop.run_forever()
+        return consume_task
+
+    def run_until_complete(self):
+        self.loop.run_until_complete(self._consume())
 
 
 class AsyncQueue(BaseJsonQueue):
@@ -132,6 +147,9 @@ class AsyncQueue(BaseJsonQueue):
                                               .format(body=body))
 
     async def _handle_message(self, channel, body, envelope, properties):
+        """
+        :rtype: asyncio.Task
+        """
         tag = envelope.delivery_tag
         try:
             content = self._parse_message(body)
@@ -146,10 +164,11 @@ class AsyncQueue(BaseJsonQueue):
                                                       queue=self)
         self.loop.create_task(callback)
 
-    async def consume(self, queue_name: str, consumer_name='') -> str:
+    async def consume(self, queue_name: str, consumer_name: str='') -> str:
         """
         :param queue_name: queue to consume
-        :return: the consumer tag. Useful for cancelling/stopping consumption
+        :param consumer_name: Name to be used as a consumer identifier.
+        :return: The consumer tag. Useful for cancelling/stopping consumption
         """
         # todo: Implement a consumer tag generator
         if self._channel is None:
