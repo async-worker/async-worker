@@ -182,3 +182,10 @@ class AsyncQueue(BaseJsonQueue):
                                                 consumer_tag=consumer_name,
                                                 queue_name=queue_name)
         return tag['consumer_tag']
+
+    async def stop_consumer(self, consumer_tag: str):
+        if self._channel is None:
+            raise ConnectionError("Queue isn't connected. "
+                                  "Did you forgot to wait for `connect()`?")
+
+        return await self._channel.basic_cancel(consumer_tag)
