@@ -78,7 +78,7 @@ class AsynQueueTests(asynctest.TestCase):
 
 class AsyncQueueConnectionTests(AsyncBaseTestCase, asynctest.TestCase):
     def get_consumer(self):
-        return Mock()
+        return CoroutineMock()
 
     async def test_connect_opens_a_connection_communication_channel(self):
         self.assertFalse(self.queue.is_connected)
@@ -176,12 +176,26 @@ class AsyncQueueConsumerTests(AsyncBaseTestCase, asynctest.TestCase):
     consumer_tag = 666
 
     def get_consumer(self):
-        return Mock()
+        return CoroutineMock()
 
     async def test_calling_consume_without_a_connection_raises_an_error(self):
         with self.assertRaises(ConnectionError):
             await self.queue.consume(queue_name=Mock(),
                                      consumer_name=Mock())
+
+    async def test_it_calls_will_start_consumption_before_queue_consume(self):
+        await self.queue.connect()
+
+        with asynctest.patch.object(self.queue._channel,
+                                    'basic_consume',
+                                    side_effect=Exception()):
+            try:
+                queue_name = Mock()
+                self.queue.delegate.will_start_consumption.assert_not_called()
+                await self.queue.consume(queue_name, Mock())
+            except Exception:
+                self.queue.delegate.will_start_consumption.called_once_with(queue_name,
+                                                                            queue=self.queue)
 
     async def test_calling_consume_starts_message_consumption(self):
         await self.queue.connect()
@@ -255,10 +269,7 @@ class AsyncQueueConsumerHandlerMethodsTests(AsyncBaseTestCase, asynctest.TestCas
     consumer_tag = 666
 
     def get_consumer(self):
-        consumer = Mock()
-        consumer.on_queue_message = CoroutineMock()
-        consumer.on_queue_error = CoroutineMock()
-        return consumer
+        return CoroutineMock()
 
     async def setUp(self):
         super().setUp()

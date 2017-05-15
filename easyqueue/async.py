@@ -31,6 +31,18 @@ class AsyncQueueConsumerDelegate(metaclass=abc.ABCMeta):
         await self.queue.connect()
         await self.queue.consume(queue_name=self.queue_name)
 
+    async def will_start_consumption(self, queue_name, queue):
+        """
+        Coroutine called before queue consumption starts. May be overwritten to
+        implement further custom initialization.
+        
+        :param queue_name: Queue name that will be consumed
+        :type queue_name: str
+        :param queue: AsynQueue instanced 
+        :type queue: AsyncQueue
+        """
+        pass
+
     async def on_queue_message(self, content, delivery_tag, queue):
         """
         Callback called every time that a new, valid and deserialized message 
@@ -171,6 +183,8 @@ class AsyncQueue(BaseJsonQueue):
         :return: The consumer tag. Useful for cancelling/stopping consumption
         """
         # todo: Implement a consumer tag generator
+        await self.delegate.will_start_consumption(queue_name, queue=self)
+
         if self._channel is None:
             raise ConnectionError("Queue isn't connected. "
                                   "Did you forgot to wait for `connect()`?")
