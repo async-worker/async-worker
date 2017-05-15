@@ -191,11 +191,11 @@ class AsyncQueueConsumerTests(AsyncBaseTestCase, asynctest.TestCase):
                                     side_effect=Exception()):
             try:
                 queue_name = Mock()
-                self.queue.delegate.will_start_consumption.assert_not_called()
+                self.queue.delegate.on_before_start_consumption.assert_not_called()
                 await self.queue.consume(queue_name, Mock())
             except Exception:
-                self.queue.delegate.will_start_consumption.called_once_with(queue_name,
-                                                                            queue=self.queue)
+                self.queue.delegate.on_before_start_consumption.called_once_with(queue_name,
+                                                                                 queue=self.queue)
 
     async def test_calling_consume_starts_message_consumption(self):
         await self.queue.connect()
