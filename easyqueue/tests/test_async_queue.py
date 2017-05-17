@@ -283,19 +283,21 @@ class AsyncQueueConsumerHandlerMethodsTests(AsyncBaseTestCase, asynctest.TestCas
 
     async def test_it_calls_on_queue_error_if_message_isnt_a_valid_json(self):
         content = "Subirusdoitiozin"
-        await self.queue._handle_message(channel=self.queue._channel,
-                                         body=content,
-                                         envelope=self.envelope,
-                                         properties=self.properties)
+        with patch.object(self.queue, '_handle_callback',
+                          CoroutineMock()) as _handle_callback:
+            await self.queue._handle_message(channel=self.queue._channel,
+                                             body=content,
+                                             envelope=self.envelope,
+                                             properties=self.properties)
 
-        consumer = self.queue.delegate
-        self.assertFalse(consumer.on_queue_message.called)
+            consumer = self.queue.delegate
+            self.assertFalse(consumer.on_queue_message.called)
 
-        expected = call(body=content,
-                        delivery_tag=self.envelope.delivery_tag,
-                        error=typed_any(UndecodableMessageException),
-                        queue=self.queue)
-        self.assertEqual(consumer.on_queue_error.call_args_list, [expected])
+            _handle_callback.assert_called_once_with(consumer.on_queue_error,
+                                                     body=content,
+                                                     delivery_tag=self.envelope.delivery_tag,
+                                                     error=typed_any(UndecodableMessageException),
+                                                     queue=self.queue)
 
     async def test_it_calls_on_queue_error_if_message_length_is_too_big(self):
         content = {
@@ -308,19 +310,21 @@ class AsyncQueueConsumerHandlerMethodsTests(AsyncBaseTestCase, asynctest.TestCas
         Actual_Size = len(json_content)
         self.queue.max_message_length = Actual_Size - 1
 
-        await self.queue._handle_message(channel=self.queue._channel,
-                                         body=json_content,
-                                         envelope=self.envelope,
-                                         properties=self.properties)
+        with patch.object(self.queue, '_handle_callback',
+                          CoroutineMock()) as _handle_callback:
+            await self.queue._handle_message(channel=self.queue._channel,
+                                             body=json_content,
+                                             envelope=self.envelope,
+                                             properties=self.properties)
 
-        consumer = self.queue.delegate
-        self.assertFalse(consumer.on_queue_message.called)
+            consumer = self.queue.delegate
+            self.assertFalse(consumer.on_queue_message.called)
 
-        expected = call(body=json_content,
-                        delivery_tag=self.envelope.delivery_tag,
-                        error=typed_any(InvalidMessageSizeException),
-                        queue=self.queue)
-        self.assertEqual(consumer.on_queue_error.call_args_list, [expected])
+            _handle_callback.assert_called_once_with(consumer.on_queue_error,
+                                                     body=json_content,
+                                                     delivery_tag=self.envelope.delivery_tag,
+                                                     error=typed_any(InvalidMessageSizeException),
+                                                     queue=self.queue)
 
     async def test_it_calls_on_queue_message_if_message_is_a_valid_json_as_bytes(self):
         content = {
@@ -329,18 +333,20 @@ class AsyncQueueConsumerHandlerMethodsTests(AsyncBaseTestCase, asynctest.TestCas
             'album': 'Livro'
         }
         body = bytes(json.dumps(content), encoding='utf-8')
-        await self.queue._handle_message(channel=self.queue._channel,
-                                         body=body,
-                                         envelope=self.envelope,
-                                         properties=self.properties)
+        with patch.object(self.queue, '_handle_callback',
+                          CoroutineMock()) as _handle_callback:
+            await self.queue._handle_message(channel=self.queue._channel,
+                                             body=body,
+                                             envelope=self.envelope,
+                                             properties=self.properties)
 
-        consumer = self.queue.delegate
-        self.assertFalse(consumer.on_queue_error.called)
+            consumer = self.queue.delegate
+            self.assertFalse(consumer.on_queue_error.called)
 
-        expected = call(content=content,
-                        delivery_tag=self.envelope.delivery_tag,
-                        queue=self.queue)
-        self.assertEqual(consumer.on_queue_message.call_args_list, [expected])
+            _handle_callback.assert_called_once_with(consumer.on_queue_message,
+                                                          content=content,
+                                                          delivery_tag=self.envelope.delivery_tag,
+                                                          queue=self.queue)
 
     async def test_it_calls_on_queue_message_if_message_is_a_valid_json(self):
         content = {
@@ -348,15 +354,41 @@ class AsyncQueueConsumerHandlerMethodsTests(AsyncBaseTestCase, asynctest.TestCas
             'song': 'Não enche',
             'album': 'Livro'
         }
-        await self.queue._handle_message(channel=self.queue._channel,
-                                         body=json.dumps(content),
-                                         envelope=self.envelope,
-                                         properties=self.properties)
+
+        with patch.object(self.queue, '_handle_callback',
+                          CoroutineMock()) as _handle_callback:
+            await self.queue._handle_message(channel=self.queue._channel,
+                                             body=json.dumps(content),
+                                             envelope=self.envelope,
+                                             properties=self.properties)
+
+            consumer = self.queue.delegate
+            self.assertFalse(consumer.on_queue_error.called)
+
+            _handle_callback.assert_called_once_with(consumer.on_queue_message,
+                                                          content=content,
+                                                          delivery_tag=self.envelope.delivery_tag,
+                                                          queue=self.queue)
+
+    async def test_it_calls_on_message_handle_error_if_message_handler_raises_an_error(self):
+        content = {
+            'artist': 'Caetano Veloso',
+            'song': 'Não enche',
+            'album': 'Livro'
+        }
 
         consumer = self.queue.delegate
+        error = consumer.on_queue_message.side_effect = KeyError()
+        kwargs = dict(callback=consumer.on_queue_message,
+                      channel=self.queue._channel,
+                      body=json.dumps(content),
+                      envelope=self.envelope,
+                      properties=self.properties)
+        await self.queue._handle_callback(**kwargs)
+
         self.assertFalse(consumer.on_queue_error.called)
 
-        expected = call(content=content,
-                        delivery_tag=self.envelope.delivery_tag,
-                        queue=self.queue)
-        self.assertEqual(consumer.on_queue_message.call_args_list, [expected])
+        del kwargs['callback']
+
+        consumer.on_message_handle_error.assert_called_once_with(handler_error=error,
+                                                                 **kwargs)
