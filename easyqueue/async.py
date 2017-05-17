@@ -1,7 +1,7 @@
 import abc
 import aioamqp
 import asyncio
-from typing import Any, Dict
+from typing import Any, Dict, Coroutine
 from json.decoder import JSONDecodeError
 from easyqueue.queue import BaseJsonQueue
 from easyqueue.exceptions import UndecodableMessageException, \
@@ -68,6 +68,18 @@ class AsyncQueueConsumerDelegate(metaclass=abc.ABCMeta):
         :param error: THe error that caused the callback to be called
         :type error: MessageError
         :type queue: AsyncQueue
+        """
+        raise NotImplementedError
+
+    async def on_message_handle_error(self, handler_error: Exception, **kwargs):
+        """
+        Callback called when an uncaught exception was raised during message 
+        handling stage.
+        
+        :param handler_error: The exception that triggered 
+        :param kwargs: arguments used to call the coroutine that handled 
+        the message
+        :return: 
         """
         raise NotImplementedError
 
@@ -158,6 +170,22 @@ class AsyncQueue(BaseJsonQueue):
             raise UndecodableMessageException('"{body}" can\'t be decoded as JSON'
                                               .format(body=body))
 
+    async def _handle_callback(self, callback, **kwargs):
+        """
+        Chains the callback coroutine into a try/except and calls 
+        `on_message_handle_error` in case of failure, avoiding unhandled 
+        exceptions.
+         
+        :param callback: 
+        :param kwargs: 
+        :return: 
+        """
+        try:
+            return await callback(**kwargs)
+        except Exception as e:
+            return await self.delegate.on_message_handle_error(handler_error=e,
+                                                               **kwargs)
+
     async def _handle_message(self, channel, body, envelope, properties):
         """
         :rtype: asyncio.Task
@@ -166,14 +194,16 @@ class AsyncQueue(BaseJsonQueue):
         try:
             content = self._parse_message(body)
         except MessageError as e:
-            callback = self.delegate.on_queue_error(body=body,
-                                                    delivery_tag=tag,
-                                                    error=e,
-                                                    queue=self)
+            callback = self._handle_callback(self.delegate.on_queue_error,
+                                             body=body,
+                                             delivery_tag=tag,
+                                             error=e,
+                                             queue=self)
         else:
-            callback = self.delegate.on_queue_message(content=content,
-                                                      delivery_tag=tag,
-                                                      queue=self)
+            callback = self._handle_callback(self.delegate.on_queue_message,
+                                             content=content,
+                                             delivery_tag=tag,
+                                             queue=self)
         return self.loop.create_task(callback)
 
     async def consume(self, queue_name: str, consumer_name: str='') -> str:
