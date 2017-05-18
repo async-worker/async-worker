@@ -43,6 +43,7 @@ class AsyncQueueConsumerDelegate(metaclass=abc.ABCMeta):
         """
         pass
 
+    @abc.abstractmethod
     async def on_queue_message(self, content, delivery_tag, queue):
         """
         Callback called every time that a new, valid and deserialized message 
@@ -56,6 +57,7 @@ class AsyncQueueConsumerDelegate(metaclass=abc.ABCMeta):
         """
         raise NotImplementedError
 
+    @abc.abstractmethod
     async def on_queue_error(self, body, delivery_tag, error, queue):
         """
         Callback called every time that an error occurred during the validation
@@ -71,6 +73,7 @@ class AsyncQueueConsumerDelegate(metaclass=abc.ABCMeta):
         """
         raise NotImplementedError
 
+    @abc.abstractmethod
     async def on_message_handle_error(self, handler_error: Exception, **kwargs):
         """
         Callback called when an uncaught exception was raised during message 
@@ -83,11 +86,12 @@ class AsyncQueueConsumerDelegate(metaclass=abc.ABCMeta):
         """
         raise NotImplementedError
 
+    @abc.abstractmethod
     async def on_connection_error(self, exception: Exception):
         """
         Called when the connection fails
         """
-        pass
+        raise NotImplementedError
 
     def run(self):
         consume_task = self.loop.create_task(self._consume())
