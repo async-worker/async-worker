@@ -98,6 +98,7 @@ class AsyncQueueConnectionTests(AsyncBaseTestCase, asynctest.TestCase):
                         password=self.conn_params['password'],
                         virtualhost=self.conn_params['virtual_host'],
                         login=self.conn_params['username'],
+                        on_error=self.queue.delegate.on_connection_error,
                         loop=ANY)
 
         await self.queue.connect()
@@ -241,6 +242,11 @@ class AsyncQueueConsumerTests(AsyncBaseTestCase, asynctest.TestCase):
             queue_name = q_name
             queue = self.queue
 
+            on_connection_error = CoroutineMock()
+            on_message_handle_error = CoroutineMock()
+            on_queue_error = CoroutineMock()
+            on_queue_message = CoroutineMock()
+
         consumer = Foo()
         self.queue.delegate = consumer
         with patch.object(self.queue, 'consume', side_effect=CoroutineMock()) as patched_consume:
@@ -256,6 +262,11 @@ class AsyncQueueConsumerTests(AsyncBaseTestCase, asynctest.TestCase):
             loop = consumer_loop
             queue_name = q_name
             queue = self.queue
+
+            on_connection_error = CoroutineMock()
+            on_message_handle_error = CoroutineMock()
+            on_queue_error = CoroutineMock()
+            on_queue_message = CoroutineMock()
 
         consumer = Foo()
         self.queue.delegate = consumer
