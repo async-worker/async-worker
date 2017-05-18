@@ -83,6 +83,12 @@ class AsyncQueueConsumerDelegate(metaclass=abc.ABCMeta):
         """
         raise NotImplementedError
 
+    async def on_connection_error(self, exception: Exception):
+        """
+        Called when the connection fails
+        """
+        pass
+
     def run(self):
         consume_task = self.loop.create_task(self._consume())
         self.loop.run_forever()
@@ -126,7 +132,8 @@ class AsyncQueue(BaseJsonQueue):
             'login': self.username,
             'password': self.password,
             'virtualhost': self.virtual_host,
-            'loop': self.loop
+            'loop': self.loop,
+            'on_error': self.delegate.on_connection_error
         }
 
     @property
