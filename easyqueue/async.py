@@ -1,7 +1,7 @@
 import abc
 import aioamqp
 import asyncio
-from typing import Any, Dict, Coroutine
+from typing import Any, Dict
 from json.decoder import JSONDecodeError
 from easyqueue.queue import BaseJsonQueue
 from easyqueue.exceptions import UndecodableMessageException, \
