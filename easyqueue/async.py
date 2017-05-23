@@ -1,7 +1,7 @@
 import abc
 import aioamqp
 import asyncio
-from typing import Any, Dict, Coroutine
+from typing import Any, Dict
 from json.decoder import JSONDecodeError
 from easyqueue.queue import BaseJsonQueue
 from easyqueue.exceptions import UndecodableMessageException, \
@@ -43,6 +43,7 @@ class AsyncQueueConsumerDelegate(metaclass=abc.ABCMeta):
         """
         pass
 
+    @abc.abstractmethod
     async def on_queue_message(self, content, delivery_tag, queue):
         """
         Callback called every time that a new, valid and deserialized message 
@@ -56,6 +57,7 @@ class AsyncQueueConsumerDelegate(metaclass=abc.ABCMeta):
         """
         raise NotImplementedError
 
+    @abc.abstractmethod
     async def on_queue_error(self, body, delivery_tag, error, queue):
         """
         Callback called every time that an error occurred during the validation
@@ -71,6 +73,7 @@ class AsyncQueueConsumerDelegate(metaclass=abc.ABCMeta):
         """
         raise NotImplementedError
 
+    @abc.abstractmethod
     async def on_message_handle_error(self, handler_error: Exception, **kwargs):
         """
         Callback called when an uncaught exception was raised during message 
@@ -80,6 +83,13 @@ class AsyncQueueConsumerDelegate(metaclass=abc.ABCMeta):
         :param kwargs: arguments used to call the coroutine that handled 
         the message
         :return: 
+        """
+        raise NotImplementedError
+
+    @abc.abstractmethod
+    async def on_connection_error(self, exception: Exception):
+        """
+        Called when the connection fails
         """
         raise NotImplementedError
 
@@ -126,7 +136,8 @@ class AsyncQueue(BaseJsonQueue):
             'login': self.username,
             'password': self.password,
             'virtualhost': self.virtual_host,
-            'loop': self.loop
+            'loop': self.loop,
+            'on_error': self.delegate.on_connection_error
         }
 
     @property
