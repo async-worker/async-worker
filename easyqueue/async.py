@@ -164,7 +164,7 @@ class AsyncQueue(BaseJsonQueue):
     async def put(self, body: any, routing_key: str, exchange: str = '', priority: int = 0):
         if priority:
             raise NotImplementedError
-        payload = self.serialize(body)
+        payload = self.serialize(body, ensure_ascii=False)
         return await self._channel.publish(payload=payload,
                                            exchange_name=exchange,
                                            routing_key=routing_key)
