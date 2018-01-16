@@ -53,8 +53,8 @@ class BaseQueue(metaclass=abc.ABCMeta):
 class BaseJsonQueue(BaseQueue):
     content_type = 'application/json'
 
-    def serialize(self, body: Any) -> str:
-        return json.dumps(body)
+    def serialize(self, body: Any, **kwargs) -> str:
+        return json.dumps(body, **kwargs)
 
     def deserialize(self, body: str) -> Any:
         return json.loads(body)
