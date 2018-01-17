@@ -28,7 +28,7 @@ class BaseQueue(metaclass=abc.ABCMeta):
         self.heartbeat = heartbeat
 
     @abc.abstractmethod
-    def serialize(self, body: Any) -> str:
+    def serialize(self, body: Any, **kwargs) -> str:
         raise NotImplementedError
 
     @abc.abstractmethod
