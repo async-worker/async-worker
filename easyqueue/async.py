@@ -163,7 +163,8 @@ class AsyncQueue(BaseJsonQueue):
     async def start_consumer(self):
         """ Coroutine that starts the connection and the queue consumption """
         await self.connect()
-        await self.consume(queue_name=self.delegate.queue_name)
+        consumer_tag = await self.consume(queue_name=self.delegate.queue_name)
+        self.delegate.consumer_tag = consumer_tag
 
     async def stop_consumer(self, consumer_tag: str):
         if self._channel is None:
@@ -176,6 +177,7 @@ class AsyncQueue(BaseJsonQueue):
 class AsyncQueueConsumerDelegate(metaclass=abc.ABCMeta):
     queue: AsyncQueue
     loop: asyncio.AbstractEventLoop
+    consumer_tag: str
 
     @property
     @abc.abstractmethod
@@ -183,17 +185,12 @@ class AsyncQueueConsumerDelegate(metaclass=abc.ABCMeta):
         """ Name of the input queue to consume """
         raise NotImplementedError
 
-    async def _consume(self):
-        """ Coroutine that starts the connection and the queue consumption """
-        await self.queue.connect()
-        await self.queue.consume(queue_name=self.queue_name)
-
     def run(self):
         """
         Accessory method for creating a consume task and running the
         loop forever
         """
-        self.loop.create_task(self._consume())
+        self.loop.create_task(self.queue.start_consumer())
         self.loop.run_forever()
 
     async def on_before_start_consumption(self, queue_name: str,

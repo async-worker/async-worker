@@ -280,6 +280,14 @@ class AsyncQueueConsumerTests(AsyncBaseTestCase, asynctest.TestCase):
             patched_consume.assert_called_once_with(queue_name=q_name)
             self.assertTrue(self._connect.called)
 
+    async def test_starting_the_consumer_sets_consumer_tag_on_delegate_class(self):
+        consumer = Mock(queue=self.queue)
+        self.queue.delegate = consumer
+
+        with patch.object(self.queue, 'consume', CoroutineMock(return_value='Xablau')):
+            await consumer.queue.start_consumer()
+            self.assertEqual(consumer.consumer_tag, 'Xablau')
+
     async def test_calling_run_starts_a_consumption_task(self):
         q_name = 'dance.to.the.decadence.dance'
         consumer_loop = CoroutineMock()
