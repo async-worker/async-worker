@@ -1,105 +1,11 @@
 import abc
 import aioamqp
 import asyncio
-from typing import Any, Dict
+from typing import Any, Dict, Type
 from json.decoder import JSONDecodeError
 from easyqueue.queue import BaseJsonQueue
 from easyqueue.exceptions import UndecodableMessageException, \
     InvalidMessageSizeException, MessageError
-
-
-class AsyncQueueConsumerDelegate(metaclass=abc.ABCMeta):
-    @property
-    @abc.abstractmethod
-    def loop(self) -> asyncio.BaseEventLoop:
-        raise NotImplementedError
-
-    @property
-    @abc.abstractmethod
-    def queue(self) -> 'AsyncQueue':
-        """ AsyncQueue instance to be used as a connection provider """
-        raise NotImplementedError
-
-    @property
-    @abc.abstractmethod
-    def queue_name(self) -> str:
-        """ Name of the input queue to consume """
-        raise NotImplementedError
-
-    async def _consume(self):
-        """ Coroutine that starts the connection and the queue consumption """
-        await self.queue.connect()
-        await self.queue.consume(queue_name=self.queue_name)
-
-    async def on_before_start_consumption(self, queue_name, queue):
-        """
-        Coroutine called before queue consumption starts. May be overwritten to
-        implement further custom initialization.
-        
-        :param queue_name: Queue name that will be consumed
-        :type queue_name: str
-        :param queue: AsynQueue instanced 
-        :type queue: AsyncQueue
-        """
-        pass
-
-    @abc.abstractmethod
-    async def on_queue_message(self, content, delivery_tag, queue):
-        """
-        Callback called every time that a new, valid and deserialized message 
-        is ready to be handled.
-        
-        :param delivery_tag: delivery_tag of the consumed message 
-        :type delivery_tag: int
-        :param content: parsed message body
-        :type content: dict
-        :type queue: AsyncQueue
-        """
-        raise NotImplementedError
-
-    @abc.abstractmethod
-    async def on_queue_error(self, body, delivery_tag, error, queue):
-        """
-        Callback called every time that an error occurred during the validation
-        or deserialization stage. 
-        
-        :param body: unparsed, raw message content
-        :type body: Any
-        :param delivery_tag: delivery_tag of the consumed message 
-        :type delivery_tag: int
-        :param error: THe error that caused the callback to be called
-        :type error: MessageError
-        :type queue: AsyncQueue
-        """
-        raise NotImplementedError
-
-    @abc.abstractmethod
-    async def on_message_handle_error(self, handler_error: Exception, **kwargs):
-        """
-        Callback called when an uncaught exception was raised during message 
-        handling stage.
-        
-        :param handler_error: The exception that triggered 
-        :param kwargs: arguments used to call the coroutine that handled 
-        the message
-        :return: 
-        """
-        raise NotImplementedError
-
-    @abc.abstractmethod
-    async def on_connection_error(self, exception: Exception):
-        """
-        Called when the connection fails
-        """
-        raise NotImplementedError
-
-    def run(self):
-        consume_task = self.loop.create_task(self._consume())
-        self.loop.run_forever()
-        return consume_task
-
-    def run_until_complete(self):
-        self.loop.run_until_complete(self._consume())
 
 
 class AsyncQueue(BaseJsonQueue):
@@ -107,17 +13,27 @@ class AsyncQueue(BaseJsonQueue):
                  host: str,
                  username: str,
                  password: str,
-                 delegate: AsyncQueueConsumerDelegate,
+                 delegate_class: Type['AsyncQueueConsumerDelegate'] = None,
+                 delegate: 'AsyncQueueConsumerDelegate' = None,
                  virtual_host: str = '/',
                  heartbeat: int = 60,
-                 prefetch_count: int=100,
+                 prefetch_count: int = 100,
                  max_message_length=0,
                  loop=None):
-
         super().__init__(host, username, password, virtual_host, heartbeat)
 
-        self.delegate = delegate
         self.loop = loop or asyncio.get_event_loop()
+
+        if delegate is None and delegate_class is None:
+            raise ValueError("Can't initiate an AsyncQueue withut both "
+                             "delegate and delegate_class")
+        if delegate is not None and delegate_class is not None:
+            raise ValueError("Cant provide both delegate and delegate_class")
+        if delegate_class is not None:
+            self.delegate = delegate_class(loop=self.loop, queue=self)
+        else:
+            self.delegate = delegate
+
         self.prefetch_count = prefetch_count
 
         if max_message_length < 0:
@@ -151,6 +67,9 @@ class AsyncQueue(BaseJsonQueue):
         self._channel = await self._protocol.channel()
 
     async def close(self):
+        if not self.is_connected:
+            return
+
         await self._protocol.close()
         self._transport.close()
 
@@ -161,7 +80,11 @@ class AsyncQueue(BaseJsonQueue):
         return await self._channel.basic_reject(delivery_tag=delivery_tag,
                                                 requeue=requeue)
 
-    async def put(self, body: any, routing_key: str, exchange: str = '', priority: int = 0):
+    async def put(self,
+                  body: any,
+                  routing_key: str,
+                  exchange: str = '',
+                  priority: int = 0):
         if priority:
             raise NotImplementedError
         payload = self.serialize(body, ensure_ascii=False)
@@ -178,8 +101,7 @@ class AsyncQueue(BaseJsonQueue):
         except TypeError as e:
             return self._parse_message(body.decode())
         except JSONDecodeError as e:
-            raise UndecodableMessageException('"{body}" can\'t be decoded as JSON'
-                                              .format(body=body))
+            raise UndecodableMessageException(f"{body} can't be decoded as JSON")
 
     async def _handle_callback(self, callback, **kwargs):
         """
@@ -238,9 +160,100 @@ class AsyncQueue(BaseJsonQueue):
                                                 queue_name=queue_name)
         return tag['consumer_tag']
 
+    async def start_consumer(self):
+        """ Coroutine that starts the connection and the queue consumption """
+        await self.connect()
+        await self.consume(queue_name=self.delegate.queue_name)
+
     async def stop_consumer(self, consumer_tag: str):
         if self._channel is None:
             raise ConnectionError("Queue isn't connected. "
                                   "Did you forgot to wait for `connect()`?")
 
         return await self._channel.basic_cancel(consumer_tag)
+
+
+class AsyncQueueConsumerDelegate(metaclass=abc.ABCMeta):
+    queue: AsyncQueue
+    loop: asyncio.AbstractEventLoop
+
+    @property
+    @abc.abstractmethod
+    def queue_name(self) -> str:
+        """ Name of the input queue to consume """
+        raise NotImplementedError
+
+    async def _consume(self):
+        """ Coroutine that starts the connection and the queue consumption """
+        await self.queue.connect()
+        await self.queue.consume(queue_name=self.queue_name)
+
+    def run(self):
+        """
+        Accessory method for creating a consume task and running the
+        loop forever
+        """
+        self.loop.create_task(self._consume())
+        self.loop.run_forever()
+
+    async def on_before_start_consumption(self, queue_name: str,
+                                          queue: 'AsyncQueue'):
+        """
+        Coroutine called before queue consumption starts. May be overwritten to
+        implement further custom initialization.
+
+        :param queue_name: Queue name that will be consumed
+        :type queue_name: str
+        :param queue: AsynQueue instanced
+        :type queue: AsyncQueue
+        """
+        pass
+
+    @abc.abstractmethod
+    async def on_queue_message(self, content, delivery_tag, queue):
+        """
+        Callback called every time that a new, valid and deserialized message
+        is ready to be handled.
+
+        :param delivery_tag: delivery_tag of the consumed message
+        :type delivery_tag: int
+        :param content: parsed message body
+        :type content: dict
+        :type queue: AsyncQueue
+        """
+        raise NotImplementedError
+
+    async def on_queue_error(self, body, delivery_tag, error, queue):
+        """
+        Callback called every time that an error occurred during the validation
+        or deserialization stage.
+
+        :param body: unparsed, raw message content
+        :type body: Any
+        :param delivery_tag: delivery_tag of the consumed message
+        :type delivery_tag: int
+        :param error: THe error that caused the callback to be called
+        :type error: MessageError
+        :type queue: AsyncQueue
+        """
+        pass
+
+    async def on_message_handle_error(self, handler_error: Exception,
+                                      **kwargs):
+        """
+        Callback called when an uncaught exception was raised during message
+        handling stage.
+
+        :param handler_error: The exception that triggered
+        :param kwargs: arguments used to call the coroutine that handled
+        the message
+        :return:
+        """
+        pass
+
+    async def on_connection_error(self, exception: Exception):
+        """
+        Called when the connection fails
+        """
+        pass
+
