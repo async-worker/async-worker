@@ -6,7 +6,7 @@ from unittest.mock import Mock, patch, call, ANY
 from easyqueue.async import AsyncQueue, AsyncQueueConsumerDelegate
 from easyqueue.exceptions import UndecodableMessageException, \
     InvalidMessageSizeException
-from easyqueue.tests.utils import typed_any
+from tests.utils import typed_any
 
 
 class AsyncBaseTestCase:
