@@ -1,7 +1,7 @@
 import os
 from setuptools import setup, find_packages
 
-from easyqueue import __version__
+from easyqueue import __VERSION__
 
 
 BASE_PATH = os.path.dirname(__file__)
@@ -9,7 +9,7 @@ BASE_PATH = os.path.dirname(__file__)
 
 setup(
     name='easyqueue',
-    version=__version__,
+    version=__VERSION__,
     author='Diogo Magalhães Martins',
     author_email='magalhaesmartins@icloud.com',
     maintainer='Sieve',
