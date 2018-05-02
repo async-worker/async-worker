@@ -1,7 +1,7 @@
 import os
 from setuptools import setup, find_packages
 
-from easyqueue import __version__
+from easyqueue import __VERSION__
 
 
 BASE_PATH = os.path.dirname(__file__)
@@ -9,7 +9,7 @@ BASE_PATH = os.path.dirname(__file__)
 
 setup(
     name='easyqueue',
-    version=__version__,
+    version=__VERSION__,
     author='Diogo Magalhães Martins',
     author_email='magalhaesmartins@icloud.com',
     maintainer='Sieve',
@@ -19,8 +19,7 @@ setup(
     url='https://bitbucket.org/sievetech/easyqueue',
     packages=find_packages(exclude=['easyqueue/tests']),
     install_requires=[
-        "amqp==2.1.4",
-        "aioamqp==0.9.0"
+        "aioamqp==0.10.0"
     ],
     test_suite='easyqueue.tests',
     classifiers=[
