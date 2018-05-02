@@ -6,7 +6,7 @@ from unittest.mock import Mock, patch, call, ANY
 from easyqueue.async import AsyncQueue, AsyncQueueConsumerDelegate
 from easyqueue.exceptions import UndecodableMessageException, \
     InvalidMessageSizeException
-from easyqueue.tests.utils import typed_any
+from tests.utils import typed_any
 
 
 class AsyncBaseTestCase:
@@ -74,6 +74,32 @@ class AsynQueueTests(asynctest.TestCase):
                            delegate=Mock(),
                            max_message_length=valid_value)
         self.assertEqual(queue.max_message_length, valid_value)
+
+    async def test_it_raises_an_error_if_its_initialized_with_both_delegate_and_delegate_class(self):
+        with self.assertRaises(ValueError):
+            AsyncQueue(host='diogommartins.com',
+                       username='diogo',
+                       password='XablauBolado',
+                       loop=Mock(),
+                       delegate=Mock(),
+                       delegate_class=Mock())
+
+    async def test_it_raises_an_error_if_its_initialized_without_both_delegate_and_delegate_class(self):
+        with self.assertRaises(ValueError):
+            AsyncQueue(host='diogommartins.com',
+                       username='diogo',
+                       password='XablauBolado',
+                       loop=Mock())
+
+    async def test_it_initializes_a_delegate_if_delegate_class_is_provided(self):
+        delegate_class = Mock()
+        loop = Mock()
+        queue = AsyncQueue(host='diogommartins.com',
+                           username='diogo',
+                           password='XablauBolado',
+                           loop=loop,
+                           delegate_class=delegate_class)
+        delegate_class.assert_called_once_with(loop=loop, queue=queue)
 
 
 class AsyncQueueConnectionTests(AsyncBaseTestCase, asynctest.TestCase):
@@ -250,9 +276,17 @@ class AsyncQueueConsumerTests(AsyncBaseTestCase, asynctest.TestCase):
         consumer = Foo()
         self.queue.delegate = consumer
         with patch.object(self.queue, 'consume', side_effect=CoroutineMock()) as patched_consume:
-            await consumer._consume()
+            await consumer.queue.start_consumer()
             patched_consume.assert_called_once_with(queue_name=q_name)
             self.assertTrue(self._connect.called)
+
+    async def test_starting_the_consumer_sets_consumer_tag_on_delegate_class(self):
+        consumer = Mock(queue=self.queue)
+        self.queue.delegate = consumer
+
+        with patch.object(self.queue, 'consume', CoroutineMock(return_value='Xablau')):
+            await consumer.queue.start_consumer()
+            self.assertEqual(consumer.consumer_tag, 'Xablau')
 
     async def test_calling_run_starts_a_consumption_task(self):
         q_name = 'dance.to.the.decadence.dance'

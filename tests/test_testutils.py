@@ -1,6 +1,6 @@
 import unittest
 
-from easyqueue.tests.utils import typed_any
+from tests.utils import typed_any
 
 
 class TypedAnyTests(unittest.TestCase):
