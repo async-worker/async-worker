@@ -1,10 +1,9 @@
 import abc
 import json
-import amqp
-from typing import Dict, Tuple, Any, Generator
+from typing import Dict, Tuple, Any
 
-from easyqueue.exceptions import EmptyQueueException, \
-    UndecodableMessageException, InvalidMessageSizeException
+from easyqueue.exceptions import UndecodableMessageException
+
 
 Message = Tuple[Dict, int]
 
