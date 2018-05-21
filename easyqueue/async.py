@@ -168,7 +168,7 @@ class AsyncQueue(BaseJsonQueue):
         """ Coroutine that starts the connection and the queue consumption """
         await self.connect()
         consumer_tag = await self.consume(queue_name=self.delegate.queue_name)
-        self.delegate.consumer_tag = consumer_tag
+        await self.delegate.on_consumption_start(consumer_tag, queue=self)
 
     async def stop_consumer(self, consumer_tag: str):
         if self._channel is None:
@@ -180,8 +180,6 @@ class AsyncQueue(BaseJsonQueue):
 
 class AsyncQueueConsumerDelegate(metaclass=abc.ABCMeta):
     queue: AsyncQueue
-    loop: asyncio.AbstractEventLoop
-    consumer_tag: str
 
     @property
     @abc.abstractmethod
@@ -209,6 +207,13 @@ class AsyncQueueConsumerDelegate(metaclass=abc.ABCMeta):
         :type queue: AsyncQueue
         """
         pass
+
+    async def on_consumption_start(self,
+                                   consumer_tag: str,
+                                   queue: 'AsyncQueue'):
+        """
+        Coroutine called once consumption started.
+        """
 
     @abc.abstractmethod
     async def on_queue_message(self, content, delivery_tag, queue):
