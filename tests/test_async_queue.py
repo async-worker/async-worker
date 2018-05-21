@@ -17,7 +17,8 @@ class AsyncBaseTestCase:
         self.conn_params = dict(host='money.que.é.good',
                                 username='nós',
                                 password='não',
-                                virtual_host='have')
+                                virtual_host='have',
+                                heartbeat=5)
         self.queue = AsyncQueue(**self.conn_params,
                                 delegate=self.get_consumer())
         self.mock_connection()
@@ -125,7 +126,8 @@ class AsyncQueueConnectionTests(AsyncBaseTestCase, asynctest.TestCase):
                         virtualhost=self.conn_params['virtual_host'],
                         login=self.conn_params['username'],
                         on_error=self.queue.delegate.on_connection_error,
-                        loop=ANY)
+                        loop=ANY,
+                        heartbeat=self.conn_params['heartbeat'])
 
         await self.queue.connect()
         self.assertEqual([expected], self._connect.call_args_list)

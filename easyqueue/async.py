@@ -53,7 +53,8 @@ class AsyncQueue(BaseJsonQueue):
             'password': self.password,
             'virtualhost': self.virtual_host,
             'loop': self.loop,
-            'on_error': self.delegate.on_connection_error
+            'on_error': self.delegate.on_connection_error,
+            'heartbeat': self.heartbeat
         }
 
     @property
