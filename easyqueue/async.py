@@ -187,13 +187,9 @@ class AsyncQueueConsumerDelegate(metaclass=abc.ABCMeta):
         """ Name of the input queue to consume """
         raise NotImplementedError
 
-    def run(self):
-        """
-        Accessory method for creating a consume task and running the
-        loop forever
-        """
-        self.loop.create_task(self.queue.start_consumer())
-        self.loop.run_forever()
+    async def start(self):
+        """ Coroutine that starts the connection and the queue consumption """
+        await self.queue.start_consumer()
 
     async def on_before_start_consumption(self, queue_name: str,
                                           queue: 'AsyncQueue'):
