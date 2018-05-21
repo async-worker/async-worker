@@ -81,3 +81,4 @@ if __name__ == '__main__':
 
 ##  `on_connection_error`
 
+## `on_consumption_start`
