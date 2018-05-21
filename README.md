@@ -30,37 +30,41 @@ from easyqueue.async import AsyncQueue, AsyncQueueConsumerDelegate
 class MyConsumer(AsyncQueueConsumerDelegate):
     queue_name = 'awesome_queue_name'
     
-    def __init__(self, loop: asyncio.AbstractEventLoop, queue: AsyncQueue):
-        self.loop = loop
-        self.queue = queue
+    def __init__(self):
+        self.queue = AsyncQueue(
+            host='localhost',
+            username='guest',
+            password='guest',
+            delegate=self
+        )
         
     async def on_before_start_consumption(self, queue_name: str, queue: AsyncQueue):
         print("I'm called when queue consumption starts !")
         
-    async def on_message_handle_error(
+    async def on_message_handle_error(self,
+                                      handler_error: Exception,
+                                      **kwargs):
         print("I'm called if an unhandled exception is raised on" 
               "on_queue_message or on_queue_error")
+              
+    async def on_consumption_start(self,
+                                   consumer_tag: str,
+                                   queue: 'AsyncQueue'):
+        print("Once consumption started, im called with the consumer tag.")
 
     async def on_queue_message(self, content: dict, delivery_tag: str, queue: AsyncQueue):
         """
         Called every time that a new, valid and deserialized message
         is ready to be handled.
         """
-        print(content)
-        await self.queue.ack(delivery_tag)
+        print(content)  # do something with
+        await self.queue.ack(delivery_tag)  # dont forget to ack =)
 
 
 if __name__ == '__main__':
     loop = asyncio.get_event_loop()
-    queue = AsyncQueue(
-        host='localhost',
-        username='guest',
-        password='guest',
-        delegate_class=MyConsumer,
-        loop=loop
-    )
-
-    loop.create_task(queue.start_consumer())
+    consumer = MyConsumer()
+    loop.create_task(consumer.start())
     loop.run_forever()
 
 ```
