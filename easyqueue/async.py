@@ -98,11 +98,14 @@ class AsyncQueue(BaseJsonQueue):
             if len(body) > self.max_message_length:
                 raise InvalidMessageSizeException(body)
         try:
+            # todo: >>Serialize<< com tipo byte não tem o mesmo tratamento
             return self.deserialize(body)
-        except TypeError as e:
+        except TypeError:
             return self._parse_message(body.decode())
-        except JSONDecodeError as e:
-            raise UndecodableMessageException(f"{body} can't be decoded as JSON")
+        except JSONDecodeError:
+            raise UndecodableMessageException(
+                '"{body}" can\'t be decoded as JSON'
+                .format(body=body))
 
     async def _handle_callback(self, callback, **kwargs):
         """
@@ -140,7 +143,7 @@ class AsyncQueue(BaseJsonQueue):
                                              queue=self)
         return self.loop.create_task(callback)
 
-    async def consume(self, queue_name: str, consumer_name: str='') -> str:
+    async def consume(self, queue_name: str, consumer_name: str = '') -> str:
         """
         :param queue_name: queue to consume
         :param consumer_name: Name to be used as a consumer identifier.
@@ -165,7 +168,7 @@ class AsyncQueue(BaseJsonQueue):
         """ Coroutine that starts the connection and the queue consumption """
         await self.connect()
         consumer_tag = await self.consume(queue_name=self.delegate.queue_name)
-        self.delegate.consumer_tag = consumer_tag
+        await self.delegate.on_consumption_start(consumer_tag, queue=self)
 
     async def stop_consumer(self, consumer_tag: str):
         if self._channel is None:
@@ -177,8 +180,6 @@ class AsyncQueue(BaseJsonQueue):
 
 class AsyncQueueConsumerDelegate(metaclass=abc.ABCMeta):
     queue: AsyncQueue
-    loop: asyncio.AbstractEventLoop
-    consumer_tag: str
 
     @property
     @abc.abstractmethod
@@ -186,13 +187,9 @@ class AsyncQueueConsumerDelegate(metaclass=abc.ABCMeta):
         """ Name of the input queue to consume """
         raise NotImplementedError
 
-    def run(self):
-        """
-        Accessory method for creating a consume task and running the
-        loop forever
-        """
-        self.loop.create_task(self.queue.start_consumer())
-        self.loop.run_forever()
+    async def start(self):
+        """ Coroutine that starts the connection and the queue consumption """
+        await self.queue.start_consumer()
 
     async def on_before_start_consumption(self, queue_name: str,
                                           queue: 'AsyncQueue'):
@@ -206,6 +203,13 @@ class AsyncQueueConsumerDelegate(metaclass=abc.ABCMeta):
         :type queue: AsyncQueue
         """
         pass
+
+    async def on_consumption_start(self,
+                                   consumer_tag: str,
+                                   queue: 'AsyncQueue'):
+        """
+        Coroutine called once consumption started.
+        """
 
     @abc.abstractmethod
     async def on_queue_message(self, content, delivery_tag, queue):

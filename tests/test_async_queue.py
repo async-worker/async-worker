@@ -34,8 +34,17 @@ class AsyncBaseTestCase:
                 raise NotImplementedError
 
         self._transport = CoroutineMock(name='transport')
-        self._protocol = CoroutineMock(name='protocol')
-        self._protocol.channel = SubscriptableCoroutineMock()
+        self._protocol = CoroutineMock(
+            name='protocol',
+            close=CoroutineMock()
+        )
+        self._protocol.channel = SubscriptableCoroutineMock(
+            return_value=CoroutineMock(
+                publish=CoroutineMock(),
+                basic_qos=CoroutineMock(),
+                basic_consume=CoroutineMock()
+            )
+        )
         mocked_connection = CoroutineMock(return_value=[self._transport,
                                                         self._protocol])
         self._connect_patch = patch.object(aioamqp, 'connect', mocked_connection)
@@ -180,32 +189,41 @@ class AsyncQueueConnectionTests(AsyncBaseTestCase, asynctest.TestCase):
         await self.queue.connect()
 
         tag = 666
-        await self.queue.ack(delivery_tag=tag)
-        self.assertEqual([call(tag)],
-                         self.queue._channel.basic_client_ack.call_args_list)
+        with patch.object(self.queue._channel,
+                          'basic_client_ack',
+                          CoroutineMock()) as basic_client_ack:
+            await self.queue.ack(delivery_tag=tag)
+            basic_client_ack.assert_awaited_once_with(tag)
 
     async def test_it_rejects_messages_without_requeue(self):
         await self.queue.connect()
 
         tag = 666
-        await self.queue.reject(delivery_tag=tag)
-        self.assertEqual([call(delivery_tag=tag, requeue=False)],
-                         self.queue._channel.basic_reject.call_args_list)
+        with patch.object(self.queue._channel,
+                          'basic_reject',
+                          CoroutineMock()) as basic_reject:
+            await self.queue.reject(delivery_tag=tag)
+            basic_reject.assert_awaited_once_with(delivery_tag=tag, requeue=False)
 
     async def test_it_rejects_messages_with_requeue(self):
         await self.queue.connect()
 
         tag = 666
-        await self.queue.reject(delivery_tag=tag, requeue=True)
-        self.assertEqual([call(delivery_tag=tag, requeue=True)],
-                         self.queue._channel.basic_reject.call_args_list)
+        with patch.object(self.queue._channel,
+                          'basic_reject',
+                          CoroutineMock()) as basic_reject:
+            await self.queue.reject(delivery_tag=tag, requeue=True)
+            basic_reject.assert_awaited_once_with(delivery_tag=tag, requeue=True)
 
 
 class AsyncQueueConsumerTests(AsyncBaseTestCase, asynctest.TestCase):
     consumer_tag = 666
 
     def get_consumer(self):
-        return CoroutineMock()
+        return CoroutineMock(
+            on_before_start_consumption=CoroutineMock(),
+            on_consumption_start=CoroutineMock()
+        )
 
     async def test_calling_consume_without_a_connection_raises_an_error(self):
         with self.assertRaises(ConnectionError):
@@ -274,6 +292,7 @@ class AsyncQueueConsumerTests(AsyncBaseTestCase, asynctest.TestCase):
             on_message_handle_error = CoroutineMock()
             on_queue_error = CoroutineMock()
             on_queue_message = CoroutineMock()
+            on_consumer_start = CoroutineMock()
 
         consumer = Foo()
         self.queue.delegate = consumer
@@ -282,24 +301,25 @@ class AsyncQueueConsumerTests(AsyncBaseTestCase, asynctest.TestCase):
             patched_consume.assert_called_once_with(queue_name=q_name)
             self.assertTrue(self._connect.called)
 
-    async def test_starting_the_consumer_sets_consumer_tag_on_delegate_class(self):
-        consumer = Mock(queue=self.queue)
+    async def test_starting_the_consumer_calls_on_consumer_starts_on_delegate_class(self):
+        consumer = Mock(queue=self.queue, on_consumption_start=CoroutineMock())
         self.queue.delegate = consumer
-
-        with patch.object(self.queue, 'consume', CoroutineMock(return_value='Xablau')):
+        consumer_tag = 'Xablau'
+        with patch.object(self.queue, 'consume', CoroutineMock(return_value=consumer_tag)):
             await consumer.queue.start_consumer()
-            self.assertEqual(consumer.consumer_tag, 'Xablau')
+            consumer.on_consumption_start.assert_awaited_once_with(consumer_tag, queue=self.queue)
 
-    async def test_calling_run_starts_a_consumption_task(self):
+    async def test_calling_consume_starts_a_consumption_task(self):
         q_name = 'dance.to.the.decadence.dance'
-        consumer_loop = CoroutineMock()
 
         class Foo(AsyncQueueConsumerDelegate):
-            loop = consumer_loop
             queue_name = q_name
-            queue = self.queue
+            queue = CoroutineMock(
+                start_consumer=CoroutineMock()
+            )
 
             on_connection_error = CoroutineMock()
+            on_consumption_start = CoroutineMock()
             on_message_handle_error = CoroutineMock()
             on_queue_error = CoroutineMock()
             on_queue_message = CoroutineMock()
@@ -307,17 +327,19 @@ class AsyncQueueConsumerTests(AsyncBaseTestCase, asynctest.TestCase):
         consumer = Foo()
         self.queue.delegate = consumer
 
-        consumer.run()
+        await consumer.start()
 
-        self.assertEqual(consumer_loop.create_task.call_count, 1)
-        self.assertEqual(consumer_loop.run_forever.call_count, 1)
+        consumer.queue.start_consumer.assert_awaited_once()
 
 
 class AsyncQueueConsumerHandlerMethodsTests(AsyncBaseTestCase, asynctest.TestCase):
     consumer_tag = 666
 
     def get_consumer(self):
-        return CoroutineMock()
+        return CoroutineMock(
+            on_before_start_consumption=CoroutineMock(),
+            on_message_handle_error=CoroutineMock()
+        )
 
     async def setUp(self):
         super().setUp()
