@@ -98,11 +98,14 @@ class AsyncQueue(BaseJsonQueue):
             if len(body) > self.max_message_length:
                 raise InvalidMessageSizeException(body)
         try:
+            # todo: >>Serialize<< com tipo byte não tem o mesmo tratamento
             return self.deserialize(body)
-        except TypeError as e:
+        except TypeError:
             return self._parse_message(body.decode())
-        except JSONDecodeError as e:
-            raise UndecodableMessageException(f"{body} can't be decoded as JSON")
+        except JSONDecodeError:
+            raise UndecodableMessageException(
+                '"{body}" can\'t be decoded as JSON'
+                .format(body=body))
 
     async def _handle_callback(self, callback, **kwargs):
         """
@@ -140,7 +143,7 @@ class AsyncQueue(BaseJsonQueue):
                                              queue=self)
         return self.loop.create_task(callback)
 
-    async def consume(self, queue_name: str, consumer_name: str='') -> str:
+    async def consume(self, queue_name: str, consumer_name: str = '') -> str:
         """
         :param queue_name: queue to consume
         :param consumer_name: Name to be used as a consumer identifier.
