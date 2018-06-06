@@ -1,28 +1,22 @@
+import asyncio
 from easyqueue.async import AsyncQueueConsumerDelegate, AsyncQueue
+from aioamqp.exceptions import AioamqpException
 
 
 class Consumer(AsyncQueueConsumerDelegate):
 
-    #def __init__(self,
-    #             host: str,
-    #             username: str,
-    #             password: str,
-    #             delegate_class: Type['AsyncQueueConsumerDelegate'] = None,
-    #             delegate: 'AsyncQueueConsumerDelegate' = None,
-    #             virtual_host: str = '/',
-    #             heartbeat: int = 60,
-    #             prefetch_count: int = 100,
-    #             max_message_length=0,
-    #             loop=None):
     def __init__(self, route_info, host, username, password, prefetch_count=128):
         self.route = route_info
         self._handler = route_info['handler']
         self._queue_name = route_info['route']
         self._route_options = route_info['options']
+        vhost = self._route_options.get("vhost", "/")
+        if vhost != "/":
+            vhost = vhost.lstrip("/")
         self.queue = AsyncQueue(host,
                                 username,
                                 password,
-                                virtual_host=self._route_options.get("vhost", "/"),
+                                virtual_host=vhost,
                                 delegate=self,
                                 prefetch_count=prefetch_count)
 
@@ -48,7 +42,7 @@ class Consumer(AsyncQueueConsumerDelegate):
         """
 
 
-    async def on_queue_message(self, message_dict, delivery_tag, queue):
+    async def on_queue_message(self, content, delivery_tag, queue):
         """
         Callback called every time that a new, valid and deserialized message
         is ready to be handled.
@@ -59,12 +53,14 @@ class Consumer(AsyncQueueConsumerDelegate):
         :type content: dict
         :type queue: AsyncQueue
         """
-        return await self._handler(message_dict)
-        #try:
-        #    return await self._handler(message)
-        #    await self.queue.ack(tag)
-        #except Exception as e:
-        #    await self.queue.reject(tag)
+        try:
+            rv = await self._handler(content)
+            await queue.ack(delivery_tag=delivery_tag)
+            return rv
+        except AioamqpException as aioamqpException:
+            raise aioamqpException
+        except Exception as e:
+            await queue.reject(delivery_tag=delivery_tag, requeue=False)
 
     async def on_queue_error(self, body, delivery_tag, error, queue):
         """
@@ -81,8 +77,7 @@ class Consumer(AsyncQueueConsumerDelegate):
         """
         pass
 
-    async def on_message_handle_error(self, handler_error: Exception,
-                                      **kwargs):
+    async def on_message_handle_error(self, handler_error: Exception, **kwargs):
         """
         Callback called when an uncaught exception was raised during message
         handling stage.
@@ -92,11 +87,30 @@ class Consumer(AsyncQueueConsumerDelegate):
         the message
         :return:
         """
-        pass
+        print(handler_error)
+        print(**kwargs)
 
     async def on_connection_error(self, exception: Exception):
         """
         Called when the connection fails
         """
         pass
+
+    async def consume_all_queues(self, queue):
+        for queue_name in self._queue_name:
+            # Por enquanto não estamos gaurdando a consumer_tag retornada
+            # se precisar, podemos passar a guardar.
+            await queue.consume(queue_name=queue_name)
+
+    async def start(self):
+        while True:
+            await asyncio.sleep(1)
+            if self.queue.is_connected:
+                continue
+            try:
+                await self.queue.connect()
+                await self.consume_all_queues(self.queue)
+            except Exception as e:
+                print("Connection failed, retrying")
+                raise e
 
