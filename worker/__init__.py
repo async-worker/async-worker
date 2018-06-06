@@ -15,13 +15,12 @@ class App:
 
     def route(self, routes, vhost="/"):
         def wrap(f):
-            for route in routes:
-                self.routes_registry[route] = {
-                    "route": route,
-                    "handler": f,
-                    "options": {
-                        "vhost": vhost,
-                    }
+            self.routes_registry[f] = {
+                "route": routes,
+                "handler": f,
+                "options": {
+                    "vhost": vhost,
                 }
+            }
             return f
         return wrap
