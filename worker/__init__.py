@@ -13,7 +13,7 @@ class App:
     def __init__(self):
         self.routes_registry = {}
 
-    def route(self, routes, vhost):
+    def route(self, routes, vhost="/"):
         def wrap(f):
             for route in routes:
                 self.routes_registry[route] = {

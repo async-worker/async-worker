@@ -51,3 +51,22 @@ class AppTest(unittest.TestCase):
         self.assertEqual(expected_ok_registry_entry, app.routes_registry['/asgard/counts/ok'])
         self.assertEqual(expected_errors_registry_entry, app.routes_registry['/asgard/counts/errors'])
         self.assertEqual(42, asyncio.get_event_loop().run_until_complete(_handler(None)))
+
+    def test_register_with_default_vhost(self):
+        expected_route = ["/asgard/counts/ok"]
+        expected_vhost = "/"
+        app = App()
+        @app.route(expected_route)
+        async def _handler(message):
+            return 42
+
+        self.assertIsNotNone(app.routes_registry)
+        expected_registry_entry = {
+            "route": expected_route[0],
+            "handler": _handler,
+            "options": {
+                "vhost": expected_vhost
+            }
+        }
+        self.assertEqual(expected_registry_entry, app.routes_registry['/asgard/counts/ok'])
+        self.assertEqual(42, asyncio.get_event_loop().run_until_complete(_handler(None)))
