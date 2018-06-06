@@ -98,19 +98,20 @@ class Consumer(AsyncQueueConsumerDelegate):
 
     async def consume_all_queues(self, queue):
         for queue_name in self._queue_name:
-            # Por enquanto não estamos gaurdando a consumer_tag retornada
+            # Por enquanto não estamos guardando a consumer_tag retornada
             # se precisar, podemos passar a guardar.
             await queue.consume(queue_name=queue_name)
 
+    def keep_runnig(self):
+        return True
+
     async def start(self):
-        while True:
-            await asyncio.sleep(1)
-            if self.queue.is_connected:
-                continue
-            try:
-                await self.queue.connect()
-                await self.consume_all_queues(self.queue)
-            except Exception as e:
-                print("Connection failed, retrying")
-                raise e
+        while self.keep_runnig():
+            if not self.queue.is_connected:
+                try:
+                    await self.queue.connect()
+                    await self.consume_all_queues(self.queue)
+                except Exception as e:
+                    print(f"Connection failed, retrying...")
+                await asyncio.sleep(1)
 

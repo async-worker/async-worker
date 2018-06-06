@@ -2,6 +2,7 @@ import asyncio
 import unittest
 from unittest import mock
 from asynctest import CoroutineMock
+import asynctest
 
 from aioamqp.exceptions import AioamqpException
 
@@ -109,6 +110,12 @@ class ConsumerTest(unittest.TestCase):
             self._run_async(coroutine)
         queue_mock.ack.assert_awaited
 
+    def test_call_on_queue_handle_error_when_exception(self):
+        """
+        Certificamos que quando o handler lança uma exception o método
+        `on_message_handle()` é corretamente chamado pelo easyqueue.
+        """
+        self.fail()
 
     def test_return_correct_queue_name(self):
         """
@@ -126,4 +133,33 @@ class ConsumerTest(unittest.TestCase):
         self._run_async(consumer.consume_all_queues(queue_mock))
         self.assertEqual(2, queue_mock.consume.await_count)
         self.assertEqual([mock.call(queue_name="asgard/counts"), mock.call(queue_name="asgard/counts/errors")], queue_mock.consume.await_args_list)
+
+    def test_start_calls_connect_and_consume_for_each_queue(self):
+        self.one_route_fixture['route'] = ["asgard/counts", "asgard/counts/errors"]
+        consumer = Consumer(self.one_route_fixture, *self.connection_parameters)
+        queue_mock = CoroutineMock(consume=CoroutineMock(), connect=CoroutineMock(), is_connected=False)
+        loop = asyncio.get_event_loop()
+        consumer.queue = queue_mock
+        with asynctest.patch.object(consumer, 'keep_runnig', side_effect=[True, False]) as keep_running_mock:
+            loop.run_until_complete(consumer.start())
+
+        self.assertEqual(1, queue_mock.connect.await_count)
+        self.assertEqual(2, queue_mock.consume.await_count)
+        self.assertEqual([mock.call(queue_name="asgard/counts"), mock.call(queue_name="asgard/counts/errors")], queue_mock.consume.await_args_list)
+
+    def test_start_reconnects_if_connectaion_failed(self):
+        self.one_route_fixture['route'] = ["asgard/counts", "asgard/counts/errors"]
+        consumer = Consumer(self.one_route_fixture, *self.connection_parameters)
+        with unittest.mock.patch.object(consumer, 'keep_runnig', side_effect=[True, True, False]), \
+                asynctest.patch.object(asyncio, 'sleep') as sleep_mock:
+            is_connected_mock = mock.PropertyMock(side_effect=[False, False, True])
+            queue_mock = CoroutineMock(consume=CoroutineMock(), connect=CoroutineMock(side_effect=[AioamqpException, True]))
+            type(queue_mock).is_connected = is_connected_mock
+            loop = asyncio.get_event_loop()
+            consumer.queue = queue_mock
+            loop.run_until_complete(consumer.start())
+            self.assertEqual(1, queue_mock.connect.await_count)
+            self.assertEqual(2, queue_mock.consume.await_count)
+            self.assertEqual([mock.call(queue_name="asgard/counts"), mock.call(queue_name="asgard/counts/errors")], queue_mock.consume.await_args_list)
+            self.assertEqual(2, sleep_mock.await_count)
 
