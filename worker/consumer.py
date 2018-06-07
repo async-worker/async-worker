@@ -15,13 +15,13 @@ class Consumer(AsyncQueueConsumerDelegate):
         self._queue_name = route_info['route']
         self._route_options = route_info['options']
         self.host = host
-        vhost = self._route_options.get("vhost", "/")
-        if vhost != "/":
-            vhost = vhost.lstrip("/")
+        self.vhost = self._route_options.get("vhost", "/")
+        if self.vhost != "/":
+            self.vhost = self.vhost.lstrip("/")
         self.queue = AsyncQueue(host,
                                 username,
                                 password,
-                                virtual_host=vhost,
+                                virtual_host=self.vhost,
                                 delegate=self,
                                 prefetch_count=prefetch_count)
 
@@ -45,6 +45,7 @@ class Consumer(AsyncQueueConsumerDelegate):
         """
         Coroutine called once consumption started.
         """
+        pass
 
 
     async def on_queue_message(self, content, delivery_tag, queue):
@@ -93,18 +94,22 @@ class Consumer(AsyncQueueConsumerDelegate):
         the message
         :return:
         """
-        current_exception = {
-            "exc_message": str(handler_error),
-            "exc_traceback": traceback.format_exc(),
-            "exc_type": sys.exc_info()[0].__name__,
-        }
-        conf.logger.error(**current_exception)
+        self._log_exception(handler_error)
 
     async def on_connection_error(self, exception: Exception):
         """
         Called when the connection fails
         """
-        pass
+        self._log_exception(exception)
+
+    def _log_exception(self, exception):
+        current_exception = {
+            "exc_message": str(exception),
+            "exc_traceback": traceback.format_exc(),
+            "exc_type": sys.exc_info()[0].__name__,
+        }
+        conf.logger.error(current_exception)
+
 
     async def consume_all_queues(self, queue):
         for queue_name in self._queue_name:

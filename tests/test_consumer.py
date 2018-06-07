@@ -125,10 +125,25 @@ class ConsumerTest(unittest.TestCase):
                 1/0
             except Exception as e:
                 self._run_async(consumer.on_message_handle_error(e))
-                logger_mock.error.assert_called_with(exc_message="division by zero",
-                                                      exc_traceback=mock.ANY,
-                                                      exc_type="ZeroDivisionError"
-                                                     )
+                logger_mock.error.assert_called_with({"exc_message": "division by zero",
+                                                      "exc_traceback": mock.ANY,
+                                                      "exc_type": "ZeroDivisionError"
+                                                     })
+
+    def test_on_connection_error_logs_exception(self):
+        """
+        Logamos qualquer erro de conexão com o Rabbit, inclusive acesso negado
+        """
+        consumer = Consumer(self.one_route_fixture, *self.connection_parameters)
+        with mock.patch.object(conf, "logger") as logger_mock:
+            try:
+                1/0
+            except Exception as e:
+                self._run_async(consumer.on_connection_error(e))
+                logger_mock.error.assert_called_with({"exc_message": "division by zero",
+                                                      "exc_traceback": mock.ANY,
+                                                      "exc_type": "ZeroDivisionError"
+                                                     })
 
     def test_return_correct_queue_name(self):
         """
