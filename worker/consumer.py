@@ -1,7 +1,11 @@
 import asyncio
+import sys
+import traceback
+
 from easyqueue.async import AsyncQueueConsumerDelegate, AsyncQueue
 from aioamqp.exceptions import AioamqpException
 
+from countsingestor import conf
 
 class Consumer(AsyncQueueConsumerDelegate):
 
@@ -10,6 +14,7 @@ class Consumer(AsyncQueueConsumerDelegate):
         self._handler = route_info['handler']
         self._queue_name = route_info['route']
         self._route_options = route_info['options']
+        self.host = host
         vhost = self._route_options.get("vhost", "/")
         if vhost != "/":
             vhost = vhost.lstrip("/")
@@ -61,6 +66,7 @@ class Consumer(AsyncQueueConsumerDelegate):
             raise aioamqpException
         except Exception as e:
             await queue.reject(delivery_tag=delivery_tag, requeue=False)
+            raise e
 
     async def on_queue_error(self, body, delivery_tag, error, queue):
         """
@@ -87,8 +93,12 @@ class Consumer(AsyncQueueConsumerDelegate):
         the message
         :return:
         """
-        print(handler_error)
-        print(**kwargs)
+        current_exception = {
+            "exc_message": str(handler_error),
+            "exc_traceback": traceback.format_exc(),
+            "exc_type": sys.exc_info()[0].__name__,
+        }
+        conf.logger.error(**current_exception)
 
     async def on_connection_error(self, exception: Exception):
         """
@@ -112,6 +122,6 @@ class Consumer(AsyncQueueConsumerDelegate):
                     await self.queue.connect()
                     await self.consume_all_queues(self.queue)
                 except Exception as e:
-                    print(f"Connection failed, retrying...")
-                await asyncio.sleep(1)
+                    conf.logger.error({"type": "connection-failed", "dest": self.host, "retry": True})
+            await asyncio.sleep(1)
 

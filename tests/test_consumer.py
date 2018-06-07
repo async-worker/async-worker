@@ -4,11 +4,13 @@ from unittest import mock
 from asynctest import CoroutineMock
 import asynctest
 
+from easyqueue.async import AsyncQueue
 from aioamqp.exceptions import AioamqpException
 
 from worker.consumer import Consumer
+from countsingestor import conf
 
-from easyqueue.async import AsyncQueue
+
 
 async def _handler(message_dict):
     return (42, message_dict)
@@ -98,7 +100,9 @@ class ConsumerTest(unittest.TestCase):
         consumer = Consumer(self.one_route_fixture, *self.connection_parameters)
         queue_mock = CoroutineMock(ack=CoroutineMock(), reject=CoroutineMock())
         coroutine = consumer.on_queue_message({"key": "value"}, delivery_tag=10, queue=queue_mock)
-        self.assertEqual(None, self._run_async(coroutine))
+        with self.assertRaises(AttributeError):
+            self.assertEqual(None, self._run_async(coroutine))
+
         queue_mock.reject.assert_awaited_once_with(delivery_tag=10, requeue=False)
         queue_mock.ack.assert_not_awaited
 
@@ -110,12 +114,21 @@ class ConsumerTest(unittest.TestCase):
             self._run_async(coroutine)
         queue_mock.ack.assert_awaited
 
-    def test_call_on_queue_handle_error_when_exception(self):
+    def test_on_message_handle_error_logs_exception(self):
         """
-        Certificamos que quando o handler lança uma exception o método
-        `on_message_handle()` é corretamente chamado pelo easyqueue.
+        Logamos a exception lançada pelo handler.
+        Aqui o try/except serve apenas para termos uma exception real, com traceback.
         """
-        self.fail()
+        consumer = Consumer(self.one_route_fixture, *self.connection_parameters)
+        with mock.patch.object(conf, "logger") as logger_mock:
+            try:
+                1/0
+            except Exception as e:
+                self._run_async(consumer.on_message_handle_error(e))
+                logger_mock.error.assert_called_with(exc_message="division by zero",
+                                                      exc_traceback=mock.ANY,
+                                                      exc_type="ZeroDivisionError"
+                                                     )
 
     def test_return_correct_queue_name(self):
         """
@@ -162,4 +175,23 @@ class ConsumerTest(unittest.TestCase):
             self.assertEqual(2, queue_mock.consume.await_count)
             self.assertEqual([mock.call(queue_name="asgard/counts"), mock.call(queue_name="asgard/counts/errors")], queue_mock.consume.await_args_list)
             self.assertEqual(2, sleep_mock.await_count)
+
+    def test_start_always_calls_sleep(self):
+        """
+        Regression:
+            O sleep deve ser chamado *sempre*, e não apenas quando há tentativa de conexão.
+            Aqui, tentamos reconectar apenas uma vez, mas mesmo assim o sleep é chamado 3x, pois o loop principal
+            roda 3x.
+        """
+        self.one_route_fixture['route'] = ["asgard/counts", "asgard/counts/errors"]
+        consumer = Consumer(self.one_route_fixture, *self.connection_parameters)
+        with unittest.mock.patch.object(consumer, 'keep_runnig', side_effect=[True, True, True, False]), \
+                asynctest.patch.object(asyncio, 'sleep') as sleep_mock:
+            is_connected_mock = mock.PropertyMock(side_effect=[False, True, True, True])
+            queue_mock = CoroutineMock(consume=CoroutineMock(), connect=CoroutineMock())
+            type(queue_mock).is_connected = is_connected_mock
+            loop = asyncio.get_event_loop()
+            consumer.queue = queue_mock
+            loop.run_until_complete(consumer.start())
+            self.assertEqual(3, sleep_mock.await_count)
 
