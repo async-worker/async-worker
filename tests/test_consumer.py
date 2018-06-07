@@ -145,6 +145,22 @@ class ConsumerTest(unittest.TestCase):
                                                       "exc_type": "ZeroDivisionError"
                                                      })
 
+    def test_on_queue_error_logs_exception_and_acks_message(self):
+        """
+        Logamos qualquer erro de parsing/validação de mensagem
+        """
+        delivery_tag = 42
+        body = "not a JSON"
+        queue_mock = CoroutineMock(ack=CoroutineMock())
+
+        consumer = Consumer(self.one_route_fixture, *self.connection_parameters)
+        with mock.patch.object(conf, "logger") as logger_mock:
+            self._run_async(consumer.on_queue_error(body, delivery_tag, "Error: not a JSON", queue_mock))
+            logger_mock.error.assert_called_with({"exception": "Error: not a JSON",
+                                                  "original_msg": body,
+                                                  "parse-error": True})
+            queue_mock.ack.assert_awaited_once_with(delivery_tag=delivery_tag)
+
     def test_return_correct_queue_name(self):
         """
         consumer.quene_name deve retornar o nome da fila que está sendo consumida.

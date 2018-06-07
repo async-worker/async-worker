@@ -82,7 +82,11 @@ class Consumer(AsyncQueueConsumerDelegate):
         :type error: MessageError
         :type queue: AsyncQueue
         """
-        pass
+        conf.logger.error({"parse-error": True, "exception": "Error: not a JSON", "original_msg": body})
+        try:
+            await queue.ack(delivery_tag=delivery_tag)
+        except AioamqpException as e:
+            self._log_exception(e)
 
     async def on_message_handle_error(self, handler_error: Exception, **kwargs):
         """
