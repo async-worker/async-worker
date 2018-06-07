@@ -1,9 +1,9 @@
 import functools
 import asyncio
 
-from worker.consumer import Consumer
+from .consumer import Consumer
 
-from countsingestor import conf
+from asyncworker import conf
 
 def entrypoint(f):
     @functools.wraps(f)

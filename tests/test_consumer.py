@@ -7,7 +7,7 @@ import asynctest
 from easyqueue.async import AsyncQueue
 from aioamqp.exceptions import AioamqpException
 
-from worker.consumer import Consumer
+from asyncworker.consumer import Consumer
 from countsingestor import conf
 
 

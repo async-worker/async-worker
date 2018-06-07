@@ -1,6 +1,6 @@
 import unittest
 
-from worker import entrypoint
+from asyncworker import entrypoint
 
 class EntryPointTest(unittest.TestCase):
 

@@ -1,7 +1,7 @@
 import unittest
 import asyncio
 
-from worker import App
+from asyncworker import App
 
 class AppTest(unittest.TestCase):
 
