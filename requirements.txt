@@ -1,4 +1,0 @@
-aioamqp==0.10.0
-aiohttp==3.3.0
-easyqueue==1.0.0
-simple-json-logger==0.2.3
