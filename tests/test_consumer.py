@@ -8,7 +8,7 @@ from easyqueue.async import AsyncQueue
 from aioamqp.exceptions import AioamqpException
 
 from asyncworker.consumer import Consumer
-from countsingestor import conf
+from asyncworker import conf
 
 
 
@@ -103,7 +103,7 @@ class ConsumerTest(unittest.TestCase):
         with self.assertRaises(AttributeError):
             self.assertEqual(None, self._run_async(coroutine))
 
-        queue_mock.reject.assert_awaited_once_with(delivery_tag=10, requeue=False)
+        queue_mock.reject.assert_awaited_once_with(delivery_tag=10, requeue=True)
         queue_mock.ack.assert_not_awaited
 
     def test_on_queue_message_precondition_failed_on_ack(self):

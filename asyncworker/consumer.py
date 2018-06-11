@@ -5,7 +5,7 @@ import traceback
 from easyqueue.async import AsyncQueueConsumerDelegate, AsyncQueue
 from aioamqp.exceptions import AioamqpException
 
-from countsingestor import conf
+from asyncworker import conf
 
 class Consumer(AsyncQueueConsumerDelegate):
 
@@ -66,7 +66,7 @@ class Consumer(AsyncQueueConsumerDelegate):
         except AioamqpException as aioamqpException:
             raise aioamqpException
         except Exception as e:
-            await queue.reject(delivery_tag=delivery_tag, requeue=False)
+            await queue.reject(delivery_tag=delivery_tag, requeue=True)
             raise e
 
     async def on_queue_error(self, body, delivery_tag, error, queue):
