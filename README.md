@@ -1,20 +1,26 @@
 
-# Asgard Counts Ingestor
+# Async Worker
 
 ## Propósito
 
-Esse projeto será o responsável por coletar estatísticas de logs das aplicações. Essas estatísticas incluem:
-
-* Contagem de linhas de log por minuto
-* Contagem de linhas de logs por segundo
-* Contagem de bytes de log por minuto
-* Contagem de bytes de logs por segundo
-
-São geradas também as mesmas contagem para tpdas as linhas de logs que não puderam ser parseadas, ou seja,
-linhas que o log ingestor não conseguiu parsear.
+Ser um microframework (inspirado no flask) para facilitar a escrita de workers de RabbitMQ.
 
 
-## Fluxo de coleta
+## Exemplo
 
-Os logs são enviados para um cluster de fluentd, de lá são parseados e acumulados em um RabbitMQ. Nesse acumulo,
-já temos filas específicas só para as contagens de logs. Essas serão as filas que esse projeto vai consumir.
+```python
+
+from asyncworker import App
+
+app = App(host="127.0.0.1", user="guest", password="guest", prefetch_count=256)
+
+@app.route(["asgard/counts", "asgard/counts/errors"], vhost="fluentd")
+async def drain_handler(message):
+    logger.info(message)
+
+```
+
+Nesse exemplo, o handler `drain_handler()` recebe mensagens de ambas as filas: `asgard/counts` e `asgard/counts/errors`.
+
+Se o handler lançar alguma exception, a mensagem é automaticamente devolvida para a fila (reject com requeue=True);
+Se o handler rodar sem erros, a mensagem é automaticamente confirmada (ack).
