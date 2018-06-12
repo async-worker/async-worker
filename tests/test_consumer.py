@@ -127,7 +127,6 @@ class ConsumerTest(unittest.TestCase):
                 self._run_async(consumer.on_message_handle_error(e))
                 logger_mock.error.assert_called_with({"exc_message": "division by zero",
                                                       "exc_traceback": mock.ANY,
-                                                      "exc_type": "ZeroDivisionError"
                                                      })
 
     def test_on_connection_error_logs_exception(self):
@@ -142,7 +141,6 @@ class ConsumerTest(unittest.TestCase):
                 self._run_async(consumer.on_connection_error(e))
                 logger_mock.error.assert_called_with({"exc_message": "division by zero",
                                                       "exc_traceback": mock.ANY,
-                                                      "exc_type": "ZeroDivisionError"
                                                      })
 
     def test_on_queue_error_logs_exception_and_acks_message(self):

@@ -110,7 +110,6 @@ class Consumer(AsyncQueueConsumerDelegate):
         current_exception = {
             "exc_message": str(exception),
             "exc_traceback": traceback.format_exc(),
-            "exc_type": sys.exc_info()[0].__name__,
         }
         conf.logger.error(current_exception)
 
@@ -119,6 +118,7 @@ class Consumer(AsyncQueueConsumerDelegate):
         for queue_name in self._queue_name:
             # Por enquanto não estamos guardando a consumer_tag retornada
             # se precisar, podemos passar a guardar.
+            conf.logger.debug({"queue": queue_name, "action": "start-consume"})
             await queue.consume(queue_name=queue_name)
 
     def keep_runnig(self):
@@ -131,6 +131,6 @@ class Consumer(AsyncQueueConsumerDelegate):
                     await self.queue.connect()
                     await self.consume_all_queues(self.queue)
                 except Exception as e:
-                    conf.logger.error({"type": "connection-failed", "dest": self.host, "retry": True})
+                    conf.logger.error({"type": "connection-failed", "dest": self.host, "retry": True, "exc_traceback": traceback.format_exc()})
             await asyncio.sleep(1)
 
