@@ -166,7 +166,7 @@ class AsyncQueueConnectionTests(AsyncBaseTestCase, asynctest.TestCase):
                              routing_key=routing_key)
 
         expected = call(
-            payload=json.dumps(message),
+            payload=json.dumps(message).encode(),
             routing_key=routing_key,
             exchange_name=exchange
         )
