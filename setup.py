@@ -19,7 +19,7 @@ setup(
     url='https://bitbucket.org/sievetech/easyqueue',
     packages=find_packages(exclude=['easyqueue/tests']),
     install_requires=[
-        "aioamqp==0.10.0"
+        "aioamqp==0.11.0"
     ],
     test_suite='easyqueue.tests',
     classifiers=[
