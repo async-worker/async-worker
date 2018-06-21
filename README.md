@@ -7,6 +7,8 @@ An easy way to asynchronously handle AMQP queue consumption.
 `pip install easyqueue` 
 
 # Run tests
+Install the test dependencies
+`pip install pipenv && pipenv install --dev`
 
 *Simple test run:*  
 `py.test`
