@@ -15,7 +15,7 @@ from asyncworker import conf
 async def _handler(message_dict):
     return (42, message_dict)
 
-class ConsumerTest(unittest.TestCase):
+class ConsumerTest(asynctest.TestCase):
 
     def setUp(self):
         self.queue_mock = CoroutineMock(ack=CoroutineMock(), reject=CoroutineMock())
@@ -27,9 +27,6 @@ class ConsumerTest(unittest.TestCase):
                 "vhost": "/"
             }
         }
-
-    def _run_async(self, coroutine, *args, **kwargs):
-        return asyncio.get_event_loop().run_until_complete(coroutine)
 
     def test_consumer_instantiate_async_queue_default_vhost(self):
         del self.one_route_fixture['options']['vhost']
@@ -71,24 +68,25 @@ class ConsumerTest(unittest.TestCase):
         consumer = Consumer(self.one_route_fixture, *self.connection_parameters)
         self.assertEqual(["/asgard/counts/ok"], consumer.queue_name)
 
-    def test_on_queue_message_calls_inner_handler(self):
+    async def test_on_queue_message_calls_inner_handler(self):
         consumer = Consumer(self.one_route_fixture, *self.connection_parameters)
-        coroutine = consumer.on_queue_message({"key": "value"}, delivery_tag=10, queue=self.queue_mock)
-        self.assertEqual((42, {"key": "value"}), self._run_async(coroutine))
+        result = await consumer.on_queue_message({"key": "value"}, delivery_tag=10, queue=self.queue_mock)
+
+        self.assertEqual((42, {"key": "value"}), result)
 
 
-    def test_on_queue_message_auto_ack_on_success(self):
+    async def test_on_queue_message_auto_ack_on_success(self):
         """
         Se o handler registrado no @app.route() rodar com sucesso,
         devemos fazer o ack da mensagem
         """
         consumer = Consumer(self.one_route_fixture, *self.connection_parameters)
         queue_mock = CoroutineMock(ack=CoroutineMock())
-        coroutine = consumer.on_queue_message({"key": "value"}, delivery_tag=10, queue=queue_mock)
-        self.assertEqual((42, {"key": "value"}), self._run_async(coroutine))
+        result = await consumer.on_queue_message({"key": "value"}, delivery_tag=10, queue=queue_mock)
+        self.assertEqual((42, {"key": "value"}), result)
         queue_mock.ack.assert_awaited_once_with(delivery_tag=10)
 
-    def test_on_queue_message_rejects_on_exception(self):
+    async def test_on_queue_message_rejects_on_exception(self):
         """
         Se o handler der raise em qualquer exception, devemos
         dar reject() na mensagem
@@ -99,22 +97,20 @@ class ConsumerTest(unittest.TestCase):
         self.one_route_fixture['handler'] = exception_handler
         consumer = Consumer(self.one_route_fixture, *self.connection_parameters)
         queue_mock = CoroutineMock(ack=CoroutineMock(), reject=CoroutineMock())
-        coroutine = consumer.on_queue_message({"key": "value"}, delivery_tag=10, queue=queue_mock)
         with self.assertRaises(AttributeError):
-            self.assertEqual(None, self._run_async(coroutine))
+            await consumer.on_queue_message({"key": "value"}, delivery_tag=10, queue=queue_mock)
 
         queue_mock.reject.assert_awaited_once_with(delivery_tag=10, requeue=True)
         queue_mock.ack.assert_not_awaited
 
-    def test_on_queue_message_precondition_failed_on_ack(self):
+    async def test_on_queue_message_precondition_failed_on_ack(self):
         consumer = Consumer(self.one_route_fixture, *self.connection_parameters)
         queue_mock = CoroutineMock(ack=CoroutineMock(side_effect=AioamqpException))
         with self.assertRaises(AioamqpException):
-            coroutine = consumer.on_queue_message({"key": "value"}, delivery_tag=10, queue=queue_mock)
-            self._run_async(coroutine)
+            await consumer.on_queue_message({"key": "value"}, delivery_tag=10, queue=queue_mock)
         queue_mock.ack.assert_awaited
 
-    def test_on_message_handle_error_logs_exception(self):
+    async def test_on_message_handle_error_logs_exception(self):
         """
         Logamos a exception lançada pelo handler.
         Aqui o try/except serve apenas para termos uma exception real, com traceback.
@@ -124,12 +120,12 @@ class ConsumerTest(unittest.TestCase):
             try:
                 1/0
             except Exception as e:
-                self._run_async(consumer.on_message_handle_error(e))
+                await consumer.on_message_handle_error(e)
                 logger_mock.error.assert_called_with({"exc_message": "division by zero",
                                                       "exc_traceback": mock.ANY,
                                                      })
 
-    def test_on_connection_error_logs_exception(self):
+    async def test_on_connection_error_logs_exception(self):
         """
         Logamos qualquer erro de conexão com o Rabbit, inclusive acesso negado
         """
@@ -138,12 +134,12 @@ class ConsumerTest(unittest.TestCase):
             try:
                 1/0
             except Exception as e:
-                self._run_async(consumer.on_connection_error(e))
+                await consumer.on_connection_error(e)
                 logger_mock.error.assert_called_with({"exc_message": "division by zero",
                                                       "exc_traceback": mock.ANY,
                                                      })
 
-    def test_on_queue_error_logs_exception_and_acks_message(self):
+    async def test_on_queue_error_logs_exception_and_acks_message(self):
         """
         Logamos qualquer erro de parsing/validação de mensagem
         """
@@ -153,7 +149,7 @@ class ConsumerTest(unittest.TestCase):
 
         consumer = Consumer(self.one_route_fixture, *self.connection_parameters)
         with mock.patch.object(conf, "logger") as logger_mock:
-            self._run_async(consumer.on_queue_error(body, delivery_tag, "Error: not a JSON", queue_mock))
+            await consumer.on_queue_error(body, delivery_tag, "Error: not a JSON", queue_mock)
             logger_mock.error.assert_called_with({"exception": "Error: not a JSON",
                                                   "original_msg": body,
                                                   "parse-error": True})
@@ -166,13 +162,13 @@ class ConsumerTest(unittest.TestCase):
         consumer = Consumer(self.one_route_fixture, *self.connection_parameters)
         self.assertEquals(self.one_route_fixture['route'], consumer.queue_name)
 
-    def test_consume_all_queues(self):
+    async def test_consume_all_queues(self):
         """
         """
         self.one_route_fixture['route'] = ["asgard/counts", "asgard/counts/errors"]
         consumer = Consumer(self.one_route_fixture, *self.connection_parameters)
         queue_mock = CoroutineMock(consume=CoroutineMock())
-        self._run_async(consumer.consume_all_queues(queue_mock))
+        await consumer.consume_all_queues(queue_mock)
         self.assertEqual(2, queue_mock.consume.await_count)
         self.assertEqual([mock.call(queue_name="asgard/counts"), mock.call(queue_name="asgard/counts/errors")], queue_mock.consume.await_args_list)
 
