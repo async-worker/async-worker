@@ -3,17 +3,19 @@ import unittest
 from unittest import mock
 from asynctest import CoroutineMock
 import asynctest
+import importlib
 
 from easyqueue.async import AsyncQueue
 from aioamqp.exceptions import AioamqpException
 
 from asyncworker.consumer import Consumer
-from asyncworker import conf
+import asyncworker.consumer
+from asyncworker import conf, Bucket
 
 
 
-async def _handler(message_dict):
-    return (42, message_dict)
+async def _handler(message):
+    return (42, message[0].body)
 
 class ConsumerTest(asynctest.TestCase):
 
@@ -24,18 +26,39 @@ class ConsumerTest(asynctest.TestCase):
             "route": ["/asgard/counts/ok"],
             "handler": _handler,
             "options": {
-                "vhost": "/"
+                "vhost": "/",
+                "bulk_size": 1,
+                "bulk_flush_interval": 60,
             }
         }
 
-    def test_consumer_validate_bulk_size_and_prefretch(self):
+    def test_consumer_adjusts_bulk_size(self):
         """
         Se escolhermos um prefetch menor do que o bulk_size, significa que nosso "bucket"
         nunca vai encher e isso significa que nosso consumer ficará congelado, em um deadlock:
             Ele estará esperando o bucket encher
             E ao mesmo tempo estará o esperando o bucket esvaziar para que possa receber mais mensagens do RabbitMQ
+
+
+        Vamos setar o bulk_size com sendo min(bulk_size, prefetch_count)
         """
-        self.fail()
+        self.one_route_fixture['options']['bulk_size'] = 2048
+        consumer = Consumer(self.one_route_fixture, *self.connection_parameters)
+        self.assertEqual(1024, consumer.bucket.size)
+
+        self.one_route_fixture['options']['bulk_size'] = 4096
+        consumer = Consumer(self.one_route_fixture, host="127.0.0.1", username="guest", password="guest", prefetch_count=8192)
+        self.assertEqual(4096, consumer.bucket.size)
+
+    def test_consumer_instantiate_using_bucket_class(self):
+        class MyBucket(Bucket):
+            pass
+        consumer = Consumer(self.one_route_fixture, *self.connection_parameters, bucket_class=MyBucket)
+        self.assertTrue(isinstance(consumer.bucket, MyBucket))
+
+    def test_consumer_instantiate_correct_size_bucket(self):
+        consumer = Consumer(self.one_route_fixture, *self.connection_parameters)
+        self.assertEqual(self.one_route_fixture['options']['bulk_size'], consumer.bucket.size)
 
     def test_consumer_instantiate_async_queue_default_vhost(self):
         del self.one_route_fixture['options']['vhost']
@@ -49,7 +72,7 @@ class ConsumerTest(asynctest.TestCase):
         self.assertEqual("guest", connection_parameters['password'])
 
     def test_consumer_instantiate_async_queue_other_vhost(self):
-        self.one_route_fixture.update({"options": {"vhost": "fluentd"}})
+        self.one_route_fixture["options"]["vhost"] = "fluentd"
         consumer = Consumer(self.one_route_fixture, *self.connection_parameters)
         connection_parameters = consumer.queue.connection_parameters
 
@@ -57,7 +80,7 @@ class ConsumerTest(asynctest.TestCase):
         self.assertEqual("fluentd", connection_parameters['virtualhost'])
 
     def test_consumer_instantiate_async_queue_other_vhost_strip_slash(self):
-        self.one_route_fixture.update({"options": {"vhost": "/fluentd"}})
+        self.one_route_fixture["options"]["vhost"] = "/fluentd"
         consumer = Consumer(self.one_route_fixture, *self.connection_parameters)
         connection_parameters = consumer.queue.connection_parameters
 
@@ -65,7 +88,7 @@ class ConsumerTest(asynctest.TestCase):
         self.assertEqual("fluentd", connection_parameters['virtualhost'])
 
     def test_consumer_instantiate_async_queue_prefetch_count(self):
-        self.one_route_fixture.update({"options": {"vhost": "/fluentd"}})
+        self.one_route_fixture["options"]["vhost"] = "/fluentd"
         consumer = Consumer(self.one_route_fixture, *self.connection_parameters)
         connection_parameters = consumer.queue.connection_parameters
 
@@ -91,9 +114,13 @@ class ConsumerTest(asynctest.TestCase):
         """
         consumer = Consumer(self.one_route_fixture, *self.connection_parameters)
         queue_mock = CoroutineMock(ack=CoroutineMock())
-        result = await consumer.on_queue_message({"key": "value"}, delivery_tag=10, queue=queue_mock)
-        self.assertEqual((42, {"key": "value"}), result)
-        queue_mock.ack.assert_awaited_once_with(delivery_tag=10)
+        expected_body = {"key": "value"}
+        with mock.patch.object(asyncworker.consumer, 'RabbitMQMessage') as RabbitMQMessageMock:
+            message_mock = CoroutineMock(process=CoroutineMock(), body=expected_body, delivery_tag=10)
+            RabbitMQMessageMock.return_value = message_mock
+            result = await consumer.on_queue_message(expected_body, delivery_tag=10, queue=queue_mock)
+            self.assertEqual((42, expected_body), result)
+            message_mock.process.assert_awaited_once_with(queue_mock)
 
     async def test_on_queue_message_rejects_on_exception(self):
         """
@@ -117,13 +144,56 @@ class ConsumerTest(asynctest.TestCase):
         queue_mock = CoroutineMock(ack=CoroutineMock(side_effect=AioamqpException))
         with self.assertRaises(AioamqpException):
             await consumer.on_queue_message({"key": "value"}, delivery_tag=10, queue=queue_mock)
-        queue_mock.ack.assert_awaited
 
     async def test_on_queue_message_bulk_size_one(self):
-        self.fail()
+        class MyBucket(Bucket):
+            def pop_all(self):
+                return self._items;
+
+
+        handler_mock = CoroutineMock()
+        self.one_route_fixture['handler'] = handler_mock
+        self.one_route_fixture['options']['bulk_size'] = 1
+
+        consumer = Consumer(self.one_route_fixture, *self.connection_parameters, bucket_class=MyBucket)
+        queue_mock = CoroutineMock(ack=CoroutineMock())
+
+        with mock.patch.object(asyncworker.consumer, 'RabbitMQMessage') as RabbitMQMessageMock:
+            message_mock = CoroutineMock(process=CoroutineMock())
+            RabbitMQMessageMock.return_value = message_mock
+            await consumer.on_queue_message({"key": "value"}, delivery_tag=20, queue=queue_mock)
+            handler_mock.assert_awaited_once_with(consumer.bucket._items)
+
+            self.assertEqual([mock.call(queue_mock)], message_mock.process.await_args_list)
 
     async def test_on_queue_message_bulk_size_bigger_that_one(self):
-        self.fail()
+        """
+        Confere que o handler real só é chamado quando o bucket atinge o limite máximo de
+        tamanho. E que o handler é chamado com a lista de mensagens.
+        * Bucket deve estart vazio após o "flush"
+        """
+        class MyBucket(Bucket):
+            def pop_all(self):
+                return self._items;
+
+
+        handler_mock = CoroutineMock()
+        self.one_route_fixture['handler'] = handler_mock
+        self.one_route_fixture['options']['bulk_size'] = 2
+
+        consumer = Consumer(self.one_route_fixture, *self.connection_parameters, bucket_class=MyBucket)
+        queue_mock = CoroutineMock(ack=CoroutineMock())
+
+        with mock.patch.object(asyncworker.consumer, 'RabbitMQMessage') as RabbitMQMessageMock:
+            message_mock = CoroutineMock(process=CoroutineMock())
+            RabbitMQMessageMock.return_value = message_mock
+            await consumer.on_queue_message({"key": "value"}, delivery_tag=10, queue=queue_mock)
+            self.assertEqual(0, handler_mock.await_count)
+
+            await consumer.on_queue_message({"key": "value"}, delivery_tag=20, queue=queue_mock)
+            handler_mock.assert_awaited_once_with(consumer.bucket._items)
+
+            self.assertEqual([mock.call(queue_mock), mock.call(queue_mock)], message_mock.process.await_args_list)
 
     def test_bulk_flushes_on_timeout_even_with_bucket_not_full(self):
         """
@@ -135,7 +205,7 @@ class ConsumerTest(asynctest.TestCase):
     def test_restart_timeout_on_every_flush(self):
         self.fail()
 
-    def test_do_not_flush_if_bucket_is_already_empty(self):
+    def test_do_not_flush_if_bucket_is_already_empty_when_timeout_expires(self):
         self.fail()
 
     async def test_on_message_handle_error_logs_exception(self):

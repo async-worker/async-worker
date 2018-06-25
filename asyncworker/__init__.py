@@ -5,6 +5,7 @@ from .consumer import Consumer
 
 from asyncworker import conf
 from asyncworker.options import Options, Defaultvalues
+from .bucket import Bucket
 
 def entrypoint(f):
     @functools.wraps(f)
@@ -50,5 +51,4 @@ class App:
             asyncio.get_event_loop().create_task(consumer.start())
         while True:
             await asyncio.sleep(10)
-
 

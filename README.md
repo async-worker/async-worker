@@ -40,7 +40,7 @@ async def handler(messages: List[Message]):
   pass
 ```
 
-As instâncias do objeto `asyncworker.rabbitmq.Message` já vêm por padrão configurado para receber `ack()` 
+As instâncias do objeto `asyncworker.rabbitmq.RabbitMQMessage` já vêm por padrão configurado para receber `ack()` 
 depois queo handler retornar (sem exception) mas o handler pode mudar isso
 chamando o método `message.reject()` para cada mensagem que precisar ser devolvida para a fila.
 
