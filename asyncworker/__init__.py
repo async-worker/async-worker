@@ -4,6 +4,7 @@ import asyncio
 from .consumer import Consumer
 
 from asyncworker import conf
+from asyncworker.options import Options, Defaultvalues
 
 def entrypoint(f):
     @functools.wraps(f)
@@ -21,13 +22,15 @@ class App:
         self.password = password
         self.prefetch_count = prefetch_count
 
-    def route(self, routes, vhost="/"):
+    def route(self, routes, vhost="/", options={}):
         def wrap(f):
             self.routes_registry[f] = {
                 "route": routes,
                 "handler": f,
                 "options": {
                     "vhost": vhost,
+                    "bulk_size": options.get(Options.BULK_SIZE, Defaultvalues.BULK_SIZE),
+                    "bulk_flush_interval": options.get(Options.BULK_FLUSH_INTERVAL, Defaultvalues.BULK_FLUSH_INTERVAL),
                 }
             }
             return f

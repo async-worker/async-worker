@@ -28,6 +28,15 @@ class ConsumerTest(asynctest.TestCase):
             }
         }
 
+    def test_consumer_validate_bulk_size_and_prefretch(self):
+        """
+        Se escolhermos um prefetch menor do que o bulk_size, significa que nosso "bucket"
+        nunca vai encher e isso significa que nosso consumer ficará congelado, em um deadlock:
+            Ele estará esperando o bucket encher
+            E ao mesmo tempo estará o esperando o bucket esvaziar para que possa receber mais mensagens do RabbitMQ
+        """
+        self.fail()
+
     def test_consumer_instantiate_async_queue_default_vhost(self):
         del self.one_route_fixture['options']['vhost']
         consumer = Consumer(self.one_route_fixture, *self.connection_parameters)
@@ -109,6 +118,25 @@ class ConsumerTest(asynctest.TestCase):
         with self.assertRaises(AioamqpException):
             await consumer.on_queue_message({"key": "value"}, delivery_tag=10, queue=queue_mock)
         queue_mock.ack.assert_awaited
+
+    async def test_on_queue_message_bulk_size_one(self):
+        self.fail()
+
+    async def test_on_queue_message_bulk_size_bigger_that_one(self):
+        self.fail()
+
+    def test_bulk_flushes_on_timeout_even_with_bucket_not_full(self):
+        """
+        Se nosso bucket não chegar ao total de mensagens do nosso bulk_size, temos
+        que fazer flush de tempos em tempos, senão poderemos ficar eternamente com mensagens presas.
+        """
+        self.fail()
+
+    def test_restart_timeout_on_every_flush(self):
+        self.fail()
+
+    def test_do_not_flush_if_bucket_is_already_empty(self):
+        self.fail()
 
     async def test_on_message_handle_error_logs_exception(self):
         """

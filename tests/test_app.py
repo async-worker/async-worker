@@ -1,12 +1,35 @@
 import unittest
 import asyncio
+import asynctest
 
 from asyncworker import App
+from asyncworker.options import Options, Defaultvalues
 
-class AppTest(unittest.TestCase):
+class AppTest(asynctest.TestCase):
 
     def setUp(self):
         self.connection_parameters = {"host": "127.0.0.1", "user": "guest", "password": "guest", "prefetch_count": 1024}
+
+    def test_check_route_registry_full_options(self):
+        expected_route = ["/asgard/counts/ok"]
+        expected_vhost = "/"
+        app = App(**self.connection_parameters)
+        @app.route(expected_route, vhost=expected_vhost, options={Options.BULK_SIZE: 1024, Options.BULK_FLUSH_INTERVAL: 120})
+        async def _handler(message):
+            return 42
+
+        self.assertIsNotNone(app.routes_registry)
+        expected_registry_entry = {
+            "route": expected_route,
+            "handler": _handler,
+            "options": {
+                "vhost": expected_vhost,
+                "bulk_size": 1024,
+                "bulk_flush_interval": 120
+            }
+        }
+        self.assertEqual(expected_registry_entry, app.routes_registry[_handler])
+        self.assertEqual(42, asyncio.get_event_loop().run_until_complete(_handler(None)))
 
     def test_register_hander_on_route_registry(self):
         expected_route = ["/asgard/counts/ok"]
@@ -17,15 +40,8 @@ class AppTest(unittest.TestCase):
             return 42
 
         self.assertIsNotNone(app.routes_registry)
-        expected_registry_entry = {
-            "route": expected_route,
-            "handler": _handler,
-            "options": {
-                "vhost": expected_vhost
-            }
-        }
-        self.assertEqual(expected_registry_entry, app.routes_registry[_handler])
-        self.assertEqual(42, asyncio.get_event_loop().run_until_complete(_handler(None)))
+        self.assertEqual(_handler, app.routes_registry[_handler]['handler'])
+        self.assertEqual(42, asyncio.get_event_loop().run_until_complete(app.routes_registry[_handler]['handler'](None)))
 
     def test_register_list_of_routes_to_the_same_handler(self):
         expected_routes = ["/asgard/counts/ok", "/asgard/counts/errors"]
@@ -36,15 +52,8 @@ class AppTest(unittest.TestCase):
             return 42
 
         self.assertIsNotNone(app.routes_registry)
-        expected_registry_entry = {
-            "route": expected_routes,
-            "handler": _handler,
-            "options": {
-                "vhost": expected_vhost
-            }
-        }
 
-        self.assertEqual(expected_registry_entry, app.routes_registry[_handler])
+        self.assertEqual(expected_routes, app.routes_registry[_handler]['route'])
         self.assertEqual(42, asyncio.get_event_loop().run_until_complete(_handler(None)))
 
     def test_register_with_default_vhost(self):
@@ -56,14 +65,40 @@ class AppTest(unittest.TestCase):
             return 42
 
         self.assertIsNotNone(app.routes_registry)
-        expected_registry_entry = {
-            "route": expected_route,
-            "handler": _handler,
-            "options": {
-                "vhost": expected_vhost
-            }
-        }
-        self.assertEqual(expected_registry_entry, app.routes_registry[_handler])
+        self.assertEqual(expected_vhost, app.routes_registry[_handler]['options']['vhost'])
+        self.assertEqual(42, asyncio.get_event_loop().run_until_complete(_handler(None)))
+
+    def test_register_bulk_size(self):
+        expected_bulk_size = 1024
+        app = App(**self.connection_parameters)
+        @app.route(["my-queue"], options={Options.BULK_SIZE: expected_bulk_size})
+        async def _handler(message):
+            return 42
+
+        self.assertIsNotNone(app.routes_registry)
+        self.assertEqual(expected_bulk_size, app.routes_registry[_handler]['options']['bulk_size'])
+        self.assertEqual(42, asyncio.get_event_loop().run_until_complete(_handler(None)))
+
+    def test_register_bulk_flush_timeout(self):
+        expected_bulk_flush_interval = 120
+        app = App(**self.connection_parameters)
+        @app.route(["my-queue"], options={Options.BULK_FLUSH_INTERVAL: expected_bulk_flush_interval})
+        async def _handler(message):
+            return 42
+
+        self.assertIsNotNone(app.routes_registry)
+        self.assertEqual(expected_bulk_flush_interval, app.routes_registry[_handler]['options']['bulk_flush_interval'])
+        self.assertEqual(42, asyncio.get_event_loop().run_until_complete(_handler(None)))
+
+    def test_register_default_bulk_size_and_default_bulk_flush_timeout(self):
+        app = App(**self.connection_parameters)
+        @app.route(["my-queue"])
+        async def _handler(message):
+            return 42
+
+        self.assertIsNotNone(app.routes_registry)
+        self.assertEqual(Defaultvalues.BULK_SIZE, app.routes_registry[_handler]['options']['bulk_size'])
+        self.assertEqual(Defaultvalues.BULK_FLUSH_INTERVAL, app.routes_registry[_handler]['options']['bulk_flush_interval'])
         self.assertEqual(42, asyncio.get_event_loop().run_until_complete(_handler(None)))
 
     def test_app_receives_queue_connection(self):
