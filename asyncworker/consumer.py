@@ -64,6 +64,7 @@ class Consumer(AsyncQueueConsumerDelegate):
         :type queue: AsyncQueue
         """
         rv = None
+        all_messages = []
         try:
 
             if not self.bucket.is_full():
@@ -73,14 +74,16 @@ class Consumer(AsyncQueueConsumerDelegate):
             if current_size == self.bucket.size:
                 all_messages = self.bucket.pop_all()
                 rv = await self._handler(all_messages)
-                for m in all_messages:
-                    await m.process(queue)
             return rv
         except AioamqpException as aioamqpException:
             raise aioamqpException
         except Exception as e:
-            await queue.reject(delivery_tag=delivery_tag, requeue=True)
             raise e
+        finally:
+            for m in all_messages:
+                m.reject()
+                await m.process(queue)
+
 
     async def on_queue_error(self, body, delivery_tag, error, queue):
         """

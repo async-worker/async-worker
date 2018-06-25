@@ -139,6 +139,26 @@ class ConsumerTest(asynctest.TestCase):
         queue_mock.reject.assert_awaited_once_with(delivery_tag=10, requeue=True)
         queue_mock.ack.assert_not_awaited
 
+    async def test_on_queue_message_rejects_on_exception_bulk_messages(self):
+        """
+        Se o handler der raise em qualquer exception, devemos
+        dar reject() na mensagem
+        """
+        async def exception_handler(message):
+            return message.do_not_exist
+
+        self.one_route_fixture['handler'] = exception_handler
+        self.one_route_fixture['options']['bulk_size'] = 2
+
+        consumer = Consumer(self.one_route_fixture, *self.connection_parameters)
+        queue_mock = CoroutineMock(ack=CoroutineMock(), reject=CoroutineMock())
+        with self.assertRaises(AttributeError):
+            await consumer.on_queue_message({"key": "value"}, delivery_tag=10, queue=queue_mock)
+            await consumer.on_queue_message({"key": "value"}, delivery_tag=11, queue=queue_mock)
+
+        self.assertEqual([mock.call(delivery_tag=10, requeue=True), mock.call(delivery_tag=11, requeue=True)], queue_mock.reject.await_args_list)
+        queue_mock.ack.assert_not_awaited
+
     async def test_on_queue_message_precondition_failed_on_ack(self):
         consumer = Consumer(self.one_route_fixture, *self.connection_parameters)
         queue_mock = CoroutineMock(ack=CoroutineMock(side_effect=AioamqpException))
