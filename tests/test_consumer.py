@@ -3,19 +3,21 @@ import unittest
 from unittest import mock
 from asynctest import CoroutineMock
 import asynctest
+import importlib
 
 from easyqueue.async import AsyncQueue
 from aioamqp.exceptions import AioamqpException
 
 from asyncworker.consumer import Consumer
-from asyncworker import conf
+import asyncworker.consumer
+from asyncworker import conf, Bucket
 
 
 
-async def _handler(message_dict):
-    return (42, message_dict)
+async def _handler(message):
+    return (42, message[0].body)
 
-class ConsumerTest(unittest.TestCase):
+class ConsumerTest(asynctest.TestCase):
 
     def setUp(self):
         self.queue_mock = CoroutineMock(ack=CoroutineMock(), reject=CoroutineMock())
@@ -24,12 +26,39 @@ class ConsumerTest(unittest.TestCase):
             "route": ["/asgard/counts/ok"],
             "handler": _handler,
             "options": {
-                "vhost": "/"
+                "vhost": "/",
+                "bulk_size": 1,
+                "bulk_flush_interval": 60,
             }
         }
 
-    def _run_async(self, coroutine, *args, **kwargs):
-        return asyncio.get_event_loop().run_until_complete(coroutine)
+    def test_consumer_adjusts_bulk_size(self):
+        """
+        Se escolhermos um prefetch menor do que o bulk_size, significa que nosso "bucket"
+        nunca vai encher e isso significa que nosso consumer ficará congelado, em um deadlock:
+            Ele estará esperando o bucket encher
+            E ao mesmo tempo estará o esperando o bucket esvaziar para que possa receber mais mensagens do RabbitMQ
+
+
+        Vamos setar o bulk_size com sendo min(bulk_size, prefetch_count)
+        """
+        self.one_route_fixture['options']['bulk_size'] = 2048
+        consumer = Consumer(self.one_route_fixture, *self.connection_parameters)
+        self.assertEqual(1024, consumer.bucket.size)
+
+        self.one_route_fixture['options']['bulk_size'] = 4096
+        consumer = Consumer(self.one_route_fixture, host="127.0.0.1", username="guest", password="guest", prefetch_count=8192)
+        self.assertEqual(4096, consumer.bucket.size)
+
+    def test_consumer_instantiate_using_bucket_class(self):
+        class MyBucket(Bucket):
+            pass
+        consumer = Consumer(self.one_route_fixture, *self.connection_parameters, bucket_class=MyBucket)
+        self.assertTrue(isinstance(consumer.bucket, MyBucket))
+
+    def test_consumer_instantiate_correct_size_bucket(self):
+        consumer = Consumer(self.one_route_fixture, *self.connection_parameters)
+        self.assertEqual(self.one_route_fixture['options']['bulk_size'], consumer.bucket.size)
 
     def test_consumer_instantiate_async_queue_default_vhost(self):
         del self.one_route_fixture['options']['vhost']
@@ -43,7 +72,7 @@ class ConsumerTest(unittest.TestCase):
         self.assertEqual("guest", connection_parameters['password'])
 
     def test_consumer_instantiate_async_queue_other_vhost(self):
-        self.one_route_fixture.update({"options": {"vhost": "fluentd"}})
+        self.one_route_fixture["options"]["vhost"] = "fluentd"
         consumer = Consumer(self.one_route_fixture, *self.connection_parameters)
         connection_parameters = consumer.queue.connection_parameters
 
@@ -51,7 +80,7 @@ class ConsumerTest(unittest.TestCase):
         self.assertEqual("fluentd", connection_parameters['virtualhost'])
 
     def test_consumer_instantiate_async_queue_other_vhost_strip_slash(self):
-        self.one_route_fixture.update({"options": {"vhost": "/fluentd"}})
+        self.one_route_fixture["options"]["vhost"] = "/fluentd"
         consumer = Consumer(self.one_route_fixture, *self.connection_parameters)
         connection_parameters = consumer.queue.connection_parameters
 
@@ -59,7 +88,7 @@ class ConsumerTest(unittest.TestCase):
         self.assertEqual("fluentd", connection_parameters['virtualhost'])
 
     def test_consumer_instantiate_async_queue_prefetch_count(self):
-        self.one_route_fixture.update({"options": {"vhost": "/fluentd"}})
+        self.one_route_fixture["options"]["vhost"] = "/fluentd"
         consumer = Consumer(self.one_route_fixture, *self.connection_parameters)
         connection_parameters = consumer.queue.connection_parameters
 
@@ -71,24 +100,29 @@ class ConsumerTest(unittest.TestCase):
         consumer = Consumer(self.one_route_fixture, *self.connection_parameters)
         self.assertEqual(["/asgard/counts/ok"], consumer.queue_name)
 
-    def test_on_queue_message_calls_inner_handler(self):
+    async def test_on_queue_message_calls_inner_handler(self):
         consumer = Consumer(self.one_route_fixture, *self.connection_parameters)
-        coroutine = consumer.on_queue_message({"key": "value"}, delivery_tag=10, queue=self.queue_mock)
-        self.assertEqual((42, {"key": "value"}), self._run_async(coroutine))
+        result = await consumer.on_queue_message({"key": "value"}, delivery_tag=10, queue=self.queue_mock)
+
+        self.assertEqual((42, {"key": "value"}), result)
 
 
-    def test_on_queue_message_auto_ack_on_success(self):
+    async def test_on_queue_message_auto_ack_on_success(self):
         """
         Se o handler registrado no @app.route() rodar com sucesso,
         devemos fazer o ack da mensagem
         """
         consumer = Consumer(self.one_route_fixture, *self.connection_parameters)
         queue_mock = CoroutineMock(ack=CoroutineMock())
-        coroutine = consumer.on_queue_message({"key": "value"}, delivery_tag=10, queue=queue_mock)
-        self.assertEqual((42, {"key": "value"}), self._run_async(coroutine))
-        queue_mock.ack.assert_awaited_once_with(delivery_tag=10)
+        expected_body = {"key": "value"}
+        with mock.patch.object(asyncworker.consumer, 'RabbitMQMessage') as RabbitMQMessageMock:
+            message_mock = CoroutineMock(process=CoroutineMock(), body=expected_body, delivery_tag=10)
+            RabbitMQMessageMock.return_value = message_mock
+            result = await consumer.on_queue_message(expected_body, delivery_tag=10, queue=queue_mock)
+            self.assertEqual((42, expected_body), result)
+            message_mock.process.assert_awaited_once_with(queue_mock)
 
-    def test_on_queue_message_rejects_on_exception(self):
+    async def test_on_queue_message_rejects_on_exception(self):
         """
         Se o handler der raise em qualquer exception, devemos
         dar reject() na mensagem
@@ -99,22 +133,138 @@ class ConsumerTest(unittest.TestCase):
         self.one_route_fixture['handler'] = exception_handler
         consumer = Consumer(self.one_route_fixture, *self.connection_parameters)
         queue_mock = CoroutineMock(ack=CoroutineMock(), reject=CoroutineMock())
-        coroutine = consumer.on_queue_message({"key": "value"}, delivery_tag=10, queue=queue_mock)
         with self.assertRaises(AttributeError):
-            self.assertEqual(None, self._run_async(coroutine))
+            await consumer.on_queue_message({"key": "value"}, delivery_tag=10, queue=queue_mock)
 
         queue_mock.reject.assert_awaited_once_with(delivery_tag=10, requeue=True)
         queue_mock.ack.assert_not_awaited
 
-    def test_on_queue_message_precondition_failed_on_ack(self):
+    async def test_on_queue_message_rejects_on_exception_bulk_messages(self):
+        """
+        Se o handler der raise em qualquer exception, devemos
+        dar reject() na mensagem
+        """
+        async def exception_handler(message):
+            return message.do_not_exist
+
+        self.one_route_fixture['handler'] = exception_handler
+        self.one_route_fixture['options']['bulk_size'] = 2
+
+        consumer = Consumer(self.one_route_fixture, *self.connection_parameters)
+        queue_mock = CoroutineMock(ack=CoroutineMock(), reject=CoroutineMock())
+        with self.assertRaises(AttributeError):
+            await consumer.on_queue_message({"key": "value"}, delivery_tag=10, queue=queue_mock)
+            await consumer.on_queue_message({"key": "value"}, delivery_tag=11, queue=queue_mock)
+
+        self.assertEqual([mock.call(delivery_tag=10, requeue=True), mock.call(delivery_tag=11, requeue=True)], queue_mock.reject.await_args_list)
+        queue_mock.ack.assert_not_awaited
+
+    async def test_on_queue_message_precondition_failed_on_ack(self):
         consumer = Consumer(self.one_route_fixture, *self.connection_parameters)
         queue_mock = CoroutineMock(ack=CoroutineMock(side_effect=AioamqpException))
         with self.assertRaises(AioamqpException):
-            coroutine = consumer.on_queue_message({"key": "value"}, delivery_tag=10, queue=queue_mock)
-            self._run_async(coroutine)
-        queue_mock.ack.assert_awaited
+            await consumer.on_queue_message({"key": "value"}, delivery_tag=10, queue=queue_mock)
 
-    def test_on_message_handle_error_logs_exception(self):
+    async def test_on_queue_message_bulk_size_one(self):
+        class MyBucket(Bucket):
+            def pop_all(self):
+                return self._items;
+
+
+        handler_mock = CoroutineMock()
+        self.one_route_fixture['handler'] = handler_mock
+        self.one_route_fixture['options']['bulk_size'] = 1
+
+        consumer = Consumer(self.one_route_fixture, *self.connection_parameters, bucket_class=MyBucket)
+        queue_mock = CoroutineMock(ack=CoroutineMock())
+
+        await consumer.on_queue_message({"key": "value"}, delivery_tag=20, queue=queue_mock)
+        handler_mock.assert_awaited_once_with(consumer.bucket._items)
+
+        self.assertEqual([mock.call(delivery_tag=20)], queue_mock.ack.await_args_list)
+        self.assertEqual(0, queue_mock.reject.call_count)
+
+    async def test_on_queue_message_bulk_size_bigger_that_one(self):
+        """
+        Confere que o handler real só é chamado quando o bucket atinge o limite máximo de
+        tamanho. E que o handler é chamado com a lista de mensagens.
+        * Bucket deve estart vazio após o "flush"
+        """
+        class MyBucket(Bucket):
+            def pop_all(self):
+                return self._items;
+
+
+        handler_mock = CoroutineMock()
+        self.one_route_fixture['handler'] = handler_mock
+        self.one_route_fixture['options']['bulk_size'] = 2
+
+        consumer = Consumer(self.one_route_fixture, *self.connection_parameters, bucket_class=MyBucket)
+        queue_mock = CoroutineMock(ack=CoroutineMock())
+
+        await consumer.on_queue_message({"key": "value"}, delivery_tag=10, queue=queue_mock)
+        self.assertEqual(0, handler_mock.await_count)
+
+        await consumer.on_queue_message({"key": "value"}, delivery_tag=20, queue=queue_mock)
+        handler_mock.assert_awaited_once_with(consumer.bucket._items)
+
+        self.assertEqual([mock.call(delivery_tag=10), mock.call(delivery_tag=20)], queue_mock.ack.await_args_list)
+        self.assertEqual(0, queue_mock.reject.call_count)
+
+    async def test_on_queue_message_bulk_mixed_ack_and_reject(self):
+        async def handler(messages):
+            messages[1].reject()
+            messages[2].reject()
+
+        self.one_route_fixture['handler'] = handler
+        self.one_route_fixture['options']['bulk_size'] = 5
+
+        consumer = Consumer(self.one_route_fixture, *self.connection_parameters)
+        queue_mock = CoroutineMock(ack=CoroutineMock(), reject=CoroutineMock())
+
+        await consumer.on_queue_message({"key": "value"}, delivery_tag=10, queue=queue_mock)
+        await consumer.on_queue_message({"key": "value"}, delivery_tag=11, queue=queue_mock)
+        await consumer.on_queue_message({"key": "value"}, delivery_tag=12, queue=queue_mock)
+        await consumer.on_queue_message({"key": "value"}, delivery_tag=13, queue=queue_mock)
+        await consumer.on_queue_message({"key": "value"}, delivery_tag=14, queue=queue_mock)
+
+        self.assertEqual([mock.call(delivery_tag=10), mock.call(delivery_tag=13), mock.call(delivery_tag=14)], queue_mock.ack.await_args_list)
+        self.assertEqual([mock.call(delivery_tag=11, requeue=True), mock.call(delivery_tag=12, requeue=True)], queue_mock.reject.await_args_list)
+
+    @unittest.skip("")
+    async def test_bulk_flushes_on_timeout_even_with_bucket_not_full(self):
+        """
+        Se nosso bucket não chegar ao total de mensagens do nosso bulk_size, temos
+        que fazer flush de tempos em tempos, senão poderemos ficar eternamente com mensagens presas.
+        """
+        handler_mock = CoroutineMock()
+        self.one_route_fixture['handler'] = handler_mock
+        self.one_route_fixture['options']['bulk_size'] = 5
+        self.one_route_fixture['options']['bulk_flush_interval'] = 3
+
+        consumer = Consumer(self.one_route_fixture, *self.connection_parameters)
+        queue_mock = CoroutineMock(ack=CoroutineMock(), reject=CoroutineMock())
+
+        await consumer.on_queue_message({"key": "value"}, delivery_tag=10, queue=queue_mock)
+        await consumer.on_queue_message({"key": "value"}, delivery_tag=11, queue=queue_mock)
+        #await consumer.on_queue_message({"key": "value"}, delivery_tag=12, queue=queue_mock)
+        #await consumer.on_queue_message({"key": "value"}, delivery_tag=13, queue=queue_mock)
+        #await consumer.on_queue_message({"key": "value"}, delivery_tag=14, queue=queue_mock)
+        await asyncio.sleep(4)
+
+        #handler_mock.assert_awaited_once
+        self.assertEqual(1, handler_mock.await_count)
+        self.assertEqual([mock.call(delivery_tag=10), mock.call(delivery_tag=11)], queue_mock.ack.await_args_list)
+
+    @unittest.skip("")
+    def test_restart_timeout_on_every_flush(self):
+        self.fail()
+
+    @unittest.skip("")
+    def test_do_not_flush_if_bucket_is_already_empty_when_timeout_expires(self):
+        self.fail()
+
+    async def test_on_message_handle_error_logs_exception(self):
         """
         Logamos a exception lançada pelo handler.
         Aqui o try/except serve apenas para termos uma exception real, com traceback.
@@ -124,12 +274,12 @@ class ConsumerTest(unittest.TestCase):
             try:
                 1/0
             except Exception as e:
-                self._run_async(consumer.on_message_handle_error(e))
+                await consumer.on_message_handle_error(e)
                 logger_mock.error.assert_called_with({"exc_message": "division by zero",
                                                       "exc_traceback": mock.ANY,
                                                      })
 
-    def test_on_connection_error_logs_exception(self):
+    async def test_on_connection_error_logs_exception(self):
         """
         Logamos qualquer erro de conexão com o Rabbit, inclusive acesso negado
         """
@@ -138,12 +288,12 @@ class ConsumerTest(unittest.TestCase):
             try:
                 1/0
             except Exception as e:
-                self._run_async(consumer.on_connection_error(e))
+                await consumer.on_connection_error(e)
                 logger_mock.error.assert_called_with({"exc_message": "division by zero",
                                                       "exc_traceback": mock.ANY,
                                                      })
 
-    def test_on_queue_error_logs_exception_and_acks_message(self):
+    async def test_on_queue_error_logs_exception_and_acks_message(self):
         """
         Logamos qualquer erro de parsing/validação de mensagem
         """
@@ -153,7 +303,7 @@ class ConsumerTest(unittest.TestCase):
 
         consumer = Consumer(self.one_route_fixture, *self.connection_parameters)
         with mock.patch.object(conf, "logger") as logger_mock:
-            self._run_async(consumer.on_queue_error(body, delivery_tag, "Error: not a JSON", queue_mock))
+            await consumer.on_queue_error(body, delivery_tag, "Error: not a JSON", queue_mock)
             logger_mock.error.assert_called_with({"exception": "Error: not a JSON",
                                                   "original_msg": body,
                                                   "parse-error": True})
@@ -166,13 +316,13 @@ class ConsumerTest(unittest.TestCase):
         consumer = Consumer(self.one_route_fixture, *self.connection_parameters)
         self.assertEquals(self.one_route_fixture['route'], consumer.queue_name)
 
-    def test_consume_all_queues(self):
+    async def test_consume_all_queues(self):
         """
         """
         self.one_route_fixture['route'] = ["asgard/counts", "asgard/counts/errors"]
         consumer = Consumer(self.one_route_fixture, *self.connection_parameters)
         queue_mock = CoroutineMock(consume=CoroutineMock())
-        self._run_async(consumer.consume_all_queues(queue_mock))
+        await consumer.consume_all_queues(queue_mock)
         self.assertEqual(2, queue_mock.consume.await_count)
         self.assertEqual([mock.call(queue_name="asgard/counts"), mock.call(queue_name="asgard/counts/errors")], queue_mock.consume.await_args_list)
 
