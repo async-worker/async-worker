@@ -70,8 +70,7 @@ class Consumer(AsyncQueueConsumerDelegate):
             if not self.bucket.is_full():
                 self.bucket.put(RabbitMQMessage(body=content, delivery_tag=delivery_tag))
 
-            current_size = self.bucket.used
-            if current_size == self.bucket.size:
+            if self.bucket.is_full():
                 all_messages = self.bucket.pop_all()
                 rv = await self._handler(all_messages)
                 for m in all_messages:
