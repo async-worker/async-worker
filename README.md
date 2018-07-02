@@ -41,7 +41,7 @@ async def handler(messages: List[Message]):
 ```
 
 As instâncias do objeto `asyncworker.rabbitmq.RabbitMQMessage` já vêm por padrão configurado para receber `ack()` 
-depois queo handler retornar (sem exception) mas o handler pode mudar isso
+depois queo handler retornar (sem exception), mas o handler pode mudar isso
 chamando o método `message.reject()` para cada mensagem que precisar ser devolvida para a fila.
 
 O conteúdo da mensagem original está agora no atributo `message.body`. Então um handler antigo que era assim:
