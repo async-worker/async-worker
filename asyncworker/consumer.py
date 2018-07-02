@@ -1,15 +1,18 @@
 import asyncio
 import sys
 import traceback
+from typing import Type
 
 from easyqueue.async import AsyncQueueConsumerDelegate, AsyncQueue
 from aioamqp.exceptions import AioamqpException
 
 from asyncworker import conf
+from .bucket import Bucket
+from .rabbitmq import RabbitMQMessage
 
 class Consumer(AsyncQueueConsumerDelegate):
 
-    def __init__(self, route_info, host, username, password, prefetch_count=128):
+    def __init__(self, route_info, host, username, password, prefetch_count=128, bucket_class: Type[Bucket]=Bucket):
         self.route = route_info
         self._handler = route_info['handler']
         self._queue_name = route_info['route']
@@ -18,6 +21,7 @@ class Consumer(AsyncQueueConsumerDelegate):
         self.vhost = self._route_options.get("vhost", "/")
         if self.vhost != "/":
             self.vhost = self.vhost.lstrip("/")
+        self.bucket = bucket_class(size=min(self._route_options['bulk_size'], prefetch_count))
         self.queue = AsyncQueue(host,
                                 username,
                                 password,
@@ -59,15 +63,27 @@ class Consumer(AsyncQueueConsumerDelegate):
         :type content: dict
         :type queue: AsyncQueue
         """
+        rv = None
+        all_messages = []
         try:
-            rv = await self._handler(content)
-            await queue.ack(delivery_tag=delivery_tag)
+
+            if not self.bucket.is_full():
+                self.bucket.put(RabbitMQMessage(body=content, delivery_tag=delivery_tag))
+
+            if self.bucket.is_full():
+                all_messages = self.bucket.pop_all()
+                rv = await self._handler(all_messages)
+                for m in all_messages:
+                    await m.process(queue)
             return rv
         except AioamqpException as aioamqpException:
             raise aioamqpException
         except Exception as e:
-            await queue.reject(delivery_tag=delivery_tag, requeue=True)
+            for m in all_messages:
+                m.reject()
+                await m.process(queue)
             raise e
+
 
     async def on_queue_error(self, body, delivery_tag, error, queue):
         """
