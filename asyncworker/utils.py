@@ -21,7 +21,6 @@ class Timeit:
                  callback: TimeitCallback):
         self.name = name
         self.callback = callback
-        self.__kwargs = kwargs
         self.start: float = None
         self.finish: float = None
 
@@ -39,10 +38,9 @@ class Timeit:
             await self.callback(
                 self.name,
                 self.time_delta,
-                exc_type=exc_type,
-                exc_val=exc_val,
-                exc_tb=exc_tb,
-                **self.__kwargs
+                exc_type,
+                exc_val,
+                exc_tb
             )
         else:
-            await self.callback(self.name, self.time_delta, **self.__kwargs)
+            await self.callback(self.name, self.time_delta)
