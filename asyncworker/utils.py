@@ -1,14 +1,13 @@
 from time import time
 from typing import Callable, Coroutine
 
-
 now = time
 
 
 class Timeit:
     def __init__(self,
                  name: str,
-                 callback: Callable[[str, float], Coroutine],
+                 callback: Callable[..., Coroutine],
                  **kwargs):
         self.name = name
         self.callback = callback
