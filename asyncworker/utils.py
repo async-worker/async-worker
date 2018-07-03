@@ -26,4 +26,14 @@ class Timeit:
 
     async def __aexit__(self, exc_type, exc_val, exc_tb):
         self.finish = now()
-        await self.callback(self.name, self.time_delta, **self.__kwargs)
+        if exc_type:
+            await self.callback(
+                self.name,
+                self.time_delta,
+                exc_type=exc_type,
+                exc_val=exc_val,
+                exc_tb=exc_tb,
+                **self.__kwargs
+            )
+        else:
+            await self.callback(self.name, self.time_delta, **self.__kwargs)

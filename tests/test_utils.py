@@ -44,3 +44,17 @@ class TimeitTests(asynctest.TestCase):
         async with Timeit(name="Xablau", callback=coro, **kwargs) as timeit:
             coro.assert_not_awaited()
         coro.assert_awaited_once_with(timeit.name, timeit.time_delta, **kwargs)
+
+    async def test_it_calls_callback_with_exc_parameters_if_an_exception_is_raised(self):
+        coro = asynctest.CoroutineMock()
+        try:
+            async with Timeit(name="Xablau", callback=coro) as timeit:
+                raise KeyError("Xablau")
+        except KeyError as e:
+            coro.assert_awaited_once_with(
+                timeit.name,
+                timeit.time_delta,
+                exc_type=KeyError,
+                exc_val=e,
+                exc_tb=e.__traceback__
+            )
