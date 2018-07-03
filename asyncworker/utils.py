@@ -1,14 +1,24 @@
-from time import time
-from typing import Callable, Coroutine
+from time import time as now
+from typing import Callable, Coroutine, Type, Optional, Any
 
-now = time
+
+Traceback = Any  # fixme: Substituir pelo tipo correto de traceback
+TimeitCallback = Callable[
+    [
+        str,
+        float,
+        Optional[Type[Exception]],
+        Optional[Exception],
+        Optional[Traceback]
+    ],
+    Coroutine
+]
 
 
 class Timeit:
     def __init__(self,
                  name: str,
-                 callback: Callable[..., Coroutine],
-                 **kwargs):
+                 callback: TimeitCallback):
         self.name = name
         self.callback = callback
         self.__kwargs = kwargs
