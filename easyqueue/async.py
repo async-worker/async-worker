@@ -1,11 +1,22 @@
 import abc
+from functools import wraps
+
 import aioamqp
 import asyncio
-from typing import Any, Dict, Type
+from typing import Any, Dict, Type, Callable, Coroutine
 from json.decoder import JSONDecodeError
 from easyqueue.queue import BaseJsonQueue
 from easyqueue.exceptions import UndecodableMessageException, \
     InvalidMessageSizeException, MessageError
+
+
+def auto_connect(coro: Callable[..., Coroutine]):
+    @wraps(coro)
+    async def wrapper(self: 'AsyncQueue', *args, **kwargs):
+        if not self.is_connected:
+            await self.connect()
+        return await coro(self, *args, **kwargs)
+    return wrapper
 
 
 class AsyncQueue(BaseJsonQueue):
@@ -84,6 +95,7 @@ class AsyncQueue(BaseJsonQueue):
         return await self._channel.basic_reject(delivery_tag=delivery_tag,
                                                 requeue=requeue)
 
+    @auto_connect
     async def put(self,
                   body: any,
                   routing_key: str,
