@@ -10,7 +10,8 @@ from aioamqp.exceptions import AioamqpException
 
 from asyncworker.consumer import Consumer
 import asyncworker.consumer
-from asyncworker import conf, Bucket
+from asyncworker import conf, Bucket, App
+from asyncworker.options import Events, Options
 
 
 
@@ -29,8 +30,11 @@ class ConsumerTest(asynctest.TestCase):
                 "vhost": "/",
                 "bulk_size": 1,
                 "bulk_flush_interval": 60,
+                Events.ON_SUCCESS: Options.ACK,
+                Events.ON_EXCEPTION: Options.REQUEUE,
             }
         }
+        self.app = App(**{"host": "127.0.0.1", "user": "guest", "password": "guest", "prefetch_count": 1024})
 
     def test_consumer_adjusts_bulk_size(self):
         """
@@ -106,6 +110,59 @@ class ConsumerTest(asynctest.TestCase):
 
         self.assertEqual((42, {"key": "value"}), result)
 
+    async def test_on_exception_requeue_message(self):
+        """
+        Confirma que em caso de exceção, será feito `message.reject(requeue=True)`
+        """
+        @self.app.route(["queue"], options = {Events.ON_EXCEPTION: Options.REQUEUE})
+        async def _handler(messages):
+            raise Exception("BOOM!")
+        consumer = Consumer(self.app.routes_registry[_handler], *self.connection_parameters)
+        with self.assertRaises(Exception):
+            await consumer.on_queue_message({"key": 42}, delivery_tag=10, queue=self.queue_mock)
+        self.queue_mock.reject.assert_awaited_with(delivery_tag=10, requeue=True)
+
+    async def test_on_exception_reject_message(self):
+        @self.app.route(["queue"], options = {Events.ON_EXCEPTION: Options.REJECT})
+        async def _handler(messages):
+            raise Exception("BOOM!")
+        consumer = Consumer(self.app.routes_registry[_handler], *self.connection_parameters)
+        with self.assertRaises(Exception):
+            await consumer.on_queue_message({"key": 42}, delivery_tag=10, queue=self.queue_mock)
+        self.queue_mock.reject.assert_awaited_with(delivery_tag=10, requeue=False)
+
+    async def test_on_exception_ack_message(self):
+        @self.app.route(["queue"], options = {Events.ON_EXCEPTION: Options.ACK})
+        async def _handler(messages):
+            raise Exception("BOOM!")
+        consumer = Consumer(self.app.routes_registry[_handler], *self.connection_parameters)
+        with self.assertRaises(Exception):
+            await consumer.on_queue_message({"key": 42}, delivery_tag=10, queue=self.queue_mock)
+        self.queue_mock.ack.assert_awaited_with(delivery_tag=10)
+
+    async def test_on_success_ack(self):
+        @self.app.route(["queue"], options = {Events.ON_SUCCESS: Options.ACK})
+        async def _handler(messages):
+            return 42
+        consumer = Consumer(self.app.routes_registry[_handler], *self.connection_parameters)
+        await consumer.on_queue_message({"key": 42}, delivery_tag=10, queue=self.queue_mock)
+        self.queue_mock.ack.assert_awaited_with(delivery_tag=10)
+
+    async def test_on_success_reject(self):
+        @self.app.route(["queue"], options = {Events.ON_SUCCESS: Options.REJECT})
+        async def _handler(messages):
+            return 42
+        consumer = Consumer(self.app.routes_registry[_handler], *self.connection_parameters)
+        await consumer.on_queue_message({"key": 42}, delivery_tag=10, queue=self.queue_mock)
+        self.queue_mock.reject.assert_awaited_with(delivery_tag=10, requeue=False)
+
+    async def test_on_success_requeue(self):
+        @self.app.route(["queue"], options = {Events.ON_SUCCESS: Options.REQUEUE})
+        async def _handler(messages):
+            return 42
+        consumer = Consumer(self.app.routes_registry[_handler], *self.connection_parameters)
+        await consumer.on_queue_message({"key": 42}, delivery_tag=10, queue=self.queue_mock)
+        self.queue_mock.reject.assert_awaited_with(delivery_tag=10, requeue=True)
 
     async def test_on_queue_message_auto_ack_on_success(self):
         """
@@ -230,6 +287,33 @@ class ConsumerTest(asynctest.TestCase):
 
         self.assertEqual([mock.call(delivery_tag=10), mock.call(delivery_tag=13), mock.call(delivery_tag=14)], queue_mock.ack.await_args_list)
         self.assertEqual([mock.call(delivery_tag=11, requeue=True), mock.call(delivery_tag=12, requeue=True)], queue_mock.reject.await_args_list)
+
+    async def test_on_queue_message_bulk_mixed_ack_and_reject_on_success_reject(self):
+        self.maxDiff = None
+        async def handler(messages):
+            messages[1].reject(requeue=True)
+            messages[2].reject(requeue=True)
+
+        self.one_route_fixture['handler'] = handler
+        self.one_route_fixture['options']['bulk_size'] = 5
+        self.one_route_fixture['options'][Events.ON_SUCCESS] = Options.REJECT
+
+        consumer = Consumer(self.one_route_fixture, *self.connection_parameters)
+        queue_mock = CoroutineMock(ack=CoroutineMock(), reject=CoroutineMock())
+
+        await consumer.on_queue_message({"key": "value"}, delivery_tag=10, queue=queue_mock)
+        await consumer.on_queue_message({"key": "value"}, delivery_tag=11, queue=queue_mock)
+        await consumer.on_queue_message({"key": "value"}, delivery_tag=12, queue=queue_mock)
+        await consumer.on_queue_message({"key": "value"}, delivery_tag=13, queue=queue_mock)
+        await consumer.on_queue_message({"key": "value"}, delivery_tag=14, queue=queue_mock)
+
+        print(queue_mock.reject.await_args_list)
+        self.assertEqual([mock.call(delivery_tag=10, requeue=False),
+                          mock.call(delivery_tag=11, requeue=True),
+                          mock.call(delivery_tag=12, requeue=True),
+                          mock.call(delivery_tag=13, requeue=False),
+                          mock.call(delivery_tag=14, requeue=False)],
+                         queue_mock.reject.await_args_list)
 
     @unittest.skip("")
     async def test_bulk_flushes_on_timeout_even_with_bucket_not_full(self):

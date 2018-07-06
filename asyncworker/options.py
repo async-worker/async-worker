@@ -16,4 +16,4 @@ class Defaultvalues:
     BULK_SIZE = 1
     BULK_FLUSH_INTERVAL = 60
     ON_SUCCESS = Options.ACK
-    ON_EXCEPTION = Options.REJECT
+    ON_EXCEPTION = Options.REQUEUE

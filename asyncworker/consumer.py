@@ -7,6 +7,7 @@ from easyqueue.async import AsyncQueueConsumerDelegate, AsyncQueue
 from aioamqp.exceptions import AioamqpException
 
 from asyncworker import conf
+from asyncworker.options import Events, Options
 from .bucket import Bucket
 from .rabbitmq import RabbitMQMessage
 
@@ -74,13 +75,22 @@ class Consumer(AsyncQueueConsumerDelegate):
                 all_messages = self.bucket.pop_all()
                 rv = await self._handler(all_messages)
                 for m in all_messages:
+                    if self._route_options[Events.ON_SUCCESS] == Options.REJECT:
+                        m.reject(requeue=False)
+                    elif self._route_options[Events.ON_SUCCESS] == Options.REQUEUE:
+                        m.reject(requeue=True)
                     await m.process(queue)
             return rv
         except AioamqpException as aioamqpException:
             raise aioamqpException
         except Exception as e:
             for m in all_messages:
-                m.reject()
+                if self._route_options[Events.ON_EXCEPTION] == Options.REJECT:
+                    m.reject(requeue=False)
+                elif self._route_options[Events.ON_EXCEPTION] == Options.ACK:
+                    m.accept()
+                elif self._route_options[Events.ON_EXCEPTION] == Options.REQUEUE:
+                    m.reject(requeue=True)
                 await m.process(queue)
             raise e
 

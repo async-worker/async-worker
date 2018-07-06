@@ -27,7 +27,7 @@ class AppTest(asynctest.TestCase):
                 "bulk_size": 1024,
                 "bulk_flush_interval": 120,
                 Events.ON_SUCCESS: Options.ACK,
-                Events.ON_EXCEPTION: Options.REJECT,
+                Events.ON_EXCEPTION: Options.REQUEUE,
             }
         }
         self.assertEqual(expected_registry_entry, app.routes_registry[_handler])
@@ -132,7 +132,7 @@ class AppTest(asynctest.TestCase):
 
         self.assertIsNotNone(app.routes_registry)
         self.assertEqual(Options.ACK, app.routes_registry[_handler]['options'][Events.ON_SUCCESS])
-        self.assertEqual(Options.REJECT, app.routes_registry[_handler]['options'][Events.ON_EXCEPTION])
+        self.assertEqual(Options.REQUEUE, app.routes_registry[_handler]['options'][Events.ON_EXCEPTION])
 
     async def test_app_receives_queue_connection(self):
         app = App(host="127.0.0.1", user="guest", password="guest", prefetch_count=1024)
