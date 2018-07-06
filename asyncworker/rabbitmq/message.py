@@ -7,9 +7,11 @@ class RabbitMQMessage:
         self._do_ack = True
         self.body = body
         self._delivery_tag = delivery_tag
+        self._requeue = True
 
-    def reject(self):
+    def reject(self, requeue=True):
         self._do_ack = False
+        self._requeue = requeue
 
     def accept(self):
         self._do_ack = True
@@ -18,4 +20,4 @@ class RabbitMQMessage:
         if self._do_ack:
             await queue.ack(delivery_tag=self._delivery_tag)
         else:
-            await queue.reject(delivery_tag=self._delivery_tag, requeue=True)
+            await queue.reject(delivery_tag=self._delivery_tag, requeue=self._requeue)
