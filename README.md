@@ -73,3 +73,9 @@ async def drain_handler(messages):
       logger.info(message.body)
 
 ```
+
+
+## Rejeitando uma mensagem e não colocando-a de volta na fila
+
+Opcionalmente, caso seja necessário rejeitar uma mensagem e ao mesmo tempo **não** devolver essa mensagem pra fila,
+podemos chamar `message.reject(requeue=False)`. O valor default do `requeue` é `True`.
