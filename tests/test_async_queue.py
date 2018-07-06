@@ -94,12 +94,12 @@ class AsynQueueTests(asynctest.TestCase):
                        delegate=Mock(),
                        delegate_class=Mock())
 
-    async def test_it_raises_an_error_if_its_initialized_without_both_delegate_and_delegate_class(self):
-        with self.assertRaises(ValueError):
-            AsyncQueue(host='diogommartins.com',
-                       username='diogo',
-                       password='XablauBolado',
-                       loop=Mock())
+    async def test_its_possibile_to_initialize_without_a_delegate(self):
+            queue = AsyncQueue(host='diogommartins.com',
+                               username='diogo',
+                               password='XablauBolado',
+                               loop=Mock())
+            self.assertIsInstance(queue, AsyncQueue)
 
     async def test_it_initializes_a_delegate_if_delegate_class_is_provided(self):
         delegate_class = Mock()
