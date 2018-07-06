@@ -79,3 +79,20 @@ async def drain_handler(messages):
 
 Opcionalmente, caso seja necessário rejeitar uma mensagem e ao mesmo tempo **não** devolver essa mensagem pra fila,
 podemos chamar `message.reject(requeue=False)`. O valor default do `requeue` é `True`.
+
+## Escolhendo o tamanho do BULK que será usado no consumo das fila
+
+Para conseuir receber mais de uma mensagem de uma vez, para poderem ser processadas em lote, podemos fazer o seguinte:
+
+```python
+from asyncworker import App
+from asyncworker.options import Options
+
+app = App(host="127.0.0.1", user="guest", password="guest", prefetch_count=256)
+
+@app.route(["asgard/counts", "asgard/counts/errors"], vhost="fluentd", options={Options.BULK_SIZE: 1000})
+async def drain_handler(messages):
+    for m in messages:
+      logger.info(message.body)
+
+```
