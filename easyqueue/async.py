@@ -10,7 +10,7 @@ from easyqueue.exceptions import UndecodableMessageException, \
     InvalidMessageSizeException, MessageError
 
 
-def auto_connect(coro: Callable[..., Coroutine]):
+def _ensure_connected(coro: Callable[..., Coroutine]):
     @wraps(coro)
     async def wrapper(self: 'AsyncQueue', *args, **kwargs):
         if not self.is_connected:
@@ -88,14 +88,16 @@ class AsyncQueue(BaseJsonQueue):
         await self._protocol.close()
         self._transport.close()
 
+    @_ensure_connected
     async def ack(self, delivery_tag: int):
         return await self._channel.basic_client_ack(delivery_tag)
 
+    @_ensure_connected
     async def reject(self, delivery_tag: int, requeue=False):
         return await self._channel.basic_reject(delivery_tag=delivery_tag,
                                                 requeue=requeue)
 
-    @auto_connect
+    @_ensure_connected
     async def put(self,
                   body: any,
                   routing_key: str,
@@ -158,6 +160,7 @@ class AsyncQueue(BaseJsonQueue):
                                              queue=self)
         return self.loop.create_task(callback)
 
+    @_ensure_connected
     async def consume(self, queue_name: str, consumer_name: str = '') -> str:
         """
         :param queue_name: queue to consume
@@ -166,11 +169,6 @@ class AsyncQueue(BaseJsonQueue):
         """
         # todo: Implement a consumer tag generator
         await self.delegate.on_before_start_consumption(queue_name, queue=self)
-
-        if self._channel is None:
-            raise ConnectionError("Queue isn't connected. "
-                                  "Did you forgot to wait for `connect()`?")
-
         await self._channel.basic_qos(prefetch_count=self.prefetch_count,
                                       prefetch_size=0,
                                       connection_global=False)
