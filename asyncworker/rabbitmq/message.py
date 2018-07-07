@@ -1,11 +1,13 @@
-
 from easyqueue.async import AsyncQueue
 from asyncworker.options import Options
 
 
 class RabbitMQMessage:
-
-    def __init__(self, body, delivery_tag, on_success=Options.ACK, on_exception=Options.REQUEUE):
+    def __init__(self,
+                 body,
+                 delivery_tag,
+                 on_success=Options.ACK,
+                 on_exception=Options.REQUEUE):
         self.body = body
         self._delivery_tag = delivery_tag
         self._on_success_action = on_success

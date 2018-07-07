@@ -1,11 +1,13 @@
 from enum import Enum, auto
 
+
 class Options(Enum):
     BULK_SIZE = auto()
     BULK_FLUSH_INTERVAL = auto()
     ACK = auto()
     REJECT = auto()
     REQUEUE = auto()
+
 
 class Events(Enum):
     ON_SUCCESS = auto()
