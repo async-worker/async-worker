@@ -1,13 +1,13 @@
 from easyqueue.async import AsyncQueue
-from asyncworker.options import Options
+from asyncworker.options import Actions
 
 
 class RabbitMQMessage:
     def __init__(self,
                  body,
                  delivery_tag,
-                 on_success=Options.ACK,
-                 on_exception=Options.REQUEUE):
+                 on_success=Actions.ACK,
+                 on_exception=Actions.REQUEUE):
         self.body = body
         self._delivery_tag = delivery_tag
         self._on_success_action = on_success
@@ -25,17 +25,17 @@ class RabbitMQMessage:
         self._on_exception_action = None
 
     def reject(self, requeue=True):
-        self.final_action = Options.REQUEUE if requeue else Options.REJECT
+        self.final_action = Actions.REQUEUE if requeue else Actions.REJECT
 
     def accept(self):
-        self.final_action = Options.ACK
+        self.final_action = Actions.ACK
 
-    async def _process_action(self, action: Options, queue: AsyncQueue):
-        if action == Options.REJECT:
+    async def _process_action(self, action: Actions, queue: AsyncQueue):
+        if action == Actions.REJECT:
             await queue.reject(delivery_tag=self._delivery_tag, requeue=False)
-        elif action == Options.REQUEUE:
+        elif action == Actions.REQUEUE:
             await queue.reject(delivery_tag=self._delivery_tag, requeue=True)
-        elif action == Options.ACK:
+        elif action == Actions.ACK:
             await queue.ack(delivery_tag=self._delivery_tag)
 
     async def process_success(self, queue: AsyncQueue):

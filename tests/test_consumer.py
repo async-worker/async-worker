@@ -12,7 +12,7 @@ from asyncworker.consumer import Consumer
 import asyncworker.consumer
 from asyncworker import conf, Bucket, App
 from asyncworker.rabbitmq.message import RabbitMQMessage
-from asyncworker.options import Events, Options
+from asyncworker.options import Events, Actions
 
 
 
@@ -31,8 +31,8 @@ class ConsumerTest(asynctest.TestCase):
                 "vhost": "/",
                 "bulk_size": 1,
                 "bulk_flush_interval": 60,
-                Events.ON_SUCCESS: Options.ACK,
-                Events.ON_EXCEPTION: Options.REQUEUE,
+                Events.ON_SUCCESS: Actions.ACK,
+                Events.ON_EXCEPTION: Actions.REQUEUE,
             }
         }
         self.app = App(**{"host": "127.0.0.1", "user": "guest", "password": "guest", "prefetch_count": 1024})
@@ -115,7 +115,7 @@ class ConsumerTest(asynctest.TestCase):
         """
         Confirma que em caso de exceção, será feito `message.reject(requeue=True)`
         """
-        @self.app.route(["queue"], options = {Events.ON_EXCEPTION: Options.REQUEUE})
+        @self.app.route(["queue"], options = {Events.ON_EXCEPTION: Actions.REQUEUE})
         async def _handler(messages):
             raise Exception("BOOM!")
         consumer = Consumer(self.app.routes_registry[_handler], *self.connection_parameters)
@@ -124,7 +124,7 @@ class ConsumerTest(asynctest.TestCase):
         self.queue_mock.reject.assert_awaited_with(delivery_tag=10, requeue=True)
 
     async def test_on_exception_reject_message(self):
-        @self.app.route(["queue"], options = {Events.ON_EXCEPTION: Options.REJECT})
+        @self.app.route(["queue"], options = {Events.ON_EXCEPTION: Actions.REJECT})
         async def _handler(messages):
             raise Exception("BOOM!")
         consumer = Consumer(self.app.routes_registry[_handler], *self.connection_parameters)
@@ -133,7 +133,7 @@ class ConsumerTest(asynctest.TestCase):
         self.queue_mock.reject.assert_awaited_with(delivery_tag=10, requeue=False)
 
     async def test_on_exception_ack_message(self):
-        @self.app.route(["queue"], options = {Events.ON_EXCEPTION: Options.ACK})
+        @self.app.route(["queue"], options = {Events.ON_EXCEPTION: Actions.ACK})
         async def _handler(messages):
             raise Exception("BOOM!")
         consumer = Consumer(self.app.routes_registry[_handler], *self.connection_parameters)
@@ -142,7 +142,7 @@ class ConsumerTest(asynctest.TestCase):
         self.queue_mock.ack.assert_awaited_with(delivery_tag=10)
 
     async def test_on_success_ack(self):
-        @self.app.route(["queue"], options = {Events.ON_SUCCESS: Options.ACK})
+        @self.app.route(["queue"], options = {Events.ON_SUCCESS: Actions.ACK})
         async def _handler(messages):
             return 42
         consumer = Consumer(self.app.routes_registry[_handler], *self.connection_parameters)
@@ -150,7 +150,7 @@ class ConsumerTest(asynctest.TestCase):
         self.queue_mock.ack.assert_awaited_with(delivery_tag=10)
 
     async def test_on_success_reject(self):
-        @self.app.route(["queue"], options = {Events.ON_SUCCESS: Options.REJECT})
+        @self.app.route(["queue"], options = {Events.ON_SUCCESS: Actions.REJECT})
         async def _handler(messages):
             return 42
         consumer = Consumer(self.app.routes_registry[_handler], *self.connection_parameters)
@@ -158,7 +158,7 @@ class ConsumerTest(asynctest.TestCase):
         self.queue_mock.reject.assert_awaited_with(delivery_tag=10, requeue=False)
 
     async def test_on_success_requeue(self):
-        @self.app.route(["queue"], options = {Events.ON_SUCCESS: Options.REQUEUE})
+        @self.app.route(["queue"], options = {Events.ON_SUCCESS: Actions.REQUEUE})
         async def _handler(messages):
             return 42
         consumer = Consumer(self.app.routes_registry[_handler], *self.connection_parameters)
@@ -279,7 +279,7 @@ class ConsumerTest(asynctest.TestCase):
 
         self.one_route_fixture['handler'] = handler
         self.one_route_fixture['options']['bulk_size'] = 5
-        self.one_route_fixture['options'][Events.ON_SUCCESS] = Options.REJECT
+        self.one_route_fixture['options'][Events.ON_SUCCESS] = Actions.REJECT
 
         consumer = Consumer(self.one_route_fixture, *self.connection_parameters)
         queue_mock = CoroutineMock(ack=CoroutineMock(), reject=CoroutineMock())

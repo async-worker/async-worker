@@ -42,11 +42,11 @@ ou em caso de falha (handler lança uma exception não tratada).
 As opções são: Events.ON_SUCCESS e Events.ON_EXCEPTION. Ambas são passadas a cada rota de consumo registrada, ex:
 
 ```python
-from asynworker.options import Events, Options
+from asynworker.options import Events, Actions
 
 @app.route(["queue1", "queue2"], options={
-                                  Events.ON_SUCCESS: Options.ACK,
-                                  Events.ON_EXCEPTION: Options.REJECT,
+                                  Events.ON_SUCCESS: Actions.ACK,
+                                  Events.ON_EXCEPTION: Actions.REJECT,
                                   })
 async def handler(messages):
     ...
@@ -57,9 +57,9 @@ pelo asyncworker todas as mensagens sofrerão `REJECT`.
 
 ### Opções possíveis
 
- - `Options.ACK`: Confirma a mensagem para o RabbitMQ
- - `Options.REJECT`: Rejeita a mensagem e **não devolve para a fila de origem**
- - `Options.REQUEUE`: Rejeita a mensagem e **devolve** para a fila de origem.
+ - `Actions.ACK`: Confirma a mensagem para o RabbitMQ
+ - `Actions.REJECT`: Rejeita a mensagem e **não devolve para a fila de origem**
+ - `Actions.REQUEUE`: Rejeita a mensagem e **devolve** para a fila de origem.
 
 ### Sobrescrevendo a ação padrão apenas para algumas mensagens
 
