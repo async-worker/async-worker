@@ -24,21 +24,18 @@ class RabbitMQMessage:
         self._on_exception_action = None
         self._final_action = Options.ACK
 
-    async def process_success(self, queue: AsyncQueue):
-        action = self._on_success_action or self._final_action
+    async def _process_action(self, action: Options, queue: AsyncQueue):
         if action == Options.REJECT:
             await queue.reject(delivery_tag=self._delivery_tag, requeue=False)
         elif action == Options.REQUEUE:
             await queue.reject(delivery_tag=self._delivery_tag, requeue=True)
         elif action == Options.ACK:
             await queue.ack(delivery_tag=self._delivery_tag)
+
+    async def process_success(self, queue: AsyncQueue):
+        action = self._on_success_action or self._final_action
+        return await self._process_action(action, queue)
 
     async def process_exception(self, queue: AsyncQueue):
         action = self._on_exception_action or self._final_action
-        if action == Options.REJECT:
-            await queue.reject(delivery_tag=self._delivery_tag, requeue=False)
-        elif action == Options.REQUEUE:
-            await queue.reject(delivery_tag=self._delivery_tag, requeue=True)
-        elif action == Options.ACK:
-            await queue.ack(delivery_tag=self._delivery_tag)
-
+        return await self._process_action(action, queue)
