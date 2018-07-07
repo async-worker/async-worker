@@ -11,6 +11,7 @@ from aioamqp.exceptions import AioamqpException
 from asyncworker.consumer import Consumer
 import asyncworker.consumer
 from asyncworker import conf, Bucket, App
+from asyncworker.rabbitmq.message import RabbitMQMessage
 from asyncworker.options import Events, Options
 
 
@@ -170,33 +171,15 @@ class ConsumerTest(asynctest.TestCase):
         devemos fazer o ack da mensagem
         """
         consumer = Consumer(self.one_route_fixture, *self.connection_parameters)
-        queue_mock = CoroutineMock(ack=CoroutineMock())
         expected_body = {"key": "value"}
-        with mock.patch.object(asyncworker.consumer, 'RabbitMQMessage') as RabbitMQMessageMock:
-            message_mock = CoroutineMock(process=CoroutineMock(), body=expected_body, delivery_tag=10)
-            RabbitMQMessageMock.return_value = message_mock
-            result = await consumer.on_queue_message(expected_body, delivery_tag=10, queue=queue_mock)
-            self.assertEqual((42, expected_body), result)
-            message_mock.process.assert_awaited_once_with(queue_mock)
+        message_mock = RabbitMQMessage(body=expected_body, delivery_tag=10)
 
-    async def test_on_queue_message_rejects_on_exception(self):
-        """
-        Se o handler der raise em qualquer exception, devemos
-        dar reject() na mensagem
-        """
-        async def exception_handler(message):
-            return message.do_not_exist
+        result = await consumer.on_queue_message(expected_body, delivery_tag=10, queue=self.queue_mock)
+        self.assertEqual((42, expected_body), result)
+        self.queue_mock.ack.assert_awaited_once_with(delivery_tag=10)
+        self.queue_mock.reject.assert_not_awaited()
 
-        self.one_route_fixture['handler'] = exception_handler
-        consumer = Consumer(self.one_route_fixture, *self.connection_parameters)
-        queue_mock = CoroutineMock(ack=CoroutineMock(), reject=CoroutineMock())
-        with self.assertRaises(AttributeError):
-            await consumer.on_queue_message({"key": "value"}, delivery_tag=10, queue=queue_mock)
-
-        queue_mock.reject.assert_awaited_once_with(delivery_tag=10, requeue=True)
-        queue_mock.ack.assert_not_awaited
-
-    async def test_on_queue_message_rejects_on_exception_bulk_messages(self):
+    async def test_on_exception_default_action_bulk_messages(self):
         """
         Se o handler der raise em qualquer exception, devemos
         dar reject() na mensagem
@@ -307,7 +290,6 @@ class ConsumerTest(asynctest.TestCase):
         await consumer.on_queue_message({"key": "value"}, delivery_tag=13, queue=queue_mock)
         await consumer.on_queue_message({"key": "value"}, delivery_tag=14, queue=queue_mock)
 
-        print(queue_mock.reject.await_args_list)
         self.assertEqual([mock.call(delivery_tag=10, requeue=False),
                           mock.call(delivery_tag=11, requeue=True),
                           mock.call(delivery_tag=12, requeue=True),

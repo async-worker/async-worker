@@ -1,23 +1,44 @@
 
 from easyqueue.async import AsyncQueue
+from asyncworker.options import Options
+
 
 class RabbitMQMessage:
 
-    def __init__(self, body, delivery_tag):
-        self._do_ack = True
+    def __init__(self, body, delivery_tag, on_success=Options.ACK, on_exception=Options.REQUEUE):
         self.body = body
         self._delivery_tag = delivery_tag
-        self._requeue = True
+        self._on_success_action = on_success
+        self._on_exception_action = on_exception
+        self._final_action = None
 
     def reject(self, requeue=True):
-        self._do_ack = False
-        self._requeue = requeue
+        self._final_action = Options.REJECT
+        if requeue:
+            self._final_action = Options.REQUEUE
+        self._on_success_action = None
+        self._on_exception_action = None
 
     def accept(self):
-        self._do_ack = True
+        self._on_success_action = None
+        self._on_exception_action = None
+        self._final_action = Options.ACK
 
-    async def process(self, queue: AsyncQueue):
-        if self._do_ack:
+    async def process_success(self, queue: AsyncQueue):
+        action = self._on_success_action or self._final_action
+        if action == Options.REJECT:
+            await queue.reject(delivery_tag=self._delivery_tag, requeue=False)
+        elif action == Options.REQUEUE:
+            await queue.reject(delivery_tag=self._delivery_tag, requeue=True)
+        elif action == Options.ACK:
             await queue.ack(delivery_tag=self._delivery_tag)
-        else:
-            await queue.reject(delivery_tag=self._delivery_tag, requeue=self._requeue)
+
+    async def process_exception(self, queue: AsyncQueue):
+        action = self._on_exception_action or self._final_action
+        if action == Options.REJECT:
+            await queue.reject(delivery_tag=self._delivery_tag, requeue=False)
+        elif action == Options.REQUEUE:
+            await queue.reject(delivery_tag=self._delivery_tag, requeue=True)
+        elif action == Options.ACK:
+            await queue.ack(delivery_tag=self._delivery_tag)
+

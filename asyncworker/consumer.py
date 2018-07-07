@@ -69,29 +69,24 @@ class Consumer(AsyncQueueConsumerDelegate):
         try:
 
             if not self.bucket.is_full():
-                self.bucket.put(RabbitMQMessage(body=content, delivery_tag=delivery_tag))
+                self.bucket.put(RabbitMQMessage(body=content,
+                                                delivery_tag=delivery_tag,
+                                                on_success=self._route_options[Events.ON_SUCCESS],
+                                                on_exception=self._route_options[Events.ON_EXCEPTION],
+                                               )
+                               )
 
             if self.bucket.is_full():
                 all_messages = self.bucket.pop_all()
                 rv = await self._handler(all_messages)
                 for m in all_messages:
-                    if self._route_options[Events.ON_SUCCESS] == Options.REJECT:
-                        m.reject(requeue=False)
-                    elif self._route_options[Events.ON_SUCCESS] == Options.REQUEUE:
-                        m.reject(requeue=True)
-                    await m.process(queue)
+                    await m.process_success(queue)
             return rv
         except AioamqpException as aioamqpException:
             raise aioamqpException
         except Exception as e:
             for m in all_messages:
-                if self._route_options[Events.ON_EXCEPTION] == Options.REJECT:
-                    m.reject(requeue=False)
-                elif self._route_options[Events.ON_EXCEPTION] == Options.ACK:
-                    m.accept()
-                elif self._route_options[Events.ON_EXCEPTION] == Options.REQUEUE:
-                    m.reject(requeue=True)
-                await m.process(queue)
+                await m.process_exception(queue)
             raise e
 
 
