@@ -153,6 +153,9 @@ class AsyncQueue(BaseJsonQueue):
         :return: The consumer tag. Useful for cancelling/stopping consumption
         """
         # todo: Implement a consumer tag generator
+        if not self.delegate:
+            raise RuntimeError("Impossible to consume without a delegate.")
+
         await self.delegate.on_before_start_consumption(queue_name, queue=self)
 
         if self._channel is None:
