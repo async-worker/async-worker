@@ -1,3 +1,4 @@
+from functools import wraps
 from time import time as now
 from typing import Callable, Coroutine, Type, Optional, Any
 
@@ -23,6 +24,13 @@ class Timeit:
         self.callback = callback
         self.start: float = None
         self.finish: float = None
+
+    def __call__(self, coro: Callable[..., Coroutine]):
+        @wraps(coro)
+        async def wrapped(*args, **kwargs):
+            async with self:
+                return await coro(*args, **kwargs)
+        return wrapped
 
     @property
     def time_delta(self) -> float:

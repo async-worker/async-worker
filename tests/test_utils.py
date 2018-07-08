@@ -51,3 +51,16 @@ class TimeitTests(asynctest.TestCase):
                 e,
                 e.__traceback__
             )
+
+    async def test_it_can_be_used_as_a_decorator(self):
+        coro = asynctest.CoroutineMock()
+        now = Mock(side_effect=[self.time, self.time_plus_1_sec])
+
+        @Timeit(name='Xablau', callback=coro)
+        async def foo():
+            pass
+
+        with patch('asyncworker.utils.now', now):
+            await foo()
+
+        coro.assert_awaited_once_with('Xablau', 1.0, None, None, None)
