@@ -66,6 +66,17 @@ async def drain_handler(message):
 Caso uma exceção seja levantada dentro do contexto, `log_callback` será chamado
 com os dados da exceção.
 
+Também é possível utilizar `Timeit` como um decorator:
+
+```python
+# ...
+
+@app.route(["xablau-queue"], vhost="/")
+@Timeit(name="xablau-access-time", callback=log_callback)
+async def drain_handler(message):
+    await access_some_remote_content()
+```
+
 ## Atualizando o async-worker no seu projeto
 
 ### 0.1.0 para 0.2.0
