@@ -83,7 +83,7 @@ podemos chamar `message.reject(requeue=False)`. O valor default do `requeue` é 
 
 ## Configurações de ação padrão em caso de sucesso e exception
 
-É possível escolher o que o asynworker fará com as mensagens em caso de sucesso (handler executa sel lançar exceção)
+É possível escolher o que o asynworker fará com as mensagens em caso de sucesso (handler executa sem lançar exceção)
 ou em caso de falha (handler lança uma exception não tratada).
 
 As opções são: Events.ON_SUCCESS e Events.ON_EXCEPTION. Ambas são passadas a cada rota de consumo registrada, ex:
@@ -138,10 +138,9 @@ async def drain_handler(messages):
 
 Nota sobre BULK_SIZE: O valor do BULK_SIZE sempre é escolhido com a fórmula: `min(BULK_SIZE, PREFRETCH)`. Isso para evitar que o código fique em um deadlock, onde ao mesmo tempo que ele aguarda o bulk encher para poder pegar mais mensagens da fila, ele está aguardando o bulk esvaziar para pegar mais mensagens da fila.
  
->>>>>>> feature/reject-sem-requeue
 ## Atualizando o async-worker no seu projeto
 
-### 0.1.x 0.2.0
+### 0.1.x > 0.2.0
 
 Na versão `0.2.0` criamos a possibilidade de receber mensagens em lote. E a partir dessa versão
 a assinatura do handler mudo para:
