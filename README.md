@@ -89,6 +89,8 @@ async def drain_handler(messages):
 
 ```
 
+Nota sobre BULK_SIZE: O valor do BULK_SIZE sempre é escolhido com a fórmula: `min(BULK_SIZE, PREFRETCH)`. Isso para evitar que o código fique em um deadlock, onde ao mesmo tempo que ele aguarda o bulk encher para poder pegar mais mensagens da fila, ele está aguardando o bulk esvaziar para pegar mais mensagens da fila.
+ 
 ## Atualizando o async-worker no seu projeto
 
 ### 0.1.x 0.2.0
