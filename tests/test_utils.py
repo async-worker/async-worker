@@ -31,12 +31,17 @@ class TimeitTests(asynctest.TestCase):
         self.assertEqual(timeit.time_delta, 1.0)
 
     async def test_it_calls_callback_on_context_end(self):
-        coro = asynctest.CoroutineMock()
+        callback = asynctest.CoroutineMock()
         times = [self.time, self.time_plus_1_sec]
         with patch('asyncworker.utils.now', Mock(side_effect=times)):
-            async with Timeit(name="Xablau", callback=coro) as timeit:
-                coro.assert_not_awaited()
-        coro.assert_awaited_once_with(timeit.name, timeit.time_delta, None, None, None)
+            async with Timeit(name="Xablau", callback=callback) as timeit:
+                callback.assert_not_awaited()
+        callback.assert_awaited_once_with(
+            name=timeit.name,
+            time_delta=timeit.time_delta,
+            exc_type=None,
+            exc_val=None,
+            exc_tb=None)
 
     async def test_it_calls_callback_with_exc_parameters_if_an_exception_is_raised(self):
         coro = asynctest.CoroutineMock()
@@ -45,11 +50,11 @@ class TimeitTests(asynctest.TestCase):
                 raise KeyError("Xablau")
         except KeyError as e:
             coro.assert_awaited_once_with(
-                timeit.name,
-                timeit.time_delta,
-                KeyError,
-                e,
-                e.__traceback__
+                name=timeit.name,
+                time_delta=timeit.time_delta,
+                exc_type=KeyError,
+                exc_val=e,
+                exc_tb=e.__traceback__
             )
 
     async def test_it_can_be_used_as_a_decorator(self):
@@ -63,4 +68,10 @@ class TimeitTests(asynctest.TestCase):
         with patch('asyncworker.utils.now', now):
             await foo()
 
-        coro.assert_awaited_once_with('Xablau', 1.0, None, None, None)
+        coro.assert_awaited_once_with(
+            name='Xablau',
+            time_delta=1.0,
+            exc_type=None,
+            exc_val=None,
+            exc_tb=None
+        )
