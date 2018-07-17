@@ -7,6 +7,7 @@ cscope*
 *.pyo
 _build
 .cache
+.pytest_cache
 .coverage
 .DS_Store
 .ropeproject
