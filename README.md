@@ -44,7 +44,7 @@ from asyncworker.utils import Timeit
 
 async def log_callback(**kwargs):
     print(kwargs)
-    # >>> {'name': 'xablau', 'time_delta': 1.0015296936035156, 'exc_type': None, 'exc_val': None, 'exc_tb': None}
+    # >>> {'transactions': {'xablau': 1.0028090476989746}, 'exc_type': None, 'exc_val': None, 'exc_tb': None}
 
 
 async def main():
@@ -66,7 +66,7 @@ from asyncworker.utils import Timeit
 
 async def log_callback(**kwargs):
     print(kwargs)
-    # >>> {'name': 'xablau', 'time_delta': 2.6226043701171875e-06, 'exc_type': <class 'KeyError'>, 'exc_val': KeyError('error',), 'exc_tb': <traceback object at 0x7feb02efd288>}
+    # >>> {'transactions': {'xablau': 3.0994415283203125e-06}, 'exc_type': <class 'KeyError'>, 'exc_val': KeyError('error',), 'exc_tb': <traceback object at 0x10c10c7c8>}
 
 
 async def main():
