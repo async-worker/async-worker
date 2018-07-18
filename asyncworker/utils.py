@@ -1,6 +1,7 @@
 from functools import wraps
 from time import time as now
-from typing import Callable, Coroutine, Dict
+from typing import Callable, Coroutine, Dict, Union
+
 
 TimeitCallback = Callable[..., Coroutine]
 
@@ -17,7 +18,9 @@ class Timeit:
         self.finish: float = None
         self.transactions: Dict[str, float] = {}
 
-    def __call__(self, coro: Callable[..., Coroutine]=None, name: str=None):
+    def __call__(self,
+                 coro: Callable[..., Coroutine]=None,
+                 name: str=None) -> Union[Callable[..., Coroutine], 'TimeIt']:
         if name:
             child = Timeit(name=name)
             child.transactions = self.transactions
