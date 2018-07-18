@@ -28,7 +28,8 @@ class TimeitTests(asynctest.TestCase):
         with patch('asyncworker.utils.now', now):
             async with Timeit(name="Xablau", callback=asynctest.CoroutineMock()) as timeit:
                 pass
-        self.assertEqual(timeit.time_delta, 1.0)
+
+        self.assertEqual(timeit.transactions['Xablau'], 1.0)
 
     async def test_it_calls_callback_on_context_end(self):
         callback = asynctest.CoroutineMock()
@@ -37,11 +38,13 @@ class TimeitTests(asynctest.TestCase):
             async with Timeit(name="Xablau", callback=callback) as timeit:
                 callback.assert_not_awaited()
         callback.assert_awaited_once_with(
-            name=timeit.name,
-            time_delta=timeit.time_delta,
-            exc_type=None,
-            exc_val=None,
-            exc_tb=None)
+            **{
+                Timeit.TRANSACTIONS_KEY: timeit.transactions,
+                'exc_type': None,
+                'exc_val': None,
+                'exc_tb': None
+            }
+        )
 
     async def test_it_calls_callback_with_exc_parameters_if_an_exception_is_raised(self):
         coro = asynctest.CoroutineMock()
@@ -50,11 +53,12 @@ class TimeitTests(asynctest.TestCase):
                 raise KeyError("Xablau")
         except KeyError as e:
             coro.assert_awaited_once_with(
-                name=timeit.name,
-                time_delta=timeit.time_delta,
-                exc_type=KeyError,
-                exc_val=e,
-                exc_tb=e.__traceback__
+                **{
+                    Timeit.TRANSACTIONS_KEY: timeit.transactions,
+                    'exc_type': KeyError,
+                    'exc_val': e,
+                    'exc_tb': e.__traceback__
+                }
             )
 
     async def test_it_can_be_used_as_a_decorator(self):
@@ -69,9 +73,10 @@ class TimeitTests(asynctest.TestCase):
             await foo()
 
         coro.assert_awaited_once_with(
-            name='Xablau',
-            time_delta=1.0,
-            exc_type=None,
-            exc_val=None,
-            exc_tb=None
+            **{
+                Timeit.TRANSACTIONS_KEY: {'Xablau': 1.0},
+                'exc_type': None,
+                'exc_val': None,
+                'exc_tb': None
+            }
         )
