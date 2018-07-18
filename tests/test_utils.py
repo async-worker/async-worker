@@ -8,7 +8,6 @@ from asyncworker.utils import Timeit
 
 class TimeitTests(asynctest.TestCase):
     time = 1149573966.0
-    time_plus_1_sec = 1149573967.0
 
     @freeze_time('2006-06-06 06:06:06')
     async def test_it_marks_starting_times(self):
@@ -24,7 +23,7 @@ class TimeitTests(asynctest.TestCase):
         self.assertEqual(timeit.finish, 1149573967.0)
 
     async def test_it_calculates_time_delta(self):
-        now = Mock(side_effect=[self.time, self.time_plus_1_sec])
+        now = Mock(side_effect=[self.time, self.time+1])
         with patch('asyncworker.utils.now', now):
             async with Timeit(name="Xablau", callback=asynctest.CoroutineMock()) as timeit:
                 pass
@@ -33,7 +32,7 @@ class TimeitTests(asynctest.TestCase):
 
     async def test_it_calls_callback_on_context_end(self):
         callback = asynctest.CoroutineMock()
-        times = [self.time, self.time_plus_1_sec]
+        times = [self.time, self.time+1]
         with patch('asyncworker.utils.now', Mock(side_effect=times)):
             async with Timeit(name="Xablau", callback=callback) as timeit:
                 callback.assert_not_awaited()
@@ -63,7 +62,7 @@ class TimeitTests(asynctest.TestCase):
 
     async def test_it_can_be_used_as_a_decorator(self):
         coro = asynctest.CoroutineMock()
-        now = Mock(side_effect=[self.time, self.time_plus_1_sec])
+        now = Mock(side_effect=[self.time, self.time+1])
 
         @Timeit(name='Xablau', callback=coro)
         async def foo():
@@ -75,6 +74,46 @@ class TimeitTests(asynctest.TestCase):
         coro.assert_awaited_once_with(
             **{
                 Timeit.TRANSACTIONS_KEY: {'Xablau': 1.0},
+                'exc_type': None,
+                'exc_val': None,
+                'exc_tb': None
+            }
+        )
+
+    async def test_timeit_children_share_a_common_transactions_state(self):
+        callback = asynctest.CoroutineMock()
+        async with Timeit(name='a', callback=callback) as timeit:
+            pass
+            async with timeit(name='b') as child1:
+                self.assertEqual(child1._transactions, timeit._transactions)
+                async with timeit(name='c') as child2:
+                    self.assertEqual(child2._transactions, timeit._transactions)
+
+    async def test_it_can_have_multiple_nested_transactions(self):
+        callback = asynctest.CoroutineMock()
+        now = Mock(
+            side_effect=[
+                self.time, self.time, self.time,
+                self.time + 1, self.time + 2, self.time + 3
+            ]
+        )
+
+        with patch('asyncworker.utils.now', now):
+
+            async with Timeit(name='a', callback=callback) as timeit:
+                # do some database access
+                async with timeit(name='b'):
+                    # do some processing
+                    async with timeit(name='c'):
+                        """do some other time costly stuff"""
+
+        callback.assert_awaited_once_with(
+            **{
+                Timeit.TRANSACTIONS_KEY: {
+                    'a': 3.0,
+                    'b': 2.0,
+                    'c': 1.0
+                },
                 'exc_type': None,
                 'exc_val': None,
                 'exc_tb': None

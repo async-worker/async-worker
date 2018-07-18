@@ -16,14 +16,14 @@ class Timeit:
         self.callback = callback
         self.start: float = None
         self.finish: float = None
-        self.transactions: Dict[str, float] = {}
+        self._transactions: Dict[str, float] = {}
 
     def __call__(self,
                  coro: Callable[..., Coroutine]=None,
                  name: str=None) -> Union[Callable[..., Coroutine], 'TimeIt']:
         if name:
             child = Timeit(name=name)
-            child.transactions = self.transactions
+            child._transactions = self._transactions
             return child
 
         @wraps(coro)
@@ -38,11 +38,11 @@ class Timeit:
 
     async def __aexit__(self, exc_type, exc_val, exc_tb):
         self.finish = now()
-        self.transactions[self.name] = self.finish - self.start
+        self._transactions[self.name] = self.finish - self.start
 
         if self.callback:
             measurement = {
-                self.TRANSACTIONS_KEY: self.transactions,
+                self.TRANSACTIONS_KEY: self._transactions,
                 'exc_type': exc_type,
                 'exc_val': exc_val,
                 'exc_tb': exc_tb,
