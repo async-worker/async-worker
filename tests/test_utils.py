@@ -28,7 +28,7 @@ class TimeitTests(asynctest.TestCase):
             async with Timeit(name="Xablau", callback=asynctest.CoroutineMock()) as timeit:
                 pass
 
-        self.assertEqual(timeit.transactions['Xablau'], 1.0)
+        self.assertEqual(timeit._transactions['Xablau'], 1.0)
 
     async def test_it_calls_callback_on_context_end(self):
         callback = asynctest.CoroutineMock()
@@ -38,7 +38,7 @@ class TimeitTests(asynctest.TestCase):
                 callback.assert_not_awaited()
         callback.assert_awaited_once_with(
             **{
-                Timeit.TRANSACTIONS_KEY: timeit.transactions,
+                Timeit.TRANSACTIONS_KEY: timeit._transactions,
                 'exc_type': None,
                 'exc_val': None,
                 'exc_tb': None
@@ -53,7 +53,7 @@ class TimeitTests(asynctest.TestCase):
         except KeyError as e:
             coro.assert_awaited_once_with(
                 **{
-                    Timeit.TRANSACTIONS_KEY: timeit.transactions,
+                    Timeit.TRANSACTIONS_KEY: timeit._transactions,
                     'exc_type': KeyError,
                     'exc_val': e,
                     'exc_tb': e.__traceback__
