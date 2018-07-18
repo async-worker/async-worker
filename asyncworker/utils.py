@@ -1,19 +1,9 @@
 from functools import wraps
 from time import time as now
-from typing import Callable, Coroutine, Type, Optional, Any
+from typing import Callable, Coroutine
 
 
-Traceback = Any  # fixme: Substituir pelo tipo correto de traceback
-TimeitCallback = Callable[
-    [
-        str,
-        float,
-        Optional[Type[Exception]],
-        Optional[Exception],
-        Optional[Traceback]
-    ],
-    Coroutine
-]
+TimeitCallback = Callable[..., Coroutine]
 
 
 class Timeit:
@@ -43,9 +33,9 @@ class Timeit:
     async def __aexit__(self, exc_type, exc_val, exc_tb):
         self.finish = now()
         await self.callback(
-            self.name,
-            self.time_delta,
-            exc_type,
-            exc_val,
-            exc_tb
+            name=self.name,
+            time_delta=self.time_delta,
+            exc_type=exc_type,
+            exc_val=exc_val,
+            exc_tb=exc_tb
         )

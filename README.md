@@ -32,38 +32,49 @@ Se o handler rodar sem erros, a mensagem é automaticamente confirmada (ack).
 ### Timeit
 
 Um gerenciador de contexto para marcar o tempo de execução de código e chamar
-um callback `(str, float, Optional[Type[Exception]], Optional[Exception], Optional[traceback]) -> Coroutine` 
+um callback `Callable[..., Coroutine]` 
 assíncrono ao final, com o tempo total de execução.
 
 ```python
-import traceback
-from typing import Type
-
+import asyncio
 from asyncworker.utils import Timeit
 
 
-# App initialization stuff...
-
-async def log_callback(name: str,
-                       time_delta: float, 
-                       exc_type: Type[Exception]=None, 
-                       exc_val: Exception=None, 
-                       exc_tb: traceback=None):
-    log = {'name': name, 'time_delta': time_delta}
-    if exc_type:
-        await logger.error(log, exc_info=(exc_type, exc_val, exc_tb))
-    else:
-        await logger.info(log)
+async def log_callback(**kwargs):
+    print(kwargs)
+    # >>> {'name': 'xablau', 'time_delta': 1.0015296936035156, 'exc_type': None, 'exc_val': None, 'exc_tb': None}
 
 
-@app.route(["xablau-queue"], vhost="/")
-async def drain_handler(message):
-    async with Timeit(name="xablau-access-time", callback=log_callback):
-        await access_some_remote_content()
+async def main():
+    async with Timeit(name="xablau", callback=log_callback):
+        await asyncio.sleep(1)
+
+loop = asyncio.get_event_loop()
+loop.run_until_complete(main())
 ```
 
 Caso uma exceção seja levantada dentro do contexto, `log_callback` será chamado
-com os dados da exceção.
+com os dados da exceção explicitamente.
+
+
+```python
+import asyncio
+from asyncworker.utils import Timeit
+
+
+async def log_callback(**kwargs):
+    print(kwargs)
+    # >>> {'name': 'xablau', 'time_delta': 2.6226043701171875e-06, 'exc_type': <class 'KeyError'>, 'exc_val': KeyError('error',), 'exc_tb': <traceback object at 0x7feb02efd288>}
+
+
+async def main():
+    async with Timeit(name="xablau", callback=log_callback):
+        raise KeyError("error")
+        
+loop = asyncio.get_event_loop()
+loop.run_until_complete(main())
+```
+
 
 Também é possível utilizar `Timeit` como um decorator:
 
