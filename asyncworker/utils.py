@@ -1,30 +1,33 @@
 from functools import wraps
 from time import time as now
-from typing import Callable, Coroutine
-
+from typing import Callable, Coroutine, Dict
 
 TimeitCallback = Callable[..., Coroutine]
 
 
 class Timeit:
+    TRANSACTIONS_KEY = 'transactions'
+
     def __init__(self,
                  name: str,
-                 callback: TimeitCallback):
+                 callback: TimeitCallback=None):
         self.name = name
         self.callback = callback
         self.start: float = None
         self.finish: float = None
+        self.transactions: Dict[str, float] = {}
 
-    def __call__(self, coro: Callable[..., Coroutine]):
+    def __call__(self, coro: Callable[..., Coroutine]=None, name: str=None):
+        if name:
+            child = Timeit(name=name)
+            child.transactions = self.transactions
+            return child
+
         @wraps(coro)
         async def wrapped(*args, **kwargs):
             async with self:
                 return await coro(*args, **kwargs)
         return wrapped
-
-    @property
-    def time_delta(self) -> float:
-        return self.finish - self.start
 
     async def __aenter__(self):
         self.start = now()
@@ -32,10 +35,13 @@ class Timeit:
 
     async def __aexit__(self, exc_type, exc_val, exc_tb):
         self.finish = now()
-        await self.callback(
-            name=self.name,
-            time_delta=self.time_delta,
-            exc_type=exc_type,
-            exc_val=exc_val,
-            exc_tb=exc_tb
-        )
+        self.transactions[self.name] = self.finish - self.start
+
+        if self.callback:
+            measurement = {
+                self.TRANSACTIONS_KEY: self.transactions,
+                'exc_type': exc_type,
+                'exc_val': exc_val,
+                'exc_tb': exc_tb,
+            }
+            await self.callback(**measurement)
