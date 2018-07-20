@@ -38,6 +38,10 @@ class Timeit:
 
     async def __aexit__(self, exc_type, exc_val, exc_tb):
         self.finish = now()
+
+        if self.name in self._transactions:
+            raise ValueError("A transaction with the same name already exists.")
+
         self._transactions[self.name] = self.finish - self.start
 
         if self.callback:

@@ -89,6 +89,14 @@ class TimeitTests(asynctest.TestCase):
                 async with timeit(name='c') as child2:
                     self.assertEqual(id(child2._transactions), id(timeit._transactions))
 
+    async def test_initializing_more_than_one_transation_with_the_same_name_on_the_same_scope_raises_an_error(self):
+        callback = asynctest.CoroutineMock()
+        with self.assertRaises(ValueError):
+            async with Timeit(name='a', callback=callback) as timeit:
+                pass
+                async with timeit(name='a'):
+                    pass
+
     async def test_it_can_have_multiple_nested_transactions(self):
         callback = asynctest.CoroutineMock()
         now = Mock(
