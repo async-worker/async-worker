@@ -85,9 +85,9 @@ class TimeitTests(asynctest.TestCase):
         async with Timeit(name='a', callback=callback) as timeit:
             pass
             async with timeit(name='b') as child1:
-                self.assertEqual(child1._transactions, timeit._transactions)
+                self.assertEqual(id(child1._transactions), id(timeit._transactions))
                 async with timeit(name='c') as child2:
-                    self.assertEqual(child2._transactions, timeit._transactions)
+                    self.assertEqual(id(child2._transactions), id(timeit._transactions))
 
     async def test_it_can_have_multiple_nested_transactions(self):
         callback = asynctest.CoroutineMock()
