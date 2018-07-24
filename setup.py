@@ -1,8 +1,9 @@
-from setuptools import setup, find_packages  # Always prefer setuptools over distutils
-from codecs import open  # To use a consistent encoding
+from setuptools import setup, find_packages
 from os import path
 
+
 here = path.abspath(path.dirname(__file__))
+
 
 setup(
     name='async-worker',
@@ -18,7 +19,7 @@ setup(
         'Programming Language :: Python :: 3.6',
     ],
     packages=find_packages(exclude=['contrib', 'docs', 'tests*']),
-    install_requires = [
+    install_requires=[
         "aioamqp==0.10.0",
         "easyqueue==1.0.0",
         "simple-json-logger==0.2.3",

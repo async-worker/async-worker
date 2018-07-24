@@ -5,7 +5,8 @@ from .consumer import Consumer
 
 from asyncworker import conf
 from asyncworker.options import Options, Defaultvalues, Events
-from .bucket import Bucket
+from .bucket import Bucket  # noqa: F401
+
 
 def entrypoint(f):
     @functools.wraps(f)
@@ -30,19 +31,35 @@ class App:
                 "handler": f,
                 "options": {
                     "vhost": vhost,
-                    "bulk_size": options.get(Options.BULK_SIZE, Defaultvalues.BULK_SIZE),
-                    "bulk_flush_interval": options.get(Options.BULK_FLUSH_INTERVAL, Defaultvalues.BULK_FLUSH_INTERVAL),
-                    Events.ON_SUCCESS: options.get(Events.ON_SUCCESS, Defaultvalues.ON_SUCCESS),
-                    Events.ON_EXCEPTION: options.get(Events.ON_EXCEPTION, Defaultvalues.ON_EXCEPTION),
+                    "bulk_size": options.get(
+                        Options.BULK_SIZE,
+                        Defaultvalues.BULK_SIZE),
+                    "bulk_flush_interval": options.get(
+                        Options.BULK_FLUSH_INTERVAL,
+                        Defaultvalues.BULK_FLUSH_INTERVAL),
+                    Events.ON_SUCCESS: options.get(
+                        Events.ON_SUCCESS,
+                        Defaultvalues.ON_SUCCESS),
+                    Events.ON_EXCEPTION: options.get(
+                        Events.ON_EXCEPTION,
+                        Defaultvalues.ON_EXCEPTION),
                 }
             }
             return f
+
         return wrap
 
     def _build_consumers(self):
         consumers = []
         for _handler, route_info in self.routes_registry.items():
-            consumers.append(Consumer(route_info, self.host, self.user, self.password, self.prefetch_count))
+            consumer = Consumer(
+                route_info,
+                self.host,
+                self.user,
+                self.password,
+                self.prefetch_count
+            )
+            consumers.append(consumer)
         return consumers
 
     @entrypoint
@@ -53,4 +70,3 @@ class App:
             asyncio.get_event_loop().create_task(consumer.start())
         while True:
             await asyncio.sleep(10)
-

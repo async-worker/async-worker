@@ -124,7 +124,9 @@ class Consumer(AsyncQueueConsumerDelegate):
         except AioamqpException as e:
             self._log_exception(e)
 
-    async def on_message_handle_error(self, handler_error: Exception, **kwargs):
+    async def on_message_handle_error(self,
+                                      handler_error: Exception,
+                                      **kwargs):
         """
         Callback called when an uncaught exception was raised during message
         handling stage.

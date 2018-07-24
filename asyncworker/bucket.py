@@ -10,7 +10,8 @@ class Bucket:
 
     def put(self, item):
         if self.is_full():
-            raise BucketFullException(f"Bucket is at full capacity: {self.size}")
+            error_msg = f"Bucket is at full capacity: {self.size}"
+            raise BucketFullException(error_msg)
         self._items.append(item)
 
     def pop_all(self):
