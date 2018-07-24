@@ -19,6 +19,7 @@ pytest-coverage = "*"
 codecov = "==1.0.0"
 freezegun = "==0.3.10"
 async-worker = {editable = true, path = "."}
+"flake8" = "==3.5.0"
 
 [requires]
 python_version = "3.6"
