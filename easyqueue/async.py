@@ -89,7 +89,7 @@ class AsyncQueue(BaseJsonQueue):
         if priority:
             raise NotImplementedError
         payload = self.serialize(body, ensure_ascii=False)
-        return await self._channel.publish(payload=payload,
+        return await self._channel.publish(payload=payload.encode(),
                                            exchange_name=exchange,
                                            routing_key=routing_key)
 
