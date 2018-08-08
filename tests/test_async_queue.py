@@ -94,12 +94,12 @@ class AsynQueueTests(asynctest.TestCase):
                        delegate=Mock(),
                        delegate_class=Mock())
 
-    async def test_it_raises_an_error_if_its_initialized_without_both_delegate_and_delegate_class(self):
-        with self.assertRaises(ValueError):
-            AsyncQueue(host='diogommartins.com',
-                       username='diogo',
-                       password='XablauBolado',
-                       loop=Mock())
+    async def test_its_possibile_to_initialize_without_a_delegate(self):
+            queue = AsyncQueue(host='diogommartins.com',
+                               username='diogo',
+                               password='XablauBolado',
+                               loop=Mock())
+            self.assertIsInstance(queue, AsyncQueue)
 
     async def test_it_initializes_a_delegate_if_delegate_class_is_provided(self):
         delegate_class = Mock()
@@ -166,7 +166,7 @@ class AsyncQueueConnectionTests(AsyncBaseTestCase, asynctest.TestCase):
                              routing_key=routing_key)
 
         expected = call(
-            payload=json.dumps(message),
+            payload=json.dumps(message).encode(),
             routing_key=routing_key,
             exchange_name=exchange
         )
@@ -224,6 +224,12 @@ class AsyncQueueConsumerTests(AsyncBaseTestCase, asynctest.TestCase):
             on_before_start_consumption=CoroutineMock(),
             on_consumption_start=CoroutineMock()
         )
+
+    async def test_it_raies_an_error_if_consume_is_called_without_a_delegate(self):
+        with self.assertRaises(RuntimeError):
+            self.queue.delegate = None
+            await self.queue.consume(queue_name=Mock(),
+                                     consumer_name=Mock())
 
     async def test_calling_consume_without_a_connection_raises_an_error(self):
         with self.assertRaises(ConnectionError):
