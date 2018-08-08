@@ -24,11 +24,9 @@ class AsyncQueue(BaseJsonQueue):
 
         self.loop = loop or asyncio.get_event_loop()
 
-        if delegate is None and delegate_class is None:
-            raise ValueError("Can't initiate an AsyncQueue withut both "
-                             "delegate and delegate_class")
         if delegate is not None and delegate_class is not None:
             raise ValueError("Cant provide both delegate and delegate_class")
+
         if delegate_class is not None:
             self.delegate = delegate_class(loop=self.loop, queue=self)
         else:
@@ -47,13 +45,18 @@ class AsyncQueue(BaseJsonQueue):
 
     @property
     def connection_parameters(self):
+        if self.delegate:
+            on_error = self.delegate.on_connection_error
+        else:
+            on_error = None
+
         return {
             'host': self.host,
             'login': self.username,
             'password': self.password,
             'virtualhost': self.virtual_host,
             'loop': self.loop,
-            'on_error': self.delegate.on_connection_error,
+            'on_error': on_error,
             'heartbeat': self.heartbeat
         }
 
@@ -150,6 +153,9 @@ class AsyncQueue(BaseJsonQueue):
         :return: The consumer tag. Useful for cancelling/stopping consumption
         """
         # todo: Implement a consumer tag generator
+        if not self.delegate:
+            raise RuntimeError("Impossible to consume without a delegate.")
+
         await self.delegate.on_before_start_consumption(queue_name, queue=self)
 
         if self._channel is None:
