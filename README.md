@@ -26,7 +26,7 @@ Class used for asynchronously connecting and consuming
 
 ``` python
 import asyncio
-from easyqueue.async import AsyncQueue, AsyncQueueConsumerDelegate
+from easyqueue import AsyncQueue, AsyncQueueConsumerDelegate
 
 
 class MyConsumer(AsyncQueueConsumerDelegate):
