@@ -71,16 +71,12 @@ if __name__ == '__main__':
 
 ```
 
-# AsyncQueueConsumerDelegate Protocol
+# Guia de migração 1.1.0 -> 1.2.x
 
-## `on_queue_message`
-
-## `on_queue_error`
-
-## `on_before_start_consumption`
-
-## `on_message_handle_error`
-
-##  `on_connection_error`
-
-## `on_consumption_start`
+As classes `AsyncQueue` e `AsyncQueueConsumerDelegate` não estão mais no módulo
+`async.py` que em python 3.7 é uma palavra reservada e foram movidas para `async_queue.py`.
+Ambas as classes estão disponíveis no nível do módulo do easyqueue o que significa
+que os imports devem mudar de: 
+`from easyqueue.async import AsyncQueue, AsyncQueueConsumerDelegate` 
+para:
+`from easyqueue import AsyncQueue, AsyncQueueConsumerDelegate`
