@@ -3,7 +3,7 @@ import aioamqp
 import asynctest
 from asynctest.mock import CoroutineMock
 from unittest.mock import Mock, patch, call, ANY
-from easyqueue.async import AsyncQueue, AsyncQueueConsumerDelegate
+from easyqueue import AsyncQueue, AsyncQueueConsumerDelegate
 from easyqueue.exceptions import UndecodableMessageException, \
     InvalidMessageSizeException
 from tests.utils import typed_any
