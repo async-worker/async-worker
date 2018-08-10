@@ -4,6 +4,7 @@ python:
   - "3.7-dev"
 install:
   - pip install pipenv
+  - pipenv run python setup.py sdist
   - pipenv install --system --deploy --ignore-pipfile --dev
   - pipenv run pip install -e .
 script: py.test -v --cov=./ --cov-report term-missing -v
