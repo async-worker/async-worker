@@ -4,7 +4,7 @@ from setuptools import setup, find_packages
 
 BASE_PATH = os.path.dirname(__file__)
 
-__version__ = '1.2.1'
+__version__ = '1.2.1-rc1'
 
 
 setup(
