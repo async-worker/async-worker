@@ -10,3 +10,10 @@ install:
 script: py.test -v --cov=./ --cov-report term-missing -v
 after_success:
   - codecov
+deploy:
+  provider: pypi
+  user: sievetech
+  on:
+    tags: true
+  password:
+    secure: ihcTtjoSfuCSWu1w/7YHHJOGKxDZ6P2gHXeQLgsdNCIQts1UN8XPg730Uen9KIWe/kgGW6J4nRPN92kg8RFotm+/+GnPf4/sEIev5LXt3JeBbrD0gDuSHTqScTQ5oeQ8VFj34l4z4jwKPg8LP488gXxPHGL7pkQY5PuYNJOxYD1lPlf/+qhV+nhCA0lLluxsSUcsojSd/eUDso6Rz7m9co4rInUVEiDVD+ytt7up3ppHzY9V/EkOTHtyUQqvT/nRt4BEW517FnSr9+EK5Y3guq5C39kvIC69DR3RJIjk3Lt+PTYCf2siMv/2txiOI05v0W6HxaB4K8PY+yWvnfWJR2uElUlRq1zKCalfJ64BRu0t0PVvuTcF72k6dQJleQkCrashF/rP2K+WnmtZQTc37vsOpVmWSZCHRCcOVIN3f0GuVQScIFDKA7L46/hnVLNj3X3oPInHRWwIqp93QlC+1iArULsNBQ1rFDayMX/yQvvJ0Kvwz2SAw9Q26o78Mmh5TcNsgSqyOmW2CZsUYpec3H1Xk2Rb2/ka4I5qehz/ZmM1iZAMUGTH6gZBO6SbhkxKqtufkiObgPHT8MRFJTfrKvD9uX3z66Fyoe01mtLnkS15izGx7qhAM1xH56qtsmTBID8+uw2rwD7700IRmICKF2vhCGqiKYSA9Ry/I6b0CSk=
