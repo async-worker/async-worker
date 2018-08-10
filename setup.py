@@ -20,7 +20,6 @@ setup(
     ],
     packages=find_packages(exclude=['contrib', 'docs', 'tests*']),
     install_requires = [
-        "aioamqp==0.11.0",
         "easyqueue==1.2.1-rc1",
         "simple-json-logger==0.2.3",
     ],
