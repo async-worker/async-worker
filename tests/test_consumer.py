@@ -5,7 +5,7 @@ from asynctest import CoroutineMock
 import asynctest
 import importlib
 
-from easyqueue.async import AsyncQueue
+from easyqueue import AsyncQueue
 from aioamqp.exceptions import AioamqpException
 
 from asyncworker.consumer import Consumer

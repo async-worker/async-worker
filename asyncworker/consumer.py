@@ -2,7 +2,7 @@ import asyncio
 import traceback
 from typing import Type
 
-from easyqueue.async import AsyncQueueConsumerDelegate, AsyncQueue
+from easyqueue import AsyncQueueConsumerDelegate, AsyncQueue
 from aioamqp.exceptions import AioamqpException
 
 from asyncworker import conf
