@@ -1,15 +1,15 @@
 import os
 from setuptools import setup, find_packages
 
-from easyqueue import __VERSION__
-
 
 BASE_PATH = os.path.dirname(__file__)
+
+__version__ = '1.2.0'
 
 
 setup(
     name='easyqueue',
-    version=__VERSION__,
+    version=__version__,
     author='Diogo Magalhães Martins',
     author_email='magalhaesmartins@icloud.com',
     maintainer='Sieve',
