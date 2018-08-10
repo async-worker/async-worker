@@ -4,9 +4,9 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-aioamqp = "==0.10.0"
+aioamqp = "==0.11.0"
 aiohttp = "==3.3.0"
-easyqueue = "==1.0.0"
+easyqueue = "==1.2.1-rc1"
 simple_json_logger = "==0.2.3"
 
 [dev-packages]
