@@ -1,4 +1,4 @@
-from easyqueue.async import AsyncQueue
+from easyqueue import AsyncQueue
 from asyncworker.options import Actions
 
 
