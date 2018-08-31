@@ -5,11 +5,14 @@ import asynctest
 from asyncworker.sse.app import SSEApplication
 from asyncworker.options import Options, Defaultvalues, Events, Actions
 
+from asynctest.mock import CoroutineMock
+
 class AppTest(asynctest.TestCase):
 
     def setUp(self):
         self.default_headers = {"X-New-Header": "X-Value"}
-        self.connection_parameters = {"url": "http://127.0.0.1", "user": "guest", "password": "guest", "headers": self.default_headers}
+        self.logger = CoroutineMock()
+        self.connection_parameters = {"url": "http://127.0.0.1", "user": "guest", "password": "guest", "logger": self.logger, "headers": self.default_headers}
 
     async def test_check_route_registry_full_options(self):
         expected_route = ["/v2/events", "/other/path"]
@@ -30,6 +33,7 @@ class AppTest(asynctest.TestCase):
         }
         self.assertEqual(expected_registry_entry, app.routes_registry[_handler])
         self.assertEqual(42, await app.routes_registry[_handler]['handler'](None))
+        self.assertEqual(self.logger, app.logger)
 
     async def test_check_route_registry_add_headers_per_handler(self):
         expected_route = ["/v2/events", "/other/path"]
@@ -134,7 +138,7 @@ class AppTest(asynctest.TestCase):
         self.assertEqual(Actions.REQUEUE, app.routes_registry[_handler]['options'][Events.ON_EXCEPTION])
 
     async def test_app_receives_queue_connection(self):
-        app = SSEApplication(url="http://127.0.0.1", user="guest", password="guest", headers={"A": "B"})
+        app = SSEApplication(url="http://127.0.0.1", user="guest", password="guest", headers={"A": "B"}, logger=None)
         self.assertEqual("http://127.0.0.1", app.url)
         self.assertEqual("guest", app.user)
         self.assertEqual("guest", app.password)

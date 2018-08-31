@@ -9,12 +9,14 @@ SSE_DEFAULT_HEADERS = {
 
 
 class SSEApplication(BaseApp):
-    def __init__(self, url, user, password, headers=SSE_DEFAULT_HEADERS):
+    def __init__(self, url, user, password, logger, headers=SSE_DEFAULT_HEADERS):
         self.routes_registry = {}
         self.url = url
         self.user = user
         self.password = password
         self.headers = headers
+        self.logger = logger
+
 
     def route(self, routes, headers={}, options={}):
         def wrap(f):
