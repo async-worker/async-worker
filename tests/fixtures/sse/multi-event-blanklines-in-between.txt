@@ -1,0 +1,25 @@
+
+event: group_change_success
+
+data: {"groupId":"/asgard-dev","version":"2018-09-04T12:58:57.000Z","eventType":"group_change_success","timestamp":"2018-09-04T12:58:57.072Z"}
+
+
+
+event: api_post_event
+
+data: {"clientIp":"172.18.0.1","uri":"/v2/apps//asgard-dev/bla","appDefinition":{"id":"/asgard-dev/bla","cmd":"sleep 1000","args":null,"user":null,"env":{},"instances":0,"cpus":1,"mem":128,"disk":0,"gpus":0,"executor":"","constraints":[],"uris":[],"fetch":[],"storeUrls":[],"backoffSeconds":1,"backoffFactor":1.15,"maxLaunchDelaySeconds":3600,"container":{"type":"DOCKER","volumes":[],"docker":{"image":"alpine","network":"BRIDGE","portMappings":[],"privileged":false,"parameters":[],"forcePullImage":false}},"healthChecks":[],"readinessChecks":[],"dependencies":[],"upgradeStrategy":{"minimumHealthCapacity":1,"maximumOverCapacity":1},"labels":{},"ipAddress":null,"version":"2018-09-04T12:58:57.000Z","residency":null,"secrets":{},"taskKillGracePeriodSeconds":null,"unreachableStrategy":{"inactiveAfterSeconds":0,"expungeAfterSeconds":0},"killSelection":"YOUNGEST_FIRST","ports":[10006],"portDefinitions":[{"port":10006,"protocol":"tcp","name":"default","labels":{}}],"requirePorts":false,"versionInfo":{"lastScalingAt":"2018-09-04T12:58:57.000Z","lastConfigChangeAt":"2018-09-04T12:56:56.861Z"}},"eventType":"api_post_event","timestamp":"2018-09-04T12:58:57.073Z"}
+
+event: status_update_event
+
+
+
+
+
+data: {"slaveId":"40cf614e-b392-4d31-9230-090ca3c7aa83-S0","taskId":"asgard-dev_bla.0139427f-b042-11e8-9638-0242ac12001f","taskStatus":"TASK_KILLED","message":"Container exited with status 137","appId":"/asgard-dev/bla","host":"172.18.0.51","ipAddresses":[{"ipAddress":"172.17.0.4","protocol":"IPv4"}],"ports":[30989],"version":"2018-09-04T12:56:56.861Z","eventType":"status_update_event","timestamp":"2018-09-04T12:59:57.728Z"}
+
+
+
+event: instance_changed_event
+
+data: {"instanceId":"asgard-dev_bla.marathon-0139427f-b042-11e8-9638-0242ac12001f","condition":"Killed","runSpecId":"/asgard-dev/bla","agentId":"40cf614e-b392-4d31-9230-090ca3c7aa83-S0","host":"172.18.0.51","runSpecVersion":"2018-09-04T12:56:56.861Z","timestamp":"2018-09-04T12:59:57.739Z","eventType":"instance_changed_event"}
+
