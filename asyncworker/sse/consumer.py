@@ -1,13 +1,16 @@
+from typing import Type
 from enum import Enum, auto
 from aiohttp import ClientSession, ClientTimeout
 import aiohttp
 import asyncio
 import traceback
+import json
 
 from asyncworker.sse.message import SSEMessage
 
 
 from asyncworker import conf
+from asyncworker.bucket import Bucket
 
 class State(Enum):
     WAIT_FOR_DATA = auto()
@@ -26,15 +29,36 @@ timeout = ClientTimeout(sock_read=5)
 class SSEConsumer:
     interval = 10
 
-    def __init__(self, url):
+    def __init__(self,
+                 route_info,
+                 url,
+                 username,
+                 password,
+                 bucket_class: Type[Bucket]=Bucket):
         self.url = url
         self.session = ClientSession(timeout=timeout)
+        self.bucket = bucket_class(size=route_info['options']['bulk_size'])
+        self.route_info = route_info
+        self._handler = route_info['handler']
 
     def keep_runnig(self):
         return True
 
     async def on_event(self, event_name, event_raw_body):
-        pass
+        rv = None
+        all_messages = []
+
+        if not self.bucket.is_full():
+            message = SSEMessage(
+                event_name=event_name.decode("utf-8"),
+                event_body=json.loads(event_raw_body)
+            )
+            self.bucket.put(message)
+
+        if self.bucket.is_full():
+            all_messages = self.bucket.pop_all()
+            rv = await self._handler(all_messages)
+        return rv
 
     async def on_connection_error(self, exception):
         conf.logger.error({

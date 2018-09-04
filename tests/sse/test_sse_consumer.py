@@ -6,7 +6,11 @@ import aiohttp
 from aioresponses import aioresponses
 
 from asyncworker.sse.consumer import SSEConsumer
+from asyncworker.bucket import Bucket
 
+
+async def _handler(message):
+    return (42, message[0].body)
 
 class SSEConsumerTest(TestCase):
 
@@ -15,8 +19,25 @@ class SSEConsumerTest(TestCase):
         return [True] * n + [False]
 
     async def setUp(self):
-        self.consumer = SSEConsumer("http://localhost:8080/v2/events")
+        self.one_route_fixture = {
+            "route": ["/asgard/counts/ok"],
+            "handler": _handler,
+            "options": {
+                "vhost": "/",
+                "bulk_size": 1,
+                "bulk_flush_interval": 60,
+            }
+        }
+        self.consumer_params = ("http://localhost:8080/v2/events", "guest", "guest")
+        self.consumer = SSEConsumer(self.one_route_fixture, *self.consumer_params)
         self.consumer.interval = 0
+
+    async def test_new_consumer_instance(self):
+        consumer = SSEConsumer(self.one_route_fixture, *self.consumer_params)
+        self.assertEqual(consumer.url, self.consumer_params[0])
+        self.assertEqual(consumer.route_info, self.one_route_fixture)
+        self.assertEqual(consumer._handler, self.one_route_fixture['handler'])
+
 
     @asynctest.skip("aiohttp não está seguindo esse redirect do aioresponses")
     async def test_follow_redirect(self):
@@ -150,9 +171,65 @@ class SSEConsumerTest(TestCase):
             self.assertEqual(2, session_mock.get.call_count)
             self.assertEqual(1, session_mock.get.await_count)
 
+    @asynctest.skip("Decidir o que fazer...")
     async def test_flush_bucket_on_connection_error(self):
         """
         Sempre que o stream acabar, ou formos desconectados
         temos que fazer flush do bucket.
         """
         self.fail()
+
+class SSEOnEventCallbackTest(TestCase):
+
+    async def setUp(self):
+        self.one_route_fixture = {
+            "route": ["/asgard/counts/ok"],
+            "handler": _handler,
+            "options": {
+                "vhost": "/",
+                "bulk_size": 1,
+                "bulk_flush_interval": 60,
+            }
+        }
+        self.consumer_params = ("http://localhost:8080/v2/events", "guest", "guest")
+        self.consumer = SSEConsumer(self.one_route_fixture, *self.consumer_params)
+
+    async def test_on_queue_message_bulk_size_bigger_that_one(self):
+        """
+        Confere que o handler real só é chamado quando o bucket atinge o limite máximo de
+        tamanho. E que o handler é chamado com a lista de mensagens.
+        * Bucket deve estart vazio após o "flush"
+        """
+        class MyBucket(Bucket):
+            def pop_all(self):
+                return self._items;
+
+
+        handler_mock = CoroutineMock()
+        self.one_route_fixture['handler'] = handler_mock
+        self.one_route_fixture['options']['bulk_size'] = 2
+
+        consumer = SSEConsumer(self.one_route_fixture, *(self.consumer_params + (MyBucket,)))
+
+        result = await consumer.on_event(b"deployment_info", b'{"key": "value"}')
+        self.assertEqual(0, handler_mock.await_count)
+
+        result = await consumer.on_event(b"deployment_info", b'{"key": "value"}')
+        handler_mock.assert_awaited_once_with(consumer.bucket._items)
+
+    async def test_consumer_instantiate_using_bucket_class(self):
+        class MyBucket(Bucket):
+            pass
+        consumer = SSEConsumer(self.one_route_fixture, *(self.consumer_params + (MyBucket,)))
+        self.assertTrue(isinstance(consumer.bucket, MyBucket))
+
+    async def test_consumer_instantiate_correct_size_bucket(self):
+        self.one_route_fixture['options']['bulk_size'] = 42
+        consumer = SSEConsumer(self.one_route_fixture, *self.consumer_params)
+        self.assertEqual(self.one_route_fixture['options']['bulk_size'], consumer.bucket.size)
+
+    async def test_on_event_calls_inner_handler(self):
+        consumer = SSEConsumer(self.one_route_fixture, *self.consumer_params)
+        result = await consumer.on_event(b"deployment_info", b'{"key": "value"}')
+
+        self.assertEqual((42, {"key": "value"}), result)
