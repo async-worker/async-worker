@@ -14,10 +14,13 @@ class SSEConsumerTest(TestCase):
     def total_loops(self, n):
         return [True] * n + [False]
 
+    async def setUp(self):
+        self.consumer = SSEConsumer("http://localhost:8080/v2/events")
+        self.consumer.interval = 0
+
     @asynctest.skip("aiohttp não está seguindo esse redirect do aioresponses")
     async def test_follow_redirect(self):
         content = open("./tests/fixtures/sse/single-event.txt").read()
-        consumer = SSEConsumer("http://localhost:8081/v2/events")
 
         with asynctest.patch.object(consumer, 'keep_runnig', side_effect=[True, False]), \
                 asynctest.patch.object(consumer, "on_event") as on_event_mock:
@@ -25,7 +28,7 @@ class SSEConsumerTest(TestCase):
                 m.get("http://localhost:8081/v2/events", status=301, headers={"Location": "http://localhost:8080/v2/events"})
                 m.get("http://localhost:8080/v2/events", status=200, body=content)
                 __import__('ipdb').set_trace()
-                await consumer.start()
+                await self.consumer.start()
                 args_list = on_event_mock.await_args_list
                 self.assertEqual([asynctest.mock.call(b'event_stream_attached',
                                                       b'{"remoteAddress":"172.18.0.1","eventType":"event_stream_attached","timestamp":"2018-09-03T18:03:45.685Z"}')], args_list)
@@ -38,26 +41,24 @@ class SSEConsumerTest(TestCase):
         Chamamos o método `on_event()`
         """
         content = open("./tests/fixtures/sse/single-event.txt").read()
-        consumer = SSEConsumer("http://localhost:8080/v2/events")
 
-        with asynctest.patch.object(consumer, 'keep_runnig', side_effect=[True, False]), \
-                asynctest.patch.object(consumer, "on_event") as on_event_mock:
+        with asynctest.patch.object(self.consumer, 'keep_runnig', side_effect=[True, False]), \
+                asynctest.patch.object(self.consumer, "on_event") as on_event_mock:
             with aioresponses() as m:
                 m.get("http://localhost:8080/v2/events", status=200, body=content)
-                await consumer.start()
+                await self.consumer.start()
                 args_list = on_event_mock.await_args_list
                 self.assertEqual([asynctest.mock.call(b'event_stream_attached',
                                                       b'{"remoteAddress":"172.18.0.1","eventType":"event_stream_attached","timestamp":"2018-09-03T18:03:45.685Z"}')], args_list)
 
     async def test_call_on_event_ignore_blank_lines(self):
         content = open("./tests/fixtures/sse/multi-event-blanklines-in-between.txt").read()
-        consumer = SSEConsumer("http://localhost:8080/v2/events")
 
-        with asynctest.patch.object(consumer, 'keep_runnig', side_effect=[True, False]), \
-                asynctest.patch.object(consumer, "on_event") as on_event_mock:
+        with asynctest.patch.object(self.consumer, 'keep_runnig', side_effect=[True, False]), \
+                asynctest.patch.object(self.consumer, "on_event") as on_event_mock:
             with aioresponses() as m:
                 m.get("http://localhost:8080/v2/events", status=200, body=content)
-                await consumer.start()
+                await self.consumer.start()
                 self.assertEqual(4, on_event_mock.await_count)
                 args_list = on_event_mock.await_args_list
 
@@ -91,24 +92,22 @@ class SSEConsumerTest(TestCase):
 
     async def test_reconnect_if_disconnected(self):
         session_mock = CoroutineMock(get=CoroutineMock(side_effect=["", aiohttp.ClientError(), aiohttp.ClientError()]))
-        consumer = SSEConsumer("http://localhost:8080/v2/events")
-        consumer.session = session_mock
+        self.consumer.session = session_mock
 
-        with asynctest.patch.object(consumer, 'keep_runnig', side_effect=[True, True, True, False]), \
-                asynctest.patch.object(consumer, "_consume_events", side_effect=CoroutineMock()) as consume_events_mock:
-            await consumer.start()
+        with asynctest.patch.object(self.consumer, 'keep_runnig', side_effect=[True, True, True, False]), \
+                asynctest.patch.object(self.consumer, "_consume_events", side_effect=CoroutineMock()) as consume_events_mock:
+            await self.consumer.start()
             self.assertEqual(1, consume_events_mock.await_count)
             self.assertEqual(3, session_mock.get.call_count)
             self.assertEqual(1, session_mock.get.await_count)
                 
     async def test_consume_again_if_reconnected(self):
         session_mock = CoroutineMock(get=CoroutineMock(side_effect=["", aiohttp.ClientError(), ""]))
-        consumer = SSEConsumer("http://localhost:8080/v2/events")
-        consumer.session = session_mock
+        self.consumer.session = session_mock
 
-        with asynctest.patch.object(consumer, 'keep_runnig', side_effect=[True, True, True, False]), \
-                asynctest.patch.object(consumer, "_consume_events", side_effect=CoroutineMock()) as consume_events_mock:
-            await consumer.start()
+        with asynctest.patch.object(self.consumer, 'keep_runnig', side_effect=[True, True, True, False]), \
+                asynctest.patch.object(self.consumer, "_consume_events", side_effect=CoroutineMock()) as consume_events_mock:
+            await self.consumer.start()
             self.assertEqual(2, consume_events_mock.await_count)
             self.assertEqual(3, session_mock.get.call_count)
             self.assertEqual(2, session_mock.get.await_count)
@@ -118,12 +117,11 @@ class SSEConsumerTest(TestCase):
         Call on_connection_error when an aiohttp.ClientError is raised
         """
         session_mock = CoroutineMock(get=CoroutineMock(side_effect=[aiohttp.ClientError()]))
-        consumer = SSEConsumer("http://localhost:8080/v2/events")
-        consumer.session = session_mock
+        self.consumer.session = session_mock
 
-        with asynctest.patch.object(consumer, 'keep_runnig', side_effect=self.total_loops(1)), \
-                asynctest.patch.object(consumer, "on_connection_error", side_effect=CoroutineMock()) as on_connection_error_mock:
-            await consumer.start()
+        with asynctest.patch.object(self.consumer, 'keep_runnig', side_effect=self.total_loops(1)), \
+                asynctest.patch.object(self.consumer, "on_connection_error", side_effect=CoroutineMock()) as on_connection_error_mock:
+            await self.consumer.start()
             self.assertEqual(1, on_connection_error_mock.await_count)
 
     async def test_call_on_exception(self):
@@ -132,24 +130,22 @@ class SSEConsumerTest(TestCase):
         """
 
         content = open("./tests/fixtures/sse/single-event.txt").read()
-        consumer = SSEConsumer("http://localhost:8080/v2/events")
 
-        with asynctest.patch.object(consumer, 'keep_runnig', side_effect=self.total_loops(1)), \
-                asynctest.patch.object(consumer, "on_event", side_effect=Exception()), \
-                asynctest.patch.object(consumer, "on_exception", side_effect=CoroutineMock()) as on_exception_mock:
+        with asynctest.patch.object(self.consumer, 'keep_runnig', side_effect=self.total_loops(1)), \
+                asynctest.patch.object(self.consumer, "on_event", side_effect=Exception()), \
+                asynctest.patch.object(self.consumer, "on_exception", side_effect=CoroutineMock()) as on_exception_mock:
             with aioresponses() as m:
                 m.get("http://localhost:8080/v2/events", status=200, body=content)
-                await consumer.start()
+                await self.consumer.start()
                 self.assertEqual(1, on_exception_mock.await_count)
 
     async def test_reconect_if_unhandled_reconnected(self):
         session_mock = CoroutineMock(get=CoroutineMock(side_effect=["", Exception()]))
-        consumer = SSEConsumer("http://localhost:8080/v2/events")
-        consumer.session = session_mock
+        self.consumer.session = session_mock
 
-        with asynctest.patch.object(consumer, 'keep_runnig', side_effect=[True, True, False]), \
-                asynctest.patch.object(consumer, "_consume_events", side_effect=CoroutineMock()) as consume_events_mock:
-            await consumer.start()
+        with asynctest.patch.object(self.consumer, 'keep_runnig', side_effect=[True, True, False]), \
+                asynctest.patch.object(self.consumer, "_consume_events", side_effect=CoroutineMock()) as consume_events_mock:
+            await self.consumer.start()
             self.assertEqual(1, consume_events_mock.await_count)
             self.assertEqual(2, session_mock.get.call_count)
             self.assertEqual(1, session_mock.get.await_count)

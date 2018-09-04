@@ -24,6 +24,8 @@ timeout = ClientTimeout(sock_read=5)
 
 
 class SSEConsumer:
+    interval = 10
+
     def __init__(self, url):
         self.url = url
         self.session = ClientSession(timeout=timeout)
@@ -84,6 +86,6 @@ class SSEConsumer:
             except Exception as e:
                 await self.on_exception(e)
 
-            await asyncio.sleep(1)
+            await asyncio.sleep(self.interval)
 
 
