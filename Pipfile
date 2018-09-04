@@ -11,7 +11,7 @@ simple_json_logger = "==0.2.3"
 aiologger = "==0.1.1-rc1"
 
 [dev-packages]
-aioresponses = "==0.4.1"
+aioresponses = "==0.4.2"
 asynctest = "==0.12.1"
 ipdb = "==0.11"
 ipython = "==6.4.0"
