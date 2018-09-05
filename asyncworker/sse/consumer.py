@@ -5,6 +5,7 @@ import aiohttp
 import asyncio
 import traceback
 import json
+from urllib.parse import urljoin
 
 from asyncworker.sse.message import SSEMessage
 
@@ -40,6 +41,11 @@ class SSEConsumer:
         self.bucket = bucket_class(size=route_info['options']['bulk_size'])
         self.route_info = route_info
         self._handler = route_info['handler']
+        self.username = username
+        self.password = password
+        self.routes = []
+        for route in self.route_info['routes']:
+            self.routes.append(urljoin(self.url, route))
 
     def keep_runnig(self):
         return True
@@ -82,9 +88,9 @@ class SSEConsumer:
 
     def _parse_sse_line(self, line):
         return line.split(EVENT_FIELD_SEPARATOR, 1)[1].strip()
-    
+
     async def _consume_events(self, response):
-        self.state = State.WAIT_FOR_DATA 
+        self.state = State.WAIT_FOR_DATA
         event_name = EMPTY
         event_body = EMPTY
         async for line in response.content:
@@ -103,7 +109,7 @@ class SSEConsumer:
                 event_body = EMPTY
 
     async def _connect(self, session):
-        resposne = await session.get(self.url, headers={"Accept": "text/event-stream"})
+        response = await session.get(self.url, headers={"Accept": "text/event-stream"})
         await self.on_connection()
         return response
 

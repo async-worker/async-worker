@@ -2,6 +2,7 @@ from asynctest import TestCase
 from asynctest.mock import CoroutineMock
 import asynctest
 import aiohttp
+from urllib.parse import urljoin
 
 from aioresponses import aioresponses
 
@@ -20,7 +21,7 @@ class SSEConsumerTest(TestCase):
 
     async def setUp(self):
         self.one_route_fixture = {
-            "route": ["/asgard/counts/ok"],
+            "routes": ["/asgard/counts/ok"],
             "handler": _handler,
             "options": {
                 "vhost": "/",
@@ -37,7 +38,25 @@ class SSEConsumerTest(TestCase):
         self.assertEqual(consumer.url, self.consumer_params[0])
         self.assertEqual(consumer.route_info, self.one_route_fixture)
         self.assertEqual(consumer._handler, self.one_route_fixture['handler'])
+        self.assertEqual(self.consumer_params[1], consumer.username)
+        self.assertEqual(self.consumer_params[2], consumer.password)
+        
+        final_route = urljoin(self.consumer_params[0], self.one_route_fixture['routes'][0])
+        self.assertEqual([final_route], consumer.routes)
 
+    def test_new_consumer_instance_multiple_routes(self):
+        self.one_route_fixture['routes'].append("/v2/events")
+
+        consumer = SSEConsumer(self.one_route_fixture, *self.consumer_params)
+        self.assertEqual(consumer.url, self.consumer_params[0])
+        self.assertEqual(consumer.route_info, self.one_route_fixture)
+        self.assertEqual(consumer._handler, self.one_route_fixture['handler'])
+        
+        expected_routes = [
+            urljoin(self.consumer_params[0], self.one_route_fixture['routes'][0]),
+            urljoin(self.consumer_params[0], self.one_route_fixture['routes'][1]),
+        ]
+        self.assertEqual(expected_routes, consumer.routes)
 
     @asynctest.skip("aiohttp não está seguindo esse redirect do aioresponses")
     async def test_follow_redirect(self):
@@ -213,7 +232,7 @@ class SSEOnEventCallbackTest(TestCase):
 
     async def setUp(self):
         self.one_route_fixture = {
-            "route": ["/asgard/counts/ok"],
+            "routes": ["/asgard/counts/ok"],
             "handler": _handler,
             "options": {
                 "vhost": "/",

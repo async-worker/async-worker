@@ -1,6 +1,7 @@
 import unittest
 import asyncio
 import asynctest
+from urllib.parse import urljoin
 
 from asyncworker.sse.app import SSEApplication
 from asyncworker.options import Options, Defaultvalues, Events, Actions
@@ -144,27 +145,24 @@ class AppTest(asynctest.TestCase):
         self.assertEqual("guest", app.password)
         self.assertEqual({"A": "B"}, app.headers)
 
-    @unittest.skip("Ainda a ser implementado")
     async def test_instantiate_one_consumer_per_handler_one_handler_registered(self):
         """
         Para cada handler registrado, teremos um Consumer. Esse Consumer conseguirá consumir múltiplas
         filas, se necessário.
         """
-        app = App(**self.connection_parameters)
-        @app.route(["asgard/counts"], vhost="/")
+        app = SSEApplication(**self.connection_parameters)
+        @app.route(["/asgard/counts"])
         async def _handler(message):
             return message
 
         consumers = app._build_consumers()
         self.assertEqual(1, len(consumers))
-        self.assertEqual(["asgard/counts"], consumers[0].queue_name)
-        self.assertEqual("/", consumers[0].vhost)
 
-        queue_connection_parameters = consumers[0].queue.connection_parameters
-        self.assertEqual(self.connection_parameters['host'], queue_connection_parameters['host'])
-        self.assertEqual(self.connection_parameters['user'], queue_connection_parameters['login'])
-        self.assertEqual(self.connection_parameters['password'], queue_connection_parameters['password'])
-        self.assertEqual(self.connection_parameters['prefetch_count'], consumers[0].queue.prefetch_count)
+        final_url = urljoin(self.connection_parameters['url'], '/asgard/counts')
+        self.assertEqual([final_url], consumers[0].routes)
+        self.assertEqual(final_url, consumers[0].url)
+        self.assertEqual(self.connection_parameters['user'], consumers[0].username)
+        self.assertEqual(self.connection_parameters['password'], consumers[0].password)
 
     @unittest.skip("Ainda a ser implementado")
     async def test_instantiate_one_consumer_per_handler_multiple_handlers_registered(self):
