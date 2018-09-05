@@ -16,10 +16,7 @@ def entrypoint(f):
 
 class BaseApp:
     def _build_consumers(self):
-        consumers = []
-        for _handler, route_info in self.routes_registry.items():
-            consumers.append(Consumer(route_info, self.host, self.user, self.password, self.prefetch_count))
-        return consumers
+        raise NotImplementedError()
 
     @entrypoint
     async def run(self):
@@ -38,6 +35,12 @@ class App(BaseApp):
         self.user = user
         self.password = password
         self.prefetch_count = prefetch_count
+
+    def _build_consumers(self):
+        consumers = []
+        for _handler, route_info in self.routes_registry.items():
+            consumers.append(Consumer(route_info, self.host, self.user, self.password, self.prefetch_count))
+        return consumers
 
     def route(self, routes, vhost="/", options={}):
         def wrap(f):
