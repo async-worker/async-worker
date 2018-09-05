@@ -179,6 +179,36 @@ class SSEConsumerTest(TestCase):
         """
         self.fail()
 
+    async def test_call_on_connect_callback(self):
+        session_mock = CoroutineMock(get=CoroutineMock())
+        self.consumer.session = session_mock
+
+        with asynctest.patch.object(self.consumer, 'keep_runnig', side_effect=self.total_loops(1)), \
+                asynctest.patch.object(self.consumer, "on_connection", side_effect=CoroutineMock()) as on_connection_mock:
+            await self.consumer.start()
+            self.assertEqual(1, on_connection_mock.call_count)
+            self.assertEqual(1, on_connection_mock.await_count)
+
+    async def test_do_not_call_on_connect_callback_if_connection_error(self):
+        session_mock = CoroutineMock(get=CoroutineMock(side_effect=[aiohttp.ClientError()]))
+        self.consumer.session = session_mock
+
+        with asynctest.patch.object(self.consumer, 'keep_runnig', side_effect=self.total_loops(1)), \
+                asynctest.patch.object(self.consumer, "on_connection", side_effect=CoroutineMock()) as on_connection_mock:
+            await self.consumer.start()
+            self.assertEqual(0, on_connection_mock.call_count)
+            self.assertEqual(0, on_connection_mock.await_count)
+
+    async def test_call_on_connect_callback_on_reconnect(self):
+        session_mock = CoroutineMock(get=CoroutineMock(side_effect=["", aiohttp.ClientError(), ""]))
+        self.consumer.session = session_mock
+
+        with asynctest.patch.object(self.consumer, 'keep_runnig', side_effect=self.total_loops(3)), \
+                asynctest.patch.object(self.consumer, "on_connection", side_effect=CoroutineMock()) as on_connection_mock:
+            await self.consumer.start()
+            self.assertEqual(2, on_connection_mock.call_count)
+            self.assertEqual(2, on_connection_mock.await_count)
+
 class SSEOnEventCallbackTest(TestCase):
 
     async def setUp(self):

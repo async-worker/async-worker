@@ -74,6 +74,12 @@ class SSEConsumer:
             "exc_traceback": traceback.format_exc()
         })
 
+    async def on_connection(self):
+        conf.logger.debug({
+            "event": "on-connection",
+            "url": self.url
+        })
+
     def _parse_sse_line(self, line):
         return line.split(EVENT_FIELD_SEPARATOR, 1)[1].strip()
     
@@ -97,7 +103,9 @@ class SSEConsumer:
                 event_body = EMPTY
 
     async def _connect(self, session):
-        return await session.get(self.url, headers={"Accept": "text/event-stream"})
+        resposne = await session.get(self.url, headers={"Accept": "text/event-stream"})
+        await self.on_connection()
+        return response
 
     async def start(self):
         while self.keep_runnig():
