@@ -5,7 +5,7 @@ import asynctest
 from asyncworker import App
 from asyncworker.options import Options, Defaultvalues, Events, Actions
 
-class AppTest(asynctest.TestCase):
+class RabbitMQAppTest(asynctest.TestCase):
 
     def setUp(self):
         self.connection_parameters = {"host": "127.0.0.1", "user": "guest", "password": "guest", "prefetch_count": 1024}

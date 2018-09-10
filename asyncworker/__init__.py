@@ -14,14 +14,33 @@ def entrypoint(f):
         return loop.run_until_complete(f(*args, **kwargs))
     return _
 
+class BaseApp:
+    def _build_consumers(self):
+        raise NotImplementedError()
 
-class App:
+    @entrypoint
+    async def run(self):
+        conf.logger.info("Booting App...")
+        consumers = self._build_consumers()
+        for consumer in consumers:
+            asyncio.get_event_loop().create_task(consumer.start())
+        while True:
+            await asyncio.sleep(10)
+
+
+class App(BaseApp):
     def __init__(self, host, user, password, prefetch_count):
         self.routes_registry = {}
         self.host = host
         self.user = user
         self.password = password
         self.prefetch_count = prefetch_count
+
+    def _build_consumers(self):
+        consumers = []
+        for _handler, route_info in self.routes_registry.items():
+            consumers.append(Consumer(route_info, self.host, self.user, self.password, self.prefetch_count))
+        return consumers
 
     def route(self, routes, vhost="/", options={}):
         def wrap(f):
@@ -38,19 +57,4 @@ class App:
             }
             return f
         return wrap
-
-    def _build_consumers(self):
-        consumers = []
-        for _handler, route_info in self.routes_registry.items():
-            consumers.append(Consumer(route_info, self.host, self.user, self.password, self.prefetch_count))
-        return consumers
-
-    @entrypoint
-    async def run(self):
-        conf.logger.info("Booting App...")
-        consumers = self._build_consumers()
-        for consumer in consumers:
-            asyncio.get_event_loop().create_task(consumer.start())
-        while True:
-            await asyncio.sleep(10)
 
