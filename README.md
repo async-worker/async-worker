@@ -198,7 +198,7 @@ async def drain_handler(messages):
 ```
 
 ## Utils
-### Timeit
+### Timeit (0.3.0+)
 
 #### Gerenciador de contexto
 
@@ -259,7 +259,7 @@ async def drain_handler(message):
     await access_some_remote_content()
 ```
 
-#### Múltiplas transações
+#### Múltiplas transações (0.4.0+)
 
 Muitas vezes queremos ter várias métricas ao mesmo tempo para contar o tempo
 dentro de um mesmo contexto de execução. Para isso, uma mesma instância pode
