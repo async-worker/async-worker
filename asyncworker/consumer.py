@@ -149,7 +149,7 @@ class Consumer(AsyncQueueConsumerDelegate):
         }
         conf.logger.error(current_exception)
 
-    async def consume_all_queues(self, queue):
+    async def consume_all_queues(self, queue: AsyncQueue):
         for queue_name in self._queue_name:
             # Por enquanto não estamos guardando a consumer_tag retornada
             # se precisar, podemos passar a guardar.
