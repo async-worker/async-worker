@@ -1,3 +1,4 @@
+from typing import Dict, Callable
 from urllib.parse import urljoin
 
 
@@ -12,8 +13,13 @@ SSE_DEFAULT_HEADERS = {
 
 
 class SSEApplication(BaseApp):
-    def __init__(self, url, logger, user=None, password=None, headers=SSE_DEFAULT_HEADERS):
-        self.routes_registry = {}
+    def __init__(self,
+                 url: str,
+                 logger,
+                 user: str=None,
+                 password: str=None,
+                 headers: Dict[str, str]=SSE_DEFAULT_HEADERS) -> None:
+        self.routes_registry: Dict[Callable, Dict] = {}
         self.url = url
         self.user = user
         self.password = password

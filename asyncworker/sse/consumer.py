@@ -1,6 +1,6 @@
-from typing import Type, List
+from typing import Type, List, Dict
 from enum import Enum, auto
-from aiohttp import ClientSession, ClientTimeout
+from aiohttp import ClientSession, ClientTimeout, ClientResponse
 import aiohttp
 import asyncio
 import traceback
@@ -18,6 +18,7 @@ class State(Enum):
     EVENT_NAME_FOUND = auto()
     EVENT_DATA_FOUND = auto()
 
+
 EMPTY = b""
 EVENT_NAME_PREFIX = b"event:"
 EVENT_DATA_PREFIX = b"data:"
@@ -31,10 +32,10 @@ class SSEConsumer:
     interval = 10
 
     def __init__(self,
-                 route_info,
-                 url,
-                 username,
-                 password,
+                 route_info: Dict,
+                 url: str,
+                 username: str,
+                 password: str,
                  bucket_class: Type[Bucket]=Bucket) -> None:
         self.url = url
         self.session = ClientSession(timeout=timeout)
@@ -50,9 +51,9 @@ class SSEConsumer:
     def keep_runnig(self):
         return True
 
-    async def on_event(self, event_name, event_raw_body):
+    async def on_event(self, event_name: bytes, event_raw_body):
         rv = None
-        all_messages = []
+        all_messages: List[SSEMessage] = []
 
         if not self.bucket.is_full():
             message = SSEMessage(
@@ -86,10 +87,10 @@ class SSEConsumer:
             "url": self.url
         })
 
-    def _parse_sse_line(self, line):
+    def _parse_sse_line(self, line: bytes) -> bytes:
         return line.split(EVENT_FIELD_SEPARATOR, 1)[1].strip()
 
-    async def _consume_events(self, response):
+    async def _consume_events(self, response: ClientResponse):
         self.state = State.WAIT_FOR_DATA
         event_name = EMPTY
         event_body = EMPTY
@@ -108,7 +109,7 @@ class SSEConsumer:
                 event_name = EMPTY
                 event_body = EMPTY
 
-    async def _connect(self, session):
+    async def _connect(self, session: ClientSession) -> ClientResponse:
         response = await session.get(self.url, headers={"Accept": "text/event-stream"})
         await self.on_connection()
         return response
