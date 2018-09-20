@@ -1,6 +1,6 @@
 import asyncio
 import traceback
-from typing import Type
+from typing import Type, Dict
 
 from easyqueue import AsyncQueueConsumerDelegate, AsyncQueue
 from aioamqp.exceptions import AioamqpException
@@ -13,11 +13,11 @@ from .rabbitmq import RabbitMQMessage
 
 class Consumer(AsyncQueueConsumerDelegate):
     def __init__(self,
-                 route_info,
-                 host,
-                 username,
-                 password,
-                 prefetch_count=128,
+                 route_info: Dict,
+                 host: str,
+                 username: str,
+                 password: str,
+                 prefetch_count: int=128,
                  bucket_class: Type[Bucket]=Bucket) -> None:
         self.route = route_info
         self._handler = route_info['handler']
