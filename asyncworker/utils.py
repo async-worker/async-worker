@@ -25,6 +25,10 @@ class Timeit:
             child._transactions = self._transactions
             return child
 
+        if not coro:
+            raise ValueError('Invalid method call. '
+                             '"coro" or "name" must be provided')
+
         @wraps(coro)
         async def wrapped(*args, **kwargs):
             async with self:
