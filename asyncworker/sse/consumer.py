@@ -1,4 +1,4 @@
-from typing import Type
+from typing import Type, List
 from enum import Enum, auto
 from aiohttp import ClientSession, ClientTimeout
 import aiohttp
@@ -35,7 +35,7 @@ class SSEConsumer:
                  url,
                  username,
                  password,
-                 bucket_class: Type[Bucket]=Bucket):
+                 bucket_class: Type[Bucket]=Bucket) -> None:
         self.url = url
         self.session = ClientSession(timeout=timeout)
         self.bucket = bucket_class(size=route_info['options']['bulk_size'])
@@ -43,7 +43,7 @@ class SSEConsumer:
         self._handler = route_info['handler']
         self.username = username
         self.password = password
-        self.routes = []
+        self.routes: List[str] = []
         for route in self.route_info['routes']:
             self.routes.append(urljoin(self.url, route))
 

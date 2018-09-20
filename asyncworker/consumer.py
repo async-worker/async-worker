@@ -18,7 +18,7 @@ class Consumer(AsyncQueueConsumerDelegate):
                  username,
                  password,
                  prefetch_count=128,
-                 bucket_class: Type[Bucket]=Bucket):
+                 bucket_class: Type[Bucket]=Bucket) -> None:
         self.route = route_info
         self._handler = route_info['handler']
         self._queue_name = route_info['route']
