@@ -5,6 +5,7 @@ class Options(Enum):
     BULK_SIZE = auto()
     BULK_FLUSH_INTERVAL = auto()
 
+
 class Actions(Enum):
     ACK = auto()
     REJECT = auto()

@@ -5,9 +5,9 @@ from asyncworker.options import Actions
 class RabbitMQMessage:
     def __init__(self,
                  body,
-                 delivery_tag,
-                 on_success=Actions.ACK,
-                 on_exception=Actions.REQUEUE):
+                 delivery_tag: int,
+                 on_success: Actions=Actions.ACK,
+                 on_exception: Actions=Actions.REQUEUE) -> None:
         self.body = body
         self._delivery_tag = delivery_tag
         self._on_success_action = on_success
