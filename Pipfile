@@ -27,4 +27,4 @@ python_version = "3.6"
 
 [scripts]
 test = "py.test -v --cov=asyncworker --cov-report term-missing -v"
-lint = "mypy -m asyncworker --ignore-missing-imports"
+lint = "mypy asyncworker --ignore-missing-imports"
