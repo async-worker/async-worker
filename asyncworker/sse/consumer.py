@@ -1,6 +1,6 @@
 from typing import Type, List, Dict
 from enum import Enum, auto
-from aiohttp import ClientSession, ClientTimeout, ClientResponse
+from aiohttp.client import ClientTimeout, ClientSession, ClientResponse
 import aiohttp
 import asyncio
 import traceback
