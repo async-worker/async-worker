@@ -1,3 +1,5 @@
+import asyncio
+import functools
 from functools import wraps
 from time import time as now
 from typing import Callable, Coroutine, Dict, Union, Optional
@@ -55,3 +57,11 @@ class Timeit:
                 'exc_tb': exc_tb,
             }
             await self.callback(**measurement)
+
+
+def entrypoint(f):
+    @functools.wraps(f)
+    def _(*args, **kwargs):
+        loop = asyncio.get_event_loop()
+        return loop.run_until_complete(f(*args, **kwargs))
+    return _
