@@ -19,7 +19,7 @@ class SSEApplication(BaseApp):
                  user: str=None,
                  password: str=None,
                  headers: Dict[str, str]=SSE_DEFAULT_HEADERS) -> None:
-        self.routes_registry: Dict[Callable, Dict] = {}
+        super(SSEApplication, self).__init__()
         self.url = url
         self.user = user
         self.password = password
