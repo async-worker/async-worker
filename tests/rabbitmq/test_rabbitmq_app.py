@@ -21,6 +21,7 @@ class RabbitMQAppTest(asynctest.TestCase):
         self.assertIsNotNone(app.routes_registry)
         expected_registry_entry = {
             "route": expected_route,
+            "type": "amqp",
             "handler": _handler,
             "options": {
                 "vhost": expected_vhost,

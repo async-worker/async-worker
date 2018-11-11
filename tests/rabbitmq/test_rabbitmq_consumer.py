@@ -8,9 +8,10 @@ import importlib
 from easyqueue import AsyncQueue
 from aioamqp.exceptions import AioamqpException
 
+from asyncworker.bucket import Bucket
 from asyncworker.consumer import Consumer
 import asyncworker.consumer
-from asyncworker import conf, Bucket, App
+from asyncworker import conf, App
 from asyncworker.rabbitmq.message import RabbitMQMessage
 from asyncworker.options import Events, Actions
 
@@ -208,7 +209,7 @@ class ConsumerTest(asynctest.TestCase):
     async def test_on_queue_message_bulk_size_one(self):
         class MyBucket(Bucket):
             def pop_all(self):
-                return self._items;
+                return self._items
 
 
         handler_mock = CoroutineMock()
