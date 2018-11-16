@@ -12,13 +12,8 @@ RouteHandler = Callable[[], Coroutine]
 Route = Dict[str, Any]
 
 
-class _AutoName(Enum):
-    def _generate_next_value_(name: str, start, count, last_values):
-        return name
-
-
-class RouteTypes(str, Enum):
-    AMQP = auto()
+class RouteTypes(Enum):
+    AMQP_RABBITMQ = auto()
 
 
 class RoutesRegistry(UserDict):
@@ -26,7 +21,7 @@ class RoutesRegistry(UserDict):
     def amqp_routes(self) -> List[Dict]:
         routes = []
         for handler, route in self.items():
-            if route['type'] is not RouteTypes.AMQP:
+            if route['type'] is not RouteTypes.AMQP_RABBITMQ:
                 continue
             options = route['options']
             routes.append({
