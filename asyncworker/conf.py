@@ -6,7 +6,8 @@ from simple_json_logger import JsonLogger
 
 class Settings(BaseSettings):
     LOGLEVEL: str = "ERROR"
-    HTTP_ENABLED: bool = True
+
+    AMQP_DEFAULT_VHOST: str = '/'
 
     class Config:
         allow_mutation = False
