@@ -14,6 +14,7 @@ Route = Dict[str, Any]
 
 class RouteTypes(Enum):
     AMQP_RABBITMQ = auto()
+    SSE = auto()
 
 
 class RoutesRegistry(UserDict):
@@ -41,6 +42,34 @@ class RoutesRegistry(UserDict):
                     Events.ON_EXCEPTION: options.get(
                         Events.ON_EXCEPTION,
                         Defaultvalues.ON_EXCEPTION),
+                }
+            })
+        return routes
+
+    @cached_property
+    def sse_routes(self) -> List[Route]:
+        routes = []
+        for handler, route in self.items():
+            if route['type'] is not RouteTypes.SSE:
+                continue
+
+            options = route['options']
+            headers = route.pop('headers', {})
+            default_headers = route['default_options'].get('headers', {})
+            routes.append({
+                "routes": route['routes'],
+                "handler": handler,
+                "options": {
+                    "bulk_size": options.get(
+                        Options.BULK_SIZE,
+                        Defaultvalues.BULK_SIZE),
+                    "bulk_flush_interval": options.get(
+                        Options.BULK_FLUSH_INTERVAL,
+                        Defaultvalues.BULK_FLUSH_INTERVAL),
+                    "headers": {
+                        **headers,
+                        **default_headers
+                    },
                 }
             })
         return routes
