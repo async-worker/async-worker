@@ -173,7 +173,8 @@ class RabbitMQAppTest(asynctest.TestCase):
         async def _handler(message):
             return message
 
-        consumers = app._build_consumers()
+        await app.startup()
+        consumers = app['consumers']
         self.assertEqual(1, len(consumers))
         self.assertEqual(["asgard/counts"], consumers[0].queue_name)
         self.assertEqual("/", consumers[0].vhost)
@@ -195,7 +196,8 @@ class RabbitMQAppTest(asynctest.TestCase):
         async def _other_handler(message):
             return message
 
-        consumers = app._build_consumers()
+        await app.startup()
+        consumers = app['consumers']
         self.assertEqual(2, len(consumers))
 
         self.assertEqual(["asgard/counts"], consumers[0].queue_name)

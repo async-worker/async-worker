@@ -1,7 +1,6 @@
 import asynctest
 from asynctest import CoroutineMock, Mock, call
-
-from asyncworker.signal_handlers.rabbitmq import RabbitMQ, Consumer
+from asyncworker.signal_handlers.rabbitmq import RabbitMQ
 from asyncworker.models import RouteTypes, RoutesRegistry
 
 
@@ -15,31 +14,34 @@ class AMQPTests(asynctest.TestCase):
         self.routes_registry = RoutesRegistry(
             {
                 handler1: {
-                    "type": RouteTypes.AMQP,
+                    "type": RouteTypes.AMQP_RABBITMQ,
                     "routes": ["Xablau"],
                     "options": {}
                 },
                 handler2: {
-                    "type": RouteTypes.AMQP,
+                    "type": RouteTypes.AMQP_RABBITMQ,
                     "routes": ["Xena"],
                     "options": {}
                 },
             }
         )
 
-    @asynctest.patch("asyncworker.signal_handlers.rabbitmq.Consumer.start")
+    @asynctest.patch("asyncworker.signal_handlers.rabbitmq.Consumer")
     async def test_startup_initializes_and_starts_one_consumer_per_route(self,
-                                                                         start):
-        app = Mock(
+                                                                         Consumer):
+        app = asynctest.MagicMock(
             routes_registry=self.routes_registry,
-            consumers=[],
             loop=Mock(create_task=CoroutineMock()),
             prefetch_count=1
         )
         await self.signal_handler.startup(app)
 
-        self.assertEqual(len(app.consumers), 2)
-        for consumer in app.consumers:
-            self.assertIsInstance(consumer, Consumer)
-
-        start.assert_has_calls([call(), call()])
+        Consumer.assert_has_calls([
+            call(self.routes_registry.amqp_routes[0], app.host, app.user, app.password, app.prefetch_count),
+            call(self.routes_registry.amqp_routes[1], app.host, app.user, app.password, app.prefetch_count)
+        ], any_order=True)
+        Consumer.return_value.start.assert_has_calls([call(), call()])
+        app.__getitem__.return_value.append.assert_has_calls([
+            call(Consumer.return_value),
+            call(Consumer.return_value)
+        ])

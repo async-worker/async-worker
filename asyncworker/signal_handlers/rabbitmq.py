@@ -9,8 +9,9 @@ if TYPE_CHECKING:  # pragma: no cover
 
 class RabbitMQ(SignalHandler):
     async def startup(self, app: 'App'):
+        app['consumers'] = []
         for route_info in app.routes_registry.amqp_routes:
             consumer = Consumer(route_info, app.host, app.user,
                                 app.password, app.prefetch_count)
-            app.consumers.append(consumer)
+            app['consumers'].append(consumer)
             app.loop.create_task(consumer.start())
