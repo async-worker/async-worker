@@ -22,7 +22,7 @@ class AMQPTests(asynctest.TestCase):
                 },
                 handler2: {
                     "type": RouteTypes.SSE,
-                    "routes": ["Xena"],
+                    "routes": ["Xena", "sse"],
                     "options": MagicMock(),
                     "default_options": {}
                 },
@@ -56,6 +56,12 @@ class AMQPTests(asynctest.TestCase):
             call(
                 route_info=self.routes_registry.sse_routes[1],
                 url="https://www.sieve.com.br/cultura/Xena",
+                username=app.user,
+                password=app.password
+            ),
+            call(
+                route_info=self.routes_registry.sse_routes[1],
+                url="https://www.sieve.com.br/cultura/sse",
                 username=app.user,
                 password=app.password
             )
