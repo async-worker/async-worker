@@ -5,8 +5,6 @@ if TYPE_CHECKING:  # pragma: no cover
 
 
 class SignalHandler:
-    is_enabled: bool = True
-
     async def startup(self, app: 'App'):
         pass
 

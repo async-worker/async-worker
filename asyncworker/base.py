@@ -24,9 +24,8 @@ class BaseApp(MutableMapping):
         self._on_shutdown: Signal = Signal(self)
 
         for handler in self.handlers:
-            if handler.is_enabled:
-                self._on_startup.append(handler.startup)
-                self._on_shutdown.append(handler.shutdown)
+            self._on_startup.append(handler.startup)
+            self._on_shutdown.append(handler.shutdown)
 
     def _check_frozen(self):
         if self._frozen:
