@@ -14,8 +14,11 @@ class SSE(SignalHandler):
         app['sse_consumers'] = []
         for route_info in app.routes_registry.sse_routes:
             for route in route_info['routes']:
-                final_url = urljoin(app.url, route)
-                consumer = SSEConsumer(route_info, final_url,
-                                       app.user, app.password)
+                consumer = SSEConsumer(
+                    route_info=route_info,
+                    url=urljoin(app.url, route),
+                    username=app.user,
+                    password=app.password
+                )
                 app['sse_consumers'].append(consumer)
-        return app['sse_consumers']
+                app.loop.create_task(consumer.start())
