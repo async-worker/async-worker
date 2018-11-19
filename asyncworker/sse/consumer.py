@@ -34,8 +34,8 @@ class SSEConsumer:
     def __init__(self,
                  route_info: Dict,
                  url: str,
-                 username: str,
-                 password: str,
+                 username: str=None,
+                 password: str=None,
                  bucket_class: Type[Bucket]=Bucket) -> None:
         self.url = url
         self.session = ClientSession(timeout=timeout)

@@ -1,16 +1,11 @@
-from typing import TYPE_CHECKING
 from urllib.parse import urljoin
 
 from asyncworker.signals.handlers.base import SignalHandler
 from asyncworker.sse.consumer import SSEConsumer
 
 
-if TYPE_CHECKING:  # pragma: no cover
-    from asyncworker.sse.app import SSEApplication
-
-
 class SSE(SignalHandler):
-    async def startup(self, app: 'SSEApplication'):
+    async def startup(self, app):  # type: ignore
         app['sse_consumers'] = []
         for route_info in app.routes_registry.sse_routes:
             for route in route_info['routes']:

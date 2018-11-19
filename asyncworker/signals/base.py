@@ -18,7 +18,7 @@ class Signal(UserList):
     Signals are fired using the send() coroutine, which takes named
     arguments.
     """
-    def __init__(self, owner: Freezable):
+    def __init__(self, owner: Freezable) -> None:
         super().__init__()
         self._owner = owner
         self.frozen = False
