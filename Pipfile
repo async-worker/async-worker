@@ -10,6 +10,7 @@ easyqueue = "==1.2.1-rc1"
 simple_json_logger = "==0.2.3"
 aiologger = "==0.1.1-rc1"
 pydantic = "==0.14"
+cached-property = "==1.5.1"
 
 [dev-packages]
 aioresponses = "==0.4.2"
