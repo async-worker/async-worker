@@ -16,7 +16,7 @@ class BaseApp(MutableMapping):
     def __init__(self) -> None:
         self.loop = asyncio.get_event_loop()
         self.routes_registry = RoutesRegistry()
-        self.default_route_options = {}
+        self.default_route_options: dict = {}
 
         self._state: dict = {}
         self._frozen = False
