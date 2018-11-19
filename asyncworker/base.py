@@ -36,9 +36,11 @@ class BaseApp(MutableMapping):
     def frozen(self) -> bool:
         return self._frozen
 
-    def freeze(self) -> None:
+    def _pre_freeze(self):
         self._on_startup.freeze()
         self._on_shutdown.freeze()
+
+    def _freeze(self) -> None:
         self._frozen = True
 
     def __getitem__(self, key):
@@ -71,9 +73,9 @@ class BaseApp(MutableMapping):
 
         Should be called in the event loop along with the request handler.
         """
-        self._on_startup.freeze()
+        self._pre_freeze()
         await self._on_startup.send(self)
-        self.freeze()
+        self._freeze()
 
     def route(self,
               routes: Iterable[str],
