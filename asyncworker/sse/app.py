@@ -1,7 +1,7 @@
 from typing import Dict
 
 from asyncworker import BaseApp
-from asyncworker.signal_handlers.sse import SSE
+from asyncworker.signals.handlers.sse import SSE
 
 SSE_DEFAULT_HEADERS = {
     "Accept": "text/event-stream",

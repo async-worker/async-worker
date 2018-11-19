@@ -1,7 +1,7 @@
 from typing import TYPE_CHECKING
 from urllib.parse import urljoin
 
-from asyncworker.signal_handlers.base import SignalHandler
+from asyncworker.signals.handlers.base import SignalHandler
 from asyncworker.sse.consumer import SSEConsumer
 
 

@@ -1,6 +1,6 @@
 import asynctest
 from asynctest import CoroutineMock, Mock, call, MagicMock
-from asyncworker.signal_handlers.sse import SSE
+from asyncworker.signals.handlers.sse import SSE
 from asyncworker.models import RouteTypes, RoutesRegistry
 
 
@@ -35,7 +35,7 @@ class AMQPTests(asynctest.TestCase):
             }
         )
 
-    @asynctest.patch("asyncworker.signal_handlers.sse.SSEConsumer")
+    @asynctest.patch("asyncworker.signals.handlers.sse.SSEConsumer")
     async def test_startup_initializes_and_starts_one_consumer_per_route(self,
                                                                          Consumer):
         app = asynctest.MagicMock(

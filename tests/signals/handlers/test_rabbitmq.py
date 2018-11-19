@@ -1,6 +1,6 @@
 import asynctest
 from asynctest import CoroutineMock, Mock, call
-from asyncworker.signal_handlers.rabbitmq import RabbitMQ
+from asyncworker.signals.handlers.rabbitmq import RabbitMQ
 from asyncworker.models import RouteTypes, RoutesRegistry
 
 
@@ -26,7 +26,7 @@ class AMQPTests(asynctest.TestCase):
             }
         )
 
-    @asynctest.patch("asyncworker.signal_handlers.rabbitmq.Consumer")
+    @asynctest.patch("asyncworker.signals.handlers.rabbitmq.Consumer")
     async def test_startup_initializes_and_starts_one_consumer_per_route(self,
                                                                          Consumer):
         app = asynctest.MagicMock(
