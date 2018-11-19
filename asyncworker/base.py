@@ -2,21 +2,20 @@ import asyncio
 from collections import MutableMapping
 from typing import Iterable, Tuple
 
-from aiohttp import Signal
-
 from asyncworker.conf import logger
-from asyncworker.signal_handlers.base import SignalHandler
+from asyncworker.signals.handlers.base import SignalHandler
 from asyncworker.models import RoutesRegistry, RouteTypes
+from asyncworker.signals.base import Signal, Freezable
 from asyncworker.utils import entrypoint
 
 
-class BaseApp(MutableMapping):
+class BaseApp(MutableMapping, Freezable):
     handlers: Tuple[SignalHandler, ...]
 
     def __init__(self) -> None:
         self.loop = asyncio.get_event_loop()
         self.routes_registry = RoutesRegistry()
-        self.default_route_options = {}
+        self.default_route_options: dict = {}
 
         self._state: dict = {}
         self._frozen = False
@@ -28,19 +27,14 @@ class BaseApp(MutableMapping):
             self._on_shutdown.append(handler.shutdown)
 
     def _check_frozen(self):
-        if self._frozen:
+        if self.frozen():
             raise RuntimeError("You shouldnt change the state of started "
                                "application")
 
-    @property
     def frozen(self) -> bool:
         return self._frozen
 
-    def _pre_freeze(self):
-        self._on_startup.freeze()
-        self._on_shutdown.freeze()
-
-    def _freeze(self) -> None:
+    async def freeze(self) -> None:
         self._frozen = True
 
     def __getitem__(self, key):
@@ -73,9 +67,7 @@ class BaseApp(MutableMapping):
 
         Should be called in the event loop along with the request handler.
         """
-        self._pre_freeze()
         await self._on_startup.send(self)
-        self._freeze()
 
     def route(self,
               routes: Iterable[str],
