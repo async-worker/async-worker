@@ -5,7 +5,7 @@ from asyncworker.signal_handlers.base import SignalHandler
 from asyncworker.sse.consumer import SSEConsumer
 
 
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: no cover
     from asyncworker.sse.app import SSEApplication
 
 
