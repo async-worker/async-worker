@@ -2,10 +2,10 @@ import asynctest
 from aiohttp import web
 from asynctest import CoroutineMock, Mock
 
-from asyncworker import BaseApp, App
+from asyncworker import App
 from asyncworker.conf import settings
 from asyncworker.signals.handlers.http import HTTPServer
-from asyncworker.models import RouteTypes, RoutesRegistry
+from asyncworker.routes import RouteTypes, RoutesRegistry
 
 
 class HTTPServerTests(asynctest.TestCase):
