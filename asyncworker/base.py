@@ -4,7 +4,8 @@ from typing import Iterable, Tuple
 
 from asyncworker.conf import logger
 from asyncworker.signals.handlers.base import SignalHandler
-from asyncworker.models import RoutesRegistry, RouteTypes
+from asyncworker.routes import RoutesRegistry
+from asyncworker.options import RouteTypes
 from asyncworker.signals.base import Signal, Freezable
 from asyncworker.utils import entrypoint
 

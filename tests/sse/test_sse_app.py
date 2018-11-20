@@ -3,9 +3,9 @@ import asyncio
 import asynctest
 from urllib.parse import urljoin
 
-from asyncworker.models import RouteTypes
 from asyncworker.sse.app import SSEApplication
-from asyncworker.options import Options, Defaultvalues, Events, Actions
+from asyncworker.options import Options, Defaultvalues, Events, Actions, \
+    RouteTypes
 
 from asynctest.mock import CoroutineMock
 

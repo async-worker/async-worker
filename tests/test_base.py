@@ -2,7 +2,7 @@ import asynctest
 from asynctest import Mock, patch, CoroutineMock
 
 from asyncworker import BaseApp
-from asyncworker.models import RouteTypes
+from asyncworker.options import RouteTypes
 
 
 class BaseAppTests(asynctest.TestCase):

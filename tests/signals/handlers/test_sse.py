@@ -1,7 +1,8 @@
 import asynctest
 from asynctest import CoroutineMock, Mock, call, MagicMock
 from asyncworker.signals.handlers.sse import SSE
-from asyncworker.models import RouteTypes, RoutesRegistry
+from asyncworker.routes import RoutesRegistry
+from asyncworker.options import RouteTypes
 
 
 class AMQPTests(asynctest.TestCase):

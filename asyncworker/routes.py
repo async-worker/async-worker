@@ -1,20 +1,13 @@
 from collections import UserDict
-from enum import Enum, auto
 from typing import Callable, Coroutine, Dict, List, Any
 
 from cached_property import cached_property
 
 from asyncworker.conf import settings
-from asyncworker.options import Defaultvalues, Events, Options
-
+from asyncworker.options import Defaultvalues, Events, Options, RouteTypes
 
 RouteHandler = Callable[[], Coroutine]
 Route = Dict[str, Any]
-
-
-class RouteTypes(Enum):
-    AMQP_RABBITMQ = auto()
-    SSE = auto()
 
 
 class RoutesRegistry(UserDict):
