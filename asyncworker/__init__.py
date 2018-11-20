@@ -1,6 +1,6 @@
 from asyncworker.base import BaseApp
 from asyncworker.consumer import Consumer
-from asyncworker.options import Options, Defaultvalues, Events
+from asyncworker.options import Options, Defaultvalues, Events, RouteTypes
 from asyncworker.signals.handlers.rabbitmq import RabbitMQ
 
 

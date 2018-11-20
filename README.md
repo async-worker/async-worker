@@ -19,11 +19,13 @@ Atualmente o projeto suporta as seguintes backends:
 
 ```python
 
-from asyncworker import App
+from asyncworker import App, RouteTypes
 
 app = App(host="127.0.0.1", user="guest", password="guest", prefetch_count=256)
 
-@app.route(["asgard/counts", "asgard/counts/errors"], vhost="fluentd")
+@app.route(["asgard/counts", "asgard/counts/errors"], 
+           type=RouteTypes.AMQP_RABBITMQ, 
+           vhost="fluentd")
 async def drain_handler(message):
     logger.info(message)
 
@@ -37,13 +39,14 @@ Se o handler rodar sem erros, a mensagem é automaticamente confirmada (ack).
 ### Worker lendo dados de um endpoint Server Side Events
 
 ```python
-
+from asyncworker import RouteTypes
 from asyncworker.sse.app import SSEApplication
 import logging
 
+
 app = SSEApplication(url="http://172.18.0.31:8080/", logger=logging.getLogger())
 
-@app.route(["/v2/events"], options={Options.BULK_SIZE: 2})
+@app.route(["/v2/events"], type=RouteTypes.SSE, options={Options.BULK_SIZE: 2})
 async def _on_event(events):
     import json
     event_names = [e.name for e in events]
@@ -94,12 +97,14 @@ ou em caso de falha (handler lança uma exception não tratada).
 As opções são: Events.ON_SUCCESS e Events.ON_EXCEPTION. Ambas são passadas a cada rota de consumo registrada, ex:
 
 ```python
-from asynworker.options import Events, Actions
+from asyncworker.options import Events, Actions, RouteTypes
 
-@app.route(["queue1", "queue2"], options={
-                                  Events.ON_SUCCESS: Actions.ACK,
-                                  Events.ON_EXCEPTION: Actions.REJECT,
-                                  })
+@app.route(["queue1", "queue2"], 
+            type=RouteTypes.AMQP_RABBITMQ, 
+            options={
+                Events.ON_SUCCESS: Actions.ACK,
+                Events.ON_EXCEPTION: Actions.REJECT,
+            })
 async def handler(messages):
     ...
 ```
@@ -154,7 +159,22 @@ O valor do BULK_SIZE sempre é escolhido com a fórmula: `min(BULK_SIZE, PREFRET
  
 ## Atualizando o async-worker no seu projeto
 
-### 0.1.x > 0.2.0
+### 0.5.x -> 0.6.0
+
+Nessa versão, tornamos obrigatório o uso do enumerator `RouteTypes` e a 
+assinatura de `app.route` mudou. Ex.:
+
+```python
+from asyncworker.models import RouteTypes
+
+@app.route(['/sse'], type=RouteTypes.SSE)
+async def event_handler(events):
+    pass
+``` 
+
+O valor default do parâmetro `type` é `RouteTypes.AMQP_RABBITMQ`. 
+
+### 0.1.x -> 0.2.0
 
 Na versão `0.2.0` criamos a possibilidade de receber mensagens em lote. E a partir dessa versão
 a assinatura do handler mudo para:
@@ -253,7 +273,7 @@ Também é possível utilizar `Timeit` como um decorator:
 ```python
 # ...
 
-@app.route(["xablau-queue"], vhost="/")
+@app.route(["xablau-queue"], type=RouteTypes.AMQP_RABBITMQ, vhost="/")
 @Timeit(name="xablau-access-time", callback=log_callback)
 async def drain_handler(message):
     await access_some_remote_content()
