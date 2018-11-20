@@ -9,7 +9,7 @@ class Settings(BaseSettings):
 
     AMQP_DEFAULT_VHOST: str = '/'
 
-    HTTP_HOST: str = 'localhost'
+    HTTP_HOST: str = '127.0.0.1'
     HTTP_PORT: int = 8080
 
     class Config:
