@@ -12,6 +12,21 @@ Route = Dict[str, Any]
 
 class RoutesRegistry(UserDict):
     @cached_property
+    def http_routes(self) -> List[Route]:
+        routes = []
+        for handler, route in self.items():
+            if route['type'] is not RouteTypes.HTTP:
+                continue
+            for path in route['routes']:
+                for method in route['methods']:
+                    routes.append({
+                        'method': method,
+                        'path': path,
+                        'handler': handler
+                    })
+        return routes
+
+    @cached_property
     def amqp_routes(self) -> List[Dict]:
         routes = []
         for handler, route in self.items():
