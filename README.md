@@ -222,8 +222,7 @@ from asyncworker.models import RouteTypes
 async def event_handler(events):
     pass
 ``` 
-
-O valor default do parâmetro `type` é `RouteTypes.AMQP_RABBITMQ`. 
+ 
 
 ## 0.1.x -> 0.2.0
 

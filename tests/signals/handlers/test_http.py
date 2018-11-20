@@ -1,6 +1,8 @@
+from random import randint
+
 import asynctest
 from aiohttp import web
-from asynctest import CoroutineMock, Mock
+from asynctest import CoroutineMock, Mock, patch
 
 from asyncworker import App
 from asyncworker.conf import settings
@@ -59,7 +61,9 @@ class HTTPServerTests(asynctest.TestCase):
 
     @asynctest.patch("asyncworker.signals.handlers.http.web.AppRunner.cleanup")
     async def test_shutdown_closes_the_running_http_server(self, cleanup):
-        self.app.routes_registry = self.routes_registry
+        with patch('asyncworker.signals.handlers.http.settings',
+                   HTTP_PORT=randint(30000, 60000)):
+            self.app.routes_registry = self.routes_registry
 
         await self.signal_handler.startup(self.app)
         cleanup.assert_not_awaited()

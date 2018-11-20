@@ -13,8 +13,7 @@ from asyncworker.consumer import Consumer
 import asyncworker.consumer
 from asyncworker import conf, App
 from asyncworker.rabbitmq.message import RabbitMQMessage
-from asyncworker.options import Events, Actions
-
+from asyncworker.options import Events, Actions, RouteTypes
 
 
 async def _handler(message):
@@ -116,7 +115,7 @@ class ConsumerTest(asynctest.TestCase):
         """
         Confirma que em caso de exceção, será feito `message.reject(requeue=True)`
         """
-        @self.app.route(["queue"], options = {Events.ON_EXCEPTION: Actions.REQUEUE})
+        @self.app.route(["queue"], type=RouteTypes.AMQP_RABBITMQ, options={Events.ON_EXCEPTION: Actions.REQUEUE})
         async def _handler(messages):
             raise Exception("BOOM!")
 
@@ -128,7 +127,7 @@ class ConsumerTest(asynctest.TestCase):
         self.queue_mock.reject.assert_awaited_with(delivery_tag=10, requeue=True)
 
     async def test_on_exception_reject_message(self):
-        @self.app.route(["queue"], options={Events.ON_EXCEPTION: Actions.REJECT})
+        @self.app.route(["queue"], type=RouteTypes.AMQP_RABBITMQ, options={Events.ON_EXCEPTION: Actions.REJECT})
         async def _handler(messages):
             raise Exception("BOOM!")
 
@@ -140,7 +139,7 @@ class ConsumerTest(asynctest.TestCase):
         self.queue_mock.reject.assert_awaited_with(delivery_tag=10, requeue=False)
 
     async def test_on_exception_ack_message(self):
-        @self.app.route(["queue"], options={Events.ON_EXCEPTION: Actions.ACK})
+        @self.app.route(["queue"], type=RouteTypes.AMQP_RABBITMQ, options={Events.ON_EXCEPTION: Actions.ACK})
         async def _handler(messages):
             raise Exception("BOOM!")
 
@@ -152,7 +151,7 @@ class ConsumerTest(asynctest.TestCase):
         self.queue_mock.ack.assert_awaited_with(delivery_tag=10)
 
     async def test_on_success_ack(self):
-        @self.app.route(["queue"], options = {Events.ON_SUCCESS: Actions.ACK})
+        @self.app.route(["queue"], type=RouteTypes.AMQP_RABBITMQ, options={Events.ON_SUCCESS: Actions.ACK})
         async def _handler(messages):
             return 42
 
@@ -163,7 +162,7 @@ class ConsumerTest(asynctest.TestCase):
         self.queue_mock.ack.assert_awaited_with(delivery_tag=10)
 
     async def test_on_success_reject(self):
-        @self.app.route(["queue"], options = {Events.ON_SUCCESS: Actions.REJECT})
+        @self.app.route(["queue"], type=RouteTypes.AMQP_RABBITMQ, options = {Events.ON_SUCCESS: Actions.REJECT})
         async def _handler(messages):
             return 42
 
@@ -174,7 +173,7 @@ class ConsumerTest(asynctest.TestCase):
         self.queue_mock.reject.assert_awaited_with(delivery_tag=10, requeue=False)
 
     async def test_on_success_requeue(self):
-        @self.app.route(["queue"], options = {Events.ON_SUCCESS: Actions.REQUEUE})
+        @self.app.route(["queue"], type=RouteTypes.AMQP_RABBITMQ, options = {Events.ON_SUCCESS: Actions.REQUEUE})
         async def _handler(messages):
             return 42
 
