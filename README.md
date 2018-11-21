@@ -226,6 +226,9 @@ Então você poderá utilizá-los nos seus handlers
 async def drain_handler(messages):
     app['processed_messages'] += 1
 ```
+**Obs.:** Vale lembrar que esse dicionário é compartilhado ao longo de toda app
+e utilizado inclusive pelo próprio asyncworker, então uma boa prática é escolher
+nomes únicos para evitar conflitos. 
 
 ## @app.run_on_startup
 
@@ -249,6 +252,22 @@ async def init_redis(app):
 app.run()
 ```   
 
+## @app.run_on_shutdown
+
+Assim como o evento de `on_startup` sinaliza a inicialização do ciclo de vida 
+da app, o evento `on_shutdown` representa o fim. Um caso de uso comum, é fazer 
+o processo de finalização de conexões abertas. Como no exemplo anterior
+abrimos uma conexão com o [Redis](https://redis.io), utilizando a biblioteca 
+[aioredis](https://github.com/aio-libs/aioredis), precisamos fechar as conexões 
+criadas:
+
+```python
+@app.run_on_shutdown
+async def init_redis(app):
+    app['redis'].close()
+    await app['redis'].wait_closed()
+```   
+
 # Observações adicionais
 
 ### BULK_SIZE e o backend RabbitMQ
@@ -259,7 +278,7 @@ O valor do BULK_SIZE sempre é escolhido com a fórmula: `min(BULK_SIZE, PREFRET
 
 # 0.5.x -> 0.6.0
 
-Nessa versão, tornamos obrigatório o uso do enumerator `RouteTypes` e a 
+Nessa versão, tornamos obrigatório o uso do  qenumerator `RouteTypes` e a 
 assinatura de `app.route` mudou. Ex.:
 
 ```python

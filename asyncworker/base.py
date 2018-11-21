@@ -69,7 +69,8 @@ class BaseApp(MutableMapping, Freezable):
             await asyncio.sleep(10)
 
     async def startup(self):
-        """Causes on_startup signal
+        """
+        Causes on_startup signal
 
         Should be called in the event loop along with the request handler.
         """
@@ -112,13 +113,11 @@ class BaseApp(MutableMapping, Freezable):
     def run_on_startup(self, coro: Callable[['BaseApp'], Coroutine]) -> None:
         """
         Registers a coroutine to be awaited for during app startup
-        :param coro:
         """
         self._on_startup.append(coro)
 
     def run_on_shutdown(self, coro: Callable[['BaseApp'], Coroutine]) -> None:
         """
         Registers a coroutine to be awaited for during app shutdown
-        :param coro:
         """
         self._on_shutdown.append(coro)
