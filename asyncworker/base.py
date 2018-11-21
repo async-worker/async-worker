@@ -82,10 +82,7 @@ class BaseApp(MutableMapping, Freezable):
 
         Is called automatically when the application receives a SIGINT or SIGTERM
         """
-        async def shutdown_coro():
-            await self._on_shutdown.send(self)
-
-        return asyncio.ensure_future(shutdown_coro())
+        return asyncio.ensure_future(self._on_shutdown.send(self))
 
     def route(self,
               routes: Iterable[str],
