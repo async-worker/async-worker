@@ -29,6 +29,9 @@ class BaseApp(MutableMapping, Freezable):
             self._on_startup.append(handler.startup)
             self._on_shutdown.append(handler.shutdown)
 
+        for signal in self.shutdown_os_signals:
+            self.loop.add_signal_handler(signal, self.shutdown)
+
     def _check_frozen(self):
         if self.frozen():
             raise RuntimeError("You shouldnt change the state of started "
@@ -112,3 +115,10 @@ class BaseApp(MutableMapping, Freezable):
         :param coro:
         """
         self._on_startup.append(coro)
+
+    def run_on_shutdown(self, coro: Callable[['BaseApp'], Coroutine]) -> None:
+        """
+        Registers a coroutine to be awaited for during app shutdown
+        :param coro:
+        """
+        self._on_shutdown.append(coro)
