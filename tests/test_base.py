@@ -8,7 +8,9 @@ from asyncworker.options import RouteTypes
 class BaseAppTests(asynctest.TestCase):
     async def setUp(self):
         class MyApp(BaseApp):
-            handlers = (Mock(startup=CoroutineMock()),)
+            handlers = (
+                Mock(startup=CoroutineMock(), shutdown=CoroutineMock()),
+            )
 
         self.app = MyApp()
 
@@ -76,3 +78,13 @@ class BaseAppTests(asynctest.TestCase):
                 }
             }
         )
+
+    async def test_run_on_startup_registers_a_coroutine_to_be_executed_on_startup(self):
+        coro = CoroutineMock()
+
+        self.app.run_on_startup(coro)
+
+        self.assertIn(coro, self.app._on_startup)
+
+        await self.app.startup()
+        coro.assert_awaited_once_with(self.app)

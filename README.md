@@ -202,6 +202,53 @@ pode atender múltiplos métodos e múltiplas rotas.
 Por padrão, fazemos o binding em `127.0.0.1:8080`, mas isso pode ser alterado 
 com as envvars `ASYNCWORKER_HTTP_HOST` e `ASYNCWORKER_HTTP_PORT`.
 
+# Compartilhamento de dados e inicializações assíncronas
+
+Recomendamos que com o `asyncworker` você não utilize variáveis globais e que 
+utilize o estado do `asyncworker.App` para manter os seus 
+"[singletons](https://pt.wikipedia.org/wiki/Singleton)". Para isso, o `asyncworker.App` 
+disponibiliza _hooks_ para que códigos sejam injetados ao longo ciclo de vida 
+da aplicação, tornando possível a manutenção, manipulação e compartilhamento de 
+estado pelos handlers.
+
+## Armazenando na App
+
+Para armazenar estados globais da aplicação, podemos utilizar a instância de 
+`asyncworker.App`, que age como um dicionário.
+
+```python
+app['processed_messages'] = 0
+``` 
+Então você poderá utilizá-los nos seus handlers 
+
+ ```python
+@app.route(routes=["words_to_index"], type=RouteTypes.AMQP_RABBITMQ)
+async def drain_handler(messages):
+    app['processed_messages'] += 1
+```
+
+## @app.run_on_startup
+
+Um cenário bem comum em workers é, por exemplo, a necessidade de se manter e 
+compartilhar uma conexão persistente com um banco de dados. Em clientes 
+assíncronos, é comum a necessidade da inicialização de conexões que necessitam 
+de um loop de eventos rodando. Para esses cenários, usamos o evento de 
+`on_startup` da aplicação:
+
+```python
+import aioredis
+from asyncworker import App
+
+# ...
+
+@app.run_on_startup
+async def init_redis(app):
+    app['redis'] = await aioredis.create_pool('redis://localhost')
+
+
+app.run()
+```   
+
 # Observações adicionais
 
 ### BULK_SIZE e o backend RabbitMQ

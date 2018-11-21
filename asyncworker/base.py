@@ -1,6 +1,7 @@
 import asyncio
+from signal import Signals
 from collections import MutableMapping
-from typing import Iterable, Tuple
+from typing import Iterable, Tuple, Callable, Coroutine
 
 from asyncworker.conf import logger
 from asyncworker.signals.handlers.base import SignalHandler
@@ -12,6 +13,7 @@ from asyncworker.utils import entrypoint
 
 class BaseApp(MutableMapping, Freezable):
     handlers: Tuple[SignalHandler, ...]
+    shutdown_os_signals = (Signals.SIGINT, Signals.SIGTERM)
 
     def __init__(self) -> None:
         self.loop = asyncio.get_event_loop()
@@ -70,6 +72,17 @@ class BaseApp(MutableMapping, Freezable):
         """
         await self._on_startup.send(self)
 
+    def shutdown(self):
+        """
+        Schredules an on_startup signal
+
+        Is called automatically when the application receives a SIGINT or SIGTERM
+        """
+        async def shutdown_coro():
+            await self._on_shutdown.send(self)
+
+        return asyncio.ensure_future(shutdown_coro())
+
     def route(self,
               routes: Iterable[str],
               type: RouteTypes=RouteTypes.AMQP_RABBITMQ,
@@ -92,3 +105,10 @@ class BaseApp(MutableMapping, Freezable):
             }
             return f
         return wrapper
+
+    def run_on_startup(self, coro: Callable[['BaseApp'], Coroutine]) -> None:
+        """
+        Registers a coroutine to be awaited for during app startup
+        :param coro:
+        """
+        self._on_startup.append(coro)
