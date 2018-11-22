@@ -76,7 +76,7 @@ class BaseApp(MutableMapping, Freezable):
         """
         await self._on_startup.send(self)
 
-    def shutdown(self) -> asyncio.Task:
+    def shutdown(self) -> asyncio.Future:
         """
         Schredules an on_startup signal
 
