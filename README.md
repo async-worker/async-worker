@@ -202,6 +202,72 @@ pode atender múltiplos métodos e múltiplas rotas.
 Por padrão, fazemos o binding em `127.0.0.1:8080`, mas isso pode ser alterado 
 com as envvars `ASYNCWORKER_HTTP_HOST` e `ASYNCWORKER_HTTP_PORT`.
 
+# Compartilhamento de dados e inicializações assíncronas
+
+Recomendamos que com o `asyncworker` você não utilize variáveis globais e que 
+utilize o estado do `asyncworker.App` para manter os seus 
+"[singletons](https://pt.wikipedia.org/wiki/Singleton)". Para isso, o `asyncworker.App` 
+disponibiliza _hooks_ para que códigos sejam injetados ao longo ciclo de vida 
+da aplicação, tornando possível a manutenção, manipulação e compartilhamento de 
+estado pelos handlers.
+
+## Armazenando na App
+
+Para armazenar estados globais da aplicação, podemos utilizar a instância de 
+`asyncworker.App`, que age como um dicionário.
+
+```python
+app['processed_messages'] = 0
+``` 
+Então você poderá utilizá-los nos seus handlers 
+
+ ```python
+@app.route(routes=["words_to_index"], type=RouteTypes.AMQP_RABBITMQ)
+async def drain_handler(messages):
+    app['processed_messages'] += 1
+```
+**Obs.:** Vale lembrar que esse dicionário é compartilhado ao longo de toda app
+e utilizado inclusive pelo próprio asyncworker, então uma boa prática é escolher
+nomes únicos para evitar conflitos. 
+
+## @app.run_on_startup
+
+Um cenário bem comum em workers é, por exemplo, a necessidade de se manter e 
+compartilhar uma conexão persistente com um banco de dados. Em clientes 
+assíncronos, é comum a necessidade da inicialização de conexões que necessitam 
+de um loop de eventos rodando. Para esses cenários, usamos o evento de 
+`on_startup` da aplicação:
+
+```python
+import aioredis
+from asyncworker import App
+
+# ...
+
+@app.run_on_startup
+async def init_redis(app):
+    app['redis'] = await aioredis.create_pool('redis://localhost')
+
+
+app.run()
+```   
+
+## @app.run_on_shutdown
+
+Assim como o evento de `on_startup` sinaliza a inicialização do ciclo de vida 
+da app, o evento `on_shutdown` representa o fim. Um caso de uso comum, é fazer 
+o processo de finalização de conexões abertas. Como no exemplo anterior
+abrimos uma conexão com o [Redis](https://redis.io), utilizando a biblioteca 
+[aioredis](https://github.com/aio-libs/aioredis), precisamos fechar as conexões 
+criadas:
+
+```python
+@app.run_on_shutdown
+async def init_redis(app):
+    app['redis'].close()
+    await app['redis'].wait_closed()
+```   
+
 # Observações adicionais
 
 ### BULK_SIZE e o backend RabbitMQ
@@ -212,7 +278,7 @@ O valor do BULK_SIZE sempre é escolhido com a fórmula: `min(BULK_SIZE, PREFRET
 
 # 0.5.x -> 0.6.0
 
-Nessa versão, tornamos obrigatório o uso do enumerator `RouteTypes` e a 
+Nessa versão, tornamos obrigatório o uso do  qenumerator `RouteTypes` e a 
 assinatura de `app.route` mudou. Ex.:
 
 ```python

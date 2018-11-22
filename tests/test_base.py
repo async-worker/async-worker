@@ -1,5 +1,8 @@
+import asyncio
+
 import asynctest
-from asynctest import Mock, patch, CoroutineMock
+from asynctest import Mock, CoroutineMock, patch, call
+from signal import Signals
 
 from asyncworker import BaseApp
 from asyncworker.options import RouteTypes
@@ -8,8 +11,10 @@ from asyncworker.options import RouteTypes
 class BaseAppTests(asynctest.TestCase):
     async def setUp(self):
         class MyApp(BaseApp):
-            handlers = (Mock(startup=CoroutineMock()),)
-
+            handlers = (
+                Mock(startup=CoroutineMock(), shutdown=CoroutineMock()),
+            )
+        self.appCls = MyApp
         self.app = MyApp()
 
     async def test_setitem_changes_internal_state_if_not_frozen(self):
@@ -76,3 +81,45 @@ class BaseAppTests(asynctest.TestCase):
                 }
             }
         )
+
+    async def test_run_on_startup_registers_a_coroutine_to_be_executed_on_startup(self):
+        coro = CoroutineMock()
+
+        self.app.run_on_startup(coro)
+
+        self.assertIn(coro, self.app._on_startup)
+
+        await self.app.startup()
+        coro.assert_awaited_once_with(self.app)
+
+    async def test_run_on_shutdown_registers_a_coroutine_to_be_executed_on_shutdown(self):
+        coro = CoroutineMock()
+
+        self.app.run_on_shutdown(coro)
+        self.assertIn(coro, self.app._on_shutdown)
+
+        await self.app.shutdown()
+        coro.assert_awaited_once_with(self.app)
+
+    async def test_shutdown_is_registered_as_a_signal_handler(self):
+        with patch.object(self.loop, 'add_signal_handler') as add_signal_handler:
+            app = self.appCls()
+            add_signal_handler.assert_has_calls([
+                call(Signals.SIGINT, app.shutdown),
+                call(Signals.SIGTERM, app.shutdown)
+            ])
+
+    async def test_shutdown_schedules_on_shutdown_signal_send(self):
+        with patch.object(self.app._on_shutdown, 'send') as send:
+            send.assert_not_awaited()
+
+            shutdown_coro = self.app.shutdown()
+
+            self.assertIsInstance(shutdown_coro, asyncio.Task)
+            self.assertFalse(shutdown_coro.done())
+
+            send.assert_not_awaited()
+
+            await shutdown_coro
+            send.assert_awaited_once_with(self.app)
+            self.assertTrue(shutdown_coro.done())
