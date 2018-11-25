@@ -78,7 +78,7 @@ class BaseApp(MutableMapping, Freezable):
 
     def shutdown(self) -> asyncio.Future:
         """
-        Schredules an on_startup signal
+        Schedules an on_startup signal
 
         Is called automatically when the application receives a SIGINT or SIGTERM
         """
