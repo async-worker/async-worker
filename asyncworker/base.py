@@ -111,7 +111,7 @@ class BaseApp(MutableMapping, Freezable):
         """
         Registers a coroutine to be awaited for during app startup
         """
-        self._on_startup.append(coro)
+        self._on_startup.insert(0, coro)
 
     def run_on_shutdown(self, coro: Callable[['BaseApp'], Coroutine]) -> None:
         """
