@@ -27,3 +27,4 @@ class Defaultvalues:
 class RouteTypes(Enum):
     AMQP_RABBITMQ = auto()
     SSE = auto()
+    HTTP = auto()

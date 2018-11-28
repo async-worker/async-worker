@@ -11,7 +11,7 @@ Atualmente o projeto suporta as seguintes backends:
 
 * [RabbitMQ](https://www.rabbitmq.com/): Somente leitura de mensagens. A implementação de publicação de mensagens será feita no #9;
 * [Server Side Events](https://en.wikipedia.org/wiki/Server-sent_events): Possibilidade de eventos de um endpoint que emite implementa Server Side Events.
-
+* [HTTP](https://pt.wikipedia.org/wiki/Hypertext_Transfer_Protocol): Possibilidade de receber dados via requisições HTTP
 
 ## Exemplos
 
@@ -65,7 +65,22 @@ async def _on_event(events):
 
 Nesse exemplo, o handler `_on_event()` recebe os eventos enviados pelo servidor. O objeto `events` é sempre uma lista, mesmo quando estamos usando `BULK_SIZE=1` (Falaremos sobre isso mais a frente)
 
-### Rodando esses código
+### Worker lendo dados de requisições HTTP
+```python
+from aiohttp import web
+from asyncworker import App, RouteTypes
+
+# ...
+
+@app.route(routes=['/', '/hello'], methods=['GET'], type=RouteTypes.HTTP)
+async def index(request: web.Request) -> web.Response:
+    return web.Response(body="Hello world")
+```
+
+Nesse exemplo, declaramos um handler `index`, que receberá uma instância de 
+`aiohttp.web.Request` para cada acesso as rotas `GET /` e `GET /hello`.
+
+### Rodando esses códigos
 
 Ambos os exemplos precisam de um `main()` para poderem rodar. Um exemplo de `main` seria o seguinte, assumindo que o objeto `app` está no módulo `myworker`:
 
@@ -132,7 +147,7 @@ O valor default para o `.reject()` é `requeue=True`.
 # Server Side Events 
 
 
-# Recebendo dados em lote
+## Recebendo dados em lote
 
 o async-worker permite que você receba seus dados em lotes de tamanho definido por você. A forma de escolher esse lote é atrávez da opção `Options.BULK_SIZE`.
 Essa opção é passada para cada um dos handlers, individualmente. O default é `BULK_SIZE=1`.
@@ -153,13 +168,49 @@ async def _handler(dat):
 
 Nesse exemplo, o `_handler` só será chamado quando o async-worker tiver, **já nas mãos**, 1000 itens. Os 1000 itens serão passados de uma única vez para o handler, em uma lista.
 
+# HTTP (0.6.0+)
+
+Atualmente, uma das formas mais comuns comunicação entre aplicações é HTTP, 
+e com o async-worker você também consegue utilizar esse protocolo nos seus handlers.    
+
+## Declarando uma rota
+
+```python
+from aiohttp import web
+from asyncworker import App, RouteTypes
+
+
+app = App(host="localhost", user="guest", password="guest", prefetch_count=1024)
+
+
+@app.route(routes=['/', '/hello'], methods=['GET'], type=RouteTypes.HTTP)
+async def index(request: web.Request) -> web.Response:
+    return web.Response(body="Hello world")
+
+
+@app.route(routes=["words_to_index"], type=RouteTypes.AMQP_RABBITMQ)
+async def drain_handler(messages):
+    print(messages)
+
+
+app.run()
+```
+
+Os parâmetros `routes` e `methods` são listas, ou seja, um mesmo handler 
+pode atender múltiplos métodos e múltiplas rotas. 
+
+Por padrão, fazemos o binding em `127.0.0.1:8080`, mas isso pode ser alterado 
+com as envvars `ASYNCWORKER_HTTP_HOST` e `ASYNCWORKER_HTTP_PORT`.
+
+# Observações adicionais
+
 ### BULK_SIZE e o backend RabbitMQ
 
 O valor do BULK_SIZE sempre é escolhido com a fórmula: `min(BULK_SIZE, PREFRETCH)`. Isso para evitar que o código fique em um deadlock, onde ao mesmo tempo que ele aguarda o bulk encher para poder pegar mais mensagens da fila, ele está aguardando o bulk esvaziar para pegar mais mensagens da fila.
  
-## Atualizando o async-worker no seu projeto
+# Atualizando o async-worker no seu projeto
 
-### 0.5.x -> 0.6.0
+# 0.5.x -> 0.6.0
 
 Nessa versão, tornamos obrigatório o uso do enumerator `RouteTypes` e a 
 assinatura de `app.route` mudou. Ex.:
@@ -171,10 +222,9 @@ from asyncworker.models import RouteTypes
 async def event_handler(events):
     pass
 ``` 
+ 
 
-O valor default do parâmetro `type` é `RouteTypes.AMQP_RABBITMQ`. 
-
-### 0.1.x -> 0.2.0
+## 0.1.x -> 0.2.0
 
 Na versão `0.2.0` criamos a possibilidade de receber mensagens em lote. E a partir dessa versão
 a assinatura do handler mudo para:
@@ -217,10 +267,10 @@ async def drain_handler(messages):
 
 ```
 
-## Utils
-### Timeit (0.3.0+)
+# Utils
+## Timeit (0.3.0+)
 
-#### Gerenciador de contexto
+### Gerenciador de contexto
 
 Um gerenciador de contexto para marcar o tempo de execução de código e chamar
 um callback `Callable[..., Coroutine]` 
@@ -266,7 +316,7 @@ loop = asyncio.get_event_loop()
 loop.run_until_complete(main())
 ```
 
-#### Decorator
+### Decorator
 
 Também é possível utilizar `Timeit` como um decorator:
 
@@ -279,7 +329,7 @@ async def drain_handler(message):
     await access_some_remote_content()
 ```
 
-#### Múltiplas transações (0.4.0+)
+### Múltiplas transações (0.4.0+)
 
 Muitas vezes queremos ter várias métricas ao mesmo tempo para contar o tempo
 dentro de um mesmo contexto de execução. Para isso, uma mesma instância pode
