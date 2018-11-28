@@ -66,7 +66,7 @@ class BaseAppTests(asynctest.TestCase):
     async def test_route_registers_a_route_to_routes_registry(self):
         handler = CoroutineMock()
 
-        self.app.route(['route'], dog="Xablau")(handler)
+        self.app.route(['route'], type=RouteTypes.AMQP_RABBITMQ, dog="Xablau")(handler)
 
         self.assertEqual(
             self.app.routes_registry,

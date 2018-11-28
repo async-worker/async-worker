@@ -2,7 +2,8 @@ import asynctest
 
 from asyncworker import App
 from asyncworker.conf import settings
-from asyncworker.options import Options, Defaultvalues, Events, Actions
+from asyncworker.options import Options, Defaultvalues, Events, Actions, \
+    RouteTypes
 
 
 class RabbitMQAppTest(asynctest.TestCase):
@@ -20,6 +21,7 @@ class RabbitMQAppTest(asynctest.TestCase):
         app = App(**self.connection_parameters)
 
         @app.route(expected_routes,
+                   type=RouteTypes.AMQP_RABBITMQ,
                    vhost=expected_vhost,
                    options={
                        Options.BULK_SIZE: 1024,
@@ -47,7 +49,7 @@ class RabbitMQAppTest(asynctest.TestCase):
     async def test_register_hander_on_route_registry(self):
         app = App(**self.connection_parameters)
 
-        @app.route(["/asgard/counts/ok"])
+        @app.route(["/asgard/counts/ok"], type=RouteTypes.AMQP_RABBITMQ)
         async def _handler(message):
             return 42
 
@@ -60,7 +62,7 @@ class RabbitMQAppTest(asynctest.TestCase):
         expected_routes = ["/asgard/counts/ok", "/asgard/counts/errors"]
         app = App(**self.connection_parameters)
 
-        @app.route(expected_routes)
+        @app.route(expected_routes, type=RouteTypes.AMQP_RABBITMQ)
         async def _handler(message):
             return 42
 
@@ -74,7 +76,7 @@ class RabbitMQAppTest(asynctest.TestCase):
         expected_vhost = settings.AMQP_DEFAULT_VHOST
         app = App(**self.connection_parameters)
 
-        @app.route(expected_route)
+        @app.route(expected_route, type=RouteTypes.AMQP_RABBITMQ)
         async def _handler(message):
             return 42
 
@@ -88,7 +90,7 @@ class RabbitMQAppTest(asynctest.TestCase):
         expected_bulk_size = 1024
         app = App(**self.connection_parameters)
 
-        @app.route(["my-queue"], options={Options.BULK_SIZE: expected_bulk_size})
+        @app.route(["my-queue"], type=RouteTypes.AMQP_RABBITMQ, options={Options.BULK_SIZE: expected_bulk_size})
         async def _handler(message):
             return 42
 
@@ -101,7 +103,7 @@ class RabbitMQAppTest(asynctest.TestCase):
         expected_bulk_flush_interval = 120
         app = App(**self.connection_parameters)
 
-        @app.route(["my-queue"], options={Options.BULK_FLUSH_INTERVAL: expected_bulk_flush_interval})
+        @app.route(["my-queue"], type=RouteTypes.AMQP_RABBITMQ, options={Options.BULK_FLUSH_INTERVAL: expected_bulk_flush_interval})
         async def _handler(message):
             return 42
 
@@ -113,7 +115,7 @@ class RabbitMQAppTest(asynctest.TestCase):
     async def test_register_default_bulk_size_and_default_bulk_flush_timeout(self):
         app = App(**self.connection_parameters)
 
-        @app.route(["my-queue"])
+        @app.route(["my-queue"], type=RouteTypes.AMQP_RABBITMQ)
         async def _handler(message):
             return 42
 
@@ -126,7 +128,7 @@ class RabbitMQAppTest(asynctest.TestCase):
     async def test_register_action_on_success(self):
         app = App(**self.connection_parameters)
 
-        @app.route(["my-queue"], options = {Events.ON_SUCCESS: Actions.REJECT})
+        @app.route(["my-queue"], type=RouteTypes.AMQP_RABBITMQ, options = {Events.ON_SUCCESS: Actions.REJECT})
         async def _handler(message):
             return 42
 
@@ -136,7 +138,7 @@ class RabbitMQAppTest(asynctest.TestCase):
     async def test_register_action_on_exception(self):
         app = App(**self.connection_parameters)
 
-        @app.route(["my-queue"], options = {Events.ON_EXCEPTION: Actions.ACK})
+        @app.route(["my-queue"], type=RouteTypes.AMQP_RABBITMQ, options = {Events.ON_EXCEPTION: Actions.ACK})
         async def _handler(message):
             return 42
 
@@ -146,7 +148,7 @@ class RabbitMQAppTest(asynctest.TestCase):
     async def test_test_register_default_actions(self):
         app = App(**self.connection_parameters)
 
-        @app.route(["my-queue"])
+        @app.route(["my-queue"], type=RouteTypes.AMQP_RABBITMQ)
         async def _handler(message):
             return 42
 
@@ -169,7 +171,7 @@ class RabbitMQAppTest(asynctest.TestCase):
         """
         app = App(**self.connection_parameters)
 
-        @app.route(["asgard/counts"], vhost="/")
+        @app.route(["asgard/counts"], type=RouteTypes.AMQP_RABBITMQ, vhost="/")
         async def _handler(message):
             return message
 
@@ -188,11 +190,11 @@ class RabbitMQAppTest(asynctest.TestCase):
     async def test_instantiate_one_consumer_per_handler_multiple_handlers_registered(self):
         app = App(**self.connection_parameters)
 
-        @app.route(["asgard/counts"], vhost="/")
+        @app.route(["asgard/counts"], type=RouteTypes.AMQP_RABBITMQ, vhost="/")
         async def _handler(message):
             return message
 
-        @app.route(["asgard/counts/errors"], vhost="fluentd")
+        @app.route(["asgard/counts/errors"], type=RouteTypes.AMQP_RABBITMQ, vhost="fluentd")
         async def _other_handler(message):
             return message
 
