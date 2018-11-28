@@ -297,9 +297,9 @@ Na versão `0.2.0` criamos a possibilidade de receber mensagens em lote. E a par
 a assinatura do handler mudo para:
 
 ```python
-from asyncworker.rabbitmq.message import Message
+from asyncworker.rabbitmq.message import RabbitMQMessage
 
-async def handler(messages: List[Message]):
+async def handler(messages: List[RabbitMQMessage]):
   pass
 ```
 
