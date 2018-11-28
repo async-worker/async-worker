@@ -78,7 +78,7 @@ class BaseApp(MutableMapping, Freezable):
 
     def shutdown(self) -> asyncio.Future:
         """
-        Schredules an on_startup signal
+        Schedules an on_startup signal
 
         Is called automatically when the application receives a SIGINT or SIGTERM
         """
@@ -111,7 +111,7 @@ class BaseApp(MutableMapping, Freezable):
         """
         Registers a coroutine to be awaited for during app startup
         """
-        self._on_startup.append(coro)
+        self._on_startup.insert(0, coro)
 
     def run_on_shutdown(self, coro: Callable[['BaseApp'], Coroutine]) -> None:
         """
