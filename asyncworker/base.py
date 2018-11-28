@@ -86,7 +86,7 @@ class BaseApp(MutableMapping, Freezable):
 
     def route(self,
               routes: Iterable[str],
-              type: RouteTypes=RouteTypes.AMQP_RABBITMQ,
+              type: RouteTypes,
               options: dict=None,
               **kwargs):
         if options is None:

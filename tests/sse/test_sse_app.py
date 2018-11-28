@@ -1,5 +1,5 @@
 import unittest
-import asyncio
+
 import asynctest
 from urllib.parse import urljoin
 
@@ -8,6 +8,7 @@ from asyncworker.options import Options, Defaultvalues, Events, Actions, \
     RouteTypes
 
 from asynctest.mock import CoroutineMock
+
 
 class AppTest(asynctest.TestCase):
 
@@ -78,9 +79,9 @@ class AppTest(asynctest.TestCase):
 
     async def test_register_hander_on_route_registry(self):
         expected_route = ["/asgard/counts/ok"]
-        expected_vhost = "/"
         app = SSEApplication(**self.connection_parameters)
-        @app.route(expected_route)
+
+        @app.route(expected_route, type=RouteTypes.SSE)
         async def _handler(message):
             return 42
 
