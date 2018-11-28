@@ -22,3 +22,9 @@ class Defaultvalues:
     BULK_FLUSH_INTERVAL = 60
     ON_SUCCESS = Actions.ACK
     ON_EXCEPTION = Actions.REQUEUE
+
+
+class RouteTypes(Enum):
+    AMQP_RABBITMQ = auto()
+    SSE = auto()
+    HTTP = auto()
