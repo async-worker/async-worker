@@ -92,6 +92,16 @@ class BaseAppTests(asynctest.TestCase):
         await self.app.startup()
         coro.assert_awaited_once_with(self.app)
 
+    async def test_startup_calls_user_registered_startup_routines_before_app_signal_handlers_startup(self):
+        coro = CoroutineMock()
+
+        self.app.run_on_startup(coro)
+
+        self.assertEqual(
+            self.app._on_startup,
+            [coro, *(handler.startup for handler in self.app.handlers)]
+        )
+
     async def test_run_on_shutdown_registers_a_coroutine_to_be_executed_on_shutdown(self):
         coro = CoroutineMock()
 
