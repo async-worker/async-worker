@@ -1,8 +1,8 @@
 import asyncio
 import traceback
-from typing import Type
+from typing import Type, Dict
 
-from easyqueue.async import AsyncQueueConsumerDelegate, AsyncQueue
+from easyqueue import AsyncQueueConsumerDelegate, AsyncQueue
 from aioamqp.exceptions import AioamqpException
 
 from asyncworker import conf
@@ -13,15 +13,15 @@ from .rabbitmq import RabbitMQMessage
 
 class Consumer(AsyncQueueConsumerDelegate):
     def __init__(self,
-                 route_info,
-                 host,
-                 username,
-                 password,
-                 prefetch_count=128,
-                 bucket_class: Type[Bucket]=Bucket):
+                 route_info: Dict,
+                 host: str,
+                 username: str,
+                 password: str,
+                 prefetch_count: int=128,
+                 bucket_class: Type[Bucket]=Bucket) -> None:
         self.route = route_info
         self._handler = route_info['handler']
-        self._queue_name = route_info['route']
+        self._queue_name = route_info['routes']
         self._route_options = route_info['options']
         self.host = host
         self.vhost = self._route_options.get("vhost", "/")
@@ -151,7 +151,7 @@ class Consumer(AsyncQueueConsumerDelegate):
         }
         conf.logger.error(current_exception)
 
-    async def consume_all_queues(self, queue):
+    async def consume_all_queues(self, queue: AsyncQueue):
         for queue_name in self._queue_name:
             # Por enquanto não estamos guardando a consumer_tag retornada
             # se precisar, podemos passar a guardar.

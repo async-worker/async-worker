@@ -1,10 +1,11 @@
 language: python
 python:
   - "3.6"
+  - "3.7-dev"
 install:
   - pip install pipenv
   - pipenv install --system --deploy --ignore-pipfile --dev
   - pipenv run pip install -e .
-script: py.test -v --cov=./ --cov-report term-missing -v && flake8 -v
+script: pipenv run test && pipenv run lint
 after_success:
   - codecov
