@@ -6,6 +6,6 @@ install:
   - pip install pipenv
   - pipenv install --system --deploy --ignore-pipfile --dev
   - pipenv run pip install -e .
-script: pipenv run test && pipenv run lint && pipenv run format-check && pipenv run flake8
+script: pipenv run test && pipenv run lint && pipenv run format-check
 after_success:
   - codecov

@@ -22,7 +22,6 @@ codecov = "==1.0.0"
 freezegun = "==0.3.10"
 async-worker = {editable = true, path = "."}
 mypy = "==0.630"
-"flake8" = "==3.5.0"
 black = "==18.9b0"
 
 [requires]
@@ -31,6 +30,5 @@ python_version = "3.6"
 [scripts]
 test = "py.test -v --cov=asyncworker --cov-report term-missing -v"
 lint = "mypy asyncworker --ignore-missing-imports"
-format = "black --py36 -v --line-length 80 asyncworker"
-format-check = "black --py36 -v --line-length 80 --check asyncworker"
-flake8 = "flake8 -v asyncworker"
+format = "black --py36 -v --liwne-length 80 ."
+format-check = "black --py36 -v --line-length 80 --check ."
