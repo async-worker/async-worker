@@ -1,4 +1,6 @@
 [flake8]
+max-line-length = 80
+max-complexity = 10
 ignore =
     # F812: list comprehension redefines ...
     F812,
@@ -14,7 +16,7 @@ ignore =
     H403,
     # H404: multi line docstring should start without a leading new line
     H404,
-    # H405: multi line docstring summary not separated with an empty line
+    # H405: multi line docstring summary nobkat separated with an empty line
     H405
 exclude =
     # No need to traverse our git directory
@@ -33,4 +35,3 @@ exclude =
     dist,
     # Lets skip the test files for now
     tests
-max-complexity = 10
