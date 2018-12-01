@@ -25,6 +25,7 @@ freezegun = "==0.3.10"
 async-worker = {editable = true, path = "."}
 mypy = "==0.630"
 "flake8" = "==3.5.0"
+black = "==18.9b0"
 
 [requires]
 python_version = "3.6"
