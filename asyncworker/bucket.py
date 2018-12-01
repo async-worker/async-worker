@@ -2,10 +2,10 @@ from typing import List, Any
 
 
 class Bucket:
-
     def __init__(self, size: int) -> None:
         self.size = size
-        # fixme: Criar uma interface comum para as *Message para substituir esse Any
+        # fixme: Criar uma interface comum para as *Message
+        # para substituir esse Any
         self._items: List[Any] = []
 
     def is_full(self) -> bool:

@@ -8,33 +8,33 @@ TimeitCallback = Callable[..., Coroutine]
 
 
 class Timeit:
-    TRANSACTIONS_KEY = 'transactions'
+    TRANSACTIONS_KEY = "transactions"
 
-    def __init__(self,
-                 name: str,
-                 callback: TimeitCallback=None) -> None:
+    def __init__(self, name: str, callback: TimeitCallback = None) -> None:
         self.name = name
         self.callback = callback
         self.start: Optional[float] = None
         self.finish: Optional[float] = None
         self._transactions: Dict[str, float] = {}
 
-    def __call__(self,
-                 coro: Optional[Callable[..., Coroutine]]=None,
-                 name: str=None) -> Union[Callable[..., Coroutine], 'Timeit']:
+    def __call__(
+        self, coro: Optional[Callable[..., Coroutine]] = None, name: str = None
+    ) -> Union[Callable[..., Coroutine], "Timeit"]:
         if name:
             child = Timeit(name=name)
             child._transactions = self._transactions
             return child
 
         if not coro:
-            raise ValueError('Invalid method call. '
-                             '"coro" or "name" must be provided')
+            raise ValueError(
+                "Invalid method call. " '"coro" or "name" must be provided'
+            )
 
         @wraps(coro)
         async def wrapped(*args, **kwargs):
             async with self:
                 return await coro(*args, **kwargs)
+
         return wrapped
 
     async def __aenter__(self):
@@ -52,9 +52,9 @@ class Timeit:
         if self.callback:
             measurement = {
                 self.TRANSACTIONS_KEY: self._transactions,
-                'exc_type': exc_type,
-                'exc_val': exc_val,
-                'exc_tb': exc_tb,
+                "exc_type": exc_type,
+                "exc_val": exc_val,
+                "exc_tb": exc_tb,
             }
             await self.callback(**measurement)
 
@@ -64,4 +64,5 @@ def entrypoint(f):
     def _(*args, **kwargs):
         loop = asyncio.get_event_loop()
         return loop.run_until_complete(f(*args, **kwargs))
+
     return _

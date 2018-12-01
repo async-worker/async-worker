@@ -34,8 +34,9 @@ class BaseApp(MutableMapping, Freezable):
 
     def _check_frozen(self):
         if self.frozen():
-            raise RuntimeError("You shouldnt change the state of started "
-                               "application")
+            raise RuntimeError(
+                "You shouldnt change the state of started " "application"
+            )
 
     def frozen(self) -> bool:
         return self._frozen
@@ -80,40 +81,45 @@ class BaseApp(MutableMapping, Freezable):
         """
         Schedules an on_startup signal
 
-        Is called automatically when the application receives a SIGINT or SIGTERM
+        Is called automatically when the application receives
+        a SIGINT or SIGTERM
         """
         return asyncio.ensure_future(self._on_shutdown.send(self))
 
-    def route(self,
-              routes: Iterable[str],
-              type: RouteTypes,
-              options: dict=None,
-              **kwargs):
+    def route(
+        self,
+        routes: Iterable[str],
+        type: RouteTypes,
+        options: dict = None,
+        **kwargs,
+    ):
         if options is None:
             options = {}
         if not isinstance(type, RouteTypes):
-            raise TypeError(f"type parameter is not a valid RouteTypes."
-                            f" Found: '{type}'")
+            raise TypeError(
+                f"type parameter is not a valid RouteTypes." f" Found: '{type}'"
+            )
 
         def wrapper(f):
             self.routes_registry[f] = {
-                'type': type,
-                'routes': routes,
-                'handler': f,
-                'options': options,
-                'default_options': self.default_route_options,
-                **kwargs
+                "type": type,
+                "routes": routes,
+                "handler": f,
+                "options": options,
+                "default_options": self.default_route_options,
+                **kwargs,
             }
             return f
+
         return wrapper
 
-    def run_on_startup(self, coro: Callable[['BaseApp'], Coroutine]) -> None:
+    def run_on_startup(self, coro: Callable[["BaseApp"], Coroutine]) -> None:
         """
         Registers a coroutine to be awaited for during app startup
         """
         self._on_startup.insert(0, coro)
 
-    def run_on_shutdown(self, coro: Callable[['BaseApp'], Coroutine]) -> None:
+    def run_on_shutdown(self, coro: Callable[["BaseApp"], Coroutine]) -> None:
         """
         Registers a coroutine to be awaited for during app shutdown
         """
