@@ -127,8 +127,11 @@ class BaseApp(MutableMapping, Freezable):
         Registers a coroutine to be called with a given interval
         """
         def wrapper(task: Callable[..., Coroutine]):
-            runner = IntervaledTaskRunner(seconds, task, options)
-            self._task_runners.append(runner)
+            runner = IntervaledTaskRunner(seconds=seconds, task=task, app=self, options=options)
+            self._on_startup.append(runner.start)
+            self._on_shutdown.append(runner.stop)
+            # todo: Nesse ponto eu imagino que deveríamos guardar uma referência
+            # do runner no state da app
             return task
 
         return wrapper
@@ -138,12 +141,14 @@ class IntervaledTaskRunner:
     def __init__(
         self,
         seconds: int,
-        task: Callable[..., Coroutine],
+        task: Callable[[BaseApp], Coroutine],
+        app: BaseApp,
         options: Optional[Dict] = None,
     ):
         self.seconds = seconds
         self.options = options or {}
         self.task = task
+        self.app = app
         self.running_tasks: Set[asyncio.Task] = set()
         self.task_is_done_event = asyncio.Event()
         self._keep_running = True
@@ -165,12 +170,12 @@ class IntervaledTaskRunner:
 
     async def _wrapped_task(self):
         try:
-            await self.task()
+            await self.task(self.app)
         finally:
             self.task_is_done_event.set()
             self.running_tasks.remove(asyncio.current_task())
 
-    def start(self) -> asyncio.Task:
+    async def start(self, app: BaseApp) -> asyncio.Task:
         self._started = True
         return asyncio.ensure_future(self._run())
 
