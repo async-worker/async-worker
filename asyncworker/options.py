@@ -4,6 +4,7 @@ from enum import Enum, auto
 class Options(Enum):
     BULK_SIZE = auto()
     BULK_FLUSH_INTERVAL = auto()
+    MAX_CONCURRENCY = auto()
 
 
 class Actions(Enum):

@@ -1,12 +1,15 @@
 import asyncio
 from signal import Signals
 from collections import MutableMapping
-from typing import Iterable, Tuple, Callable, Coroutine
+from typing import Iterable, Tuple, Callable, Coroutine, Dict, Optional, Set, \
+    List
+
+from cached_property import cached_property
 
 from asyncworker.conf import logger
 from asyncworker.signals.handlers.base import SignalHandler
 from asyncworker.routes import RoutesRegistry
-from asyncworker.options import RouteTypes
+from asyncworker.options import RouteTypes, Options
 from asyncworker.signals.base import Signal, Freezable
 from asyncworker.utils import entrypoint
 
@@ -118,3 +121,67 @@ class BaseApp(MutableMapping, Freezable):
         Registers a coroutine to be awaited for during app shutdown
         """
         self._on_shutdown.append(coro)
+
+    def run_every(self, seconds: int, options: Optional[Dict] = None):
+        """
+        Registers a coroutine to be called with a given interval
+        """
+        def wrapper(task: Callable[..., Coroutine]):
+            runner = IntervaledTaskRunner(seconds, task, options)
+            self._task_runners.append(runner)
+            return task
+
+        return wrapper
+
+
+class IntervaledTaskRunner:
+    def __init__(
+        self,
+        seconds: int,
+        task: Callable[..., Coroutine],
+        options: Optional[Dict] = None,
+    ):
+        self.seconds = seconds
+        self.options = options or {}
+        self.task = task
+        self.running_tasks: Set[asyncio.Task] = set()
+        self.task_is_done_event = asyncio.Event()
+        self._keep_running = True
+        self._started = False
+
+    @cached_property
+    def max_concurrency(self) -> Optional[int]:
+        return self.options.get(Options.MAX_CONCURRENCY)
+
+    async def can_dispatch_task(self) -> bool:
+        if not self.max_concurrency:
+            return True
+
+        if len(self.running_tasks) < self.max_concurrency:
+            return True
+
+        if await self.task_is_done_event.wait():
+            return True
+
+    async def _wrapped_task(self):
+        try:
+            await self.task()
+        finally:
+            self.task_is_done_event.set()
+            self.running_tasks.remove(asyncio.current_task())
+
+    def start(self) -> asyncio.Task:
+        self._started = True
+        return asyncio.ensure_future(self._run())
+
+    async def stop(self):
+        self._keep_running = False
+        await asyncio.gather(*self.running_tasks)
+
+    async def _run(self):
+        while self._keep_running:
+            if await self.can_dispatch_task():
+                task = asyncio.ensure_future(self._wrapped_task())
+                self.running_tasks.add(task)
+                await asyncio.sleep(self.seconds)
+                self.task_is_done_event.clear()
