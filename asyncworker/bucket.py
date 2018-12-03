@@ -2,10 +2,10 @@ from typing import List, Any
 
 
 class Bucket:
-
     def __init__(self, size: int) -> None:
         self.size = size
-        # fixme: Criar uma interface comum para as *Message para substituir esse Any
+        # fixme: Criar uma interface comum para as *Message
+        # para substituir esse Any
         self._items: List[Any] = []
 
     def is_full(self) -> bool:
@@ -13,7 +13,8 @@ class Bucket:
 
     def put(self, item):
         if self.is_full():
-            raise BucketFullException(f"Bucket is at full capacity: {self.size}")
+            error_msg = f"Bucket is at full capacity: {self.size}"
+            raise BucketFullException(error_msg)
         self._items.append(item)
 
     def pop_all(self):

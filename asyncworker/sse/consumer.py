@@ -13,6 +13,7 @@ from asyncworker.sse.message import SSEMessage
 from asyncworker import conf
 from asyncworker.bucket import Bucket
 
+
 class State(Enum):
     WAIT_FOR_DATA = auto()
     EVENT_NAME_FOUND = auto()
@@ -31,21 +32,23 @@ timeout = ClientTimeout(sock_read=5)
 class SSEConsumer:
     interval = 10
 
-    def __init__(self,
-                 route_info: Dict,
-                 url: str,
-                 username: str=None,
-                 password: str=None,
-                 bucket_class: Type[Bucket]=Bucket) -> None:
+    def __init__(
+        self,
+        route_info: Dict,
+        url: str,
+        username: str = None,
+        password: str = None,
+        bucket_class: Type[Bucket] = Bucket,
+    ) -> None:
         self.url = url
         self.session = ClientSession(timeout=timeout)
-        self.bucket = bucket_class(size=route_info['options']['bulk_size'])
+        self.bucket = bucket_class(size=route_info["options"]["bulk_size"])
         self.route_info = route_info
-        self._handler = route_info['handler']
+        self._handler = route_info["handler"]
         self.username = username
         self.password = password
         self.routes: List[str] = []
-        for route in self.route_info['routes']:
+        for route in self.route_info["routes"]:
             self.routes.append(urljoin(self.url, route))
 
     def keep_runnig(self):
@@ -58,7 +61,7 @@ class SSEConsumer:
         if not self.bucket.is_full():
             message = SSEMessage(
                 event_name=event_name.decode("utf-8"),
-                event_body=json.loads(event_raw_body)
+                event_body=json.loads(event_raw_body),
             )
             self.bucket.put(message)
 
@@ -68,24 +71,27 @@ class SSEConsumer:
         return rv
 
     async def on_connection_error(self, exception):
-        conf.logger.error({
-            "type": "connection-failed",
-            "dest": self.url, "retry": True,
-            "exc_traceback": traceback.format_exc()
-        })
+        conf.logger.error(
+            {
+                "type": "connection-failed",
+                "dest": self.url,
+                "retry": True,
+                "exc_traceback": traceback.format_exc(),
+            }
+        )
 
     async def on_exception(self, exception):
-        conf.logger.error({
-            "type": "unhandled-exception",
-            "dest": self.url, "retry": True,
-            "exc_traceback": traceback.format_exc()
-        })
+        conf.logger.error(
+            {
+                "type": "unhandled-exception",
+                "dest": self.url,
+                "retry": True,
+                "exc_traceback": traceback.format_exc(),
+            }
+        )
 
     async def on_connection(self):
-        conf.logger.debug({
-            "event": "on-connection",
-            "url": self.url
-        })
+        conf.logger.debug({"event": "on-connection", "url": self.url})
 
     def _parse_sse_line(self, line: bytes) -> bytes:
         return line.split(EVENT_FIELD_SEPARATOR, 1)[1].strip()
@@ -110,7 +116,9 @@ class SSEConsumer:
                 event_body = EMPTY
 
     async def _connect(self, session: ClientSession) -> ClientResponse:
-        response = await session.get(self.url, headers={"Accept": "text/event-stream"})
+        response = await session.get(
+            self.url, headers={"Accept": "text/event-stream"}
+        )
         await self.on_connection()
         return response
 
@@ -126,5 +134,3 @@ class SSEConsumer:
                 await self.on_exception(e)
 
             await asyncio.sleep(self.interval)
-
-
