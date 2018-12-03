@@ -127,7 +127,7 @@ class BaseApp(MutableMapping, Freezable):
         Registers a coroutine to be called with a given interval
         """
         def wrapper(task: Callable[..., Coroutine]):
-            runner = IntervaledTaskRunner(seconds=seconds, task=task, app=self, options=options)
+            runner = ScheduledTaskRunner(seconds=seconds, task=task, app=self, options=options)
             self._on_startup.append(runner.start)
             self._on_shutdown.append(runner.stop)
             # todo: Nesse ponto eu imagino que deveríamos guardar uma referência
@@ -137,7 +137,7 @@ class BaseApp(MutableMapping, Freezable):
         return wrapper
 
 
-class IntervaledTaskRunner:
+class ScheduledTaskRunner:
     def __init__(
         self,
         seconds: int,
