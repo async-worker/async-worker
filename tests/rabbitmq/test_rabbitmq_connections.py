@@ -1,13 +1,21 @@
 import asynctest
+from asynctest import Mock
 from easyqueue import AsyncQueue
 
 from asyncworker.conf import settings
-from asyncworker.rabbitmq.connection import RabbitMQProxyConnection
+from asyncworker.rabbitmq.connection import AMQPConnection
 
 
-class RabbitMQProxyConnectionTests(asynctest.TestCase):
+class AMQPConnectionTests(asynctest.TestCase):
     async def setUp(self):
-        self.rabbitmq_connection = RabbitMQProxyConnection()
+        self.username = Mock()
+        self.password = Mock()
+        self.hostname = Mock()
+        self.rabbitmq_connection = AMQPConnection(
+            hostname=self.hostname,
+            username=self.username,
+            password=self.password,
+        )
 
         self.body = asynctest.Mock()
         self.routing_key = asynctest.Mock()
@@ -80,18 +88,22 @@ class RabbitMQProxyConnectionTests(asynctest.TestCase):
             self.body, self.routing_key, self.exchange
         )
 
-    async def test_put_raises_a_RuntimeError_if_a_connection_wasnt_initialized_for_a_given_vhost(
+    async def test_put_initializes_a_new_connection_if_a_connection_wasnt_initialized_for_a_given_vhost(
         self
     ):
         connection_a = asynctest.Mock(virtual_host="a", spec=AsyncQueue)
 
-        self.rabbitmq_connection.register(connection_a)
-        with self.assertRaises(RuntimeError):
+        with asynctest.patch(
+            "asyncworker.rabbitmq.connection.AsyncQueue",
+            return_value=connection_a,
+        ):
             await self.rabbitmq_connection.put(
                 body=self.body,
                 routing_key=self.routing_key,
                 exchange=self.exchange,
-                vhost="b",
+                vhost="a",
             )
 
-        connection_a.put.assert_not_awaited()
+            connection_a.put.assert_awaited_once_with(
+                self.body, self.routing_key, self.exchange
+            )
