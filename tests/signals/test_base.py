@@ -18,7 +18,7 @@ class SignalTests(asynctest.TestCase):
         handlers = [CoroutineMock(), CoroutineMock(), CoroutineMock()]
         self.signal.extend(handlers)
         args = [1, 2, 3]
-        kwargs = {'dog': 'Xablau'}
+        kwargs = {"dog": "Xablau"}
 
         await self.signal.send(*args, **kwargs)
 

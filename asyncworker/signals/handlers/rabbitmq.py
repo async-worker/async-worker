@@ -5,7 +5,7 @@ from asyncworker.signals.handlers.base import SignalHandler
 from asyncworker.rabbitmq.connection import AMQPConnection
 
 if TYPE_CHECKING:  # pragma: no cover
-    from asyncworker import App
+    from asyncworker import App  # noqa: F401
 
 
 class RabbitMQ(SignalHandler):

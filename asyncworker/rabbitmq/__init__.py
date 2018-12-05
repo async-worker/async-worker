@@ -1,1 +1,1 @@
-from .message import RabbitMQMessage
+from .message import RabbitMQMessage  # noqa: F401

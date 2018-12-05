@@ -12,37 +12,42 @@ from .rabbitmq import RabbitMQMessage
 
 
 class Consumer(AsyncQueueConsumerDelegate):
-    def __init__(self,
-                 route_info: Dict,
-                 host: str,
-                 username: str,
-                 password: str,
-                 prefetch_count: int=128,
-                 bucket_class: Type[Bucket]=Bucket) -> None:
+    def __init__(
+        self,
+        route_info: Dict,
+        host: str,
+        username: str,
+        password: str,
+        prefetch_count: int = 128,
+        bucket_class: Type[Bucket] = Bucket,
+    ) -> None:
         self.route = route_info
-        self._handler = route_info['handler']
-        self._queue_name = route_info['routes']
-        self._route_options = route_info['options']
+        self._handler = route_info["handler"]
+        self._queue_name = route_info["routes"]
+        self._route_options = route_info["options"]
         self.host = host
         self.vhost = self._route_options.get("vhost", "/")
         if self.vhost != "/":
             self.vhost = self.vhost.lstrip("/")
-        self.bucket = bucket_class(size=min(self._route_options['bulk_size'],
-                                            prefetch_count))
-        self.queue = AsyncQueue(host,
-                                username,
-                                password,
-                                virtual_host=self.vhost,
-                                delegate=self,
-                                prefetch_count=prefetch_count)
+        self.bucket = bucket_class(
+            size=min(self._route_options["bulk_size"], prefetch_count)
+        )
+        self.queue = AsyncQueue(
+            host,
+            username,
+            password,
+            virtual_host=self.vhost,
+            delegate=self,
+            prefetch_count=prefetch_count,
+        )
 
     @property
     def queue_name(self) -> str:
         return self._queue_name
 
-    async def on_before_start_consumption(self,
-                                          queue_name: str,
-                                          queue: 'AsyncQueue'):
+    async def on_before_start_consumption(
+        self, queue_name: str, queue: "AsyncQueue"
+    ):
         """
         Coroutine called before queue consumption starts. May be overwritten to
         implement further custom initialization.
@@ -54,9 +59,9 @@ class Consumer(AsyncQueueConsumerDelegate):
         """
         pass
 
-    async def on_consumption_start(self,
-                                   consumer_tag: str,
-                                   queue: 'AsyncQueue'):
+    async def on_consumption_start(
+        self, consumer_tag: str, queue: "AsyncQueue"
+    ):
         """
         Coroutine called once consumption started.
         """
@@ -114,11 +119,13 @@ class Consumer(AsyncQueueConsumerDelegate):
         :type error: MessageError
         :type queue: AsyncQueue
         """
-        conf.logger.error({
-            "parse-error": True,
-            "exception": "Error: not a JSON",
-            "original_msg": body
-        })
+        conf.logger.error(
+            {
+                "parse-error": True,
+                "exception": "Error: not a JSON",
+                "original_msg": body,
+            }
+        )
         try:
             await queue.ack(delivery_tag=delivery_tag)
         except AioamqpException as e:
@@ -166,9 +173,12 @@ class Consumer(AsyncQueueConsumerDelegate):
                     await self.queue.connect()
                     await self.consume_all_queues(self.queue)
                 except Exception as e:
-                    conf.logger.error({
-                        "type": "connection-failed",
-                        "dest": self.host, "retry": True,
-                        "exc_traceback": traceback.format_exc()
-                    })
+                    conf.logger.error(
+                        {
+                            "type": "connection-failed",
+                            "dest": self.host,
+                            "retry": True,
+                            "exc_traceback": traceback.format_exc(),
+                        }
+                    )
             await asyncio.sleep(1)

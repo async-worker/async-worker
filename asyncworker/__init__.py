@@ -1,6 +1,11 @@
 from asyncworker.base import BaseApp
-from asyncworker.consumer import Consumer
-from asyncworker.options import Options, Defaultvalues, Events, RouteTypes
+from asyncworker.consumer import Consumer  # noqa: F401
+from asyncworker.options import (  # noqa: F401
+    Options,
+    Defaultvalues,
+    Events,
+    RouteTypes,
+)
 from asyncworker.signals.handlers.http import HTTPServer
 from asyncworker.signals.handlers.rabbitmq import RabbitMQ
 
