@@ -2,7 +2,7 @@ import asynctest
 from asynctest import CoroutineMock, Mock, call
 
 from asyncworker import App
-from asyncworker.rabbitmq.connection import RabbitMQProxyConnection
+from asyncworker.rabbitmq.connection import AMQPConnection
 from asyncworker.signals.handlers.rabbitmq import RabbitMQ
 from asyncworker.routes import RoutesRegistry
 from asyncworker.options import RouteTypes
@@ -67,7 +67,7 @@ class AMQPTests(asynctest.TestCase):
         )
 
     @asynctest.patch(
-        "asyncworker.signals.handlers.rabbitmq.RabbitMQProxyConnection.register"
+        "asyncworker.signals.handlers.rabbitmq.AMQPConnection.register"
     )
     async def test_startup_registers_one_connection_per_vhost_into_app_state(
         self, register
@@ -82,7 +82,7 @@ class AMQPTests(asynctest.TestCase):
         await self.signal_handler.startup(app)
 
         self.assertIsInstance(
-            app["rabbitmq_connection"], RabbitMQProxyConnection
+            app["rabbitmq_connection"], AMQPConnection
         )
         register.assert_has_calls(
             [call(consumer.queue) for consumer in app["consumers"]]
