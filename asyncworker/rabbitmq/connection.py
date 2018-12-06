@@ -36,7 +36,7 @@ class AMQPConnection(Mapping):
                 host=self.hostname,
                 username=self.username,
                 password=self.password,
-                virtual_host=key
+                virtual_host=key,
             )
             self.__connections[key] = conn
             return conn

@@ -81,9 +81,7 @@ class AMQPTests(asynctest.TestCase):
         app.routes_registry = self.routes_registry
         await self.signal_handler.startup(app)
 
-        self.assertIsInstance(
-            app["rabbitmq_connection"], AMQPConnection
-        )
+        self.assertIsInstance(app["rabbitmq_connection"], AMQPConnection)
         register.assert_has_calls(
             [call(consumer.queue) for consumer in app["consumers"]]
         )
