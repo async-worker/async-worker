@@ -145,6 +145,49 @@ basta chamar um dos métodos do objeto `RabbitMQMessage`. São eles:
 
 O valor default para o `.reject()` é `requeue=True`.
 
+### Publicando uma mensagem em outra fila
+
+Não é incomum termos a necessidade de criar `consumers` que também são `producers`.
+Pra isso, o asyncworker expõe o objeto `AMQPConnection`. Por exemplo, em um 
+cenário onde consumimos da fila `queue1`  e queremos publicar na fila `queue2`, 
+que tem bindings com a routing key `queue2_routing_key` e o 
+exchange `queue2_exchange`:
+
+```python
+
+from asyncworker.options import RouteTypes
+
+@app.route(["queue1", "queue2"], type=RouteTypes.AMQP_RABBITMQ)
+async def handler(messages):
+    await app['rabbitmq_connection'].put(
+        body={"dog": "Xablau"},
+        routing_key="queue2_routing_key",
+        exchange="queue2_exchange",
+    )
+
+``` 
+
+Caso o nosso producer precise publicar em uma fila em outro [virtual host](https://www.rabbitmq.com/vhosts.html), 
+basta expecificar o nome do virtual host:
+
+```python
+
+from asyncworker.options import RouteTypes
+
+@app.route(["queue1", "queue2"], type=RouteTypes.AMQP_RABBITMQ)
+async def handler(messages):
+    await app['rabbitmq_connection'].put(
+        body={"dog": "Xablau"},
+        routing_key="queue2_routing_key",
+        exchange="queue2_exchange",
+        vhost="b"
+    )
+
+```
+
+Se necessário, o asyncworker vai se encarregar de abrir uma nova conexão com 
+esse virtual host utilizando as credenciais já passadas na inicialização da `App`. 
+
 # Server Side Events 
 
 
