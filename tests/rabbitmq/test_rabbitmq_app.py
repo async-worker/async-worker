@@ -216,7 +216,7 @@ class RabbitMQAppTest(asynctest.TestCase):
             return message
 
         await app.startup()
-        consumers = app["consumers"]
+        consumers = app[RouteTypes.AMQP_RABBITMQ]["consumers"]
         self.assertEqual(1, len(consumers))
         self.assertEqual(["asgard/counts"], consumers[0].queue_name)
         self.assertEqual("/", consumers[0].vhost)
@@ -257,7 +257,7 @@ class RabbitMQAppTest(asynctest.TestCase):
             return message
 
         await app.startup()
-        consumers = app["consumers"]
+        consumers = app[RouteTypes.AMQP_RABBITMQ]["consumers"]
         self.assertEqual(2, len(consumers))
 
         self.assertEqual(["asgard/counts"], consumers[0].queue_name)

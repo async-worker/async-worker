@@ -39,14 +39,14 @@ class HTTPServerTests(asynctest.TestCase):
 
         await self.signal_handler.startup(self.app)
 
-        self.assertIsInstance(self.app["http_app"], web.Application)
-        self.assertIsInstance(self.app["http_runner"], web.AppRunner)
-        self.assertIsInstance(self.app["http_site"], web.TCPSite)
+        self.assertIsInstance(self.app[RouteTypes.HTTP]["http_app"], web.Application)
+        self.assertIsInstance(self.app[RouteTypes.HTTP]["http_runner"], web.AppRunner)
+        self.assertIsInstance(self.app[RouteTypes.HTTP]["http_site"], web.TCPSite)
 
-        self.assertEqual(len(self.app["http_app"]._router.routes()), 3)
+        self.assertEqual(len(self.app[RouteTypes.HTTP]["http_app"]._router.routes()), 3)
 
-        self.assertEqual(self.app["http_site"]._port, settings.HTTP_PORT)
-        self.assertEqual(self.app["http_site"]._host, settings.HTTP_HOST)
+        self.assertEqual(self.app[RouteTypes.HTTP]["http_site"]._port, settings.HTTP_PORT)
+        self.assertEqual(self.app[RouteTypes.HTTP]["http_site"]._host, settings.HTTP_HOST)
 
         start.assert_awaited_once()
 
@@ -57,9 +57,9 @@ class HTTPServerTests(asynctest.TestCase):
         await self.signal_handler.startup(self.app)
 
         start.assert_not_awaited()
-        self.assertNotIn("http_app", self.app)
-        self.assertNotIn("http_runner", self.app)
-        self.assertNotIn("http_site", self.app)
+        self.assertNotIn("http_app", self.app[RouteTypes.HTTP])
+        self.assertNotIn("http_runner", self.app[RouteTypes.HTTP])
+        self.assertNotIn("http_site", self.app[RouteTypes.HTTP])
 
     @asynctest.patch("asyncworker.signals.handlers.http.web.AppRunner.cleanup")
     async def test_shutdown_closes_the_running_http_server(self, cleanup):
@@ -81,7 +81,7 @@ class HTTPServerTests(asynctest.TestCase):
     ):
         self.app.routes_registry = self.routes_registry
 
-        self.assertNotIn("http_runner", self.app)
+        self.assertNotIn("http_runner", self.app[RouteTypes.HTTP])
 
         await self.signal_handler.shutdown(self.app)
 
