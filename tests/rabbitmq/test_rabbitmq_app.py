@@ -2,7 +2,7 @@ import asynctest
 
 from asyncworker import App
 from asyncworker.conf import settings
-from asyncworker.options import Options, Defaultvalues, Events, Actions, \
+from asyncworker.options import Options, DefaultValues, Events, Actions, \
     RouteTypes
 
 
@@ -121,8 +121,8 @@ class RabbitMQAppTest(asynctest.TestCase):
 
         self.assertIsNotNone(app.routes_registry)
         route = app.routes_registry.amqp_routes[0]
-        self.assertEqual(Defaultvalues.BULK_SIZE, route['options']['bulk_size'])
-        self.assertEqual(Defaultvalues.BULK_FLUSH_INTERVAL, route['options']['bulk_flush_interval'])
+        self.assertEqual(DefaultValues.BULK_SIZE, route['options']['bulk_size'])
+        self.assertEqual(DefaultValues.BULK_FLUSH_INTERVAL, route['options']['bulk_flush_interval'])
         self.assertEqual(42, await route['handler'](None))
 
     async def test_register_action_on_success(self):
