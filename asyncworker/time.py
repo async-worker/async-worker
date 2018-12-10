@@ -29,7 +29,7 @@ class ClockTicker(AsyncIterator):
         self.current_iteration = 0
         self._tick_event = asyncio.Event()
         self._running: Optional[bool] = None
-        self._main_task = asyncio.ensure_future(self._run())
+        self._main_task: Optional[asyncio.Future] = None
         self.started_at = self.now()
 
     def now(self) -> int:
@@ -44,11 +44,11 @@ class ClockTicker(AsyncIterator):
             raise RuntimeError("Cannot reuse a stopped clock")
 
         self._running = True
+        self._main_task = asyncio.ensure_future(self._run())
         return self
 
     async def __anext__(self) -> int:
         if not self._running:
-            self.started_at = None
             raise StopAsyncIteration
 
         while not self._should_iter():
@@ -71,4 +71,5 @@ class ClockTicker(AsyncIterator):
 
     async def stop(self) -> None:
         self._running = False
-        await self._main_task
+        if self._main_task:
+            await self._main_task
