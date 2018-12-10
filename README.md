@@ -159,7 +159,7 @@ from asyncworker.options import RouteTypes
 
 @app.route(["queue1", "queue2"], type=RouteTypes.AMQP_RABBITMQ)
 async def handler(messages):
-    await app['rabbitmq_connection'].put(
+    await app[RouteTypes.AMQP_RABBITMQ]['connection'].put(
         body={"dog": "Xablau"},
         routing_key="queue2_routing_key",
         exchange="queue2_exchange",

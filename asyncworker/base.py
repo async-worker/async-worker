@@ -1,6 +1,6 @@
 import asyncio
 from signal import Signals
-from collections import MutableMapping
+from collections import MutableMapping, defaultdict
 from typing import Iterable, Tuple, Callable, Coroutine
 
 from asyncworker.conf import logger
@@ -20,7 +20,7 @@ class BaseApp(MutableMapping, Freezable):
         self.routes_registry = RoutesRegistry()
         self.default_route_options: dict = {}
 
-        self._state: dict = {}
+        self._state: dict = defaultdict(dict)
         self._frozen = False
         self._on_startup: Signal = Signal(self)
         self._on_shutdown: Signal = Signal(self)
