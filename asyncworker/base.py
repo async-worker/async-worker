@@ -1,16 +1,21 @@
 import asyncio
 from signal import Signals
 from collections import MutableMapping
-from typing import Iterable, Tuple, Callable, Coroutine, Dict, Optional, Set, \
-    List
-
-from cached_property import cached_property
+from typing import (
+    Iterable,
+    Tuple,
+    Callable,
+    Coroutine,
+    Dict,
+    Optional,
+)
 
 from asyncworker.conf import logger
 from asyncworker.signals.handlers.base import SignalHandler
 from asyncworker.routes import RoutesRegistry
-from asyncworker.options import RouteTypes, Options
+from asyncworker.options import RouteTypes, Options, DefaultValues
 from asyncworker.signals.base import Signal, Freezable
+from asyncworker.task_runners import ScheduledTaskRunner
 from asyncworker.utils import entrypoint
 
 
@@ -37,8 +42,9 @@ class BaseApp(MutableMapping, Freezable):
 
     def _check_frozen(self):
         if self.frozen():
-            raise RuntimeError("You shouldnt change the state of started "
-                               "application")
+            raise RuntimeError(
+                "You shouldnt change the state of started " "application"
+            )
 
     def frozen(self) -> bool:
         return self._frozen
@@ -87,36 +93,40 @@ class BaseApp(MutableMapping, Freezable):
         """
         return asyncio.ensure_future(self._on_shutdown.send(self))
 
-    def route(self,
-              routes: Iterable[str],
-              type: RouteTypes,
-              options: dict=None,
-              **kwargs):
+    def route(
+        self,
+        routes: Iterable[str],
+        type: RouteTypes,
+        options: dict = None,
+        **kwargs,
+    ):
         if options is None:
             options = {}
         if not isinstance(type, RouteTypes):
-            raise TypeError(f"type parameter is not a valid RouteTypes."
-                            f" Found: '{type}'")
+            raise TypeError(
+                f"type parameter is not a valid RouteTypes." f" Found: '{type}'"
+            )
 
         def wrapper(f):
             self.routes_registry[f] = {
-                'type': type,
-                'routes': routes,
-                'handler': f,
-                'options': options,
-                'default_options': self.default_route_options,
-                **kwargs
+                "type": type,
+                "routes": routes,
+                "handler": f,
+                "options": options,
+                "default_options": self.default_route_options,
+                **kwargs,
             }
             return f
+
         return wrapper
 
-    def run_on_startup(self, coro: Callable[['BaseApp'], Coroutine]) -> None:
+    def run_on_startup(self, coro: Callable[["BaseApp"], Coroutine]) -> None:
         """
         Registers a coroutine to be awaited for during app startup
         """
         self._on_startup.insert(0, coro)
 
-    def run_on_shutdown(self, coro: Callable[['BaseApp'], Coroutine]) -> None:
+    def run_on_shutdown(self, coro: Callable[["BaseApp"], Coroutine]) -> None:
         """
         Registers a coroutine to be awaited for during app shutdown
         """
@@ -126,67 +136,25 @@ class BaseApp(MutableMapping, Freezable):
         """
         Registers a coroutine to be called with a given interval
         """
+        if options is None:
+            options = {}
+
         def wrapper(task: Callable[..., Coroutine]):
-            runner = ScheduledTaskRunner(seconds=seconds, task=task, app=self, options=options)
+            runner = ScheduledTaskRunner(
+                seconds=seconds,
+                task=task,
+                app=self,
+                max_concurrency=options.get(
+                    Options.MAX_CONCURRENCY,
+                    DefaultValues.RUN_EVERY_MAX_CONCURRENCY,
+                ),
+            )
             self._on_startup.append(runner.start)
             self._on_shutdown.append(runner.stop)
-            # todo: Nesse ponto eu imagino que deveríamos guardar uma referência
-            # do runner no state da app
+            if 'task_runners' not in self:
+                self['task_runners'] = []
+            self["task_runners"].append(runner)
+
             return task
 
         return wrapper
-
-
-class ScheduledTaskRunner:
-    def __init__(
-        self,
-        seconds: int,
-        task: Callable[[BaseApp], Coroutine],
-        app: BaseApp,
-        options: Optional[Dict] = None,
-    ):
-        self.seconds = seconds
-        self.options = options or {}
-        self.task = task
-        self.app = app
-        self.running_tasks: Set[asyncio.Task] = set()
-        self.task_is_done_event = asyncio.Event()
-        self._keep_running = True
-        self._started = False
-
-    @cached_property
-    def max_concurrency(self) -> Optional[int]:
-        return self.options.get(Options.MAX_CONCURRENCY)
-
-    async def can_dispatch_task(self) -> bool:
-        if not self.max_concurrency:
-            return True
-
-        if len(self.running_tasks) < self.max_concurrency:
-            return True
-
-        if await self.task_is_done_event.wait():
-            return True
-
-    async def _wrapped_task(self):
-        try:
-            await self.task(self.app)
-        finally:
-            self.task_is_done_event.set()
-            self.running_tasks.remove(asyncio.current_task())
-
-    async def start(self, app: BaseApp) -> asyncio.Task:
-        self._started = True
-        return asyncio.ensure_future(self._run())
-
-    async def stop(self):
-        self._keep_running = False
-        await asyncio.gather(*self.running_tasks)
-
-    async def _run(self):
-        while self._keep_running:
-            if await self.can_dispatch_task():
-                task = asyncio.ensure_future(self._wrapped_task())
-                self.running_tasks.add(task)
-                await asyncio.sleep(self.seconds)
-                self.task_is_done_event.clear()
