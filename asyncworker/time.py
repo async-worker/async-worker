@@ -21,6 +21,7 @@ class ClockTicker(AsyncIterator):
     I: x---------------x---------------x---------------x---------------
 
     """
+
     def __init__(self, seconds: Union[float, int]) -> None:
         """
         :param seconds: Tick interval in seconds
@@ -64,7 +65,6 @@ class ClockTicker(AsyncIterator):
 
     async def _run(self) -> None:
         while self._running:
-            print(f"tick! now: {self.now()} started: {self.started_at}")
             self._tick_event.set()
             await asyncio.sleep(self.seconds)
             self._tick_event.clear()
