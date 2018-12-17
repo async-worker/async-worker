@@ -18,7 +18,7 @@ class ScheduledTaskRunner:
         self.max_concurrency = max_concurrency
         self.task = task
         self.app = app
-        self.running_tasks: Set[asyncio.Task] = set()
+        self.running_tasks: Set[asyncio.Future] = set()
         self.task_is_done_event = asyncio.Event()
         self._started = False
         self.clock = ClockTicker(seconds=self.seconds)
@@ -29,6 +29,7 @@ class ScheduledTaskRunner:
 
         if await self.task_is_done_event.wait():
             return True
+        return False
 
     async def _wrapped_task(self) -> None:
         """
@@ -41,7 +42,7 @@ class ScheduledTaskRunner:
             self.task_is_done_event.set()
             self.running_tasks.remove(asyncio.Task.current_task())
 
-    async def start(self, app: "BaseApp") -> asyncio.Task:
+    async def start(self, app: "BaseApp") -> asyncio.Future:
         self._started = True
         return asyncio.ensure_future(self._run())
 

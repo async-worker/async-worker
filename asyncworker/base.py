@@ -1,14 +1,7 @@
 import asyncio
 from signal import Signals
 from collections import MutableMapping
-from typing import (
-    Iterable,
-    Tuple,
-    Callable,
-    Coroutine,
-    Dict,
-    Optional,
-)
+from typing import Iterable, Tuple, Callable, Coroutine, Dict, Optional
 
 from asyncworker.conf import logger
 from asyncworker.signals.handlers.base import SignalHandler
@@ -132,27 +125,28 @@ class BaseApp(MutableMapping, Freezable):
         """
         self._on_shutdown.append(coro)
 
-    def run_every(self, seconds: int, options: Optional[Dict] = None):
+    def run_every(self, seconds: int, options: Dict = None):
         """
         Registers a coroutine to be called with a given interval
         """
         if options is None:
             options = {}
 
+        max_concurrency = options.get(
+            Options.MAX_CONCURRENCY, DefaultValues.RUN_EVERY_MAX_CONCURRENCY
+        )
+
         def wrapper(task: Callable[..., Coroutine]):
             runner = ScheduledTaskRunner(
                 seconds=seconds,
                 task=task,
                 app=self,
-                max_concurrency=options.get(
-                    Options.MAX_CONCURRENCY,
-                    DefaultValues.RUN_EVERY_MAX_CONCURRENCY,
-                ),
+                max_concurrency=max_concurrency,
             )
             self._on_startup.append(runner.start)
             self._on_shutdown.append(runner.stop)
-            if 'task_runners' not in self:
-                self['task_runners'] = []
+            if "task_runners" not in self:
+                self["task_runners"] = []
             self["task_runners"].append(runner)
 
             return task
