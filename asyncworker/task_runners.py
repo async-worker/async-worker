@@ -47,7 +47,6 @@ class ScheduledTaskRunner:
 
     async def stop(self, app: "BaseApp") -> None:
         await self.clock.stop()
-        await self.running_tasks.pop()
         await asyncio.gather(*self.running_tasks)
 
     async def _run(self) -> None:
