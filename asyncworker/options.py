@@ -23,7 +23,7 @@ class DefaultValues:
     BULK_FLUSH_INTERVAL = 60
     ON_SUCCESS = Actions.ACK
     ON_EXCEPTION = Actions.REQUEUE
-    RUN_EVERY_MAX_CONCURRENCY = 3
+    RUN_EVERY_MAX_CONCURRENCY = 1
 
 
 class RouteTypes(Enum):
