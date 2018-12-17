@@ -25,6 +25,16 @@ class ClockTickerTests(asynctest.TestCase):
         self.assertIsInstance(clock.now(), int)
         self.assertEqual(clock.now(), 1_149_573_966)
 
+    async def test_anext_waits_for_a_tick(self):
+        clock = ClockTicker(seconds=0.1)
+
+        with patch.object(
+            clock, "_should_iter", side_effect=[False, True, StopAsyncIteration]
+        ), patch("asyncworker.time.asyncio.Event.wait") as wait:
+            async for tick in clock:
+                print(tick)
+            wait.assert_awaited_once()
+
     async def test_it_should_iter_if_current_time_is_a_valid_interval(self):
         with freeze_time("2006-06-06 06:06:06") as frozen_datetime:
             clock = ClockTicker(seconds=2)
