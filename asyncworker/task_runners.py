@@ -39,7 +39,7 @@ class ScheduledTaskRunner:
             await self.task(self.app)
         finally:
             self.task_is_done_event.set()
-            self.running_tasks.remove(asyncio.current_task())
+            self.running_tasks.remove(asyncio.Task.current_task())
 
     async def start(self, app: "BaseApp") -> asyncio.Task:
         self._started = True

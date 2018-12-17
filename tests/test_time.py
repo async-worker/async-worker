@@ -77,7 +77,7 @@ class ClockTickerTests(asynctest.TestCase):
 
             with patch("asyncworker.time.asyncio.sleep", sleep):
                 clock._running = True
-                task = asyncio.create_task(clock._run())
+                task = self.loop.create_task(clock._run())
                 await task
                 event.clear.assert_called_once()
                 sleep.assert_awaited_once_with(2)
