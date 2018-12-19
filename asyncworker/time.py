@@ -42,7 +42,7 @@ class ClockTicker(AsyncIterator):
 
     def __aiter__(self) -> AsyncIterator:
         if self._running is not None:
-            raise RuntimeError("Cannot reuse a stopped clock")
+            raise RuntimeError("Cannot reuse a clock instance.")
 
         self._running = True
         self._main_task = asyncio.ensure_future(self._run())
