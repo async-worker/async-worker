@@ -2,8 +2,8 @@ import unittest
 
 from asyncworker.utils import entrypoint
 
-class EntryPointTest(unittest.TestCase):
 
+class EntryPointTest(unittest.TestCase):
     def test_can_call_function_passing_positional_arguments(self):
         @entrypoint
         async def main(p1, p2, p3):
@@ -30,6 +30,7 @@ class EntryPointTest(unittest.TestCase):
         Confirma que conseguimos pegar o return value da
         função que está sendo chamada
         """
+
         async def func(num):
             return num
 

@@ -82,7 +82,8 @@ class BaseApp(MutableMapping, Freezable):
         """
         Schedules an on_startup signal
 
-        Is called automatically when the application receives a SIGINT or SIGTERM
+        Is called automatically when the application receives
+        a SIGINT or SIGTERM
         """
         return asyncio.ensure_future(self._on_shutdown.send(self))
 
