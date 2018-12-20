@@ -6,7 +6,7 @@ from urllib.parse import urljoin
 from asyncworker.sse.app import SSEApplication
 from asyncworker.options import (
     Options,
-    Defaultvalues,
+    DefaultValues,
     Events,
     Actions,
     RouteTypes,
@@ -145,10 +145,10 @@ class AppTest(asynctest.TestCase):
         routes = app.routes_registry.sse_routes
         self.assertEqual(len(routes), 1)
         self.assertEqual(
-            Defaultvalues.BULK_SIZE, routes[0]["options"]["bulk_size"]
+            DefaultValues.BULK_SIZE, routes[0]["options"]["bulk_size"]
         )
         self.assertEqual(
-            Defaultvalues.BULK_FLUSH_INTERVAL,
+            DefaultValues.BULK_FLUSH_INTERVAL,
             routes[0]["options"]["bulk_flush_interval"],
         )
         self.assertEqual(42, await routes[0]["handler"](None))

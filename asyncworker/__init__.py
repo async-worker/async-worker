@@ -2,7 +2,7 @@ from asyncworker.base import BaseApp
 from asyncworker.consumer import Consumer  # noqa: F401
 from asyncworker.options import (  # noqa: F401
     Options,
-    Defaultvalues,
+    DefaultValues,
     Events,
     RouteTypes,
 )

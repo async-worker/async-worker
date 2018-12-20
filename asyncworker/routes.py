@@ -4,7 +4,7 @@ from typing import Callable, Coroutine, Dict, List, Any
 from cached_property import cached_property
 
 from asyncworker.conf import settings
-from asyncworker.options import Defaultvalues, Events, Options, RouteTypes
+from asyncworker.options import DefaultValues, Events, Options, RouteTypes
 
 RouteHandler = Callable[[], Coroutine]
 Route = Dict[str, Any]
@@ -40,17 +40,17 @@ class RoutesRegistry(UserDict):
                             "vhost", settings.AMQP_DEFAULT_VHOST
                         ),
                         "bulk_size": options.get(
-                            Options.BULK_SIZE, Defaultvalues.BULK_SIZE
+                            Options.BULK_SIZE, DefaultValues.BULK_SIZE
                         ),
                         "bulk_flush_interval": options.get(
                             Options.BULK_FLUSH_INTERVAL,
-                            Defaultvalues.BULK_FLUSH_INTERVAL,
+                            DefaultValues.BULK_FLUSH_INTERVAL,
                         ),
                         Events.ON_SUCCESS: options.get(
-                            Events.ON_SUCCESS, Defaultvalues.ON_SUCCESS
+                            Events.ON_SUCCESS, DefaultValues.ON_SUCCESS
                         ),
                         Events.ON_EXCEPTION: options.get(
-                            Events.ON_EXCEPTION, Defaultvalues.ON_EXCEPTION
+                            Events.ON_EXCEPTION, DefaultValues.ON_EXCEPTION
                         ),
                     },
                 }
@@ -73,11 +73,11 @@ class RoutesRegistry(UserDict):
                     "handler": handler,
                     "options": {
                         "bulk_size": options.get(
-                            Options.BULK_SIZE, Defaultvalues.BULK_SIZE
+                            Options.BULK_SIZE, DefaultValues.BULK_SIZE
                         ),
                         "bulk_flush_interval": options.get(
                             Options.BULK_FLUSH_INTERVAL,
-                            Defaultvalues.BULK_FLUSH_INTERVAL,
+                            DefaultValues.BULK_FLUSH_INTERVAL,
                         ),
                         "headers": {**headers, **default_headers},
                     },

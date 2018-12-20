@@ -5,7 +5,8 @@ from asynctest import Mock, CoroutineMock, patch, call
 from signal import Signals
 
 from asyncworker import BaseApp
-from asyncworker.options import RouteTypes
+from asyncworker.options import RouteTypes, DefaultValues, Options
+from asyncworker.task_runners import ScheduledTaskRunner
 
 
 class BaseAppTests(asynctest.TestCase):
@@ -148,3 +149,41 @@ class BaseAppTests(asynctest.TestCase):
             await shutdown_coro
             send.assert_awaited_once_with(self.app)
             self.assertTrue(shutdown_coro.done())
+
+    async def test_run_every_registers_a_coroutine_to_be_executed_as_a_ScheduledTaskRunner(
+        self
+    ):
+        with patch(
+            "asyncworker.base.ScheduledTaskRunner", spec=ScheduledTaskRunner
+        ) as Runner:
+            seconds = 10
+            coro = Mock(start=CoroutineMock(), stop=CoroutineMock())
+
+            self.app.run_every(seconds=seconds)(coro)
+
+            Runner.assert_called_once_with(
+                seconds=seconds,
+                task=coro,
+                app=self.app,
+                max_concurrency=DefaultValues.RUN_EVERY_MAX_CONCURRENCY,
+            )
+            self.assertIn(Runner.return_value.start, self.app._on_startup)
+            self.assertIn(Runner.return_value.stop, self.app._on_shutdown)
+            self.assertIn(Runner.return_value, self.app["task_runners"])
+
+    async def test_run_every_max_concurrency_can_be_overwritten_with_options(
+        self
+    ):
+        with patch(
+            "asyncworker.base.ScheduledTaskRunner", spec=ScheduledTaskRunner
+        ) as Runner:
+            seconds = 10
+            coro = Mock(start=CoroutineMock(), stop=CoroutineMock())
+
+            self.app.run_every(
+                seconds=seconds, options={Options.MAX_CONCURRENCY: 666}
+            )(coro)
+
+            Runner.assert_called_once_with(
+                seconds=seconds, task=coro, app=self.app, max_concurrency=666
+            )
