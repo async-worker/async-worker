@@ -30,5 +30,5 @@ python_version = "3.6"
 [scripts]
 test = "py.test -v --cov=asyncworker --cov-report term-missing -v"
 lint = "mypy asyncworker --ignore-missing-imports"
-format = "black --py36 -v --liwne-length 80 ."
+format = "black --py36 -v --line-length 80 ."
 format-check = "black --py36 -v --line-length 80 --check ."
