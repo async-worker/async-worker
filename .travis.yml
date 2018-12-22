@@ -1,7 +1,8 @@
 language: python
+dist: xenial
 python:
   - "3.6"
-  - "3.7-dev"
+  - "3.7.1"
 install:
   - pip install pipenv
   - pipenv install --system --deploy --ignore-pipfile --dev
