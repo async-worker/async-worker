@@ -106,7 +106,7 @@ class AsyncQueue(BaseJsonQueue):
         if priority:
             raise NotImplementedError
         payload = self.serialize(body, ensure_ascii=False)
-        return await self._channel.publish(payload=payload,
+        return await self._channel.publish(payload=payload.encode(),
                                            exchange_name=exchange,
                                            routing_key=routing_key)
 
@@ -168,6 +168,9 @@ class AsyncQueue(BaseJsonQueue):
         :return: The consumer tag. Useful for cancelling/stopping consumption
         """
         # todo: Implement a consumer tag generator
+        if not self.delegate:
+            raise RuntimeError("Impossible to consume without a delegate.")
+
         await self.delegate.on_before_start_consumption(queue_name, queue=self)
         await self._channel.basic_qos(prefetch_count=self.prefetch_count,
                                       prefetch_size=0,

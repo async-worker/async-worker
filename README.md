@@ -1,3 +1,9 @@
+
+[![Build Status](https://travis-ci.org/B2W-BIT/easyqueue.svg?branch=master)](https://travis-ci.org/B2W-BIT/easyqueue)
+[![codecov](https://codecov.io/gh/B2W-BIT/easyqueue/branch/master/graph/badge.svg)](https://codecov.io/gh/B2W-BIT/easyqueue)
+[![PyPI](https://img.shields.io/pypi/v/easyqueue.svg)](http://pypi.python.org/pypi/easyqueue)
+[![PyPI - Python Version](https://img.shields.io/pypi/pyversions/easyqueue.svg)](http://pypi.python.org/pypi/easyqueue)
+
 # EasyQueue
 
 An easy way to asynchronously handle AMQP queue consumption.
@@ -26,7 +32,7 @@ Class used for asynchronously connecting and consuming
 
 ``` python
 import asyncio
-from easyqueue.async import AsyncQueue, AsyncQueueConsumerDelegate
+from easyqueue import AsyncQueue, AsyncQueueConsumerDelegate
 
 
 class MyConsumer(AsyncQueueConsumerDelegate):
@@ -71,16 +77,12 @@ if __name__ == '__main__':
 
 ```
 
-# AsyncQueueConsumerDelegate Protocol
+# Guia de migração 1.1.0 -> 1.2.x
 
-## `on_queue_message`
-
-## `on_queue_error`
-
-## `on_before_start_consumption`
-
-## `on_message_handle_error`
-
-##  `on_connection_error`
-
-## `on_consumption_start`
+As classes `AsyncQueue` e `AsyncQueueConsumerDelegate` não estão mais no módulo
+`async.py` que em python 3.7 é uma palavra reservada e foram movidas para `async_queue.py`.
+Ambas as classes estão disponíveis no nível do módulo do easyqueue o que significa
+que os imports devem mudar de: 
+`from easyqueue.async import AsyncQueue, AsyncQueueConsumerDelegate` 
+para:
+`from easyqueue import AsyncQueue, AsyncQueueConsumerDelegate`
