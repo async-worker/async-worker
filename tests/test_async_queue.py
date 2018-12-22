@@ -248,7 +248,7 @@ class AsyncQueueConsumerTests(AsyncBaseTestCase, asynctest.TestCase):
             on_consumption_start=CoroutineMock()
         )
 
-    async def test_it_raies_an_error_if_consume_is_called_without_a_delegate(self):
+    async def test_it_raises_an_error_if_consume_is_called_without_a_delegate(self):
         with self.assertRaises(RuntimeError):
             self.queue.delegate = None
             await self.queue.consume(queue_name=Mock(),
@@ -504,7 +504,7 @@ class AsyncQueueConsumerHandlerMethodsTests(AsyncBaseTestCase, asynctest.TestCas
                                                                  **kwargs)
 
 
-class EnsueConnectedDecoratorTests(asynctest.TestCase):
+class EnsureConnectedDecoratorTests(asynctest.TestCase):
     async def test_it_calls_connect_if_queue_isnt_connected(self):
         async_queue = Mock(
             is_connected=False,
