@@ -254,11 +254,6 @@ class AsyncQueueConsumerTests(AsyncBaseTestCase, asynctest.TestCase):
             await self.queue.consume(queue_name=Mock(),
                                      consumer_name=Mock())
 
-    async def test_calling_consume_without_a_connection_raises_an_error(self):
-        with self.assertRaises(ConnectionError):
-            await self.queue.consume(queue_name=Mock(),
-                                     consumer_name=Mock())
-
     async def test_it_calls_will_start_consumption_before_queue_consume(self):
         await self.queue.connect()
 
@@ -527,4 +522,21 @@ class EnsureConnectedDecoratorTests(asynctest.TestCase):
         await wrapped(async_queue, 1, dog='Xablau')
 
         async_queue.connect.assert_not_awaited()
+        coro.assert_awaited_once_with(async_queue, 1, dog='Xablau')
+
+    async def test_it_waits_before_trying_to_reconnect_if_connect_fails(self):
+        seconds = 666
+        async_queue = Mock(
+            is_connected=False,
+            is_running=True,
+            connect=CoroutineMock(side_effect=[ConnectionError, True]),
+            seconds_between_conn_retry=seconds
+        )
+        coro = CoroutineMock()
+        with asynctest.patch("easyqueue.async_queue.asyncio.sleep") as sleep:
+            wrapped = _ensure_connected(coro)
+            await wrapped(async_queue, 1, dog='Xablau')
+            sleep.assert_awaited_once_with(seconds)
+
+        async_queue.connect.assert_has_awaits([call(), call()])
         coro.assert_awaited_once_with(async_queue, 1, dog='Xablau')

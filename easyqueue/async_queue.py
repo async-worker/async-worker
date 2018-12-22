@@ -13,8 +13,12 @@ from easyqueue.exceptions import UndecodableMessageException, \
 def _ensure_connected(coro: Callable[..., Coroutine]):
     @wraps(coro)
     async def wrapper(self: 'AsyncQueue', *args, **kwargs):
-        if not self.is_connected:
-            await self.connect()
+        while self.is_running and not self.is_connected:
+            try:
+                await self.connect()
+                break
+            except Exception:
+                await asyncio.sleep(self.seconds_between_conn_retry)
         return await coro(self, *args, **kwargs)
     return wrapper
 
@@ -30,7 +34,8 @@ class AsyncQueue(BaseJsonQueue):
                  heartbeat: int = 60,
                  prefetch_count: int = 100,
                  max_message_length=0,
-                 loop=None):
+                 loop=None,
+                 seconds_between_conn_retry: int = 1):
         super().__init__(host, username, password, virtual_host, heartbeat)
 
         self.loop = loop or asyncio.get_event_loop()
@@ -53,6 +58,7 @@ class AsyncQueue(BaseJsonQueue):
         self._protocol = None  # type: aioamqp.protocol.AmqpProtocol
         self._transport = None  # type: asyncio.BaseTransport
         self._channel = None  # type: aioamqp.channel.Channel
+        self.seconds_between_conn_retry = seconds_between_conn_retry
 
     @property
     def connection_parameters(self):
@@ -75,6 +81,10 @@ class AsyncQueue(BaseJsonQueue):
     def is_connected(self):
         # todo: This may not be enough
         return self._channel and self._channel.is_open
+
+    @property
+    def is_running(self) -> bool:
+        return True
 
     async def connect(self):
         conn = await aioamqp.connect(**self.connection_parameters)
@@ -168,9 +178,6 @@ class AsyncQueue(BaseJsonQueue):
         :return: The consumer tag. Useful for cancelling/stopping consumption
         """
         # todo: Implement a consumer tag generator
-        if not self.delegate:
-            raise RuntimeError("Impossible to consume without a delegate.")
-
         await self.delegate.on_before_start_consumption(queue_name, queue=self)
         await self._channel.basic_qos(prefetch_count=self.prefetch_count,
                                       prefetch_size=0,
