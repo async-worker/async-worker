@@ -1,3 +1,4 @@
+import asyncio
 import json
 import logging
 
@@ -130,6 +131,17 @@ class AsyncQueueConnectionTests(AsyncBaseTestCase, asynctest.TestCase):
         self.assertEqual(self.queue._protocol, self._protocol)
         self.assertEqual(self.queue._transport, self._transport)
         self.assertIsNotNone(self.queue._channel)
+
+    async def test_connection_lock_ensures_amqp_connect_is_only_called_once(self):
+        transport = Mock()
+        protocol = Mock(channel=CoroutineMock(is_open=True))
+
+        conn = (transport, protocol)
+        with asynctest.patch('easyqueue.async_queue.aioamqp.connect', return_value=conn) as connect:
+            await asyncio.gather(
+                *(self.queue.connect() for _ in range(100))
+            )
+            self.assertEqual(connect.await_count, 1)
 
     async def test_connects_with_correct_args(self):
         expected = call(host=self.conn_params['host'],

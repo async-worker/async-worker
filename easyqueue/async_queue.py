@@ -71,6 +71,7 @@ class AsyncQueue(BaseJsonQueue):
         self.seconds_between_conn_retry = seconds_between_conn_retry
         self.is_running = True
         self.logger = logger
+        self._connection_lock = asyncio.Lock()
 
     @property
     def connection_parameters(self):
@@ -95,9 +96,13 @@ class AsyncQueue(BaseJsonQueue):
         return self._channel and self._channel.is_open
 
     async def connect(self):
-        conn = await aioamqp.connect(**self.connection_parameters)
-        self._transport, self._protocol = conn
-        self._channel = await self._protocol.channel()
+        async with self._connection_lock:
+            if self.is_connected:
+                return
+
+            conn = await aioamqp.connect(**self.connection_parameters)
+            self._transport, self._protocol = conn
+            self._channel = await self._protocol.channel()
 
     async def close(self):
         if not self.is_connected:
