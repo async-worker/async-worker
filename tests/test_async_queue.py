@@ -1,4 +1,6 @@
 import json
+import logging
+
 import aioamqp
 import asynctest
 from asynctest.mock import CoroutineMock
@@ -540,3 +542,17 @@ class EnsureConnectedDecoratorTests(asynctest.TestCase):
 
         async_queue.connect.assert_has_awaits([call(), call()])
         coro.assert_awaited_once_with(async_queue, 1, dog='Xablau')
+
+    async def test_it_logs_connection_retries_if_a_logger_istance_is_available(self):
+        async_queue = Mock(
+            is_connected=False,
+            is_running=True,
+            connect=CoroutineMock(side_effect=[ConnectionError, True]),
+            logger=Mock(spec=logging.Logger)
+        )
+        coro = CoroutineMock()
+        with asynctest.patch("easyqueue.async_queue.asyncio.sleep") as sleep:
+            wrapped = _ensure_connected(coro)
+            await wrapped(async_queue, 1, dog='Xablau')
+
+        async_queue.logger.error.assert_called_once()

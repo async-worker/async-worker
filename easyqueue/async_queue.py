@@ -1,6 +1,7 @@
 import abc
+import logging
 from functools import wraps
-
+import traceback
 import aioamqp
 import asyncio
 from typing import Any, Dict, Type, Callable, Coroutine
@@ -13,12 +14,20 @@ from easyqueue.exceptions import UndecodableMessageException, \
 def _ensure_connected(coro: Callable[..., Coroutine]):
     @wraps(coro)
     async def wrapper(self: 'AsyncQueue', *args, **kwargs):
+        retries = 0
         while self.is_running and not self.is_connected:
             try:
                 await self.connect()
                 break
-            except Exception:
+            except Exception as e:
                 await asyncio.sleep(self.seconds_between_conn_retry)
+                retries += 1
+                if self.logger:
+                    self.logger.error({
+                        'event': 'reconnect-failure',
+                        'retry_count': retries,
+                        'exc_traceback': traceback.format_tb(e.__traceback__)
+                    })
         return await coro(self, *args, **kwargs)
     return wrapper
 
@@ -35,7 +44,8 @@ class AsyncQueue(BaseJsonQueue):
                  prefetch_count: int = 100,
                  max_message_length=0,
                  loop=None,
-                 seconds_between_conn_retry: int = 1):
+                 seconds_between_conn_retry: int = 1,
+                 logger: logging.Logger=None):
         super().__init__(host, username, password, virtual_host, heartbeat)
 
         self.loop = loop or asyncio.get_event_loop()
@@ -59,6 +69,8 @@ class AsyncQueue(BaseJsonQueue):
         self._transport = None  # type: asyncio.BaseTransport
         self._channel = None  # type: aioamqp.channel.Channel
         self.seconds_between_conn_retry = seconds_between_conn_retry
+        self.is_running = True
+        self.logger = logger
 
     @property
     def connection_parameters(self):
@@ -81,10 +93,6 @@ class AsyncQueue(BaseJsonQueue):
     def is_connected(self):
         # todo: This may not be enough
         return self._channel and self._channel.is_open
-
-    @property
-    def is_running(self) -> bool:
-        return True
 
     async def connect(self):
         conn = await aioamqp.connect(**self.connection_parameters)
