@@ -152,7 +152,7 @@ class AsyncQueueConnectionTests(AsyncBaseTestCase, asynctest.TestCase):
         self.assertFalse(self.queue.delegate.on_queue_message.called)
         self.assertFalse(self.queue.delegate.on_queue_error.called)
 
-    async def test_it_puts_messages_into_queue_as_json(self):
+    async def test_it_puts_messages_into_queue_as_json_if_message_is_a_json_serializeable(self):
         message = {
             'artist': 'Great White',
             'song': 'Once Bitten Twice Shy',
@@ -161,7 +161,7 @@ class AsyncQueueConnectionTests(AsyncBaseTestCase, asynctest.TestCase):
         exchange = Mock()
         routing_key = Mock()
         await self.queue.connect()
-        await self.queue.put(message,
+        await self.queue.put(data=message,
                              exchange=exchange,
                              routing_key=routing_key)
 
@@ -172,6 +172,80 @@ class AsyncQueueConnectionTests(AsyncBaseTestCase, asynctest.TestCase):
         )
         self.assertEqual([expected],
                          self.queue._channel.publish.call_args_list)
+
+    async def test_it_puts_messages_into_queue_as_is_if_message_is_already_a_json(self):
+        message = {
+            'artist': 'Great White',
+            'song': 'Once Bitten Twice Shy',
+            'album': 'Twice Shy'
+        }
+        exchange = Mock()
+        routing_key = Mock()
+        await self.queue.connect()
+        await self.queue.put(payload=json.dumps(message),
+                             exchange=exchange,
+                             routing_key=routing_key)
+
+        expected = call(
+            payload=json.dumps(message).encode(),
+            routing_key=routing_key,
+            exchange_name=exchange
+        )
+        self.assertEqual([expected],
+                         self.queue._channel.publish.call_args_list)
+
+    async def test_it_raises_an_error_if_both_data_and_json_are_passed_to_put_message(self):
+        message = {
+            'artist': 'Great White',
+            'song': 'Once Bitten Twice Shy',
+            'album': 'Twice Shy'
+        }
+        exchange = Mock()
+        routing_key = Mock()
+        await self.queue.connect()
+        with self.assertRaises(ValueError):
+            await self.queue.put(payload=json.dumps(message),
+                                 data=message,
+                                 exchange=exchange,
+                                 routing_key=routing_key)
+
+        expected = call(
+            payload=json.dumps(message).encode(),
+            routing_key=routing_key,
+            exchange_name=exchange
+        )
+        self.queue._channel.publish.assert_not_called()
+
+    async def test_it_encodes_payload_into_bytes_if_payload_is_str(self):
+        payload = json.dumps({"dog": "Xablau"})
+        exchange = Mock()
+        routing_key = Mock()
+        await self.queue.connect()
+        await self.queue.put(payload=payload,
+                             exchange=exchange,
+                             routing_key=routing_key)
+
+        self.queue._channel.publish.assert_awaited_once_with(
+            payload=payload.encode(),
+            routing_key=routing_key,
+            exchange_name=exchange
+        )
+
+    async def test_it_doesnt_encodes_payload_into_bytes_if_payload_is_already_bytes(self):
+        payload = json.dumps({"dog": "Xablau"}).encode()
+        exchange = Mock()
+        routing_key = Mock()
+        await self.queue.connect()
+
+        await self.queue.put(payload=payload,
+                             exchange=exchange,
+                             routing_key=routing_key)
+
+        self.queue._channel.publish.assert_awaited_once_with(
+            payload=payload,
+            routing_key=routing_key,
+            exchange_name=exchange
+        )
 
     async def test_it_raises_and_error_if_put_message_isnt_json_serializeable(self):
         message = Mock()
