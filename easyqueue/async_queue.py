@@ -123,7 +123,7 @@ class AsyncQueue(BaseJsonQueue):
     @_ensure_connected
     async def put(self,
                   routing_key: str,
-                  data: any = None,
+                  data: Any = None,
                   serialized_data: Union[str, bytes] = None,
                   exchange: str = ''):
         """
