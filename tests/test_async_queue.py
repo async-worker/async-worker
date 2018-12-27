@@ -269,7 +269,7 @@ class AsyncQueueConnectionTests(AsyncBaseTestCase, asynctest.TestCase):
         }
         with asynctest.patch.object(self.queue, 'connect') as connect, \
              asynctest.patch.object(self.queue, '_channel', Mock(is_open=False, publish=CoroutineMock())):
-            await self.queue.put(message, routing_key='Xablau')
+            await self.queue.put(data=message, routing_key='Xablau')
             connect.assert_awaited_once()
 
     async def test_it_raises_and_error_if_put_message_isnt_json_serializeable(self):
@@ -617,7 +617,7 @@ class EnsureConnectedDecoratorTests(asynctest.TestCase):
         async_queue = Mock(
             is_connected=False,
             is_running=True,
-            connect=CoroutineMock(side_effect=[ConnectionError, True]),
+            connect=CoroutineMock(side_effect=[ConnectionError,  True]),
             seconds_between_conn_retry=seconds
         )
         coro = CoroutineMock()
@@ -626,7 +626,9 @@ class EnsureConnectedDecoratorTests(asynctest.TestCase):
             await wrapped(async_queue, 1, dog='Xablau')
             sleep.assert_awaited_once_with(seconds)
 
-        async_queue.connect.assert_has_awaits([call(), call()])
+        # todo: CoroutineMock.side_effect is raised only on call, not on await
+        async_queue.connect.assert_has_awaits([call()])
+        async_queue.connect.assert_has_calls([call(), call()])
         coro.assert_awaited_once_with(async_queue, 1, dog='Xablau')
 
     async def test_it_logs_connection_retries_if_a_logger_istance_is_available(self):
