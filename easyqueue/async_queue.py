@@ -4,7 +4,7 @@ from functools import wraps
 import traceback
 import aioamqp
 import asyncio
-from typing import Any, Dict, Type, Callable, Coroutine
+from typing import Any, Dict, Type, Callable, Coroutine, Union
 from json.decoder import JSONDecodeError
 from easyqueue.queue import BaseJsonQueue
 from easyqueue.exceptions import UndecodableMessageException, \
@@ -122,14 +122,27 @@ class AsyncQueue(BaseJsonQueue):
 
     @_ensure_connected
     async def put(self,
-                  body: any,
                   routing_key: str,
-                  exchange: str = '',
-                  priority: int = 0):
-        if priority:
-            raise NotImplementedError
-        payload = self.serialize(body, ensure_ascii=False)
-        return await self._channel.publish(payload=payload.encode(),
+                  data: Any = None,
+                  serialized_data: Union[str, bytes] = None,
+                  exchange: str = ''):
+        """
+        :param data: A serializable data that should be serialized before
+        publishing
+        :param serialized_data: A payload to be published as is
+        :param exchange: The exchange to publish the message
+        :param routing_key: The routing key to publish the message
+        """
+        if data and serialized_data:
+            raise ValueError("Only one of data or json should be specified")
+
+        if data:
+            serialized_data = self.serialize(data, ensure_ascii=False)
+
+        if not isinstance(serialized_data, bytes):
+            serialized_data = serialized_data.encode()
+
+        return await self._channel.publish(payload=serialized_data,
                                            exchange_name=exchange,
                                            routing_key=routing_key)
 

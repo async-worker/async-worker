@@ -166,7 +166,7 @@ class AsyncQueueConnectionTests(AsyncBaseTestCase, asynctest.TestCase):
         self.assertFalse(self.queue.delegate.on_queue_message.called)
         self.assertFalse(self.queue.delegate.on_queue_error.called)
 
-    async def test_it_puts_messages_into_queue_as_json(self):
+    async def test_it_puts_messages_into_queue_as_json_if_message_is_a_json_serializeable(self):
         message = {
             'artist': 'Great White',
             'song': 'Once Bitten Twice Shy',
@@ -175,7 +175,7 @@ class AsyncQueueConnectionTests(AsyncBaseTestCase, asynctest.TestCase):
         exchange = Mock()
         routing_key = Mock()
         await self.queue.connect()
-        await self.queue.put(message,
+        await self.queue.put(data=message,
                              exchange=exchange,
                              routing_key=routing_key)
 
@@ -187,6 +187,80 @@ class AsyncQueueConnectionTests(AsyncBaseTestCase, asynctest.TestCase):
         self.assertEqual([expected],
                          self.queue._channel.publish.call_args_list)
 
+    async def test_it_puts_messages_into_queue_as_is_if_message_is_already_a_json(self):
+        message = {
+            'artist': 'Great White',
+            'song': 'Once Bitten Twice Shy',
+            'album': 'Twice Shy'
+        }
+        exchange = Mock()
+        routing_key = Mock()
+        await self.queue.connect()
+        await self.queue.put(serialized_data=json.dumps(message),
+                             exchange=exchange,
+                             routing_key=routing_key)
+
+        expected = call(
+            payload=json.dumps(message).encode(),
+            routing_key=routing_key,
+            exchange_name=exchange
+        )
+        self.assertEqual([expected],
+                         self.queue._channel.publish.call_args_list)
+
+    async def test_it_raises_an_error_if_both_data_and_json_are_passed_to_put_message(self):
+        message = {
+            'artist': 'Great White',
+            'song': 'Once Bitten Twice Shy',
+            'album': 'Twice Shy'
+        }
+        exchange = Mock()
+        routing_key = Mock()
+        await self.queue.connect()
+        with self.assertRaises(ValueError):
+            await self.queue.put(serialized_data=json.dumps(message),
+                                 data=message,
+                                 exchange=exchange,
+                                 routing_key=routing_key)
+
+        expected = call(
+            payload=json.dumps(message).encode(),
+            routing_key=routing_key,
+            exchange_name=exchange
+        )
+        self.queue._channel.publish.assert_not_called()
+
+    async def test_it_encodes_payload_into_bytes_if_payload_is_str(self):
+        payload = json.dumps({"dog": "Xablau"})
+        exchange = Mock()
+        routing_key = Mock()
+        await self.queue.connect()
+        await self.queue.put(serialized_data=payload,
+                             exchange=exchange,
+                             routing_key=routing_key)
+
+        self.queue._channel.publish.assert_awaited_once_with(
+            payload=payload.encode(),
+            routing_key=routing_key,
+            exchange_name=exchange
+        )
+
+    async def test_it_doesnt_encodes_payload_into_bytes_if_payload_is_already_bytes(self):
+        payload = json.dumps({"dog": "Xablau"}).encode()
+        exchange = Mock()
+        routing_key = Mock()
+        await self.queue.connect()
+
+        await self.queue.put(serialized_data=payload,
+                             exchange=exchange,
+                             routing_key=routing_key)
+
+        self.queue._channel.publish.assert_awaited_once_with(
+            payload=payload,
+            routing_key=routing_key,
+            exchange_name=exchange
+        )
+
     async def test_connect_gets_awaited_if_put_is_called_before_connect(self):
         message = {
             'artist': 'Great White',
@@ -195,7 +269,7 @@ class AsyncQueueConnectionTests(AsyncBaseTestCase, asynctest.TestCase):
         }
         with asynctest.patch.object(self.queue, 'connect') as connect, \
              asynctest.patch.object(self.queue, '_channel', Mock(is_open=False, publish=CoroutineMock())):
-            await self.queue.put(message, routing_key='Xablau')
+            await self.queue.put(data=message, routing_key='Xablau')
             connect.assert_awaited_once()
 
     async def test_it_raises_and_error_if_put_message_isnt_json_serializeable(self):
@@ -543,7 +617,7 @@ class EnsureConnectedDecoratorTests(asynctest.TestCase):
         async_queue = Mock(
             is_connected=False,
             is_running=True,
-            connect=CoroutineMock(side_effect=[ConnectionError, True]),
+            connect=CoroutineMock(side_effect=[ConnectionError,  True]),
             seconds_between_conn_retry=seconds
         )
         coro = CoroutineMock()
@@ -552,7 +626,9 @@ class EnsureConnectedDecoratorTests(asynctest.TestCase):
             await wrapped(async_queue, 1, dog='Xablau')
             sleep.assert_awaited_once_with(seconds)
 
-        async_queue.connect.assert_has_awaits([call(), call()])
+        # todo: CoroutineMock.side_effect is raised only on call, not on await
+        async_queue.connect.assert_has_awaits([call()])
+        async_queue.connect.assert_has_calls([call(), call()])
         coro.assert_awaited_once_with(async_queue, 1, dog='Xablau')
 
     async def test_it_logs_connection_retries_if_a_logger_istance_is_available(self):
