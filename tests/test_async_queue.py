@@ -1,9 +1,12 @@
+import asyncio
 import json
+import logging
+
 import aioamqp
 import asynctest
 from asynctest.mock import CoroutineMock
 from unittest.mock import Mock, patch, call, ANY
-from easyqueue import AsyncQueue, AsyncQueueConsumerDelegate
+from easyqueue.async_queue import AsyncQueue, AsyncQueueConsumerDelegate, _ensure_connected
 from easyqueue.exceptions import UndecodableMessageException, \
     InvalidMessageSizeException
 from tests.utils import typed_any
@@ -129,6 +132,17 @@ class AsyncQueueConnectionTests(AsyncBaseTestCase, asynctest.TestCase):
         self.assertEqual(self.queue._transport, self._transport)
         self.assertIsNotNone(self.queue._channel)
 
+    async def test_connection_lock_ensures_amqp_connect_is_only_called_once(self):
+        transport = Mock()
+        protocol = Mock(channel=CoroutineMock(is_open=True))
+
+        conn = (transport, protocol)
+        with asynctest.patch('easyqueue.async_queue.aioamqp.connect', return_value=conn) as connect:
+            await asyncio.gather(
+                *(self.queue.connect() for _ in range(100))
+            )
+            self.assertEqual(connect.await_count, 1)
+
     async def test_connects_with_correct_args(self):
         expected = call(host=self.conn_params['host'],
                         password=self.conn_params['password'],
@@ -173,6 +187,17 @@ class AsyncQueueConnectionTests(AsyncBaseTestCase, asynctest.TestCase):
         self.assertEqual([expected],
                          self.queue._channel.publish.call_args_list)
 
+    async def test_connect_gets_awaited_if_put_is_called_before_connect(self):
+        message = {
+            'artist': 'Great White',
+            'song': 'Once Bitten Twice Shy',
+            'album': 'Twice Shy'
+        }
+        with asynctest.patch.object(self.queue, 'connect') as connect, \
+             asynctest.patch.object(self.queue, '_channel', Mock(is_open=False, publish=CoroutineMock())):
+            await self.queue.put(message, routing_key='Xablau')
+            connect.assert_awaited_once()
+
     async def test_it_raises_and_error_if_put_message_isnt_json_serializeable(self):
         message = Mock()
 
@@ -195,6 +220,12 @@ class AsyncQueueConnectionTests(AsyncBaseTestCase, asynctest.TestCase):
             await self.queue.ack(delivery_tag=tag)
             basic_client_ack.assert_awaited_once_with(tag)
 
+    async def test_connect_gets_awaited_if_ack_is_called_before_connect(self):
+        with asynctest.patch.object(self.queue, 'connect') as connect, \
+             asynctest.patch.object(self.queue, '_channel', Mock(is_open=False, basic_client_ack=CoroutineMock())):
+            await self.queue.ack(delivery_tag=1)
+            connect.assert_awaited_once()
+
     async def test_it_rejects_messages_without_requeue(self):
         await self.queue.connect()
 
@@ -215,6 +246,12 @@ class AsyncQueueConnectionTests(AsyncBaseTestCase, asynctest.TestCase):
             await self.queue.reject(delivery_tag=tag, requeue=True)
             basic_reject.assert_awaited_once_with(delivery_tag=tag, requeue=True)
 
+    async def test_connect_gets_awaited_if_reject_is_called_before_connect(self):
+        with asynctest.patch.object(self.queue, 'connect') as connect, \
+             asynctest.patch.object(self.queue, '_channel', Mock(is_open=False, basic_reject=CoroutineMock())):
+            await self.queue.reject(delivery_tag=1)
+            connect.assert_awaited_once()
+
 
 class AsyncQueueConsumerTests(AsyncBaseTestCase, asynctest.TestCase):
     consumer_tag = 666
@@ -225,14 +262,9 @@ class AsyncQueueConsumerTests(AsyncBaseTestCase, asynctest.TestCase):
             on_consumption_start=CoroutineMock()
         )
 
-    async def test_it_raies_an_error_if_consume_is_called_without_a_delegate(self):
+    async def test_it_raises_an_error_if_consume_is_called_without_a_delegate(self):
         with self.assertRaises(RuntimeError):
             self.queue.delegate = None
-            await self.queue.consume(queue_name=Mock(),
-                                     consumer_name=Mock())
-
-    async def test_calling_consume_without_a_connection_raises_an_error(self):
-        with self.assertRaises(ConnectionError):
             await self.queue.consume(queue_name=Mock(),
                                      consumer_name=Mock())
 
@@ -250,6 +282,18 @@ class AsyncQueueConsumerTests(AsyncBaseTestCase, asynctest.TestCase):
 
             self.queue.delegate.on_before_start_consumption.called_once_with(queue_name,
                                                                              queue=self.queue)
+
+    async def test_connect_gets_awaited_if_consume_is_called_before_connect(self):
+        channel = Mock(
+            is_open=False,
+            basic_qos=CoroutineMock(),
+            basic_consume=CoroutineMock()
+        )
+        with asynctest.patch.object(self.queue, 'connect') as connect, \
+             asynctest.patch.object(self.queue, '_channel', channel):
+            queue_name = Mock()
+            await self.queue.consume(queue_name)
+            connect.assert_awaited_once()
 
     async def test_calling_consume_starts_message_consumption(self):
         await self.queue.connect()
@@ -467,3 +511,60 @@ class AsyncQueueConsumerHandlerMethodsTests(AsyncBaseTestCase, asynctest.TestCas
 
         consumer.on_message_handle_error.assert_called_once_with(handler_error=error,
                                                                  **kwargs)
+
+
+class EnsureConnectedDecoratorTests(asynctest.TestCase):
+    async def test_it_calls_connect_if_queue_isnt_connected(self):
+        async_queue = Mock(
+            is_connected=False,
+            connect=CoroutineMock()
+        )
+        coro = CoroutineMock()
+        wrapped = _ensure_connected(coro)
+        await wrapped(async_queue, 1, dog='Xablau')
+
+        async_queue.connect.assert_awaited_once()
+        coro.assert_awaited_once_with(async_queue, 1, dog='Xablau')
+
+    async def test_it_doesnt_calls_connect_if_queue_is_connected(self):
+        async_queue = Mock(
+            is_connected=True,
+            connect=CoroutineMock()
+        )
+        coro = CoroutineMock()
+        wrapped = _ensure_connected(coro)
+        await wrapped(async_queue, 1, dog='Xablau')
+
+        async_queue.connect.assert_not_awaited()
+        coro.assert_awaited_once_with(async_queue, 1, dog='Xablau')
+
+    async def test_it_waits_before_trying_to_reconnect_if_connect_fails(self):
+        seconds = 666
+        async_queue = Mock(
+            is_connected=False,
+            is_running=True,
+            connect=CoroutineMock(side_effect=[ConnectionError, True]),
+            seconds_between_conn_retry=seconds
+        )
+        coro = CoroutineMock()
+        with asynctest.patch("easyqueue.async_queue.asyncio.sleep") as sleep:
+            wrapped = _ensure_connected(coro)
+            await wrapped(async_queue, 1, dog='Xablau')
+            sleep.assert_awaited_once_with(seconds)
+
+        async_queue.connect.assert_has_awaits([call(), call()])
+        coro.assert_awaited_once_with(async_queue, 1, dog='Xablau')
+
+    async def test_it_logs_connection_retries_if_a_logger_istance_is_available(self):
+        async_queue = Mock(
+            is_connected=False,
+            is_running=True,
+            connect=CoroutineMock(side_effect=[ConnectionError, True]),
+            logger=Mock(spec=logging.Logger)
+        )
+        coro = CoroutineMock()
+        with asynctest.patch("easyqueue.async_queue.asyncio.sleep") as sleep:
+            wrapped = _ensure_connected(coro)
+            await wrapped(async_queue, 1, dog='Xablau')
+
+        async_queue.logger.error.assert_called_once()

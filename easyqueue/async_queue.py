@@ -1,11 +1,35 @@
 import abc
+import logging
+from functools import wraps
+import traceback
 import aioamqp
 import asyncio
-from typing import Any, Dict, Type
+from typing import Any, Dict, Type, Callable, Coroutine
 from json.decoder import JSONDecodeError
 from easyqueue.queue import BaseJsonQueue
 from easyqueue.exceptions import UndecodableMessageException, \
     InvalidMessageSizeException, MessageError
+
+
+def _ensure_connected(coro: Callable[..., Coroutine]):
+    @wraps(coro)
+    async def wrapper(self: 'AsyncQueue', *args, **kwargs):
+        retries = 0
+        while self.is_running and not self.is_connected:
+            try:
+                await self.connect()
+                break
+            except Exception as e:
+                await asyncio.sleep(self.seconds_between_conn_retry)
+                retries += 1
+                if self.logger:
+                    self.logger.error({
+                        'event': 'reconnect-failure',
+                        'retry_count': retries,
+                        'exc_traceback': traceback.format_tb(e.__traceback__)
+                    })
+        return await coro(self, *args, **kwargs)
+    return wrapper
 
 
 class AsyncQueue(BaseJsonQueue):
@@ -19,7 +43,9 @@ class AsyncQueue(BaseJsonQueue):
                  heartbeat: int = 60,
                  prefetch_count: int = 100,
                  max_message_length=0,
-                 loop=None):
+                 loop=None,
+                 seconds_between_conn_retry: int = 1,
+                 logger: logging.Logger=None):
         super().__init__(host, username, password, virtual_host, heartbeat)
 
         self.loop = loop or asyncio.get_event_loop()
@@ -42,6 +68,10 @@ class AsyncQueue(BaseJsonQueue):
         self._protocol = None  # type: aioamqp.protocol.AmqpProtocol
         self._transport = None  # type: asyncio.BaseTransport
         self._channel = None  # type: aioamqp.channel.Channel
+        self.seconds_between_conn_retry = seconds_between_conn_retry
+        self.is_running = True
+        self.logger = logger
+        self._connection_lock = asyncio.Lock()
 
     @property
     def connection_parameters(self):
@@ -66,9 +96,13 @@ class AsyncQueue(BaseJsonQueue):
         return self._channel and self._channel.is_open
 
     async def connect(self):
-        conn = await aioamqp.connect(**self.connection_parameters)
-        self._transport, self._protocol = conn
-        self._channel = await self._protocol.channel()
+        async with self._connection_lock:
+            if self.is_connected:
+                return
+
+            conn = await aioamqp.connect(**self.connection_parameters)
+            self._transport, self._protocol = conn
+            self._channel = await self._protocol.channel()
 
     async def close(self):
         if not self.is_connected:
@@ -77,13 +111,16 @@ class AsyncQueue(BaseJsonQueue):
         await self._protocol.close()
         self._transport.close()
 
+    @_ensure_connected
     async def ack(self, delivery_tag: int):
         return await self._channel.basic_client_ack(delivery_tag)
 
+    @_ensure_connected
     async def reject(self, delivery_tag: int, requeue=False):
         return await self._channel.basic_reject(delivery_tag=delivery_tag,
                                                 requeue=requeue)
 
+    @_ensure_connected
     async def put(self,
                   body: any,
                   routing_key: str,
@@ -146,6 +183,7 @@ class AsyncQueue(BaseJsonQueue):
                                              queue=self)
         return self.loop.create_task(callback)
 
+    @_ensure_connected
     async def consume(self, queue_name: str, consumer_name: str = '') -> str:
         """
         :param queue_name: queue to consume
@@ -154,14 +192,9 @@ class AsyncQueue(BaseJsonQueue):
         """
         # todo: Implement a consumer tag generator
         if not self.delegate:
-            raise RuntimeError("Impossible to consume without a delegate.")
+            raise RuntimeError("Cannot start a consumer without a delegate")
 
         await self.delegate.on_before_start_consumption(queue_name, queue=self)
-
-        if self._channel is None:
-            raise ConnectionError("Queue isn't connected. "
-                                  "Did you forgot to wait for `connect()`?")
-
         await self._channel.basic_qos(prefetch_count=self.prefetch_count,
                                       prefetch_size=0,
                                       connection_global=False)
