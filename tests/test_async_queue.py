@@ -196,7 +196,7 @@ class AsyncQueueConnectionTests(AsyncBaseTestCase, asynctest.TestCase):
         exchange = Mock()
         routing_key = Mock()
         await self.queue.connect()
-        await self.queue.put(payload=json.dumps(message),
+        await self.queue.put(serialized_data=json.dumps(message),
                              exchange=exchange,
                              routing_key=routing_key)
 
@@ -218,7 +218,7 @@ class AsyncQueueConnectionTests(AsyncBaseTestCase, asynctest.TestCase):
         routing_key = Mock()
         await self.queue.connect()
         with self.assertRaises(ValueError):
-            await self.queue.put(payload=json.dumps(message),
+            await self.queue.put(serialized_data=json.dumps(message),
                                  data=message,
                                  exchange=exchange,
                                  routing_key=routing_key)
@@ -235,7 +235,7 @@ class AsyncQueueConnectionTests(AsyncBaseTestCase, asynctest.TestCase):
         exchange = Mock()
         routing_key = Mock()
         await self.queue.connect()
-        await self.queue.put(payload=payload,
+        await self.queue.put(serialized_data=payload,
                              exchange=exchange,
                              routing_key=routing_key)
 
@@ -251,7 +251,7 @@ class AsyncQueueConnectionTests(AsyncBaseTestCase, asynctest.TestCase):
         routing_key = Mock()
         await self.queue.connect()
 
-        await self.queue.put(payload=payload,
+        await self.queue.put(serialized_data=payload,
                              exchange=exchange,
                              routing_key=routing_key)
 

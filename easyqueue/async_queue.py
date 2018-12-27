@@ -124,25 +124,25 @@ class AsyncQueue(BaseJsonQueue):
     async def put(self,
                   routing_key: str,
                   data: any = None,
-                  payload: Union[str, bytes] = None,
+                  serialized_data: Union[str, bytes] = None,
                   exchange: str = ''):
         """
         :param data: A serializable data that should be serialized before
         publishing
-        :param payload: A payload to be published as is
+        :param serialized_data: A payload to be published as is
         :param exchange: The exchange to publish the message
         :param routing_key: The routing key to publish the message
         """
-        if data and payload:
+        if data and serialized_data:
             raise ValueError("Only one of data or json should be specified")
 
         if data:
-            payload = self.serialize(data, ensure_ascii=False)
+            serialized_data = self.serialize(data, ensure_ascii=False)
 
-        if not isinstance(payload, bytes):
-            payload = payload.encode()
+        if not isinstance(serialized_data, bytes):
+            serialized_data = serialized_data.encode()
 
-        return await self._channel.publish(payload=payload,
+        return await self._channel.publish(payload=serialized_data,
                                            exchange_name=exchange,
                                            routing_key=routing_key)
 

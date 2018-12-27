@@ -90,7 +90,7 @@ para:
 # Guia de migração 1.2.x -> 2.0.0
 
 O método `AsyncQueue.put` não aceita mais `body` como parâmetro de corpo da mensagem  
-e foi substituido pelos parâmetros `data` e `payload`. 
+e foi substituido pelos parâmetros `data` e `serialized_data`. 
 * `data` funciona da mesma forma 
 que body funcionava, esperando qualquer dado serializável em json 
-* `payload` existe para publicar a mensagem sem passar pela etapa de serialização
+* `serialized_data` existe para publicar a mensagem sem passar pela etapa de serialização
