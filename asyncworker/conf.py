@@ -1,7 +1,7 @@
 import logging
 
 from pydantic import BaseSettings
-from simple_json_logger import JsonLogger
+from aiologger.loggers.json import JsonLogger
 
 
 class Settings(BaseSettings):
@@ -19,5 +19,5 @@ class Settings(BaseSettings):
 
 settings = Settings()
 
-logger = JsonLogger(flatten=True)
-logger.setLevel(getattr(logging, settings.LOGLEVEL, logging.INFO))
+loglevel = getattr(logging, settings.LOGLEVEL, logging.INFO)
+logger = JsonLogger.with_default_handlers(level=loglevel, flatten=True)
