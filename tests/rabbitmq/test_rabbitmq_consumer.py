@@ -1,7 +1,6 @@
 import asyncio
 import unittest
-from unittest import mock
-from asynctest import CoroutineMock
+from asynctest import CoroutineMock, mock
 import asynctest
 import importlib
 
@@ -21,6 +20,8 @@ async def _handler(message):
 
 
 class ConsumerTest(asynctest.TestCase):
+    use_default_loop = True
+
     def setUp(self):
         self.queue_mock = CoroutineMock(
             ack=CoroutineMock(), reject=CoroutineMock()
@@ -505,12 +506,12 @@ class ConsumerTest(asynctest.TestCase):
         Aqui o try/except serve apenas para termos uma exception real, com traceback.
         """
         consumer = Consumer(self.one_route_fixture, *self.connection_parameters)
-        with mock.patch.object(conf, "logger") as logger_mock:
+        with mock.patch.object(conf, "logger", CoroutineMock(error=CoroutineMock())) as logger_mock:
             try:
                 1 / 0
             except Exception as e:
                 await consumer.on_message_handle_error(e)
-                logger_mock.error.assert_called_with(
+                logger_mock.error.assert_awaited_with(
                     {
                         "exc_message": "division by zero",
                         "exc_traceback": mock.ANY,
@@ -522,12 +523,12 @@ class ConsumerTest(asynctest.TestCase):
         Logamos qualquer erro de conexão com o Rabbit, inclusive acesso negado
         """
         consumer = Consumer(self.one_route_fixture, *self.connection_parameters)
-        with mock.patch.object(conf, "logger") as logger_mock:
+        with mock.patch.object(conf, "logger", CoroutineMock(error=CoroutineMock())) as logger_mock:
             try:
                 1 / 0
             except Exception as e:
                 await consumer.on_connection_error(e)
-                logger_mock.error.assert_called_with(
+                logger_mock.error.assert_awaited_with(
                     {
                         "exc_message": "division by zero",
                         "exc_traceback": mock.ANY,
@@ -543,11 +544,11 @@ class ConsumerTest(asynctest.TestCase):
         queue_mock = CoroutineMock(ack=CoroutineMock())
 
         consumer = Consumer(self.one_route_fixture, *self.connection_parameters)
-        with mock.patch.object(conf, "logger") as logger_mock:
+        with mock.patch.object(conf, "logger", CoroutineMock(error=CoroutineMock())) as logger_mock:
             await consumer.on_queue_error(
                 body, delivery_tag, "Error: not a JSON", queue_mock
             )
-            logger_mock.error.assert_called_with(
+            logger_mock.error.assert_awaited_with(
                 {
                     "exception": "Error: not a JSON",
                     "original_msg": body,

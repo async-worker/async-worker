@@ -119,7 +119,7 @@ class Consumer(AsyncQueueConsumerDelegate):
         :type error: MessageError
         :type queue: AsyncQueue
         """
-        conf.logger.error(
+        await conf.logger.error(
             {
                 "parse-error": True,
                 "exception": "Error: not a JSON",
@@ -129,7 +129,7 @@ class Consumer(AsyncQueueConsumerDelegate):
         try:
             await queue.ack(delivery_tag=delivery_tag)
         except AioamqpException as e:
-            self._log_exception(e)
+            await self._log_exception(e)
 
     async def on_message_handle_error(self, handler_error: Exception, **kwargs):
         """
@@ -141,26 +141,26 @@ class Consumer(AsyncQueueConsumerDelegate):
         the message
         :return:
         """
-        self._log_exception(handler_error)
+        await self._log_exception(handler_error)
 
     async def on_connection_error(self, exception: Exception):
         """
         Called when the connection fails
         """
-        self._log_exception(exception)
+        await self._log_exception(exception)
 
-    def _log_exception(self, exception):
+    async def _log_exception(self, exception):
         current_exception = {
             "exc_message": str(exception),
             "exc_traceback": traceback.format_exc(),
         }
-        conf.logger.error(current_exception)
+        await conf.logger.error(current_exception)
 
     async def consume_all_queues(self, queue: AsyncQueue):
         for queue_name in self._queue_name:
             # Por enquanto não estamos guardando a consumer_tag retornada
             # se precisar, podemos passar a guardar.
-            conf.logger.debug({"queue": queue_name, "action": "start-consume"})
+            await conf.logger.debug({"queue": queue_name, "action": "start-consume"})
             await queue.consume(queue_name=queue_name)
 
     def keep_runnig(self):
@@ -173,7 +173,7 @@ class Consumer(AsyncQueueConsumerDelegate):
                     await self.queue.connect()
                     await self.consume_all_queues(self.queue)
                 except Exception as e:
-                    conf.logger.error(
+                    await conf.logger.error(
                         {
                             "type": "connection-failed",
                             "dest": self.host,
