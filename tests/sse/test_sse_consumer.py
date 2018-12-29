@@ -8,6 +8,7 @@ from aioresponses import aioresponses
 
 from asyncworker.sse.consumer import SSEConsumer
 from asyncworker.bucket import Bucket
+from asyncworker import conf
 from tests.utils import get_fixture
 
 
@@ -38,6 +39,19 @@ class SSEConsumerTest(TestCase):
             self.one_route_fixture, *self.consumer_params
         )
         self.consumer.interval = 0
+        self.logger_patcher = asynctest.mock.patch.object(
+            conf,
+            "logger",
+            CoroutineMock(
+                info=CoroutineMock(),
+                debug=CoroutineMock(),
+                error=CoroutineMock(),
+            ),
+        )
+        self.logger_mock = self.logger_patcher.start()
+
+    async def tearDown(self):
+        asynctest.patch.stopall()
 
     async def test_new_consumer_instance(self):
         consumer = SSEConsumer(self.one_route_fixture, *self.consumer_params)

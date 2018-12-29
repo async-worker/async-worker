@@ -71,7 +71,7 @@ class SSEConsumer:
         return rv
 
     async def on_connection_error(self, exception):
-        conf.logger.error(
+        await conf.logger.error(
             {
                 "type": "connection-failed",
                 "dest": self.url,
@@ -81,7 +81,7 @@ class SSEConsumer:
         )
 
     async def on_exception(self, exception):
-        conf.logger.error(
+        await conf.logger.error(
             {
                 "type": "unhandled-exception",
                 "dest": self.url,
@@ -91,7 +91,7 @@ class SSEConsumer:
         )
 
     async def on_connection(self):
-        conf.logger.debug({"event": "on-connection", "url": self.url})
+        await conf.logger.debug({"event": "on-connection", "url": self.url})
 
     def _parse_sse_line(self, line: bytes) -> bytes:
         return line.split(EVENT_FIELD_SEPARATOR, 1)[1].strip()
