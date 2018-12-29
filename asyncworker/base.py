@@ -64,7 +64,7 @@ class BaseApp(MutableMapping, Freezable):
 
     @entrypoint
     async def run(self):
-        logger.info("Booting App...")
+        await logger.debug({"event": "Booting App..."})
         await self.startup()
 
         while True:
