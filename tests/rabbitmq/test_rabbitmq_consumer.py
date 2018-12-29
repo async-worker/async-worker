@@ -26,6 +26,9 @@ class ConsumerTest(asynctest.TestCase):
         self.queue_mock = CoroutineMock(
             ack=CoroutineMock(), reject=CoroutineMock()
         )
+        self.logger_mock = CoroutineMock(
+            info=CoroutineMock(), debug=CoroutineMock(), error=CoroutineMock()
+        )
         self.connection_parameters = ("127.0.0.1", "guest", "guest", 1024)
         self.one_route_fixture = {
             "routes": ["/asgard/counts/ok"],
@@ -506,7 +509,7 @@ class ConsumerTest(asynctest.TestCase):
         Aqui o try/except serve apenas para termos uma exception real, com traceback.
         """
         consumer = Consumer(self.one_route_fixture, *self.connection_parameters)
-        with mock.patch.object(conf, "logger", CoroutineMock(error=CoroutineMock())) as logger_mock:
+        with mock.patch.object(conf, "logger", self.logger_mock) as logger_mock:
             try:
                 1 / 0
             except Exception as e:
@@ -523,7 +526,7 @@ class ConsumerTest(asynctest.TestCase):
         Logamos qualquer erro de conexão com o Rabbit, inclusive acesso negado
         """
         consumer = Consumer(self.one_route_fixture, *self.connection_parameters)
-        with mock.patch.object(conf, "logger", CoroutineMock(error=CoroutineMock())) as logger_mock:
+        with mock.patch.object(conf, "logger", self.logger_mock) as logger_mock:
             try:
                 1 / 0
             except Exception as e:
@@ -544,7 +547,7 @@ class ConsumerTest(asynctest.TestCase):
         queue_mock = CoroutineMock(ack=CoroutineMock())
 
         consumer = Consumer(self.one_route_fixture, *self.connection_parameters)
-        with mock.patch.object(conf, "logger", CoroutineMock(error=CoroutineMock())) as logger_mock:
+        with mock.patch.object(conf, "logger", self.logger_mock) as logger_mock:
             await consumer.on_queue_error(
                 body, delivery_tag, "Error: not a JSON", queue_mock
             )
@@ -618,7 +621,11 @@ class ConsumerTest(asynctest.TestCase):
         consumer = Consumer(self.one_route_fixture, *self.connection_parameters)
         with unittest.mock.patch.object(
             consumer, "keep_runnig", side_effect=[True, True, False]
-        ), asynctest.patch.object(asyncio, "sleep") as sleep_mock:
+        ), asynctest.patch.object(
+            asyncio, "sleep"
+        ) as sleep_mock, mock.patch.object(
+            conf, "logger", self.logger_mock
+        ):
             is_connected_mock = mock.PropertyMock(
                 side_effect=[False, False, True]
             )

@@ -160,7 +160,9 @@ class Consumer(AsyncQueueConsumerDelegate):
         for queue_name in self._queue_name:
             # Por enquanto não estamos guardando a consumer_tag retornada
             # se precisar, podemos passar a guardar.
-            await conf.logger.debug({"queue": queue_name, "action": "start-consume"})
+            await conf.logger.debug(
+                {"queue": queue_name, "action": "start-consume"}
+            )
             await queue.consume(queue_name=queue_name)
 
     def keep_runnig(self):
