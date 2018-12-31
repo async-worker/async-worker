@@ -161,7 +161,7 @@ class Consumer(AsyncQueueConsumerDelegate):
             # Por enquanto não estamos guardando a consumer_tag retornada
             # se precisar, podemos passar a guardar.
             await conf.logger.debug(
-                {"queue": queue_name, "action": "start-consume"}
+                {"queue": queue_name, "event": "start-consume"}
             )
             await queue.consume(queue_name=queue_name)
 
