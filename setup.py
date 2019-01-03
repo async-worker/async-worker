@@ -21,7 +21,7 @@ setup(
     packages=find_packages(exclude=["contrib", "docs", "tests*"]),
     install_requires=[
         "easyqueue==2.0.0-rc1",
-        "aiologgerlogger==0.2.3",
+        "aiologger==0.3.0",
         "pydantic==0.14",
         "cached-property==1.5.1",
         "aiohttp==3.4.4",
