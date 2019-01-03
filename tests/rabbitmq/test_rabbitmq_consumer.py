@@ -630,7 +630,6 @@ class ConsumerTest(asynctest.TestCase):
             type(queue_mock).is_connected = is_connected_mock
             loop = asyncio.get_event_loop()
             consumer.queue = queue_mock
-            # __import__('ipdb').set_trace()
             loop.run_until_complete(consumer.start())
             self.assertEqual(1, queue_mock.connect.await_count)
             self.assertEqual(2, queue_mock.consume.await_count)
