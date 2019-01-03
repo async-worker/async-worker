@@ -20,8 +20,6 @@ async def _handler(message):
 
 
 class ConsumerTest(asynctest.TestCase):
-    use_default_loop = True
-
     def setUp(self):
         self.queue_mock = CoroutineMock(
             ack=CoroutineMock(), reject=CoroutineMock()
