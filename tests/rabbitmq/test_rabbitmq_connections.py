@@ -59,7 +59,7 @@ class AMQPConnectionTests(asynctest.TestCase):
         self.rabbitmq_connection.register(connection_b)
 
         await self.rabbitmq_connection.put(
-            body=self.body,
+            serialized_data=self.body,
             routing_key=self.routing_key,
             exchange=self.exchange,
             vhost="a",
@@ -67,7 +67,10 @@ class AMQPConnectionTests(asynctest.TestCase):
 
         connection_b.put.assert_not_awaited()
         connection_a.put.assert_awaited_once_with(
-            self.body, self.routing_key, self.exchange
+            data=None,
+            routing_key=self.routing_key,
+            exchange=self.exchange,
+            serialized_data=self.body,
         )
 
     async def test_put_uses_the_default_vhost_if_none_is_provided(self):
@@ -80,12 +83,15 @@ class AMQPConnectionTests(asynctest.TestCase):
         self.rabbitmq_connection.register(connection_b)
 
         await self.rabbitmq_connection.put(
-            body=self.body, routing_key=self.routing_key, exchange=self.exchange
+            data=self.body, routing_key=self.routing_key, exchange=self.exchange
         )
 
         connection_b.put.assert_not_awaited()
         connection_a.put.assert_awaited_once_with(
-            self.body, self.routing_key, self.exchange
+            data=self.body,
+            routing_key=self.routing_key,
+            exchange=self.exchange,
+            serialized_data=None,
         )
 
     async def test_put_initializes_a_new_connection_if_a_connection_wasnt_initialized_for_a_given_vhost(
@@ -98,12 +104,15 @@ class AMQPConnectionTests(asynctest.TestCase):
             return_value=connection_a,
         ):
             await self.rabbitmq_connection.put(
-                body=self.body,
+                data=self.body,
                 routing_key=self.routing_key,
                 exchange=self.exchange,
                 vhost="a",
             )
 
             connection_a.put.assert_awaited_once_with(
-                self.body, self.routing_key, self.exchange
+                data=self.body,
+                routing_key=self.routing_key,
+                exchange=self.exchange,
+                serialized_data=None,
             )
