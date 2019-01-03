@@ -11,6 +11,7 @@ aiologger = "==0.2.3"
 pydantic = "==0.14"
 cached-property = "==1.5.1"
 codecov = "==1.0.0"
+aiologger = "==0.3.0"
 
 [dev-packages]
 aioresponses = "==0.5.0"
