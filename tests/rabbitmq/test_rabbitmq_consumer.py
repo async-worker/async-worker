@@ -586,7 +586,7 @@ class ConsumerTest(asynctest.TestCase):
             queue_mock.consume.await_args_list,
         )
 
-    def test_start_calls_connect_and_consume_for_each_queue(self):
+    async def test_start_calls_connect_and_consume_for_each_queue(self):
         self.one_route_fixture["routes"] = [
             "asgard/counts",
             "asgard/counts/errors",
@@ -601,7 +601,7 @@ class ConsumerTest(asynctest.TestCase):
         with asynctest.patch.object(
             consumer, "keep_runnig", side_effect=[True, False]
         ) as keep_running_mock:
-            loop.run_until_complete(consumer.start())
+            await consumer.start()
 
         self.assertEqual(1, queue_mock.connect.await_count)
         self.assertEqual(2, queue_mock.consume.await_count)
@@ -613,7 +613,7 @@ class ConsumerTest(asynctest.TestCase):
             queue_mock.consume.await_args_list,
         )
 
-    def test_start_reconnects_if_connectaion_failed(self):
+    async def test_start_reconnects_if_connection_failed_bla(self):
         self.one_route_fixture["routes"] = [
             "asgard/counts",
             "asgard/counts/errors",
@@ -621,7 +621,7 @@ class ConsumerTest(asynctest.TestCase):
         consumer = Consumer(self.one_route_fixture, *self.connection_parameters)
         with unittest.mock.patch.object(
             consumer, "keep_runnig", side_effect=[True, True, False]
-        ), asynctest.patch.object(asyncio, "sleep") as sleep_mock:
+        ), asynctest.patch.object(asyncio, "sleep"):
             is_connected_mock = mock.PropertyMock(
                 side_effect=[False, False, True]
             )
@@ -632,7 +632,8 @@ class ConsumerTest(asynctest.TestCase):
             type(queue_mock).is_connected = is_connected_mock
             loop = asyncio.get_event_loop()
             consumer.queue = queue_mock
-            loop.run_until_complete(consumer.start())
+
+            await consumer.start()
             self.assertEqual(1, queue_mock.connect.await_count)
             self.assertEqual(2, queue_mock.consume.await_count)
             self.assertEqual(
@@ -642,9 +643,8 @@ class ConsumerTest(asynctest.TestCase):
                 ],
                 queue_mock.consume.await_args_list,
             )
-            self.assertEqual(2, sleep_mock.await_count)
 
-    def test_start_always_calls_sleep(self):
+    async def test_start_always_calls_sleep(self):
         """
         Regression:
             O sleep deve ser chamado *sempre*, e não apenas quando há tentativa de conexão.
@@ -668,5 +668,6 @@ class ConsumerTest(asynctest.TestCase):
             type(queue_mock).is_connected = is_connected_mock
             loop = asyncio.get_event_loop()
             consumer.queue = queue_mock
-            loop.run_until_complete(consumer.start())
+
+            await consumer.start()
             self.assertEqual(3, sleep_mock.await_count)

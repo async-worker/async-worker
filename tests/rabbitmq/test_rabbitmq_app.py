@@ -241,7 +241,7 @@ class RabbitMQAppTest(asynctest.TestCase):
             consumers[0].queue.prefetch_count,
         )
 
-    async def test_instantiate_one_consumer_per_handler_multiple_handlers_registered(
+    async def test_instantiate_one_consumer_per_handler_multiple_handlers_registered_bla(
         self
     ):
         app = App(**self.connection_parameters)
