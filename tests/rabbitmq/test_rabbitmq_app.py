@@ -12,6 +12,8 @@ from asyncworker.options import (
 
 
 class RabbitMQAppTest(asynctest.TestCase):
+    use_default_loop = True
+
     def setUp(self):
         self.connection_parameters = {
             "host": "127.0.0.1",
