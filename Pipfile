@@ -6,7 +6,7 @@ name = "pypi"
 [packages]
 aioamqp = "==0.11.0"
 aiohttp = "==3.4.4"
-easyqueue = "==1.2.1-rc1"
+easyqueue = "==2.0.0-rc1"
 simple_json_logger = "==0.2.3"
 aiologger = "==0.1.1-rc1"
 pydantic = "==0.14"

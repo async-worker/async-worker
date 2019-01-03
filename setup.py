@@ -20,7 +20,7 @@ setup(
     ],
     packages=find_packages(exclude=["contrib", "docs", "tests*"]),
     install_requires=[
-        "easyqueue==1.2.1-rc1",
+        "easyqueue==2.0.0-rc1",
         "simple-json-logger==0.2.3",
         "pydantic==0.14",
         "cached-property==1.5.1",
