@@ -48,10 +48,6 @@ class SSEConsumerTest(TestCase):
                 error=CoroutineMock(),
             ),
         )
-        self.logger_mock = self.logger_patcher.start()
-
-    async def tearDown(self):
-        asynctest.patch.stopall()
 
     async def test_new_consumer_instance(self):
         consumer = SSEConsumer(self.one_route_fixture, *self.consumer_params)

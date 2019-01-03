@@ -507,12 +507,12 @@ class ConsumerTest(asynctest.TestCase):
         Aqui o try/except serve apenas para termos uma exception real, com traceback.
         """
         consumer = Consumer(self.one_route_fixture, *self.connection_parameters)
-        with mock.patch.object(conf, "logger", self.logger_mock) as logger_mock:
+        with mock.patch.object(conf, "logger", self.logger_mock):
             try:
                 1 / 0
             except Exception as e:
                 await consumer.on_message_handle_error(e)
-                logger_mock.error.assert_awaited_with(
+                self.logger_mock.error.assert_awaited_with(
                     {
                         "exc_message": "division by zero",
                         "exc_traceback": mock.ANY,
@@ -524,12 +524,12 @@ class ConsumerTest(asynctest.TestCase):
         Logamos qualquer erro de conexão com o Rabbit, inclusive acesso negado
         """
         consumer = Consumer(self.one_route_fixture, *self.connection_parameters)
-        with mock.patch.object(conf, "logger", self.logger_mock) as logger_mock:
+        with mock.patch.object(conf, "logger", self.logger_mock):
             try:
                 1 / 0
             except Exception as e:
                 await consumer.on_connection_error(e)
-                logger_mock.error.assert_awaited_with(
+                self.logger_mock.error.assert_awaited_with(
                     {
                         "exc_message": "division by zero",
                         "exc_traceback": mock.ANY,
@@ -545,11 +545,11 @@ class ConsumerTest(asynctest.TestCase):
         queue_mock = CoroutineMock(ack=CoroutineMock())
 
         consumer = Consumer(self.one_route_fixture, *self.connection_parameters)
-        with mock.patch.object(conf, "logger", self.logger_mock) as logger_mock:
+        with mock.patch.object(conf, "logger", self.logger_mock):
             await consumer.on_queue_error(
                 body, delivery_tag, "Error: not a JSON", queue_mock
             )
-            logger_mock.error.assert_awaited_with(
+            self.logger_mock.error.assert_awaited_with(
                 {
                     "exception": "Error: not a JSON",
                     "original_msg": body,
@@ -619,11 +619,7 @@ class ConsumerTest(asynctest.TestCase):
         consumer = Consumer(self.one_route_fixture, *self.connection_parameters)
         with unittest.mock.patch.object(
             consumer, "keep_runnig", side_effect=[True, True, False]
-        ), asynctest.patch.object(
-            asyncio, "sleep"
-        ) as sleep_mock, mock.patch.object(
-            conf, "logger", self.logger_mock
-        ):
+        ), asynctest.patch.object(asyncio, "sleep") as sleep_mock:
             is_connected_mock = mock.PropertyMock(
                 side_effect=[False, False, True]
             )
@@ -634,6 +630,7 @@ class ConsumerTest(asynctest.TestCase):
             type(queue_mock).is_connected = is_connected_mock
             loop = asyncio.get_event_loop()
             consumer.queue = queue_mock
+            # __import__('ipdb').set_trace()
             loop.run_until_complete(consumer.start())
             self.assertEqual(1, queue_mock.connect.await_count)
             self.assertEqual(2, queue_mock.consume.await_count)
