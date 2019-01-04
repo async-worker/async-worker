@@ -1,11 +1,9 @@
 import os
 from setuptools import setup, find_packages
 
-from easyqueue import __VERSION__
-
+__VERSION__ = '1.2.0'
 
 BASE_PATH = os.path.dirname(__file__)
-
 
 setup(
     name='easyqueue',
