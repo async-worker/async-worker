@@ -10,3 +10,9 @@ install:
 script: pipenv run lint && pipenv run format-check && pipenv run test
 after_success:
   - codecov
+deploy:
+  provider: pypi
+  user: $PYPI_USERNAME
+  password: $PYPI_PASSWORD
+  on:
+    tags: true
