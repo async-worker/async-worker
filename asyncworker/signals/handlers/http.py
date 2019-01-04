@@ -1,28 +1,29 @@
 from aiohttp import web
 from asyncworker.signals.handlers.base import SignalHandler
-
+from asyncworker.options import RouteTypes
 from asyncworker.conf import settings
 
 
 class HTTPServer(SignalHandler):
     async def startup(self, app):
-        http_routes = app.routes_registry.http_routes
-        if not http_routes:
+        app[RouteTypes.HTTP] = {}
+        routes = app.routes_registry.http_routes
+        if not routes:
             return
 
-        app["http_app"] = web.Application()
-        for route in http_routes:
-            app["http_app"].router.add_route(**route)
+        app[RouteTypes.HTTP]["app"] = http_app = web.Application()
+        for route in routes:
+            http_app.router.add_route(**route)
 
-        app["http_runner"] = web.AppRunner(app["http_app"])
-        await app["http_runner"].setup()
-        app["http_site"] = web.TCPSite(
-            runner=app["http_runner"],
+        app[RouteTypes.HTTP]["runner"] = web.AppRunner(http_app)
+        await app[RouteTypes.HTTP]["runner"].setup()
+        app[RouteTypes.HTTP]["site"] = web.TCPSite(
+            runner=app[RouteTypes.HTTP]["runner"],
             host=settings.HTTP_HOST,
             port=settings.HTTP_PORT,
         )
-        await app["http_site"].start()
+        await app[RouteTypes.HTTP]["site"].start()
 
     async def shutdown(self, app):
-        if "http_runner" in app:
-            await app["http_runner"].cleanup()
+        if RouteTypes.HTTP in app and "runner" in app[RouteTypes.HTTP]:
+            await app[RouteTypes.HTTP]["runner"].cleanup()
