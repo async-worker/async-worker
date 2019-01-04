@@ -93,7 +93,7 @@ class HTTPServerTests(asynctest.TestCase):
     ):
         self.app.routes_registry = self.routes_registry
 
-        self.assertNotIn("http_runner", self.app[RouteTypes.HTTP])
+        self.assertEqual(self.app, {})
 
         await self.signal_handler.shutdown(self.app)
 

@@ -11,6 +11,7 @@ if TYPE_CHECKING:  # pragma: no cover
 
 class RabbitMQ(SignalHandler):
     async def startup(self, app: "App"):
+        app[RouteTypes.AMQP_RABBITMQ] = {}
         app[RouteTypes.AMQP_RABBITMQ]["connection"] = AMQPConnection(
             hostname=app.host, username=app.user, password=app.password
         )

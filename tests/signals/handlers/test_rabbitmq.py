@@ -87,5 +87,8 @@ class AMQPTests(asynctest.TestCase):
             app[RouteTypes.AMQP_RABBITMQ]["connection"], AMQPConnection
         )
         register.assert_has_calls(
-            [call(consumer.queue) for consumer in app["consumers"]]
+            [
+                call(consumer.queue)
+                for consumer in app[RouteTypes.AMQP_RABBITMQ]["consumers"]
+            ]
         )

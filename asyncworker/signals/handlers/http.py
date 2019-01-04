@@ -25,5 +25,5 @@ class HTTPServer(SignalHandler):
         await app[RouteTypes.HTTP]["http_site"].start()
 
     async def shutdown(self, app):
-        if "http_runner" in app[RouteTypes.HTTP]:
+        if RouteTypes.HTTP in app and "http_runner" in app[RouteTypes.HTTP]:
             await app[RouteTypes.HTTP]["http_runner"].cleanup()
