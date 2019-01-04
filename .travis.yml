@@ -10,3 +10,9 @@ install:
 script: py.test -v --cov=./ --cov-report term-missing -v
 after_success:
   - codecov
+deploy:
+  provider: pypi
+  user: $PYPI_USERNAME
+  password: $PYPI_PASSWORD
+  on:
+    tags: true
