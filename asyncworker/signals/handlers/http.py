@@ -7,23 +7,23 @@ from asyncworker.conf import settings
 class HTTPServer(SignalHandler):
     async def startup(self, app):
         app[RouteTypes.HTTP] = {}
-        http_routes = app.routes_registry.http_routes
-        if not http_routes:
+        routes = app.routes_registry.http_routes
+        if not routes:
             return
 
-        app[RouteTypes.HTTP]["http_app"] = http_app = web.Application()
-        for route in http_routes:
+        app[RouteTypes.HTTP]["app"] = http_app = web.Application()
+        for route in routes:
             http_app.router.add_route(**route)
 
-        app[RouteTypes.HTTP]["http_runner"] = web.AppRunner(http_app)
-        await app[RouteTypes.HTTP]["http_runner"].setup()
-        app[RouteTypes.HTTP]["http_site"] = web.TCPSite(
-            runner=app[RouteTypes.HTTP]["http_runner"],
+        app[RouteTypes.HTTP]["runner"] = web.AppRunner(http_app)
+        await app[RouteTypes.HTTP]["runner"].setup()
+        app[RouteTypes.HTTP]["site"] = web.TCPSite(
+            runner=app[RouteTypes.HTTP]["runner"],
             host=settings.HTTP_HOST,
             port=settings.HTTP_PORT,
         )
-        await app[RouteTypes.HTTP]["http_site"].start()
+        await app[RouteTypes.HTTP]["site"].start()
 
     async def shutdown(self, app):
-        if RouteTypes.HTTP in app and "http_runner" in app[RouteTypes.HTTP]:
-            await app[RouteTypes.HTTP]["http_runner"].cleanup()
+        if RouteTypes.HTTP in app and "runner" in app[RouteTypes.HTTP]:
+            await app[RouteTypes.HTTP]["runner"].cleanup()

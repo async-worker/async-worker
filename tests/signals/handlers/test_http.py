@@ -39,25 +39,21 @@ class HTTPServerTests(asynctest.TestCase):
 
         await self.signal_handler.startup(self.app)
 
+        self.assertIsInstance(self.app[RouteTypes.HTTP]["app"], web.Application)
         self.assertIsInstance(
-            self.app[RouteTypes.HTTP]["http_app"], web.Application
+            self.app[RouteTypes.HTTP]["runner"], web.AppRunner
         )
-        self.assertIsInstance(
-            self.app[RouteTypes.HTTP]["http_runner"], web.AppRunner
-        )
-        self.assertIsInstance(
-            self.app[RouteTypes.HTTP]["http_site"], web.TCPSite
+        self.assertIsInstance(self.app[RouteTypes.HTTP]["site"], web.TCPSite)
+
+        self.assertEqual(
+            len(self.app[RouteTypes.HTTP]["app"]._router.routes()), 3
         )
 
         self.assertEqual(
-            len(self.app[RouteTypes.HTTP]["http_app"]._router.routes()), 3
-        )
-
-        self.assertEqual(
-            self.app[RouteTypes.HTTP]["http_site"]._port, settings.HTTP_PORT
+            self.app[RouteTypes.HTTP]["site"]._port, settings.HTTP_PORT
         )
         self.assertEqual(
-            self.app[RouteTypes.HTTP]["http_site"]._host, settings.HTTP_HOST
+            self.app[RouteTypes.HTTP]["site"]._host, settings.HTTP_HOST
         )
 
         start.assert_awaited_once()
