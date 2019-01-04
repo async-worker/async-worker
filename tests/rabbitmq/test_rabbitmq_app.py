@@ -12,6 +12,8 @@ from asyncworker.options import (
 
 
 class RabbitMQAppTest(asynctest.TestCase):
+    use_default_loop = True
+
     def setUp(self):
         self.connection_parameters = {
             "host": "127.0.0.1",
@@ -239,7 +241,7 @@ class RabbitMQAppTest(asynctest.TestCase):
             consumers[0].queue.prefetch_count,
         )
 
-    async def test_instantiate_one_consumer_per_handler_multiple_handlers_registered(
+    async def test_instantiate_one_consumer_per_handler_multiple_handlers_registered_bla(
         self
     ):
         app = App(**self.connection_parameters)
