@@ -1,5 +1,5 @@
 from collections import Mapping
-from typing import Dict, List, Union, Iterator
+from typing import Dict, List, Union, Iterator, Any
 
 from easyqueue import AsyncQueue
 
@@ -46,10 +46,16 @@ class AMQPConnection(Mapping):
 
     async def put(
         self,
-        body: Message,
         routing_key: str,
-        exchange: str,
+        data: Any = None,
+        serialized_data: Union[str, bytes] = None,
+        exchange: str = "",
         vhost: str = settings.AMQP_DEFAULT_VHOST,
     ):
         conn = self[vhost]
-        return await conn.put(body, routing_key, exchange)
+        return await conn.put(
+            routing_key=routing_key,
+            data=data,
+            serialized_data=serialized_data,
+            exchange=exchange,
+        )
