@@ -72,6 +72,6 @@ class AMQPTests(asynctest.TestCase):
             any_order=True,
         )
         Consumer.return_value.start.assert_has_calls([call(), call()])
-        app.__getitem__.return_value.append.assert_has_calls(
+        app[RouteTypes.SSE].__getitem__.return_value.append.assert_has_calls(
             [call(Consumer.return_value), call(Consumer.return_value)]
         )

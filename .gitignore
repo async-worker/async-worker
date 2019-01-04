@@ -69,3 +69,8 @@ debug.log
 
 # Chef environements
 /compose/*.env
+
+# mypy
+.mypy_cache/
+.dmypy.json
+dmypy.json

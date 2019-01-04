@@ -234,7 +234,7 @@ class AppTest(asynctest.TestCase):
             return message
 
         await app.startup()
-        consumers = app["sse_consumers"]
+        consumers = app[RouteTypes.SSE]["consumers"]
         self.assertEqual(1, len(consumers))
         consumer = consumers[0]
 

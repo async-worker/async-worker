@@ -14,6 +14,19 @@ Atualmente o projeto suporta as seguintes backends:
 * [Server Side Events](https://en.wikipedia.org/wiki/Server-sent_events): Possibilidade de eventos de um endpoint que emite implementa Server Side Events.
 * [HTTP](https://pt.wikipedia.org/wiki/Hypertext_Transfer_Protocol): Possibilidade de receber dados via requisições HTTP
 
+
+# Incompatibilidades
+
+Atualmente, pelo fato o asyncworker usar o [aiologger](https://github.com/B2W-BIT/aiologger), ele é incompatível com apps que usam **múltiplos** loops de evento. Ou seja, se sua app cria um novo loop e substitui o loop anterior isso causará um problema com os logs gerados pelo asyncworker (via aiologger).
+
+No geral, as aplicações assíncronas usam apenas um loop de evento durante todo o seu ciclo de vida. Isso significa que a não se que você esteja escrevendo um código com um comportamento muito específico (que dependa da renovação do loop de eventos) você não terá maiores problemas em usar o asyncworker.
+
+Essa incompatibilidade do aiologger está sendo tratada na issue [#35](https://github.com/B2W-BIT/aiologger/issues/35).
+
+## Escrevendo testes
+
+Por causa dessa incompatibilidade com múltiplos loops para escrever testes você precisa ter certeza que seu test runner não está criando novos loops para cada um dos casos de teste sendo rodados. Por padrão o [asynctest](https://github.com/Martiusweb/asynctest) faz isso. No caso do asyntest, basta adicionar um atributo `use_default_loop = True` (doc [aqui](https://asynctest.readthedocs.io/en/latest/asynctest.case.html#asynctest.TestCase.use_default_loop)) em sua classe de teste.
+
 ## Exemplos
 
 ### Worker lendo dados de um RabbitMQ
@@ -159,7 +172,7 @@ from asyncworker.options import RouteTypes
 
 @app.route(["queue1", "queue2"], type=RouteTypes.AMQP_RABBITMQ)
 async def handler(messages):
-    await app['rabbitmq_connection'].put(
+    await app[RouteTypes.AMQP_RABBITMQ]['connection'].put(
         body={"dog": "Xablau"},
         routing_key="queue2_routing_key",
         exchange="queue2_exchange",

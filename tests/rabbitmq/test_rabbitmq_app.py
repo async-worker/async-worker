@@ -12,6 +12,8 @@ from asyncworker.options import (
 
 
 class RabbitMQAppTest(asynctest.TestCase):
+    use_default_loop = True
+
     def setUp(self):
         self.connection_parameters = {
             "host": "127.0.0.1",
@@ -216,7 +218,7 @@ class RabbitMQAppTest(asynctest.TestCase):
             return message
 
         await app.startup()
-        consumers = app["consumers"]
+        consumers = app[RouteTypes.AMQP_RABBITMQ]["consumers"]
         self.assertEqual(1, len(consumers))
         self.assertEqual(["asgard/counts"], consumers[0].queue_name)
         self.assertEqual("/", consumers[0].vhost)
@@ -239,7 +241,7 @@ class RabbitMQAppTest(asynctest.TestCase):
             consumers[0].queue.prefetch_count,
         )
 
-    async def test_instantiate_one_consumer_per_handler_multiple_handlers_registered(
+    async def test_instantiate_one_consumer_per_handler_multiple_handlers_registered_bla(
         self
     ):
         app = App(**self.connection_parameters)
@@ -257,7 +259,7 @@ class RabbitMQAppTest(asynctest.TestCase):
             return message
 
         await app.startup()
-        consumers = app["consumers"]
+        consumers = app[RouteTypes.AMQP_RABBITMQ]["consumers"]
         self.assertEqual(2, len(consumers))
 
         self.assertEqual(["asgard/counts"], consumers[0].queue_name)

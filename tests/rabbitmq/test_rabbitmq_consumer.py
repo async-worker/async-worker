@@ -1,7 +1,6 @@
 import asyncio
 import unittest
-from unittest import mock
-from asynctest import CoroutineMock
+from asynctest import CoroutineMock, mock
 import asynctest
 import importlib
 
@@ -21,9 +20,14 @@ async def _handler(message):
 
 
 class ConsumerTest(asynctest.TestCase):
+    use_default_loop = True
+
     def setUp(self):
         self.queue_mock = CoroutineMock(
             ack=CoroutineMock(), reject=CoroutineMock()
+        )
+        self.logger_mock = CoroutineMock(
+            info=CoroutineMock(), debug=CoroutineMock(), error=CoroutineMock()
         )
         self.connection_parameters = ("127.0.0.1", "guest", "guest", 1024)
         self.one_route_fixture = {
@@ -505,12 +509,12 @@ class ConsumerTest(asynctest.TestCase):
         Aqui o try/except serve apenas para termos uma exception real, com traceback.
         """
         consumer = Consumer(self.one_route_fixture, *self.connection_parameters)
-        with mock.patch.object(conf, "logger") as logger_mock:
+        with mock.patch.object(conf, "logger", self.logger_mock):
             try:
                 1 / 0
             except Exception as e:
                 await consumer.on_message_handle_error(e)
-                logger_mock.error.assert_called_with(
+                self.logger_mock.error.assert_awaited_with(
                     {
                         "exc_message": "division by zero",
                         "exc_traceback": mock.ANY,
@@ -522,12 +526,12 @@ class ConsumerTest(asynctest.TestCase):
         Logamos qualquer erro de conexão com o Rabbit, inclusive acesso negado
         """
         consumer = Consumer(self.one_route_fixture, *self.connection_parameters)
-        with mock.patch.object(conf, "logger") as logger_mock:
+        with mock.patch.object(conf, "logger", self.logger_mock):
             try:
                 1 / 0
             except Exception as e:
                 await consumer.on_connection_error(e)
-                logger_mock.error.assert_called_with(
+                self.logger_mock.error.assert_awaited_with(
                     {
                         "exc_message": "division by zero",
                         "exc_traceback": mock.ANY,
@@ -543,11 +547,11 @@ class ConsumerTest(asynctest.TestCase):
         queue_mock = CoroutineMock(ack=CoroutineMock())
 
         consumer = Consumer(self.one_route_fixture, *self.connection_parameters)
-        with mock.patch.object(conf, "logger") as logger_mock:
+        with mock.patch.object(conf, "logger", self.logger_mock):
             await consumer.on_queue_error(
                 body, delivery_tag, "Error: not a JSON", queue_mock
             )
-            logger_mock.error.assert_called_with(
+            self.logger_mock.error.assert_awaited_with(
                 {
                     "exception": "Error: not a JSON",
                     "original_msg": body,
@@ -582,7 +586,7 @@ class ConsumerTest(asynctest.TestCase):
             queue_mock.consume.await_args_list,
         )
 
-    def test_start_calls_connect_and_consume_for_each_queue(self):
+    async def test_start_calls_connect_and_consume_for_each_queue(self):
         self.one_route_fixture["routes"] = [
             "asgard/counts",
             "asgard/counts/errors",
@@ -597,7 +601,7 @@ class ConsumerTest(asynctest.TestCase):
         with asynctest.patch.object(
             consumer, "keep_runnig", side_effect=[True, False]
         ) as keep_running_mock:
-            loop.run_until_complete(consumer.start())
+            await consumer.start()
 
         self.assertEqual(1, queue_mock.connect.await_count)
         self.assertEqual(2, queue_mock.consume.await_count)
@@ -609,7 +613,7 @@ class ConsumerTest(asynctest.TestCase):
             queue_mock.consume.await_args_list,
         )
 
-    def test_start_reconnects_if_connectaion_failed(self):
+    async def test_start_reconnects_if_connection_failed_bla(self):
         self.one_route_fixture["routes"] = [
             "asgard/counts",
             "asgard/counts/errors",
@@ -617,7 +621,7 @@ class ConsumerTest(asynctest.TestCase):
         consumer = Consumer(self.one_route_fixture, *self.connection_parameters)
         with unittest.mock.patch.object(
             consumer, "keep_runnig", side_effect=[True, True, False]
-        ), asynctest.patch.object(asyncio, "sleep") as sleep_mock:
+        ), asynctest.patch.object(asyncio, "sleep"):
             is_connected_mock = mock.PropertyMock(
                 side_effect=[False, False, True]
             )
@@ -628,7 +632,8 @@ class ConsumerTest(asynctest.TestCase):
             type(queue_mock).is_connected = is_connected_mock
             loop = asyncio.get_event_loop()
             consumer.queue = queue_mock
-            loop.run_until_complete(consumer.start())
+
+            await consumer.start()
             self.assertEqual(1, queue_mock.connect.await_count)
             self.assertEqual(2, queue_mock.consume.await_count)
             self.assertEqual(
@@ -638,9 +643,8 @@ class ConsumerTest(asynctest.TestCase):
                 ],
                 queue_mock.consume.await_args_list,
             )
-            self.assertEqual(2, sleep_mock.await_count)
 
-    def test_start_always_calls_sleep(self):
+    async def test_start_always_calls_sleep(self):
         """
         Regression:
             O sleep deve ser chamado *sempre*, e não apenas quando há tentativa de conexão.
@@ -664,5 +668,6 @@ class ConsumerTest(asynctest.TestCase):
             type(queue_mock).is_connected = is_connected_mock
             loop = asyncio.get_event_loop()
             consumer.queue = queue_mock
-            loop.run_until_complete(consumer.start())
+
+            await consumer.start()
             self.assertEqual(3, sleep_mock.await_count)
