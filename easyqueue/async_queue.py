@@ -4,16 +4,20 @@ from functools import wraps
 import traceback
 import aioamqp
 import asyncio
-from typing import Any, Dict, Type, Callable, Coroutine, Union
+from asyncio import AbstractEventLoop
+from typing import Any, Dict, Type, Callable, Coroutine, Union, Optional
 from json.decoder import JSONDecodeError
 from easyqueue.queue import BaseJsonQueue
-from easyqueue.exceptions import UndecodableMessageException, \
-    InvalidMessageSizeException, MessageError
+from easyqueue.exceptions import (
+    UndecodableMessageException,
+    InvalidMessageSizeException,
+    MessageError,
+)
 
 
 def _ensure_connected(coro: Callable[..., Coroutine]):
     @wraps(coro)
-    async def wrapper(self: 'AsyncQueue', *args, **kwargs):
+    async def wrapper(self: "AsyncQueue", *args, **kwargs):
         retries = 0
         while self.is_running and not self.is_connected:
             try:
@@ -23,29 +27,39 @@ def _ensure_connected(coro: Callable[..., Coroutine]):
                 await asyncio.sleep(self.seconds_between_conn_retry)
                 retries += 1
                 if self.logger:
-                    self.logger.error({
-                        'event': 'reconnect-failure',
-                        'retry_count': retries,
-                        'exc_traceback': traceback.format_tb(e.__traceback__)
-                    })
+                    self.logger.error(
+                        {
+                            "event": "reconnect-failure",
+                            "retry_count": retries,
+                            "exc_traceback": traceback.format_tb(
+                                e.__traceback__
+                            ),
+                        }
+                    )
         return await coro(self, *args, **kwargs)
+
     return wrapper
 
 
 class AsyncQueue(BaseJsonQueue):
-    def __init__(self,
-                 host: str,
-                 username: str,
-                 password: str,
-                 delegate_class: Type['AsyncQueueConsumerDelegate'] = None,
-                 delegate: 'AsyncQueueConsumerDelegate' = None,
-                 virtual_host: str = '/',
-                 heartbeat: int = 60,
-                 prefetch_count: int = 100,
-                 max_message_length=0,
-                 loop=None,
-                 seconds_between_conn_retry: int = 1,
-                 logger: logging.Logger=None):
+    delegate: Optional["AsyncQueueConsumerDelegate"]
+    _transport: Optional[asyncio.BaseTransport]
+
+    def __init__(
+        self,
+        host: str,
+        username: str,
+        password: str,
+        delegate_class: Type["AsyncQueueConsumerDelegate"] = None,
+        delegate: Optional["AsyncQueueConsumerDelegate"] = None,
+        virtual_host: str = "/",
+        heartbeat: int = 60,
+        prefetch_count: int = 100,
+        max_message_length=0,
+        loop: AbstractEventLoop = None,
+        seconds_between_conn_retry: int = 1,
+        logger: logging.Logger = None,
+    ) -> None:
         super().__init__(host, username, password, virtual_host, heartbeat)
 
         self.loop = loop or asyncio.get_event_loop()
@@ -65,9 +79,9 @@ class AsyncQueue(BaseJsonQueue):
 
         self.max_message_length = max_message_length
 
-        self._protocol = None  # type: aioamqp.protocol.AmqpProtocol
-        self._transport = None  # type: asyncio.BaseTransport
-        self._channel = None  # type: aioamqp.channel.Channel
+        self._protocol: aioamqp.protocol.AmqpProtocol = None
+        self._transport: asyncio.BaseTransport = None
+        self._channel: aioamqp.channel.Channel = None
         self.seconds_between_conn_retry = seconds_between_conn_retry
         self.is_running = True
         self.logger = logger
@@ -81,13 +95,13 @@ class AsyncQueue(BaseJsonQueue):
             on_error = None
 
         return {
-            'host': self.host,
-            'login': self.username,
-            'password': self.password,
-            'virtualhost': self.virtual_host,
-            'loop': self.loop,
-            'on_error': on_error,
-            'heartbeat': self.heartbeat
+            "host": self.host,
+            "login": self.username,
+            "password": self.password,
+            "virtualhost": self.virtual_host,
+            "loop": self.loop,
+            "on_error": on_error,
+            "heartbeat": self.heartbeat,
         }
 
     @property
@@ -117,15 +131,18 @@ class AsyncQueue(BaseJsonQueue):
 
     @_ensure_connected
     async def reject(self, delivery_tag: int, requeue=False):
-        return await self._channel.basic_reject(delivery_tag=delivery_tag,
-                                                requeue=requeue)
+        return await self._channel.basic_reject(
+            delivery_tag=delivery_tag, requeue=requeue
+        )
 
     @_ensure_connected
-    async def put(self,
-                  routing_key: str,
-                  data: Any = None,
-                  serialized_data: Union[str, bytes] = None,
-                  exchange: str = ''):
+    async def put(
+        self,
+        routing_key: str,
+        data: Any = None,
+        serialized_data: Union[str, bytes] = "",
+        exchange: str = "",
+    ):
         """
         :param data: A serializable data that should be serialized before
         publishing
@@ -142,9 +159,11 @@ class AsyncQueue(BaseJsonQueue):
         if not isinstance(serialized_data, bytes):
             serialized_data = serialized_data.encode()
 
-        return await self._channel.publish(payload=serialized_data,
-                                           exchange_name=exchange,
-                                           routing_key=routing_key)
+        return await self._channel.publish(
+            payload=serialized_data,
+            exchange_name=exchange,
+            routing_key=routing_key,
+        )
 
     def _parse_message(self, body) -> Dict[str, Any]:
         if self.max_message_length:
@@ -157,24 +176,25 @@ class AsyncQueue(BaseJsonQueue):
             return self._parse_message(body.decode())
         except JSONDecodeError:
             raise UndecodableMessageException(
-                '"{body}" can\'t be decoded as JSON'
-                .format(body=body))
+                '"{body}" can\'t be decoded as JSON'.format(body=body)
+            )
 
     async def _handle_callback(self, callback, **kwargs):
         """
-        Chains the callback coroutine into a try/except and calls 
-        `on_message_handle_error` in case of failure, avoiding unhandled 
+        Chains the callback coroutine into a try/except and calls
+        `on_message_handle_error` in case of failure, avoiding unhandled
         exceptions.
-         
-        :param callback: 
-        :param kwargs: 
-        :return: 
+
+        :param callback:
+        :param kwargs:
+        :return:
         """
         try:
             return await callback(**kwargs)
         except Exception as e:
-            return await self.delegate.on_message_handle_error(handler_error=e,
-                                                               **kwargs)
+            return await self.delegate.on_message_handle_error(
+                handler_error=e, **kwargs
+            )
 
     async def _handle_message(self, channel, body, envelope, properties):
         """
@@ -184,20 +204,24 @@ class AsyncQueue(BaseJsonQueue):
         try:
             content = self._parse_message(body)
         except MessageError as e:
-            callback = self._handle_callback(self.delegate.on_queue_error,
-                                             body=body,
-                                             delivery_tag=tag,
-                                             error=e,
-                                             queue=self)
+            callback = self._handle_callback(
+                self.delegate.on_queue_error,
+                body=body,
+                delivery_tag=tag,
+                error=e,
+                queue=self,
+            )
         else:
-            callback = self._handle_callback(self.delegate.on_queue_message,
-                                             content=content,
-                                             delivery_tag=tag,
-                                             queue=self)
+            callback = self._handle_callback(
+                self.delegate.on_queue_message,
+                content=content,
+                delivery_tag=tag,
+                queue=self,
+            )
         return self.loop.create_task(callback)
 
     @_ensure_connected
-    async def consume(self, queue_name: str, consumer_name: str = '') -> str:
+    async def consume(self, queue_name: str, consumer_name: str = "") -> str:
         """
         :param queue_name: queue to consume
         :param consumer_name: Name to be used as a consumer identifier.
@@ -208,13 +232,17 @@ class AsyncQueue(BaseJsonQueue):
             raise RuntimeError("Cannot start a consumer without a delegate")
 
         await self.delegate.on_before_start_consumption(queue_name, queue=self)
-        await self._channel.basic_qos(prefetch_count=self.prefetch_count,
-                                      prefetch_size=0,
-                                      connection_global=False)
-        tag = await self._channel.basic_consume(callback=self._handle_message,
-                                                consumer_tag=consumer_name,
-                                                queue_name=queue_name)
-        return tag['consumer_tag']
+        await self._channel.basic_qos(
+            prefetch_count=self.prefetch_count,
+            prefetch_size=0,
+            connection_global=False,
+        )
+        tag = await self._channel.basic_consume(
+            callback=self._handle_message,
+            consumer_tag=consumer_name,
+            queue_name=queue_name,
+        )
+        return tag["consumer_tag"]
 
     async def start_consumer(self):
         """ Coroutine that starts the connection and the queue consumption """
@@ -224,14 +252,20 @@ class AsyncQueue(BaseJsonQueue):
 
     async def stop_consumer(self, consumer_tag: str):
         if self._channel is None:
-            raise ConnectionError("Queue isn't connected. "
-                                  "Did you forgot to wait for `connect()`?")
+            raise ConnectionError(
+                "Queue isn't connected. "
+                "Did you forgot to wait for `connect()`?"
+            )
 
         return await self._channel.basic_cancel(consumer_tag)
 
 
 class AsyncQueueConsumerDelegate(metaclass=abc.ABCMeta):
     queue: AsyncQueue
+
+    def __init__(self, loop: AbstractEventLoop, queue: AsyncQueue) -> None:
+        self.loop = loop
+        self.queue = queue
 
     @property
     @abc.abstractmethod
@@ -243,8 +277,9 @@ class AsyncQueueConsumerDelegate(metaclass=abc.ABCMeta):
         """ Coroutine that starts the connection and the queue consumption """
         await self.queue.start_consumer()
 
-    async def on_before_start_consumption(self, queue_name: str,
-                                          queue: 'AsyncQueue'):
+    async def on_before_start_consumption(
+        self, queue_name: str, queue: "AsyncQueue"
+    ):
         """
         Coroutine called before queue consumption starts. May be overwritten to
         implement further custom initialization.
@@ -256,15 +291,15 @@ class AsyncQueueConsumerDelegate(metaclass=abc.ABCMeta):
         """
         pass
 
-    async def on_consumption_start(self,
-                                   consumer_tag: str,
-                                   queue: 'AsyncQueue'):
+    async def on_consumption_start(
+        self, consumer_tag: str, queue: "AsyncQueue"
+    ):
         """
         Coroutine called once consumption started.
         """
 
     @abc.abstractmethod
-    async def on_queue_message(self, content, delivery_tag, queue):
+    async def on_queue_message(self, content, delivery_tag, queue: AsyncQueue):
         """
         Callback called every time that a new, valid and deserialized message
         is ready to be handled.
@@ -292,8 +327,7 @@ class AsyncQueueConsumerDelegate(metaclass=abc.ABCMeta):
         """
         pass
 
-    async def on_message_handle_error(self, handler_error: Exception,
-                                      **kwargs):
+    async def on_message_handle_error(self, handler_error: Exception, **kwargs):
         """
         Callback called when an uncaught exception was raised during message
         handling stage.
@@ -310,4 +344,3 @@ class AsyncQueueConsumerDelegate(metaclass=abc.ABCMeta):
         Called when the connection fails
         """
         pass
-

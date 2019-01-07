@@ -14,12 +14,14 @@ class DeliveryModes:
 
 
 class BaseQueue(metaclass=abc.ABCMeta):
-    def __init__(self,
-                 host: str,
-                 username: str,
-                 password: str,
-                 virtual_host: str = '/',
-                 heartbeat: int = 60):
+    def __init__(
+        self,
+        host: str,
+        username: str,
+        password: str,
+        virtual_host: str = "/",
+        heartbeat: int = 60,
+    ) -> None:
         self.host = host
         self.username = username
         self.password = password
@@ -45,16 +47,16 @@ class BaseQueue(metaclass=abc.ABCMeta):
         except TypeError:
             return self.deserialize(content.decode())
         except json.decoder.JSONDecodeError as e:
-            raise UndecodableMessageException('"{content}" can\'t be decoded as JSON'
-                                              .format(content=content))
+            raise UndecodableMessageException(
+                '"{content}" can\'t be decoded as JSON'.format(content=content)
+            )
 
 
 class BaseJsonQueue(BaseQueue):
-    content_type = 'application/json'
+    content_type = "application/json"
 
     def serialize(self, body: Any, **kwargs) -> str:
         return json.dumps(body, **kwargs)
 
     def deserialize(self, body: str) -> Any:
         return json.loads(body)
-

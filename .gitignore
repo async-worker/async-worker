@@ -117,3 +117,4 @@ target/
 [Ss]cripts
 pyvenv.cfg
 pip-selfcheck.json
+.mypy_cache/
