@@ -137,7 +137,7 @@ class AsyncQueue(BaseJsonQueue):
         self,
         routing_key: str,
         data: Any = None,
-        serialized_data: Union[str, bytes] = None,
+        serialized_data: Union[str, bytes] = "",
         exchange: str = "",
     ):
         """
