@@ -7,7 +7,8 @@ import asyncio
 from asyncio import AbstractEventLoop
 from typing import Any, Dict, Type, Callable, Coroutine, Union, Optional
 from json.decoder import JSONDecodeError
-from easyqueue.queue import BaseJsonQueue
+import json
+from easyqueue.queue import BaseQueue
 from easyqueue.exceptions import (
     UndecodableMessageException,
     InvalidMessageSizeException,
@@ -41,7 +42,7 @@ def _ensure_connected(coro: Callable[..., Coroutine]):
     return wrapper
 
 
-class AsyncJsonQueue(BaseJsonQueue):
+class AsyncJsonQueue(BaseQueue):
     delegate: Optional["AsyncQueueConsumerDelegate"]
     _transport: Optional[asyncio.BaseTransport]
 
@@ -86,6 +87,12 @@ class AsyncJsonQueue(BaseJsonQueue):
         self.is_running = True
         self.logger = logger
         self._connection_lock = asyncio.Lock()
+
+    def serialize(self, body: Any, **kwargs) -> str:
+        return json.dumps(body, **kwargs)
+
+    def deserialize(self, body: str) -> Any:
+        return json.loads(body)
 
     @property
     def connection_parameters(self):
