@@ -56,7 +56,7 @@ class AsyncQueue(BaseJsonQueue):
         heartbeat: int = 60,
         prefetch_count: int = 100,
         max_message_length=0,
-        loop=None,
+        loop: AbstractEventLoop = None,
         seconds_between_conn_retry: int = 1,
         logger: logging.Logger = None,
     ) -> None:
