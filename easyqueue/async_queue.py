@@ -43,6 +43,7 @@ def _ensure_connected(coro: Callable[..., Coroutine]):
 
 class AsyncQueue(BaseJsonQueue):
     delegate: Optional["AsyncQueueConsumerDelegate"]
+    _transport: Optional[asyncio.BaseTransport]
 
     def __init__(
         self,
@@ -79,7 +80,7 @@ class AsyncQueue(BaseJsonQueue):
         self.max_message_length = max_message_length
 
         self._protocol: aioamqp.protocol.AmqpProtocol = None
-        self._transport: aioamqp.BaseTransport = None
+        self._transport: asyncio.BaseTransport = None
         self._channel: aioamqp.channel.Channel = None
         self.seconds_between_conn_retry = seconds_between_conn_retry
         self.is_running = True

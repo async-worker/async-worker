@@ -11,7 +11,7 @@ coverage = "==4.5.2"
 pytest = "==4.0.2"
 pytest-cov = "==2.6.0"
 asynctest = "==0.12.2"
-mypy = "==0.630"
+mypy = "==0.650"
 black = "==18.9b0"
 easyqueue = {editable = true, path = "."}
 
