@@ -392,7 +392,7 @@ class AsyncQueueConnectionTests(AsyncBaseTestCase, asynctest.TestCase):
 
 
 class AsyncQueueConsumerTests(AsyncBaseTestCase, asynctest.TestCase):
-    consumer_tag = 666
+    consumer_tag = "666"
 
     def get_consumer(self):
         return CoroutineMock(
@@ -540,7 +540,7 @@ class AsyncQueueConsumerTests(AsyncBaseTestCase, asynctest.TestCase):
 class AsyncQueueConsumerHandlerMethodsTests(
     AsyncBaseTestCase, asynctest.TestCase
 ):
-    consumer_tag = 666
+    consumer_tag = "666"
 
     def get_consumer(self):
         return CoroutineMock(
