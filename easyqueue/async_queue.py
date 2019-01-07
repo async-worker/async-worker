@@ -4,7 +4,8 @@ from functools import wraps
 import traceback
 import aioamqp
 import asyncio
-from typing import Any, Dict, Type, Callable, Coroutine, Union
+from asyncio import AbstractEventLoop
+from typing import Any, Dict, Type, Callable, Coroutine, Union, Optional
 from json.decoder import JSONDecodeError
 from easyqueue.queue import BaseJsonQueue
 from easyqueue.exceptions import (
@@ -41,21 +42,24 @@ def _ensure_connected(coro: Callable[..., Coroutine]):
 
 
 class AsyncQueue(BaseJsonQueue):
+    delegate: Optional["AsyncQueueConsumerDelegate"]
+    _transport: Optional[asyncio.BaseTransport]
+
     def __init__(
         self,
         host: str,
         username: str,
         password: str,
         delegate_class: Type["AsyncQueueConsumerDelegate"] = None,
-        delegate: "AsyncQueueConsumerDelegate" = None,
+        delegate: Optional["AsyncQueueConsumerDelegate"] = None,
         virtual_host: str = "/",
         heartbeat: int = 60,
         prefetch_count: int = 100,
         max_message_length=0,
-        loop=None,
+        loop: AbstractEventLoop = None,
         seconds_between_conn_retry: int = 1,
         logger: logging.Logger = None,
-    ):
+    ) -> None:
         super().__init__(host, username, password, virtual_host, heartbeat)
 
         self.loop = loop or asyncio.get_event_loop()
@@ -75,9 +79,9 @@ class AsyncQueue(BaseJsonQueue):
 
         self.max_message_length = max_message_length
 
-        self._protocol = None  # type: aioamqp.protocol.AmqpProtocol
-        self._transport = None  # type: asyncio.BaseTransport
-        self._channel = None  # type: aioamqp.channel.Channel
+        self._protocol: aioamqp.protocol.AmqpProtocol = None
+        self._transport: asyncio.BaseTransport = None
+        self._channel: aioamqp.channel.Channel = None
         self.seconds_between_conn_retry = seconds_between_conn_retry
         self.is_running = True
         self.logger = logger
@@ -136,7 +140,7 @@ class AsyncQueue(BaseJsonQueue):
         self,
         routing_key: str,
         data: Any = None,
-        serialized_data: Union[str, bytes] = None,
+        serialized_data: Union[str, bytes] = "",
         exchange: str = "",
     ):
         """
@@ -259,6 +263,10 @@ class AsyncQueue(BaseJsonQueue):
 class AsyncQueueConsumerDelegate(metaclass=abc.ABCMeta):
     queue: AsyncQueue
 
+    def __init__(self, loop: AbstractEventLoop, queue: AsyncQueue) -> None:
+        self.loop = loop
+        self.queue = queue
+
     @property
     @abc.abstractmethod
     def queue_name(self) -> str:
@@ -291,7 +299,7 @@ class AsyncQueueConsumerDelegate(metaclass=abc.ABCMeta):
         """
 
     @abc.abstractmethod
-    async def on_queue_message(self, content, delivery_tag, queue):
+    async def on_queue_message(self, content, delivery_tag, queue: AsyncQueue):
         """
         Callback called every time that a new, valid and deserialized message
         is ready to be handled.

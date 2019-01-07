@@ -6,8 +6,8 @@ python:
 install:
   - pip install pipenv
   - pipenv install --system --deploy --ignore-pipfile --dev
-  - pipenv run pip install -e .
 script:
+  - pipenv run lint
   - pipenv run fmt-check
   - pipenv run test
 after_success:

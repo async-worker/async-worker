@@ -392,7 +392,7 @@ class AsyncQueueConnectionTests(AsyncBaseTestCase, asynctest.TestCase):
 
 
 class AsyncQueueConsumerTests(AsyncBaseTestCase, asynctest.TestCase):
-    consumer_tag = 666
+    consumer_tag = "666"
 
     def get_consumer(self):
         return CoroutineMock(
@@ -483,9 +483,7 @@ class AsyncQueueConsumerTests(AsyncBaseTestCase, asynctest.TestCase):
         q_name = "miles.davis_blue.in.green"
 
         class Foo(AsyncQueueConsumerDelegate):
-            loop = self.loop
             queue_name = q_name
-            queue = self.queue
 
             on_connection_error = CoroutineMock()
             on_message_handle_error = CoroutineMock()
@@ -493,7 +491,7 @@ class AsyncQueueConsumerTests(AsyncBaseTestCase, asynctest.TestCase):
             on_queue_message = CoroutineMock()
             on_consumer_start = CoroutineMock()
 
-        consumer = Foo()
+        consumer = Foo(loop=self.loop, queue=self.queue)
         self.queue.delegate = consumer
         with patch.object(
             self.queue, "consume", side_effect=CoroutineMock()
@@ -521,7 +519,6 @@ class AsyncQueueConsumerTests(AsyncBaseTestCase, asynctest.TestCase):
 
         class Foo(AsyncQueueConsumerDelegate):
             queue_name = q_name
-            queue = CoroutineMock(start_consumer=CoroutineMock())
 
             on_connection_error = CoroutineMock()
             on_consumption_start = CoroutineMock()
@@ -529,7 +526,9 @@ class AsyncQueueConsumerTests(AsyncBaseTestCase, asynctest.TestCase):
             on_queue_error = CoroutineMock()
             on_queue_message = CoroutineMock()
 
-        consumer = Foo()
+        consumer = Foo(
+            loop=self.loop, queue=CoroutineMock(start_consumer=CoroutineMock())
+        )
         self.queue.delegate = consumer
 
         await consumer.start()
@@ -540,7 +539,7 @@ class AsyncQueueConsumerTests(AsyncBaseTestCase, asynctest.TestCase):
 class AsyncQueueConsumerHandlerMethodsTests(
     AsyncBaseTestCase, asynctest.TestCase
 ):
-    consumer_tag = 666
+    consumer_tag = "666"
 
     def get_consumer(self):
         return CoroutineMock(

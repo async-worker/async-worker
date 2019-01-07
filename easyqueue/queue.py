@@ -21,7 +21,7 @@ class BaseQueue(metaclass=abc.ABCMeta):
         password: str,
         virtual_host: str = "/",
         heartbeat: int = 60,
-    ):
+    ) -> None:
         self.host = host
         self.username = username
         self.password = password
