@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "96b22eb90bbbaf6640a2c5ceeb1ad9295144a636388844710bb35ae27ecaa3ad"
+            "sha256": "91a2cb4fe652bddedac1d7994eca7509b8f078edb4839e856d30292994ec44ed"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -26,6 +26,14 @@
         }
     },
     "develop": {
+        "aioamqp": {
+            "hashes": [
+                "sha256:7f1eb9e0f1b7c7e21a3a6ca498c3daafdfc3e95b4a1a0633fd8d6ba2dfcab777",
+                "sha256:abfdf3285e129a72c653fab6cff9a6e9132e9e1f755c073821b553bbc72e73c4"
+            ],
+            "index": "pypi",
+            "version": "==0.11.0"
+        },
         "appdirs": {
             "hashes": [
                 "sha256:9e5896d1372858f8dd3344faf4e5014d21849c756c8d5701f78f8a103b372d92",
@@ -106,6 +114,10 @@
             ],
             "index": "pypi",
             "version": "==4.5.2"
+        },
+        "easyqueue": {
+            "editable": true,
+            "path": "."
         },
         "more-itertools": {
             "hashes": [
