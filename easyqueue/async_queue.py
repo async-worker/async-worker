@@ -273,12 +273,12 @@ class AsyncQueueConsumerDelegate(metaclass=abc.ABCMeta):
         """ Name of the input queue to consume """
         raise NotImplementedError
 
-    async def start(self):
+    async def start(self) -> None:
         """ Coroutine that starts the connection and the queue consumption """
         await self.queue.start_consumer()
 
     async def on_before_start_consumption(
-        self, queue_name: str, queue: "AsyncQueue"
+        self, queue_name: str, queue: AsyncQueue
     ):
         """
         Coroutine called before queue consumption starts. May be overwritten to
@@ -291,15 +291,15 @@ class AsyncQueueConsumerDelegate(metaclass=abc.ABCMeta):
         """
         pass
 
-    async def on_consumption_start(
-        self, consumer_tag: str, queue: "AsyncQueue"
-    ):
+    async def on_consumption_start(self, consumer_tag: str, queue: AsyncQueue):
         """
         Coroutine called once consumption started.
         """
 
     @abc.abstractmethod
-    async def on_queue_message(self, content, delivery_tag, queue: AsyncQueue):
+    async def on_queue_message(
+        self, content, delivery_tag: int, queue: AsyncQueue
+    ):
         """
         Callback called every time that a new, valid and deserialized message
         is ready to be handled.
@@ -312,7 +312,9 @@ class AsyncQueueConsumerDelegate(metaclass=abc.ABCMeta):
         """
         raise NotImplementedError
 
-    async def on_queue_error(self, body, delivery_tag, error, queue):
+    async def on_queue_error(
+        self, body, delivery_tag: int, error: Exception, queue: AsyncQueue
+    ):
         """
         Callback called every time that an error occurred during the validation
         or deserialization stage.
