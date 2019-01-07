@@ -5,7 +5,7 @@ import traceback
 import aioamqp
 import asyncio
 from asyncio import AbstractEventLoop
-from typing import Any, Dict, Type, Callable, Coroutine, Union
+from typing import Any, Dict, Type, Callable, Coroutine, Union, Optional
 from json.decoder import JSONDecodeError
 from easyqueue.queue import BaseJsonQueue
 from easyqueue.exceptions import (
@@ -42,13 +42,15 @@ def _ensure_connected(coro: Callable[..., Coroutine]):
 
 
 class AsyncQueue(BaseJsonQueue):
+    delegate: Optional["AsyncQueueConsumerDelegate"]
+
     def __init__(
         self,
         host: str,
         username: str,
         password: str,
         delegate_class: Type["AsyncQueueConsumerDelegate"] = None,
-        delegate: "AsyncQueueConsumerDelegate" = None,
+        delegate: Optional["AsyncQueueConsumerDelegate"] = None,
         virtual_host: str = "/",
         heartbeat: int = 60,
         prefetch_count: int = 100,
