@@ -162,13 +162,13 @@ class AsyncQueue(BaseJsonQueue):
 
     async def _handle_callback(self, callback, **kwargs):
         """
-        Chains the callback coroutine into a try/except and calls 
-        `on_message_handle_error` in case of failure, avoiding unhandled 
+        Chains the callback coroutine into a try/except and calls
+        `on_message_handle_error` in case of failure, avoiding unhandled
         exceptions.
-         
-        :param callback: 
-        :param kwargs: 
-        :return: 
+
+        :param callback:
+        :param kwargs:
+        :return:
         """
         try:
             return await callback(**kwargs)
