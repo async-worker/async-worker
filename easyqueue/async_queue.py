@@ -17,7 +17,7 @@ from easyqueue.exceptions import (
 
 def _ensure_connected(coro: Callable[..., Coroutine]):
     @wraps(coro)
-    async def wrapper(self: "AsyncQueue", *args, **kwargs):
+    async def wrapper(self: "AsyncJsonQueue", *args, **kwargs):
         retries = 0
         while self.is_running and not self.is_connected:
             try:
@@ -41,7 +41,7 @@ def _ensure_connected(coro: Callable[..., Coroutine]):
     return wrapper
 
 
-class AsyncQueue(BaseJsonQueue):
+class AsyncJsonQueue(BaseJsonQueue):
     delegate: Optional["AsyncQueueConsumerDelegate"]
     _transport: Optional[asyncio.BaseTransport]
 
@@ -261,9 +261,9 @@ class AsyncQueue(BaseJsonQueue):
 
 
 class AsyncQueueConsumerDelegate(metaclass=abc.ABCMeta):
-    queue: AsyncQueue
+    queue: AsyncJsonQueue
 
-    def __init__(self, loop: AbstractEventLoop, queue: AsyncQueue) -> None:
+    def __init__(self, loop: AbstractEventLoop, queue: AsyncJsonQueue) -> None:
         self.loop = loop
         self.queue = queue
 
@@ -278,7 +278,7 @@ class AsyncQueueConsumerDelegate(metaclass=abc.ABCMeta):
         await self.queue.start_consumer()
 
     async def on_before_start_consumption(
-        self, queue_name: str, queue: "AsyncQueue"
+        self, queue_name: str, queue: "AsyncJsonQueue"
     ):
         """
         Coroutine called before queue consumption starts. May be overwritten to
@@ -287,19 +287,21 @@ class AsyncQueueConsumerDelegate(metaclass=abc.ABCMeta):
         :param queue_name: Queue name that will be consumed
         :type queue_name: str
         :param queue: AsynQueue instanced
-        :type queue: AsyncQueue
+        :type queue: AsyncJsonQueue
         """
         pass
 
     async def on_consumption_start(
-        self, consumer_tag: str, queue: "AsyncQueue"
+        self, consumer_tag: str, queue: "AsyncJsonQueue"
     ):
         """
         Coroutine called once consumption started.
         """
 
     @abc.abstractmethod
-    async def on_queue_message(self, content, delivery_tag, queue: AsyncQueue):
+    async def on_queue_message(
+        self, content, delivery_tag, queue: AsyncJsonQueue
+    ):
         """
         Callback called every time that a new, valid and deserialized message
         is ready to be handled.
@@ -308,7 +310,7 @@ class AsyncQueueConsumerDelegate(metaclass=abc.ABCMeta):
         :type delivery_tag: int
         :param content: parsed message body
         :type content: dict
-        :type queue: AsyncQueue
+        :type queue: AsyncJsonQueue
         """
         raise NotImplementedError
 
@@ -323,7 +325,7 @@ class AsyncQueueConsumerDelegate(metaclass=abc.ABCMeta):
         :type delivery_tag: int
         :param error: THe error that caused the callback to be called
         :type error: MessageError
-        :type queue: AsyncQueue
+        :type queue: AsyncJsonQueue
         """
         pass
 
