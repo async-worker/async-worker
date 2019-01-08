@@ -7,7 +7,7 @@ import asynctest
 from asynctest.mock import CoroutineMock
 from unittest.mock import Mock, patch, call, ANY
 from easyqueue.async_queue import (
-    AsyncQueue,
+    AsyncJsonQueue,
     AsyncQueueConsumerDelegate,
     _ensure_connected,
 )
@@ -30,7 +30,7 @@ class AsyncBaseTestCase:
             virtual_host="have",
             heartbeat=5,
         )
-        self.queue = AsyncQueue(
+        self.queue = AsyncJsonQueue(
             **self.conn_params, delegate=self.get_consumer()
         )
         self.mock_connection()
@@ -72,7 +72,7 @@ class AsynQueueTests(asynctest.TestCase):
     ):
         invalid_value = -666
         with self.assertRaises(ValueError):
-            AsyncQueue(
+            AsyncJsonQueue(
                 host="Olha",
                 username="a",
                 password="explosão",
@@ -85,7 +85,7 @@ class AsynQueueTests(asynctest.TestCase):
         self
     ):
         valid_value = 666
-        queue = AsyncQueue(
+        queue = AsyncJsonQueue(
             host="Essa",
             username="menina",
             password="é terrorista",
@@ -99,7 +99,7 @@ class AsynQueueTests(asynctest.TestCase):
         self
     ):
         valid_value = 0
-        queue = AsyncQueue(
+        queue = AsyncJsonQueue(
             host="diogommartins.com",
             username="diogo",
             password="XablauBolado",
@@ -113,7 +113,7 @@ class AsynQueueTests(asynctest.TestCase):
         self
     ):
         with self.assertRaises(ValueError):
-            AsyncQueue(
+            AsyncJsonQueue(
                 host="diogommartins.com",
                 username="diogo",
                 password="XablauBolado",
@@ -123,20 +123,20 @@ class AsynQueueTests(asynctest.TestCase):
             )
 
     async def test_its_possibile_to_initialize_without_a_delegate(self):
-        queue = AsyncQueue(
+        queue = AsyncJsonQueue(
             host="diogommartins.com",
             username="diogo",
             password="XablauBolado",
             loop=Mock(),
         )
-        self.assertIsInstance(queue, AsyncQueue)
+        self.assertIsInstance(queue, AsyncJsonQueue)
 
     async def test_it_initializes_a_delegate_if_delegate_class_is_provided(
         self
     ):
         delegate_class = Mock()
         loop = Mock()
-        queue = AsyncQueue(
+        queue = AsyncJsonQueue(
             host="diogommartins.com",
             username="diogo",
             password="XablauBolado",

@@ -22,31 +22,31 @@ Install the test dependencies
 *Show coverage*  
 `py.test --cov=easyqueue`
 
-# AsyncQueue
+# AsyncJsonQueue
 
 Class used for asynchronously connecting and consuming
- `amqp` queues. `AsyncQueue` uses the delegation pattern
+ `amqp` queues. `AsyncJsonQueue` uses the delegation pattern
  to provide abstractions for queue communication.
 
  ## Hello World - the simplest code that does something
 
 ``` python
 import asyncio
-from easyqueue import AsyncQueue, AsyncQueueConsumerDelegate
+from easyqueue import AsyncJsonQueue, AsyncQueueConsumerDelegate
 
 
 class MyConsumer(AsyncQueueConsumerDelegate):
     queue_name = 'awesome_queue_name'
     
     def __init__(self):
-        self.queue = AsyncQueue(
+        self.queue = AsyncJsonQueue(
             host='localhost',
             username='guest',
             password='guest',
             delegate=self
         )
         
-    async def on_before_start_consumption(self, queue_name: str, queue: AsyncQueue):
+    async def on_before_start_consumption(self, queue_name: str, queue: AsyncJsonQueue):
         print("I'm called when queue consumption starts !")
         
     async def on_message_handle_error(self,
@@ -57,10 +57,10 @@ class MyConsumer(AsyncQueueConsumerDelegate):
               
     async def on_consumption_start(self,
                                    consumer_tag: str,
-                                   queue: 'AsyncQueue'):
+                                   queue: 'AsyncJsonQueue'):
         print("Once consumption started, im called with the consumer tag.")
 
-    async def on_queue_message(self, content: dict, delivery_tag: str, queue: AsyncQueue):
+    async def on_queue_message(self, content: dict, delivery_tag: str, queue: AsyncJsonQueue):
         """
         Called every time that a new, valid and deserialized message
         is ready to be handled.
@@ -77,6 +77,18 @@ if __name__ == '__main__':
 
 ```
 
+# Guia de migração 2.0.0 -> 3.x.x
+
+A partir da versão `3.0.0` a classe `AsyncQueue` foi renomeada para `AsyncJsonQueue`. 
+
+# Guia de migração 1.2.x -> 2.0.0
+
+O método `AsyncQueue.put` não aceita mais `body` como parâmetro de corpo da mensagem  
+e foi substituido pelos parâmetros `data` e `serialized_data`. 
+* `data` funciona da mesma forma 
+que body funcionava, esperando qualquer dado serializável em json 
+* `serialized_data` existe para publicar a mensagem sem passar pela etapa de serialização
+
 # Guia de migração 1.1.0 -> 1.2.x
 
 As classes `AsyncQueue` e `AsyncQueueConsumerDelegate` não estão mais no módulo
@@ -87,10 +99,3 @@ que os imports devem mudar de:
 para:
 `from easyqueue import AsyncQueue, AsyncQueueConsumerDelegate`
 
-# Guia de migração 1.2.x -> 2.0.0
-
-O método `AsyncQueue.put` não aceita mais `body` como parâmetro de corpo da mensagem  
-e foi substituido pelos parâmetros `data` e `serialized_data`. 
-* `data` funciona da mesma forma 
-que body funcionava, esperando qualquer dado serializável em json 
-* `serialized_data` existe para publicar a mensagem sem passar pela etapa de serialização

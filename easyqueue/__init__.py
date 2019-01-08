@@ -1,1 +1,1 @@
-from .async_queue import AsyncQueue, AsyncQueueConsumerDelegate
+from .async_queue import AsyncJsonQueue, AsyncQueueConsumerDelegate
