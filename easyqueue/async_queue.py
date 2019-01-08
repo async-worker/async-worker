@@ -280,12 +280,12 @@ class AsyncQueueConsumerDelegate(metaclass=abc.ABCMeta):
         """ Name of the input queue to consume """
         raise NotImplementedError
 
-    async def start(self):
+    async def start(self) -> None:
         """ Coroutine that starts the connection and the queue consumption """
         await self.queue.start_consumer()
 
     async def on_before_start_consumption(
-        self, queue_name: str, queue: "AsyncJsonQueue"
+        self, queue_name: str, queue: AsyncJsonQueue
     ):
         """
         Coroutine called before queue consumption starts. May be overwritten to
@@ -299,7 +299,7 @@ class AsyncQueueConsumerDelegate(metaclass=abc.ABCMeta):
         pass
 
     async def on_consumption_start(
-        self, consumer_tag: str, queue: "AsyncJsonQueue"
+        self, consumer_tag: str, queue: AsyncJsonQueue
     ):
         """
         Coroutine called once consumption started.
@@ -321,7 +321,9 @@ class AsyncQueueConsumerDelegate(metaclass=abc.ABCMeta):
         """
         raise NotImplementedError
 
-    async def on_queue_error(self, body, delivery_tag, error, queue):
+    async def on_queue_error(
+        self, body, delivery_tag: int, error: Exception, queue: AsyncJsonQueue
+    ):
         """
         Callback called every time that an error occurred during the validation
         or deserialization stage.
