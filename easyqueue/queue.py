@@ -5,9 +5,6 @@ from typing import Dict, Tuple, Any
 from easyqueue.exceptions import UndecodableMessageException
 
 
-Message = Tuple[Dict, int]
-
-
 class DeliveryModes:
     NON_PERSISTENT = 1
     PERSISTENT = 2
