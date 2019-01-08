@@ -19,7 +19,7 @@ class Consumer(AsyncQueueConsumerDelegate):
         username: str,
         password: str,
         prefetch_count: int = 128,
-        bucket_class: Type[Bucket] = Bucket,
+        bucket_class: Type[Bucket] = Bucket[RabbitMQMessage],
     ) -> None:
         self.route = route_info
         self._handler = route_info["handler"]
