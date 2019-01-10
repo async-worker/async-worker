@@ -33,7 +33,7 @@ class AMQPConnectionTests(AsyncBaseTestCase, asynctest.TestCase):
 
         conn = (transport, protocol)
         with asynctest.patch(
-            "easyqueue.async_queue.aioamqp.connect", return_value=conn
+            "easyqueue.connection.aioamqp.connect", return_value=conn
         ) as connect:
             await asyncio.gather(
                 *(self.connection._connect() for _ in range(100))
