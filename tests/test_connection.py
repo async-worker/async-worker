@@ -10,10 +10,7 @@ from tests.base import AsyncBaseTestCase
 class AMQPConnectionTests(AsyncBaseTestCase, asynctest.TestCase):
     async def setUp(self):
         super(AMQPConnectionTests, self).setUp()
-        self.connection = AMQPConnection(
-            host="xablau.com", user="xablau", password="xena", on_error=Mock()
-        )
-        self.connection._connect = self._connect
+        self.connection = AMQPConnection(**self.conn_params, on_error=Mock())
 
     async def test_connect_opens_a_connection_communication_channel(self):
         self.assertFalse(self.connection.is_connected)

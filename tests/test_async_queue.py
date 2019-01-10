@@ -150,53 +150,6 @@ class AsyncQueueConnectionTests(AsyncBaseTestCase, asynctest.TestCase):
     def get_consumer(self):
         return CoroutineMock()
 
-    async def test_connect_opens_a_connection_communication_channel(self):
-        self.assertFalse(self.queue.is_connected)
-        self.assertIsNone(self.queue._protocol)
-        self.assertIsNone(self.queue._transport)
-        self.assertIsNone(self.queue._channel)
-
-        await self.queue.connect()
-
-        self.assertTrue(self.queue.is_connected)
-        self.assertEqual(self.queue._protocol, self._protocol)
-        self.assertEqual(self.queue._transport, self._transport)
-        self.assertIsNotNone(self.queue._channel)
-
-    async def test_connection_lock_ensures_amqp_connect_is_only_called_once(
-        self
-    ):
-        transport = Mock()
-        protocol = Mock(channel=CoroutineMock(is_open=True))
-
-        conn = (transport, protocol)
-        with asynctest.patch(
-            "easyqueue.async_queue.aioamqp.connect", return_value=conn
-        ) as connect:
-            await asyncio.gather(*(self.queue.connect() for _ in range(100)))
-            self.assertEqual(connect.await_count, 1)
-
-    async def test_connects_with_correct_args(self):
-        expected = call(
-            host=self.conn_params["host"],
-            password=self.conn_params["password"],
-            virtualhost=self.conn_params["virtual_host"],
-            login=self.conn_params["username"],
-            on_error=self.queue.delegate.on_connection_error,
-            loop=ANY,
-            heartbeat=self.conn_params["heartbeat"],
-        )
-
-        await self.queue.connect()
-        self.assertEqual([expected], self._connect.call_args_list)
-
-    async def test_it_closes_the_connection(self):
-        await self.queue.connect()
-        await self.queue.close()
-
-        self.assertTrue(self._protocol.close.called)
-        self.assertTrue(self._transport.close.called)
-
     async def test_it_dosent_call_consumer_handler_methods(self):
         self.assertFalse(self.queue.delegate.on_queue_message.called)
         self.assertFalse(self.queue.delegate.on_queue_error.called)

@@ -15,7 +15,7 @@ class AMQPConnection:
     def __init__(
         self,
         host: str,
-        user: str,
+        username: str,
         password: str,
         heartbeat: int = 60,
         virtual_host: str = "/",
@@ -23,7 +23,7 @@ class AMQPConnection:
         on_error: OnErrorCallback = None,
     ) -> None:
         self.host = host
-        self.user = user
+        self.username = username
         self.password = password
         self.virtual_host = virtual_host
         self.heartbeat = heartbeat
@@ -40,7 +40,7 @@ class AMQPConnection:
     def connection_parameters(self):
         return {
             "host": self.host,
-            "login": self.user,
+            "login": self.username,
             "password": self.password,
             "virtualhost": self.virtual_host,
             "loop": self.loop,
@@ -69,4 +69,4 @@ class AMQPConnection:
 
             conn = await aioamqp.connect(**self.connection_parameters)
             self._transport, self._protocol = conn
-            self._channel = await self._protocol.channel()
+            self.channel = await self._protocol.channel()
