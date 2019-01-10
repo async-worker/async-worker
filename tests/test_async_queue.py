@@ -547,38 +547,6 @@ class AsyncQueueConsumerHandlerMethodsTests(
                 queue=self.queue,
             )
 
-    async def test_it_calls_on_queue_error_if_message_length_is_too_big(self):
-        content = {
-            "artist": "Mr. Big",
-            "album": "Big, Bigger, Biggest! The Best of Mr. Big",
-            "song": "Rock & Roll Over",
-        }
-        json_content = json.dumps(content)
-
-        Actual_Size = len(json_content)
-        self.queue.max_message_length = Actual_Size - 1
-
-        with patch.object(
-            self.queue, "_handle_callback", CoroutineMock()
-        ) as _handle_callback:
-            await self.queue._handle_message(
-                channel=self.queue.connection.channel,
-                body=json_content,
-                envelope=self.envelope,
-                properties=self.properties,
-            )
-
-            consumer = self.queue.delegate
-            self.assertFalse(consumer.on_queue_message.called)
-
-            _handle_callback.assert_called_once_with(
-                consumer.on_queue_error,
-                body=json_content,
-                delivery_tag=self.envelope.delivery_tag,
-                error=typed_any(InvalidMessageSizeException),
-                queue=self.queue,
-            )
-
     async def test_it_calls_on_queue_message_if_message_is_a_valid_json_as_bytes(
         self
     ):

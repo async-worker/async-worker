@@ -144,9 +144,6 @@ class AsyncJsonQueue(BaseQueue):
         )
 
     def _parse_message(self, body) -> Dict[str, Any]:
-        if self.max_message_length:
-            if len(body) > self.max_message_length:
-                raise InvalidMessageSizeException(body)
         try:
             # todo: >>Serialize<< com tipo byte não tem o mesmo tratamento
             return self.deserialize(body)
