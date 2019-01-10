@@ -1,4 +1,3 @@
-import asyncio
 import json
 import logging
 
@@ -11,11 +10,7 @@ from easyqueue.async_queue import (
     AsyncQueueConsumerDelegate,
     _ensure_connected,
 )
-from easyqueue.exceptions import (
-    UndecodableMessageException,
-    InvalidMessageSizeException,
-)
-from tests.utils import typed_any
+from easyqueue.message import AMQPMessage
 
 
 class AsyncBaseTestCase:
@@ -511,6 +506,7 @@ class AsyncQueueConsumerHandlerMethodsTests(
         return CoroutineMock(
             on_before_start_consumption=CoroutineMock(),
             on_message_handle_error=CoroutineMock(),
+            queue_name=self.test_queue_name,
         )
 
     async def setUp(self):
@@ -524,30 +520,7 @@ class AsyncQueueConsumerHandlerMethodsTests(
             consumer_name=self.__class__.__name__,
         )
 
-    async def test_it_calls_on_queue_error_if_message_isnt_a_valid_json(self):
-        content = "Subirusdoitiozin"
-        with patch.object(
-            self.queue, "_handle_callback", CoroutineMock()
-        ) as _handle_callback:
-            await self.queue._handle_message(
-                channel=self.queue.connection.channel,
-                body=content,
-                envelope=self.envelope,
-                properties=self.properties,
-            )
-
-            consumer = self.queue.delegate
-            self.assertFalse(consumer.on_queue_message.called)
-
-            _handle_callback.assert_called_once_with(
-                consumer.on_queue_error,
-                body=content,
-                delivery_tag=self.envelope.delivery_tag,
-                error=typed_any(UndecodableMessageException),
-                queue=self.queue,
-            )
-
-    async def test_it_calls_on_queue_message_if_message_is_a_valid_json_as_bytes(
+    async def test_it_calls_on_queue_message_with_the_message_body_wrapped_as_a_AMQPMessage_instance(
         self
     ):
         content = {
@@ -555,7 +528,7 @@ class AsyncQueueConsumerHandlerMethodsTests(
             "song": "Não enche",
             "album": "Livro",
         }
-        body = bytes(json.dumps(content), encoding="utf-8")
+        body = json.dumps(content).encode("utf-8")
         with patch.object(
             self.queue, "_handle_callback", CoroutineMock()
         ) as _handle_callback:
@@ -567,40 +540,20 @@ class AsyncQueueConsumerHandlerMethodsTests(
             )
 
             consumer = self.queue.delegate
-            self.assertFalse(consumer.on_queue_error.called)
+            consumer.on_queue_error.assert_not_called()
 
             _handle_callback.assert_called_once_with(
                 consumer.on_queue_message,
-                content=content,
-                delivery_tag=self.envelope.delivery_tag,
-                queue=self.queue,
-            )
-
-    async def test_it_calls_on_queue_message_if_message_is_a_valid_json(self):
-        content = {
-            "artist": "Caetano Veloso",
-            "song": "Não enche",
-            "album": "Livro",
-        }
-
-        with patch.object(
-            self.queue, "_handle_callback", CoroutineMock()
-        ) as _handle_callback:
-            await self.queue._handle_message(
-                channel=self.queue.connection.channel,
-                body=json.dumps(content),
-                envelope=self.envelope,
-                properties=self.properties,
-            )
-
-            consumer = self.queue.delegate
-            self.assertFalse(consumer.on_queue_error.called)
-
-            _handle_callback.assert_called_once_with(
-                consumer.on_queue_message,
-                content=content,
-                delivery_tag=self.envelope.delivery_tag,
-                queue=self.queue,
+                msg=AMQPMessage(
+                    connection=self.queue.connection,
+                    channel=self.queue.connection.channel,
+                    envelope=self.envelope,
+                    properties=self.properties,
+                    delivery_tag=self.envelope.delivery_tag,
+                    deserialization_method=self.queue.deserialize,
+                    queue_name=self.test_queue_name,
+                    serialized_data=body,
+                ),
             )
 
     async def test_it_calls_on_message_handle_error_if_message_handler_raises_an_error(

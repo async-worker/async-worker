@@ -5,7 +5,7 @@ from aioamqp.envelope import Envelope
 from aioamqp.properties import Properties
 
 from easyqueue.connection import AMQPConnection
-
+from easyqueue.exceptions import UndecodableMessageException
 
 T = TypeVar("T")
 
@@ -49,7 +49,23 @@ class AMQPMessage(Generic[T]):
     def deserialized_data(self) -> T:
         if self.__deserialized_data:
             return self.__deserialized_data
-        self.__deserialized_data = self._deserialization_method(
-            self.serialized_data
-        )
+        try:
+            self.__deserialized_data = self._deserialization_method(
+                self.serialized_data
+            )
+        except ValueError as e:
+            raise UndecodableMessageException(
+                "msg couldn't be decoded as JSON"
+            ) from e
         return self.__deserialized_data
+
+    def __eq__(self, other):
+        if not isinstance(other, self.__class__):
+            return False
+        for attr in self.__slots__:
+            if attr.startswith("__"):
+                continue
+            if getattr(self, attr) != getattr(other, attr):
+                return False
+
+        return True

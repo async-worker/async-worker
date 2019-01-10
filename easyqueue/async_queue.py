@@ -3,18 +3,18 @@ import logging
 from functools import wraps
 import traceback
 import asyncio
-from asyncio import AbstractEventLoop
-from typing import Any, Dict, Type, Callable, Coroutine, Union, Optional
-from json.decoder import JSONDecodeError
+from asyncio import AbstractEventLoop, Task
+from typing import Any, Type, Callable, Coroutine, Union, Optional
 import json
 
+from aioamqp.channel import Channel
+from aioamqp.envelope import Envelope
+from aioamqp.properties import Properties
+
 from easyqueue.connection import AMQPConnection
+from easyqueue.message import AMQPMessage
 from easyqueue.queue import BaseQueue
-from easyqueue.exceptions import (
-    UndecodableMessageException,
-    InvalidMessageSizeException,
-    MessageError,
-)
+from easyqueue.exceptions import MessageError
 
 
 def _ensure_connected(coro: Callable[..., Coroutine]):
@@ -143,17 +143,6 @@ class AsyncJsonQueue(BaseQueue):
             routing_key=routing_key,
         )
 
-    def _parse_message(self, body) -> Dict[str, Any]:
-        try:
-            # todo: >>Serialize<< com tipo byte não tem o mesmo tratamento
-            return self.deserialize(body)
-        except TypeError:
-            return self._parse_message(body.decode())
-        except JSONDecodeError:
-            raise UndecodableMessageException(
-                '"{body}" can\'t be decoded as JSON'.format(body=body)
-            )
-
     async def _handle_callback(self, callback, **kwargs):
         """
         Chains the callback coroutine into a try/except and calls
@@ -171,28 +160,26 @@ class AsyncJsonQueue(BaseQueue):
                 handler_error=e, **kwargs
             )
 
-    async def _handle_message(self, channel, body, envelope, properties):
-        """
-        :rtype: asyncio.Task
-        """
-        tag = envelope.delivery_tag
-        try:
-            content = self._parse_message(body)
-        except MessageError as e:
-            callback = self._handle_callback(
-                self.delegate.on_queue_error,
-                body=body,
-                delivery_tag=tag,
-                error=e,
-                queue=self,
-            )
-        else:
-            callback = self._handle_callback(
-                self.delegate.on_queue_message,
-                content=content,
-                delivery_tag=tag,
-                queue=self,
-            )
+    async def _handle_message(
+        self,
+        channel: Channel,
+        body: bytes,
+        envelope: Envelope,
+        properties: Properties,
+    ) -> Task:
+        msg = AMQPMessage(
+            connection=self.connection,
+            channel=channel,
+            envelope=envelope,
+            properties=properties,
+            delivery_tag=envelope.delivery_tag,
+            deserialization_method=self.deserialize,
+            queue_name=self.delegate.queue_name,
+            serialized_data=body,
+        )
+        callback = self._handle_callback(
+            self.delegate.on_queue_message, msg=msg
+        )
         return self.loop.create_task(callback)
 
     @_ensure_connected
@@ -274,18 +261,12 @@ class AsyncQueueConsumerDelegate(metaclass=abc.ABCMeta):
         """
 
     @abc.abstractmethod
-    async def on_queue_message(
-        self, content, delivery_tag, queue: AsyncJsonQueue
-    ):
+    async def on_queue_message(self, msg: AMQPMessage):
         """
         Callback called every time that a new, valid and deserialized message
         is ready to be handled.
 
-        :param delivery_tag: delivery_tag of the consumed message
-        :type delivery_tag: int
-        :param content: parsed message body
-        :type content: dict
-        :type queue: AsyncJsonQueue
+        :param msg: the consumed message
         """
         raise NotImplementedError
 
