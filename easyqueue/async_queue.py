@@ -81,10 +81,7 @@ class AsyncJsonQueue(BaseQueue):
 
         self.max_message_length = max_message_length
 
-        if self.delegate:
-            on_error = self.delegate.on_connection_error
-        else:
-            on_error = None
+        on_error = self.delegate.on_connection_error if self.delegate else None
 
         self.connection = AMQPConnection(
             host=host,

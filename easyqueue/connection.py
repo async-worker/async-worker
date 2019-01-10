@@ -7,7 +7,7 @@ from aioamqp.channel import Channel
 
 
 OnErrorCallback = Union[
-    Callable[[Exception], None], Callable[[Exception], Coroutine]
+    None, Callable[[Exception], None], Callable[[Exception], Coroutine]
 ]
 
 
