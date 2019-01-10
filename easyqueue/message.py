@@ -43,7 +43,7 @@ class AMQPMessage(Generic[T]):
         self._properties = properties
         self._deserialization_method = deserialization_method
 
-        self.__deserialized_data: T
+        self.__deserialized_data: T = None
 
     @property
     def deserialized_data(self) -> T:
