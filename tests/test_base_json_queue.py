@@ -21,7 +21,7 @@ class BaseJsonQueueTests(unittest.TestCase):
         self.assertEqual('{"teste": "aãç"}', result)
 
     def test_deserialize(self):
-        body = '{"teste": "aãç"}'
+        body = '{"teste": "aãç"}'.encode("utf-8")
         result = self.base_json_queue.deserialize(body)
 
         self.assertEqual({"teste": "aãç"}, result)
