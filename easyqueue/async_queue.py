@@ -113,8 +113,8 @@ class AsyncJsonQueue(BaseQueue, Generic[T]):
     def serialize(self, body: T, **kwargs) -> str:
         return json.dumps(body, **kwargs)
 
-    def deserialize(self, body: str) -> T:
-        return json.loads(body)
+    def deserialize(self, body: bytes) -> T:
+        return json.loads(body.decode())
 
     @_ensure_connected
     async def ack(self, msg: AMQPMessage[T]):
@@ -191,8 +191,9 @@ class AsyncJsonQueue(BaseQueue, Generic[T]):
             queue_name=queue_name,
             serialized_data=body,
         )
+
         callback = self._handle_callback(
-            self.delegate.on_queue_message, msg=msg
+            self.delegate.on_queue_message, msg=msg  # type: ignore
         )
         return self.loop.create_task(callback)
 
