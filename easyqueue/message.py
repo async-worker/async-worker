@@ -20,7 +20,7 @@ class AMQPMessage(Generic[T]):
         "_envelope",
         "_properties",
         "_deserialization_method",
-        "__deserialized_data",
+        "_deserialized_data",
     )
 
     def __init__(
@@ -43,21 +43,21 @@ class AMQPMessage(Generic[T]):
         self._properties = properties
         self._deserialization_method = deserialization_method
 
-        self.__deserialized_data: Optional[T] = None
+        self._deserialized_data: Optional[T] = None
 
     @property
     def deserialized_data(self) -> T:
-        if self.__deserialized_data:
-            return self.__deserialized_data
+        if self._deserialized_data:
+            return self._deserialized_data
         try:
-            self.__deserialized_data = self._deserialization_method(
+            self._deserialized_data = self._deserialization_method(
                 self.serialized_data
             )
         except ValueError as e:
             raise UndecodableMessageException(
                 "msg couldn't be decoded as JSON"
             ) from e
-        return self.__deserialized_data
+        return self._deserialized_data
 
     def __eq__(self, other):
         if not isinstance(other, self.__class__):
