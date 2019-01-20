@@ -360,7 +360,9 @@ class AsyncQueueConsumerTests(AsyncBaseTestCase, asynctest.TestCase):
             self.queue.delegate = None
             await self.queue.consume(queue_name=Mock(), consumer_name=Mock())
 
-    async def test_it_calls_will_start_consumption_before_queue_consume(self):
+    async def test_it_calls_on_before_start_consumption_before_queue_consume(
+        self
+    ):
         await self.queue.connection._connect()
 
         with asynctest.patch.object(
