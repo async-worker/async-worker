@@ -1,4 +1,4 @@
-from typing import Callable, TypeVar, Generic
+from typing import Callable, TypeVar, Generic, Optional
 
 from aioamqp.channel import Channel
 from aioamqp.envelope import Envelope
@@ -43,7 +43,7 @@ class AMQPMessage(Generic[T]):
         self._properties = properties
         self._deserialization_method = deserialization_method
 
-        self.__deserialized_data: T = None
+        self.__deserialized_data: Optional[T] = None
 
     @property
     def deserialized_data(self) -> T:
