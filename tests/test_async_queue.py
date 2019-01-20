@@ -1,6 +1,5 @@
 import json
 import logging
-from functools import partial
 
 import aioamqp
 import asynctest
@@ -160,7 +159,6 @@ class AsyncQueueConnectionTests(AsyncBaseTestCase, asynctest.TestCase):
         }
         exchange = Mock()
         routing_key = Mock()
-        await self.queue.connection._connect()
         await self.queue.put(
             data=message, exchange=exchange, routing_key=routing_key
         )
@@ -184,7 +182,6 @@ class AsyncQueueConnectionTests(AsyncBaseTestCase, asynctest.TestCase):
         }
         exchange = Mock()
         routing_key = Mock()
-        await self.queue.connection._connect()
         await self.queue.put(
             serialized_data=json.dumps(message),
             exchange=exchange,
@@ -210,7 +207,6 @@ class AsyncQueueConnectionTests(AsyncBaseTestCase, asynctest.TestCase):
         }
         exchange = Mock()
         routing_key = Mock()
-        await self.queue.connection._connect()
         with self.assertRaises(ValueError):
             await self.queue.put(
                 serialized_data=json.dumps(message),
@@ -230,7 +226,6 @@ class AsyncQueueConnectionTests(AsyncBaseTestCase, asynctest.TestCase):
         payload = json.dumps({"dog": "Xablau"})
         exchange = Mock()
         routing_key = Mock()
-        await self.queue.connection._connect()
         await self.queue.put(
             serialized_data=payload, exchange=exchange, routing_key=routing_key
         )
@@ -247,7 +242,6 @@ class AsyncQueueConnectionTests(AsyncBaseTestCase, asynctest.TestCase):
         payload = json.dumps({"dog": "Xablau"}).encode()
         exchange = Mock()
         routing_key = Mock()
-        await self.queue.connection._connect()
 
         await self.queue.put(
             serialized_data=payload, exchange=exchange, routing_key=routing_key
@@ -280,7 +274,6 @@ class AsyncQueueConnectionTests(AsyncBaseTestCase, asynctest.TestCase):
 
         exchange = Mock()
         routing_key = Mock()
-        await self.queue.connection._connect()
         with self.assertRaises(TypeError):
             await self.queue.put(
                 message, exchange=exchange, routing_key=routing_key
@@ -288,14 +281,13 @@ class AsyncQueueConnectionTests(AsyncBaseTestCase, asynctest.TestCase):
         self.queue.connection.channel.publish.assert_not_called()
 
     async def test_it_acks_messages(self):
-        await self.queue.connection._connect()
-        msg = Mock(channel=self.queue.connection.channel, delivery_tag=666)
+        msg = Mock(
+            channel=Mock(basic_client_ack=CoroutineMock()), delivery_tag=666
+        )
 
-        with patch.object(
-            self.queue.connection.channel, "basic_client_ack", CoroutineMock()
-        ) as basic_client_ack:
-            await self.queue.ack(msg=msg)
-            basic_client_ack.assert_awaited_once_with(msg.delivery_tag)
+        await self.queue.ack(msg=msg)
+
+        msg.channel.basic_client_ack.assert_awaited_once_with(msg.delivery_tag)
 
     async def test_connect_gets_awaited_if_ack_is_called_before_connect(self):
         channel = Mock(is_open=False, basic_client_ack=CoroutineMock())
@@ -308,28 +300,21 @@ class AsyncQueueConnectionTests(AsyncBaseTestCase, asynctest.TestCase):
             connect.assert_awaited_once()
 
     async def test_it_rejects_messages_without_requeue(self):
-        await self.queue.connection._connect()
+        msg = Mock(channel=Mock(basic_reject=CoroutineMock()), delivery_tag=666)
 
-        msg = Mock(channel=self.queue.connection.channel, delivery_tag=666)
-        with patch.object(
-            self.queue.connection.channel, "basic_reject", CoroutineMock()
-        ) as basic_reject:
-            await self.queue.reject(msg=msg)
-            basic_reject.assert_awaited_once_with(
-                delivery_tag=msg.delivery_tag, requeue=False
-            )
+        await self.queue.reject(msg=msg)
+
+        msg.channel.basic_reject.assert_awaited_once_with(
+            delivery_tag=msg.delivery_tag, requeue=False
+        )
 
     async def test_it_rejects_messages_with_requeue(self):
-        await self.queue.connection._connect()
+        msg = Mock(channel=Mock(basic_reject=CoroutineMock()), delivery_tag=666)
 
-        msg = Mock(channel=self.queue.connection.channel, delivery_tag=666)
-        with patch.object(
-            self.queue.connection.channel, "basic_reject", CoroutineMock()
-        ) as basic_reject:
-            await self.queue.reject(msg=msg, requeue=True)
-            basic_reject.assert_awaited_once_with(
-                delivery_tag=msg.delivery_tag, requeue=True
-            )
+        await self.queue.reject(msg=msg, requeue=True)
+        msg.channel.basic_reject.assert_awaited_once_with(
+            delivery_tag=msg.delivery_tag, requeue=True
+        )
 
     async def test_connect_gets_awaited_if_reject_is_called_before_connect(
         self
