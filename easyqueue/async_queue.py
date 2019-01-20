@@ -1,6 +1,6 @@
 import abc
 import logging
-from functools import wraps
+from functools import wraps, partial
 import traceback
 import asyncio
 from asyncio import AbstractEventLoop, Task
@@ -41,10 +41,6 @@ def _ensure_connected(coro: Callable[..., Coroutine]):
         return await coro(self, *args, **kwargs)
 
     return wrapper
-
-
-ConsumerTag = str
-QueueName = str
 
 
 class AsyncJsonQueue(BaseQueue):
@@ -100,7 +96,6 @@ class AsyncJsonQueue(BaseQueue):
         self.seconds_between_conn_retry = seconds_between_conn_retry
         self.is_running = True
         self.logger = logger
-        self._consumers: Dict[ConsumerTag, QueueName] = {}
 
     def serialize(self, body: Any, **kwargs) -> str:
         return json.dumps(body, **kwargs)
@@ -171,6 +166,7 @@ class AsyncJsonQueue(BaseQueue):
         body: bytes,
         envelope: Envelope,
         properties: Properties,
+        queue_name: str,
     ) -> Task:
         msg = AMQPMessage(
             connection=self.connection,
@@ -179,7 +175,7 @@ class AsyncJsonQueue(BaseQueue):
             properties=properties,
             delivery_tag=envelope.delivery_tag,
             deserialization_method=self.deserialize,
-            queue_name=self._consumers[envelope.consumer_tag],
+            queue_name=queue_name,
             serialized_data=body,
         )
         callback = self._handle_callback(
@@ -205,11 +201,10 @@ class AsyncJsonQueue(BaseQueue):
             connection_global=False,
         )
         tag = await self.connection.channel.basic_consume(
-            callback=self._handle_message,
+            callback=partial(self._handle_message, queue_name=queue_name),
             consumer_tag=consumer_name,
             queue_name=queue_name,
         )
-        self._consumers[tag["consumer_tag"]] = queue_name
         return tag["consumer_tag"]
 
     @_ensure_connected

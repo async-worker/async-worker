@@ -1,5 +1,6 @@
 import json
 import logging
+from functools import partial
 
 import aioamqp
 import asynctest
@@ -404,32 +405,46 @@ class AsyncQueueConsumerTests(AsyncBaseTestCase, asynctest.TestCase):
             self.queue.connection.channel.basic_consume.call_count, 1
         )
 
-    async def test_a_successfull_call_to_consume_register_consumer_tag(self):
-        await self.queue.connection._connect()
-        queue_name = "Xablau"
-        tag = await self.queue.consume(queue_name, Mock())
-
-        self.assertEqual(self.queue._consumers[tag], queue_name)
-
     async def test_calling_consume_binds_handler_method(self):
         await self.queue.connection._connect()
+        channel = self.queue.connection.channel
 
         queue_name = Mock()
         consumer_name = Mock()
         expected_prefetch_count = 666
 
         self.queue.prefetch_count = expected_prefetch_count
-        await self.queue.consume(queue_name, consumer_name)
+        with patch.object(self.queue, "_handle_message", CoroutineMock()):
+            await self.queue.consume(queue_name, consumer_name)
 
-        expected = call(
-            callback=self.queue._handle_message,
-            queue_name=queue_name,
-            consumer_tag=consumer_name,
-        )
-        self.assertEqual(
-            [expected],
-            self.queue.connection.channel.basic_consume.call_args_list,
-        )
+            expected = call(
+                callback=ANY, queue_name=queue_name, consumer_tag=consumer_name
+            )
+            self.assertEqual(
+                [expected],
+                self.queue.connection.channel.basic_consume.call_args_list,
+            )
+            _, kwargs = channel.basic_consume.call_args_list[0]
+            callback = kwargs["callback"]
+
+            channel = Mock()
+            body = Mock()
+            envelope = Mock()
+            properties = Mock()
+            await callback(
+                channel=channel,
+                body=body,
+                envelope=envelope,
+                properties=properties,
+            )
+
+            self.queue._handle_message.assert_awaited_once_with(
+                channel=channel,
+                body=body,
+                envelope=envelope,
+                properties=properties,
+                queue_name=queue_name,
+            )
 
     async def test_calling_consume_sets_a_prefetch_qos(self):
         await self.queue.connection._connect()
@@ -544,6 +559,7 @@ class AsyncQueueConsumerHandlerMethodsTests(
                 body=body,
                 envelope=self.envelope,
                 properties=self.properties,
+                queue_name=self.test_queue_name,
             )
 
             consumer = self.queue.delegate
