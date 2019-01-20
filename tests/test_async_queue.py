@@ -404,6 +404,13 @@ class AsyncQueueConsumerTests(AsyncBaseTestCase, asynctest.TestCase):
             self.queue.connection.channel.basic_consume.call_count, 1
         )
 
+    async def test_a_successfull_call_to_consume_register_consumer_tag(self):
+        await self.queue.connection._connect()
+        queue_name = "Xablau"
+        tag = await self.queue.consume(queue_name, Mock())
+
+        self.assertEqual(self.queue._consumers[tag], queue_name)
+
     async def test_calling_consume_binds_handler_method(self):
         await self.queue.connection._connect()
 
@@ -511,14 +518,14 @@ class AsyncQueueConsumerHandlerMethodsTests(
 
     async def setUp(self):
         super().setUp()
-        self.envelope = Mock(name="Envelope")
         self.properties = Mock(name="Properties")
         await self.queue.connection._connect()
 
-        await self.queue.consume(
+        consumer_tag = await self.queue.consume(
             queue_name=self.test_queue_name,
             consumer_name=self.__class__.__name__,
         )
+        self.envelope = Mock(name="Envelope", consumer_tag=consumer_tag)
 
     async def test_it_calls_on_queue_message_with_the_message_body_wrapped_as_a_AMQPMessage_instance(
         self

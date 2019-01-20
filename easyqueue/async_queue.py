@@ -4,7 +4,7 @@ from functools import wraps
 import traceback
 import asyncio
 from asyncio import AbstractEventLoop, Task
-from typing import Any, Type, Callable, Coroutine, Union, Optional
+from typing import Any, Type, Callable, Coroutine, Union, Optional, Dict
 import json
 
 from aioamqp.channel import Channel
@@ -41,6 +41,10 @@ def _ensure_connected(coro: Callable[..., Coroutine]):
         return await coro(self, *args, **kwargs)
 
     return wrapper
+
+
+ConsumerTag = str
+QueueName = str
 
 
 class AsyncJsonQueue(BaseQueue):
@@ -96,6 +100,7 @@ class AsyncJsonQueue(BaseQueue):
         self.seconds_between_conn_retry = seconds_between_conn_retry
         self.is_running = True
         self.logger = logger
+        self._consumers: Dict[ConsumerTag, QueueName] = {}
 
     def serialize(self, body: Any, **kwargs) -> str:
         return json.dumps(body, **kwargs)
@@ -174,7 +179,7 @@ class AsyncJsonQueue(BaseQueue):
             properties=properties,
             delivery_tag=envelope.delivery_tag,
             deserialization_method=self.deserialize,
-            queue_name=self.delegate.queue_name,
+            queue_name=self._consumers[envelope.consumer_tag],
             serialized_data=body,
         )
         callback = self._handle_callback(
@@ -204,6 +209,7 @@ class AsyncJsonQueue(BaseQueue):
             consumer_tag=consumer_name,
             queue_name=queue_name,
         )
+        self._consumers[tag["consumer_tag"]] = queue_name
         return tag["consumer_tag"]
 
     @_ensure_connected
