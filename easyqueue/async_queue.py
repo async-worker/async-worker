@@ -4,7 +4,17 @@ from functools import wraps, partial
 import traceback
 import asyncio
 from asyncio import AbstractEventLoop, Task
-from typing import Any, Type, Callable, Coroutine, Union, Optional, Dict
+from typing import (
+    Any,
+    Type,
+    Callable,
+    Coroutine,
+    Union,
+    Optional,
+    Dict,
+    TypeVar,
+    Generic,
+)
 import json
 
 from aioamqp.channel import Channel
@@ -43,7 +53,10 @@ def _ensure_connected(coro: Callable[..., Coroutine]):
     return wrapper
 
 
-class AsyncJsonQueue(BaseQueue):
+T = TypeVar("T")
+
+
+class AsyncJsonQueue(BaseQueue, Generic[T]):
     delegate: Optional["AsyncQueueConsumerDelegate"]
     _transport: Optional[asyncio.BaseTransport]
 
@@ -97,20 +110,20 @@ class AsyncJsonQueue(BaseQueue):
         self.is_running = True
         self.logger = logger
 
-    def serialize(self, body: Any, **kwargs) -> str:
+    def serialize(self, body: T, **kwargs) -> str:
         return json.dumps(body, **kwargs)
 
-    def deserialize(self, body: str) -> Any:
+    def deserialize(self, body: str) -> T:
         return json.loads(body)
 
     @_ensure_connected
-    async def ack(self, delivery_tag: int):
-        return await self.connection.channel.basic_client_ack(delivery_tag)
+    async def ack(self, msg: AMQPMessage[T]):
+        return await msg.channel.basic_client_ack(msg.delivery_tag)
 
     @_ensure_connected
-    async def reject(self, delivery_tag: int, requeue=False):
-        return await self.connection.channel.basic_reject(
-            delivery_tag=delivery_tag, requeue=requeue
+    async def reject(self, msg: AMQPMessage[T], requeue=False):
+        return await msg.channel.basic_reject(
+            delivery_tag=msg.delivery_tag, requeue=requeue
         )
 
     @_ensure_connected
@@ -262,7 +275,7 @@ class AsyncQueueConsumerDelegate(metaclass=abc.ABCMeta):
         """
 
     @abc.abstractmethod
-    async def on_queue_message(self, msg: AMQPMessage):
+    async def on_queue_message(self, msg: AMQPMessage[Any]):
         """
         Callback called every time that a new, valid and deserialized message
         is ready to be handled.

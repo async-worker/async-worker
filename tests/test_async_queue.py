@@ -289,60 +289,58 @@ class AsyncQueueConnectionTests(AsyncBaseTestCase, asynctest.TestCase):
 
     async def test_it_acks_messages(self):
         await self.queue.connection._connect()
+        msg = Mock(channel=self.queue.connection.channel, delivery_tag=666)
 
-        tag = 666
         with patch.object(
             self.queue.connection.channel, "basic_client_ack", CoroutineMock()
         ) as basic_client_ack:
-            await self.queue.ack(delivery_tag=tag)
-            basic_client_ack.assert_awaited_once_with(tag)
+            await self.queue.ack(msg=msg)
+            basic_client_ack.assert_awaited_once_with(msg.delivery_tag)
 
     async def test_connect_gets_awaited_if_ack_is_called_before_connect(self):
+        channel = Mock(is_open=False, basic_client_ack=CoroutineMock())
         with asynctest.patch.object(
             self.queue.connection, "_connect"
         ) as connect, asynctest.patch.object(
-            self.queue.connection,
-            "channel",
-            Mock(is_open=False, basic_client_ack=CoroutineMock()),
+            self.queue.connection, "channel", channel
         ):
-            await self.queue.ack(delivery_tag=1)
+            await self.queue.ack(msg=Mock(channel=channel))
             connect.assert_awaited_once()
 
     async def test_it_rejects_messages_without_requeue(self):
         await self.queue.connection._connect()
 
-        tag = 666
+        msg = Mock(channel=self.queue.connection.channel, delivery_tag=666)
         with patch.object(
             self.queue.connection.channel, "basic_reject", CoroutineMock()
         ) as basic_reject:
-            await self.queue.reject(delivery_tag=tag)
+            await self.queue.reject(msg=msg)
             basic_reject.assert_awaited_once_with(
-                delivery_tag=tag, requeue=False
+                delivery_tag=msg.delivery_tag, requeue=False
             )
 
     async def test_it_rejects_messages_with_requeue(self):
         await self.queue.connection._connect()
 
-        tag = 666
+        msg = Mock(channel=self.queue.connection.channel, delivery_tag=666)
         with patch.object(
             self.queue.connection.channel, "basic_reject", CoroutineMock()
         ) as basic_reject:
-            await self.queue.reject(delivery_tag=tag, requeue=True)
+            await self.queue.reject(msg=msg, requeue=True)
             basic_reject.assert_awaited_once_with(
-                delivery_tag=tag, requeue=True
+                delivery_tag=msg.delivery_tag, requeue=True
             )
 
     async def test_connect_gets_awaited_if_reject_is_called_before_connect(
         self
     ):
+        channel = Mock(is_open=False, basic_reject=CoroutineMock())
         with asynctest.patch.object(
             self.queue.connection, "_connect"
         ) as connect, asynctest.patch.object(
-            self.queue.connection,
-            "channel",
-            Mock(is_open=False, basic_reject=CoroutineMock()),
+            self.queue.connection, "channel", channel
         ):
-            await self.queue.reject(delivery_tag=1)
+            await self.queue.reject(msg=Mock(channel=channel))
             connect.assert_awaited_once()
 
 
