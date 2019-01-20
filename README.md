@@ -33,11 +33,12 @@ Class used for asynchronously connecting and consuming
 ``` python
 import asyncio
 from easyqueue import AsyncJsonQueue, AsyncQueueConsumerDelegate
+from easyqueue.message import AMQPMessage
 
 
 class MyConsumer(AsyncQueueConsumerDelegate):
-    queue_name = 'awesome_queue_name'
-    
+    queue_name = 'words'
+
     def __init__(self):
         self.queue = AsyncJsonQueue(
             host='localhost',
@@ -45,28 +46,29 @@ class MyConsumer(AsyncQueueConsumerDelegate):
             password='guest',
             delegate=self
         )
-        
-    async def on_before_start_consumption(self, queue_name: str, queue: AsyncJsonQueue):
+
+    async def on_before_start_consumption(self, queue_name: str,
+                                          queue: AsyncJsonQueue):
         print("I'm called when queue consumption starts !")
-        
+
     async def on_message_handle_error(self,
                                       handler_error: Exception,
                                       **kwargs):
-        print("I'm called if an unhandled exception is raised on" 
+        print("I'm called if an unhandled exception is raised on"
               "on_queue_message or on_queue_error")
-              
+
     async def on_consumption_start(self,
                                    consumer_tag: str,
                                    queue: 'AsyncJsonQueue'):
         print("Once consumption started, im called with the consumer tag.")
 
-    async def on_queue_message(self, content: dict, delivery_tag: str, queue: AsyncJsonQueue):
+    async def on_queue_message(self, msg: AMQPMessage[dict]):
         """
         Called every time that a new, valid and deserialized message
         is ready to be handled.
         """
-        print(content)  # do something with
-        await self.queue.ack(delivery_tag)  # dont forget to ack =)
+        print(msg.deserialized_data)  # do something with
+        await self.queue.ack(msg)  # dont forget to ack =)
 
 
 if __name__ == '__main__':
