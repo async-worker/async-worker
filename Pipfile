@@ -4,7 +4,7 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-aioamqp = "==0.11.0"
+aioamqp = "==0.12.0"
 
 [dev-packages]
 coverage = "==4.5.2"
