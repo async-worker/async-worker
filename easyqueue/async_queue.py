@@ -1,28 +1,39 @@
 import abc
 import logging
-from functools import wraps
+from functools import wraps, partial
 import traceback
-import aioamqp
 import asyncio
-from asyncio import AbstractEventLoop
-from typing import Any, Dict, Type, Callable, Coroutine, Union, Optional
-from json.decoder import JSONDecodeError
-import json
-from easyqueue.queue import BaseQueue
-from easyqueue.exceptions import (
-    UndecodableMessageException,
-    InvalidMessageSizeException,
-    MessageError,
+from asyncio import AbstractEventLoop, Task
+from typing import (
+    Any,
+    Type,
+    Callable,
+    Coroutine,
+    Union,
+    Optional,
+    Dict,
+    TypeVar,
+    Generic,
 )
+import json
+
+from aioamqp.channel import Channel
+from aioamqp.envelope import Envelope
+from aioamqp.properties import Properties
+
+from easyqueue.connection import AMQPConnection
+from easyqueue.message import AMQPMessage
+from easyqueue.queue import BaseQueue
+from easyqueue.exceptions import MessageError
 
 
 def _ensure_connected(coro: Callable[..., Coroutine]):
     @wraps(coro)
     async def wrapper(self: "AsyncJsonQueue", *args, **kwargs):
         retries = 0
-        while self.is_running and not self.is_connected:
+        while self.is_running and not self.connection.is_connected:
             try:
-                await self.connect()
+                await self.connection._connect()
                 break
             except Exception as e:
                 await asyncio.sleep(self.seconds_between_conn_retry)
@@ -42,7 +53,10 @@ def _ensure_connected(coro: Callable[..., Coroutine]):
     return wrapper
 
 
-class AsyncJsonQueue(BaseQueue):
+T = TypeVar("T")
+
+
+class AsyncJsonQueue(BaseQueue, Generic[T]):
     delegate: Optional["AsyncQueueConsumerDelegate"]
     _transport: Optional[asyncio.BaseTransport]
 
@@ -80,66 +94,36 @@ class AsyncJsonQueue(BaseQueue):
 
         self.max_message_length = max_message_length
 
-        self._protocol: aioamqp.protocol.AmqpProtocol = None
-        self._transport: asyncio.BaseTransport = None
-        self._channel: aioamqp.channel.Channel = None
+        on_error = self.delegate.on_connection_error if self.delegate else None
+
+        self.connection = AMQPConnection(
+            host=host,
+            username=username,
+            password=password,
+            virtual_host=virtual_host,
+            heartbeat=heartbeat,
+            on_error=on_error,
+            loop=loop,
+        )
+
         self.seconds_between_conn_retry = seconds_between_conn_retry
         self.is_running = True
         self.logger = logger
-        self._connection_lock = asyncio.Lock()
 
-    def serialize(self, body: Any, **kwargs) -> str:
+    def serialize(self, body: T, **kwargs) -> str:
         return json.dumps(body, **kwargs)
 
-    def deserialize(self, body: str) -> Any:
-        return json.loads(body)
-
-    @property
-    def connection_parameters(self):
-        if self.delegate:
-            on_error = self.delegate.on_connection_error
-        else:
-            on_error = None
-
-        return {
-            "host": self.host,
-            "login": self.username,
-            "password": self.password,
-            "virtualhost": self.virtual_host,
-            "loop": self.loop,
-            "on_error": on_error,
-            "heartbeat": self.heartbeat,
-        }
-
-    @property
-    def is_connected(self):
-        # todo: This may not be enough
-        return self._channel and self._channel.is_open
-
-    async def connect(self):
-        async with self._connection_lock:
-            if self.is_connected:
-                return
-
-            conn = await aioamqp.connect(**self.connection_parameters)
-            self._transport, self._protocol = conn
-            self._channel = await self._protocol.channel()
-
-    async def close(self):
-        if not self.is_connected:
-            return
-
-        await self._protocol.close()
-        self._transport.close()
+    def deserialize(self, body: bytes) -> T:
+        return json.loads(body.decode())
 
     @_ensure_connected
-    async def ack(self, delivery_tag: int):
-        return await self._channel.basic_client_ack(delivery_tag)
+    async def ack(self, msg: AMQPMessage[T]):
+        return await msg.channel.basic_client_ack(msg.delivery_tag)
 
     @_ensure_connected
-    async def reject(self, delivery_tag: int, requeue=False):
-        return await self._channel.basic_reject(
-            delivery_tag=delivery_tag, requeue=requeue
+    async def reject(self, msg: AMQPMessage[T], requeue=False):
+        return await msg.channel.basic_reject(
+            delivery_tag=msg.delivery_tag, requeue=requeue
         )
 
     @_ensure_connected
@@ -166,25 +150,11 @@ class AsyncJsonQueue(BaseQueue):
         if not isinstance(serialized_data, bytes):
             serialized_data = serialized_data.encode()
 
-        return await self._channel.publish(
+        return await self.connection.channel.publish(
             payload=serialized_data,
             exchange_name=exchange,
             routing_key=routing_key,
         )
-
-    def _parse_message(self, body) -> Dict[str, Any]:
-        if self.max_message_length:
-            if len(body) > self.max_message_length:
-                raise InvalidMessageSizeException(body)
-        try:
-            # todo: >>Serialize<< com tipo byte não tem o mesmo tratamento
-            return self.deserialize(body)
-        except TypeError:
-            return self._parse_message(body.decode())
-        except JSONDecodeError:
-            raise UndecodableMessageException(
-                '"{body}" can\'t be decoded as JSON'.format(body=body)
-            )
 
     async def _handle_callback(self, callback, **kwargs):
         """
@@ -203,28 +173,28 @@ class AsyncJsonQueue(BaseQueue):
                 handler_error=e, **kwargs
             )
 
-    async def _handle_message(self, channel, body, envelope, properties):
-        """
-        :rtype: asyncio.Task
-        """
-        tag = envelope.delivery_tag
-        try:
-            content = self._parse_message(body)
-        except MessageError as e:
-            callback = self._handle_callback(
-                self.delegate.on_queue_error,
-                body=body,
-                delivery_tag=tag,
-                error=e,
-                queue=self,
-            )
-        else:
-            callback = self._handle_callback(
-                self.delegate.on_queue_message,
-                content=content,
-                delivery_tag=tag,
-                queue=self,
-            )
+    async def _handle_message(
+        self,
+        channel: Channel,
+        body: bytes,
+        envelope: Envelope,
+        properties: Properties,
+        queue_name: str,
+    ) -> Task:
+        msg = AMQPMessage(
+            connection=self.connection,
+            channel=channel,
+            envelope=envelope,
+            properties=properties,
+            delivery_tag=envelope.delivery_tag,
+            deserialization_method=self.deserialize,
+            queue_name=queue_name,
+            serialized_data=body,
+        )
+
+        callback = self._handle_callback(
+            self.delegate.on_queue_message, msg=msg  # type: ignore
+        )
         return self.loop.create_task(callback)
 
     @_ensure_connected
@@ -239,32 +209,32 @@ class AsyncJsonQueue(BaseQueue):
             raise RuntimeError("Cannot start a consumer without a delegate")
 
         await self.delegate.on_before_start_consumption(queue_name, queue=self)
-        await self._channel.basic_qos(
+        await self.connection.channel.basic_qos(
             prefetch_count=self.prefetch_count,
             prefetch_size=0,
             connection_global=False,
         )
-        tag = await self._channel.basic_consume(
-            callback=self._handle_message,
+        tag = await self.connection.channel.basic_consume(
+            callback=partial(self._handle_message, queue_name=queue_name),
             consumer_tag=consumer_name,
             queue_name=queue_name,
         )
         return tag["consumer_tag"]
 
+    @_ensure_connected
     async def start_consumer(self):
         """ Coroutine that starts the connection and the queue consumption """
-        await self.connect()
         consumer_tag = await self.consume(queue_name=self.delegate.queue_name)
         await self.delegate.on_consumption_start(consumer_tag, queue=self)
 
     async def stop_consumer(self, consumer_tag: str):
-        if self._channel is None:
+        if self.connection.channel is None:
             raise ConnectionError(
                 "Queue isn't connected. "
                 "Did you forgot to wait for `connect()`?"
             )
 
-        return await self._channel.basic_cancel(consumer_tag)
+        return await self.connection.channel.basic_cancel(consumer_tag)
 
 
 class AsyncQueueConsumerDelegate(metaclass=abc.ABCMeta):
@@ -306,18 +276,12 @@ class AsyncQueueConsumerDelegate(metaclass=abc.ABCMeta):
         """
 
     @abc.abstractmethod
-    async def on_queue_message(
-        self, content, delivery_tag, queue: AsyncJsonQueue
-    ):
+    async def on_queue_message(self, msg: AMQPMessage[Any]):
         """
         Callback called every time that a new, valid and deserialized message
         is ready to be handled.
 
-        :param delivery_tag: delivery_tag of the consumed message
-        :type delivery_tag: int
-        :param content: parsed message body
-        :type content: dict
-        :type queue: AsyncJsonQueue
+        :param msg: the consumed message
         """
         raise NotImplementedError
 

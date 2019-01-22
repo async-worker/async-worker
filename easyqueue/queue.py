@@ -30,7 +30,7 @@ class BaseQueue(metaclass=abc.ABCMeta):
         raise NotImplementedError
 
     @abc.abstractmethod
-    def deserialize(self, body: str) -> Any:
+    def deserialize(self, body: bytes) -> Any:
         raise NotImplementedError
 
     def _parse_message(self, content) -> Dict[str, Any]:
@@ -55,5 +55,5 @@ class BaseJsonQueue(BaseQueue):
     def serialize(self, body: Any, **kwargs) -> str:
         return json.dumps(body, **kwargs)
 
-    def deserialize(self, body: str) -> Any:
-        return json.loads(body)
+    def deserialize(self, body: bytes) -> Any:
+        return json.loads(body.decode())
