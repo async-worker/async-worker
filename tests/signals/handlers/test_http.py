@@ -1,7 +1,9 @@
 from random import randint
+import os
 
 import asyncio
 import asynctest
+from asynctest import mock
 from aiohttp import web
 from aiohttp.test_utils import TestClient, TestServer
 from asynctest import CoroutineMock, Mock, patch
@@ -106,13 +108,14 @@ class HTTPServerTests(asynctest.TestCase):
         async def index(r):
             return web.json_response({"OK": True})
 
-        await self.signal_handler.startup(self.app)
-        async with TestClient(
-            TestServer(self.app[RouteTypes.HTTP]["app"]),
-            loop=asyncio.get_event_loop(),
-        ) as client:
-            resp = await client.get("/")
-            self.assertEqual(resp.status, 200)
-            data = await resp.json()
-            self.assertDictEqual({"OK": True}, data)
-        await self.signal_handler.shutdown(self.app)
+        with mock.patch.dict(os.environ, ASYNCWORKER_HTTP_PORT="9999"):
+            await self.signal_handler.startup(self.app)
+            async with TestClient(
+                TestServer(self.app[RouteTypes.HTTP]["app"]),
+                loop=asyncio.get_event_loop(),
+            ) as client:
+                resp = await client.get("/")
+                self.assertEqual(resp.status, 200)
+                data = await resp.json()
+                self.assertDictEqual({"OK": True}, data)
+            await self.signal_handler.shutdown(self.app)
