@@ -1,11 +1,15 @@
 from random import randint
+import os
 
+import asyncio
 import asynctest
+from asynctest import mock
 from aiohttp import web
+from aiohttp.test_utils import TestClient, TestServer
 from asynctest import CoroutineMock, Mock, patch
 
 from asyncworker import App
-from asyncworker.conf import settings
+from asyncworker.conf import settings, Settings
 from asyncworker.signals.handlers.http import HTTPServer
 from asyncworker.routes import RouteTypes, RoutesRegistry
 
@@ -94,3 +98,28 @@ class HTTPServerTests(asynctest.TestCase):
         await self.signal_handler.shutdown(self.app)
 
         cleanup.assert_not_awaited()
+
+    async def test_simple_handler_200_response(self):
+        """
+        Tests if a response is correctly handled, Starts a real aiohttp server
+        """
+
+        @self.app.route(["/"], type=RouteTypes.HTTP, methods=["GET"])
+        async def index(r):
+            return web.json_response({"OK": True})
+
+        with mock.patch.dict(os.environ, ASYNCWORKER_HTTP_PORT="9999"):
+            settings_mock = Settings()
+            with mock.patch(
+                "asyncworker.signals.handlers.http.settings", settings_mock
+            ):
+                await self.signal_handler.startup(self.app)
+                async with TestClient(
+                    TestServer(self.app[RouteTypes.HTTP]["app"]),
+                    loop=asyncio.get_event_loop(),
+                ) as client:
+                    resp = await client.get("/")
+                    self.assertEqual(resp.status, 200)
+                    data = await resp.json()
+                    self.assertDictEqual({"OK": True}, data)
+                await self.signal_handler.shutdown(self.app)
