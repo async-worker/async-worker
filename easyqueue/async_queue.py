@@ -1,6 +1,6 @@
 import abc
 import logging
-from functools import wraps, partial
+from functools import wraps
 import traceback
 import asyncio
 from asyncio import AbstractEventLoop, Task
@@ -11,7 +11,6 @@ from typing import (
     Coroutine,
     Union,
     Optional,
-    Dict,
     TypeVar,
     Generic,
 )
