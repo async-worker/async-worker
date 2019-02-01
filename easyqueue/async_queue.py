@@ -232,7 +232,9 @@ class AsyncJsonQueue(BaseQueue, Generic[T]):
             delegate=delegate, queue=self, queue_name=queue_name
         )
 
-        await delegate.on_before_start_consumption(queue_name, queue=self)
+        await delegate.on_before_start_consumption(
+            queue_name=queue_name, queue=self
+        )
         await self.connection.channel.basic_qos(
             prefetch_count=self.prefetch_count,
             prefetch_size=0,
@@ -244,7 +246,9 @@ class AsyncJsonQueue(BaseQueue, Generic[T]):
             queue_name=queue_name,
         )
         consumer_tag = tag["consumer_tag"]
-        await delegate.on_consumption_start(consumer_tag, queue=self)
+        await delegate.on_consumption_start(
+            consumer_tag=consumer_tag, queue=self
+        )
         handler.consumer_tag = consumer_tag
         return consumer_tag
 
@@ -259,22 +263,6 @@ class AsyncJsonQueue(BaseQueue, Generic[T]):
 
 
 class AsyncQueueConsumerDelegate(metaclass=abc.ABCMeta):
-    queue: AsyncJsonQueue
-
-    def __init__(self, loop: AbstractEventLoop, queue: AsyncJsonQueue) -> None:
-        self.loop = loop
-        self.queue = queue
-
-    @property
-    @abc.abstractmethod
-    def queue_name(self) -> str:
-        """ Name of the input queue to consume """
-        raise NotImplementedError
-
-    async def start(self) -> None:
-        """ Coroutine that starts the connection and the queue consumption """
-        await self.queue.start_consumer()
-
     async def on_before_start_consumption(
         self, queue_name: str, queue: AsyncJsonQueue
     ):
