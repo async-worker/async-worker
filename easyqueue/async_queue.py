@@ -135,7 +135,7 @@ class AsyncJsonQueue(BaseQueue, Generic[T]):
             raise ValueError("Cant provide both delegate and delegate_class")
 
         if delegate_class is not None:
-            self.delegate = delegate_class(loop=self.loop, queue=self)
+            self.delegate = delegate_class()
         else:
             self.delegate = delegate
 

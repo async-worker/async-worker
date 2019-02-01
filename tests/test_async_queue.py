@@ -133,15 +133,8 @@ class AsynQueueTests(asynctest.TestCase):
         self
     ):
         delegate_class = Mock()
-        loop = Mock()
-        queue = AsyncJsonQueue(
-            host="diogommartins.com",
-            username="diogo",
-            password="XablauBolado",
-            loop=loop,
-            delegate_class=delegate_class,
-        )
-        delegate_class.assert_called_once_with(loop=loop, queue=queue)
+        AsyncJsonQueue(Mock(), Mock(), Mock(), delegate_class=delegate_class)
+        delegate_class.assert_called_once_with()
 
 
 class AsyncQueueConnectionTests(AsyncBaseTestCase, asynctest.TestCase):
@@ -467,19 +460,6 @@ class AsyncQueueConsumerTests(AsyncBaseTestCase, asynctest.TestCase):
         self.assertTrue(self._connect.called)
 
     async def test_calling_consume_notifies_delegate(self):
-        # class Foo(AsyncQueueConsumerDelegate):
-        #     on_connection_error = CoroutineMock()
-        #     on_consumption_start = CoroutineMock()
-        #     on_message_handle_error = CoroutineMock()
-        #     on_queue_error = CoroutineMock()
-        #     on_queue_message = CoroutineMock()
-        #
-        # consumer = Foo()
-        # self.queue.delegate = consumer
-        #
-        # await consumer.start()
-        #
-        # consumer.queue.start_consumer.assert_awaited_once()
         expected_prefetch_count = 666
         self.queue.prefetch_count = expected_prefetch_count
         delegate = Mock(spec=AsyncQueueConsumerDelegate)
