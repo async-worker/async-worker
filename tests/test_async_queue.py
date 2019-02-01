@@ -3,12 +3,13 @@ import logging
 
 import aioamqp
 import asynctest
-from asynctest.mock import CoroutineMock
-from unittest.mock import Mock, patch, call, ANY
+from asynctest.mock import CoroutineMock, Mock
+from unittest.mock import patch, call, ANY
 from easyqueue.async_queue import (
     AsyncJsonQueue,
     AsyncQueueConsumerDelegate,
     _ensure_connected,
+    ConsumptionHandler,
 )
 from easyqueue.message import AMQPMessage
 
@@ -399,8 +400,16 @@ class AsyncQueueConsumerTests(AsyncBaseTestCase, asynctest.TestCase):
         expected_prefetch_count = 666
 
         self.queue.prefetch_count = expected_prefetch_count
-        with patch.object(self.queue, "_handle_message", CoroutineMock()):
-            await self.queue.consume(queue_name, consumer_name)
+        with patch(
+            "easyqueue.async_queue.ConsumptionHandler",
+            return_value=Mock(spec=ConsumptionHandler),
+        ) as Handler:
+            delegate = Mock(spec=AsyncQueueConsumerDelegate)
+            await self.queue.consume(
+                queue_name=queue_name,
+                consumer_name=consumer_name,
+                delegate=delegate,
+            )
 
             expected = call(
                 callback=ANY, queue_name=queue_name, consumer_tag=consumer_name
@@ -422,13 +431,14 @@ class AsyncQueueConsumerTests(AsyncBaseTestCase, asynctest.TestCase):
                 envelope=envelope,
                 properties=properties,
             )
-
-            self.queue._handle_message.assert_awaited_once_with(
+            Handler.assert_called_once_with(
+                delegate=delegate, queue=self.queue, queue_name=queue_name
+            )
+            Handler.return_value.handle_message.assert_awaited_once_with(
                 channel=channel,
                 body=body,
                 envelope=envelope,
                 properties=properties,
-                queue_name=queue_name,
             )
 
     async def test_calling_consume_sets_a_prefetch_qos(self):
@@ -468,35 +478,15 @@ class AsyncQueueConsumerTests(AsyncBaseTestCase, asynctest.TestCase):
             patched_consume.assert_called_once_with(queue_name=q_name)
             self.assertTrue(self._connect.called)
 
-    async def test_starting_the_consumer_calls_on_consumer_starts_on_delegate_class(
-        self
-    ):
-        consumer = Mock(queue=self.queue, on_consumption_start=CoroutineMock())
-        self.queue.delegate = consumer
-        consumer_tag = "Xablau"
-        with patch.object(
-            self.queue, "consume", CoroutineMock(return_value=consumer_tag)
-        ):
-            await consumer.queue.start_consumer()
-            consumer.on_consumption_start.assert_awaited_once_with(
-                consumer_tag, queue=self.queue
-            )
-
-    async def test_calling_consume_starts_a_consumption_task(self):
-        q_name = "dance.to.the.decadence.dance"
-
+    async def test_calling_consume_notifies_delegate(self):
         class Foo(AsyncQueueConsumerDelegate):
-            queue_name = q_name
-
             on_connection_error = CoroutineMock()
             on_consumption_start = CoroutineMock()
             on_message_handle_error = CoroutineMock()
             on_queue_error = CoroutineMock()
             on_queue_message = CoroutineMock()
 
-        consumer = Foo(
-            loop=self.loop, queue=CoroutineMock(start_consumer=CoroutineMock())
-        )
+        consumer = Foo()
         self.queue.delegate = consumer
 
         await consumer.start()
@@ -510,22 +500,23 @@ class AsyncQueueConsumerHandlerMethodsTests(
     consumer_tag = "666"
 
     def get_consumer(self):
-        return CoroutineMock(
-            on_before_start_consumption=CoroutineMock(),
-            on_message_handle_error=CoroutineMock(),
-            queue_name=self.test_queue_name,
-        )
+        return Mock(spec=AsyncQueueConsumerDelegate)
 
     async def setUp(self):
         super().setUp()
         self.properties = Mock(name="Properties")
-        await self.queue.connection._connect()
-
+        self.delegate = Mock(spec=AsyncQueueConsumerDelegate)
         consumer_tag = await self.queue.consume(
             queue_name=self.test_queue_name,
+            delegate=self.delegate,
             consumer_name=self.__class__.__name__,
         )
         self.envelope = Mock(name="Envelope", consumer_tag=consumer_tag)
+        self.handler = ConsumptionHandler(
+            delegate=self.delegate,
+            queue=self.queue,
+            queue_name=self.test_queue_name,
+        )
 
     async def test_it_calls_on_queue_message_with_the_message_body_wrapped_as_a_AMQPMessage_instance(
         self
@@ -537,21 +528,19 @@ class AsyncQueueConsumerHandlerMethodsTests(
         }
         body = json.dumps(content).encode("utf-8")
         with patch.object(
-            self.queue, "_handle_callback", CoroutineMock()
+            self.handler, "_handle_callback", CoroutineMock()
         ) as _handle_callback:
-            await self.queue._handle_message(
+            await self.handler.handle_message(
                 channel=self.queue.connection.channel,
                 body=body,
                 envelope=self.envelope,
                 properties=self.properties,
-                queue_name=self.test_queue_name,
             )
 
-            consumer = self.queue.delegate
-            consumer.on_queue_error.assert_not_called()
+            self.handler.delegate.on_queue_error.assert_not_called()
 
             _handle_callback.assert_called_once_with(
-                consumer.on_queue_message,
+                self.handler.delegate.on_queue_message,
                 msg=AMQPMessage(
                     connection=self.queue.connection,
                     channel=self.queue.connection.channel,
@@ -573,22 +562,21 @@ class AsyncQueueConsumerHandlerMethodsTests(
             "album": "Livro",
         }
 
-        consumer = self.queue.delegate
-        error = consumer.on_queue_message.side_effect = KeyError()
+        error = self.handler.delegate.on_queue_message.side_effect = KeyError()
         kwargs = dict(
-            callback=consumer.on_queue_message,
+            callback=self.handler.delegate.on_queue_message,
             channel=self.queue.connection.channel,
             body=json.dumps(content),
             envelope=self.envelope,
             properties=self.properties,
         )
-        await self.queue._handle_callback(**kwargs)
+        await self.handler._handle_callback(**kwargs)
 
-        self.assertFalse(consumer.on_queue_error.called)
+        self.assertFalse(self.handler.delegate.on_queue_error.called)
 
         del kwargs["callback"]
 
-        consumer.on_message_handle_error.assert_called_once_with(
+        self.handler.delegate.on_message_handle_error.assert_called_once_with(
             handler_error=error, **kwargs
         )
 
