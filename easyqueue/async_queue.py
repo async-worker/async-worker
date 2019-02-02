@@ -137,7 +137,7 @@ class AsyncJsonQueue(BaseQueue, Generic[T]):
         if delegate_class is not None:
             self.delegate = delegate_class()
         else:
-            self.delegate = delegate
+            self.delegate = delegate  # type: ignore
 
         self.prefetch_count = prefetch_count
 
