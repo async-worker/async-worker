@@ -1,6 +1,16 @@
 import abc
 from collections import UserDict
-from typing import Callable, Coroutine, Dict, List, Any, Union, Iterable
+from typing import (
+    Callable,
+    Coroutine,
+    Dict,
+    List,
+    Any,
+    Union,
+    Iterable,
+    Mapping,
+    Type,
+)
 
 from aiohttp.web_routedef import RouteDef
 from cached_property import cached_property
@@ -12,7 +22,11 @@ from asyncworker.options import DefaultValues, RouteTypes, Actions
 RouteHandler = Callable[[], Coroutine]
 
 
-class Model(BaseModel, abc.ABC):
+class Model(BaseModel, Mapping, abc.ABC):
+    """
+    An abstract pydantic BaseModel that also behaves like a Mapping
+    """
+
     def __getitem__(self, item):
         try:
             return self.__getattr__(item)
@@ -23,6 +37,12 @@ class Model(BaseModel, abc.ABC):
         if isinstance(other, dict):
             return self.dict() == other
         return super(Model, self).__eq__(other)
+
+    def __len__(self):
+        return len(self.fields)
+
+    def keys(self):
+        return self.fields.keys()
 
     def get(self, key, default=None):
         try:
@@ -48,15 +68,13 @@ class Route(Model, abc.ABC):
         except KeyError as e:
             raise ValueError("Routes must have a type") from e
 
-        if type_ not in RouteTypes:
-            raise ValueError(f"'{type_}' is an invalid RouteType.")
-
         if type_ == RouteTypes.HTTP:
             return HTTPRoute(**data)
         if type_ == RouteTypes.AMQP_RABBITMQ:
             return AMQPRoute(**data)
         if type_ == RouteTypes.SSE:
             return SSERoute(**data)
+        raise ValueError(f"'{type_}' is an invalid RouteType.")
 
 
 class HTTPRoute(Route):
@@ -111,21 +129,20 @@ class SSERoute(Route):
 
 
 class RoutesRegistry(UserDict):
+    def _get_routes_for_type(self, route_type: Type) -> Iterable:
+        return tuple((r for r in self.values() if isinstance(r, route_type)))
+
     @cached_property
-    def http_routes(self) -> Iterable[RouteDef]:
-        routes = []
-        for handler, route in self.items():
-            if isinstance(route, HTTPRoute):
-                routes.extend(route.aiohttp_routes())
-        return routes
+    def http_routes(self) -> Iterable[HTTPRoute]:
+        return self._get_routes_for_type(HTTPRoute)
 
     @cached_property
     def amqp_routes(self) -> Iterable[AMQPRoute]:
-        return tuple((r for r in self.values() if isinstance(r, AMQPRoute)))
+        return self._get_routes_for_type(AMQPRoute)
 
     @cached_property
     def sse_routes(self) -> Iterable[SSERoute]:
-        return tuple((r for r in self.values() if isinstance(r, SSERoute)))
+        return self._get_routes_for_type(SSERoute)
 
     def __setitem__(self, key: RouteHandler, value: Union[Dict, Route]):
         if not isinstance(value, Route):
