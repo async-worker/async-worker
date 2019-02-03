@@ -6,6 +6,7 @@ from signal import Signals
 
 from asyncworker import BaseApp
 from asyncworker.options import RouteTypes, DefaultValues, Options
+from asyncworker.routes import AMQPRoute
 from asyncworker.task_runners import ScheduledTaskRunner
 
 
@@ -74,19 +75,8 @@ class BaseAppTests(asynctest.TestCase):
             handler
         )
 
-        self.assertEqual(
-            self.app.routes_registry,
-            {
-                handler: {
-                    "type": RouteTypes.AMQP_RABBITMQ,
-                    "routes": ["route"],
-                    "handler": handler,
-                    "options": {},
-                    "default_options": self.app.default_route_options,
-                    "dog": "Xablau",
-                }
-            },
-        )
+        self.assertEqual(len(self.app.routes_registry), 1)
+        self.assertIsInstance(self.app.routes_registry[handler], AMQPRoute)
 
     async def test_run_on_startup_registers_a_coroutine_to_be_executed_on_startup(
         self
