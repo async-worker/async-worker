@@ -55,7 +55,7 @@ def _ensure_connected(coro: Callable[..., Coroutine]):
 T = TypeVar("T")
 
 
-class ConsumptionHandler:
+class _ConsumptionHandler:
     def __init__(
         self,
         delegate: "AsyncQueueConsumerDelegate",
@@ -227,7 +227,7 @@ class AsyncJsonQueue(BaseQueue, Generic[T]):
         :return: The consumer tag. Useful for cancelling/stopping consumption
         """
         # todo: Implement a consumer tag generator
-        handler = ConsumptionHandler(
+        handler = _ConsumptionHandler(
             delegate=delegate, queue=self, queue_name=queue_name
         )
 

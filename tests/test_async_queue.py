@@ -9,7 +9,7 @@ from easyqueue.async_queue import (
     AsyncJsonQueue,
     AsyncQueueConsumerDelegate,
     _ensure_connected,
-    ConsumptionHandler,
+    _ConsumptionHandler,
 )
 from easyqueue.message import AMQPMessage
 
@@ -393,8 +393,8 @@ class AsyncQueueConsumerTests(AsyncBaseTestCase, asynctest.TestCase):
 
         self.queue.prefetch_count = expected_prefetch_count
         with patch(
-            "easyqueue.async_queue.ConsumptionHandler",
-            return_value=Mock(spec=ConsumptionHandler),
+            "easyqueue.async_queue._ConsumptionHandler",
+            return_value=Mock(spec=_ConsumptionHandler),
         ) as Handler:
             delegate = Mock(spec=AsyncQueueConsumerDelegate)
             await self.queue.consume(
@@ -493,7 +493,7 @@ class AsyncQueueConsumerHandlerMethodsTests(
             consumer_name=self.__class__.__name__,
         )
         self.envelope = Mock(name="Envelope", consumer_tag=consumer_tag)
-        self.handler = ConsumptionHandler(
+        self.handler = _ConsumptionHandler(
             delegate=self.delegate,
             queue=self.queue,
             queue_name=self.test_queue_name,
