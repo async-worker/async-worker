@@ -11,6 +11,7 @@ class Settings(BaseSettings):
 
     HTTP_HOST: str = "127.0.0.1"
     HTTP_PORT: int = 8080
+    TIMEOUT_TO_FLUSH_IN_SEC: int = 10
 
     class Config:
         allow_mutation = False

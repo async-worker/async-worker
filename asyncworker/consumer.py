@@ -91,7 +91,7 @@ class Consumer(AsyncQueueConsumerDelegate):
                 )
                 self.bucket.put(message)
 
-            if self.bucket.is_full():
+            if self.bucket.is_full() or self.bucket.is_time_to_flush():
                 all_messages = self.bucket.pop_all()
                 rv = await self._handler(all_messages)
                 await asyncio.gather(
