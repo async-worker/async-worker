@@ -293,23 +293,6 @@ class AsyncQueueConsumerDelegate(metaclass=abc.ABCMeta):
         """
         raise NotImplementedError
 
-    async def on_queue_error(
-        self, body, delivery_tag: int, error: Exception, queue: AsyncJsonQueue
-    ):
-        """
-        Callback called every time that an error occurred during the validation
-        or deserialization stage.
-
-        :param body: unparsed, raw message content
-        :type body: Any
-        :param delivery_tag: delivery_tag of the consumed message
-        :type delivery_tag: int
-        :param error: THe error that caused the callback to be called
-        :type error: MessageError
-        :type queue: AsyncJsonQueue
-        """
-        pass
-
     async def on_message_handle_error(self, handler_error: Exception, **kwargs):
         """
         Callback called when an uncaught exception was raised during message
