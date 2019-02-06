@@ -51,7 +51,7 @@ class Model(BaseModel, Mapping, abc.ABC):
             return default
 
 
-class Route(Model, abc.ABC):
+class Route(Model):
     """
     An abstract Model that acts like a route factory
     """
