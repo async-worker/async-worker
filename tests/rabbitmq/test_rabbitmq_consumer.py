@@ -764,7 +764,7 @@ class ConsumerTest(asynctest.TestCase):
         consumer = Consumer(self.one_route_fixture, *self.connection_parameters)
         with unittest.mock.patch.object(
             consumer, "keep_runnig", side_effect=[True, True, True, False]
-        ), mock.patch.object(asyncio, "sleep"):
+        ):
             is_connected_mock = mock.PropertyMock(
                 side_effect=[True, False, False]
             )
