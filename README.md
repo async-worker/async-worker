@@ -55,7 +55,7 @@ class MyConsumer(AsyncQueueConsumerDelegate):
                                       handler_error: Exception,
                                       **kwargs):
         print("I'm called if an unhandled exception is raised on"
-              "on_queue_message or on_queue_error")
+              "on_queue_message")
 
     async def on_consumption_start(self,
                                    consumer_tag: str,

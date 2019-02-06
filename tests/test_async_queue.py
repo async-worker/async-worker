@@ -143,7 +143,6 @@ class AsyncQueueConnectionTests(AsyncBaseTestCase, asynctest.TestCase):
 
     async def test_it_dosent_call_consumer_handler_methods(self):
         self.assertFalse(self.queue.delegate.on_queue_message.called)
-        self.assertFalse(self.queue.delegate.on_queue_error.called)
 
     async def test_it_puts_messages_into_queue_as_json_if_message_is_a_json_serializeable(
         self
@@ -518,8 +517,6 @@ class AsyncQueueConsumerHandlerMethodsTests(
                 properties=self.properties,
             )
 
-            self.handler.delegate.on_queue_error.assert_not_called()
-
             _handle_callback.assert_called_once_with(
                 self.handler.delegate.on_queue_message,
                 msg=AMQPMessage(
@@ -552,8 +549,6 @@ class AsyncQueueConsumerHandlerMethodsTests(
             properties=self.properties,
         )
         await self.handler._handle_callback(**kwargs)
-
-        self.assertFalse(self.handler.delegate.on_queue_error.called)
 
         del kwargs["callback"]
 
