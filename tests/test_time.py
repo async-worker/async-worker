@@ -40,6 +40,8 @@ class ClockTickerTests(asynctest.TestCase):
             clock = ClockTicker(seconds=2)
             self.assertTrue(clock._should_iter())
 
+            self.assertFalse(clock._should_iter())
+
             frozen_datetime.tick(delta=datetime.timedelta(seconds=2))
             self.assertTrue(clock._should_iter())
 

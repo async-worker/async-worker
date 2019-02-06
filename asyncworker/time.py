@@ -32,6 +32,10 @@ class ClockTicker(AsyncIterator):
         self._running: Optional[bool] = None
         self._main_task: Optional[asyncio.Future] = None
         self.started_at = self.now()
+        self._last_tick: Optional[int] = None
+
+    def is_running(self) -> Optional[bool]:
+        return self._running
 
     def now(self) -> int:
         """
@@ -61,7 +65,12 @@ class ClockTicker(AsyncIterator):
         return i
 
     def _should_iter(self) -> bool:
-        return (self.now() - self.started_at) % self.seconds == 0
+        now = self.now()
+        is_valid_interval = (now - self.started_at) % self.seconds == 0
+        if self._last_tick != now and is_valid_interval:
+            self._last_tick = now
+            return True
+        return False
 
     async def _run(self) -> None:
         while self._running:
