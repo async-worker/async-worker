@@ -151,12 +151,8 @@ class RoutesRegistry(UserDict):
             route = value
         super(RoutesRegistry, self).__setitem__(key, route)
 
-    def add_route(self, route: Union[Dict, Route]) -> Route:
-        if not isinstance(route, Route):
-            route = Route.factory(route)
-
+    def add_route(self, route: Route) -> None:
         self[route.handler] = route
-        return route
 
     def route_for(self, handler: RouteHandler) -> Route:
         return self[handler]
