@@ -1,15 +1,16 @@
 import asyncio
 import unittest
+from datetime import datetime
+
 from asynctest import CoroutineMock, mock
 import asynctest
-import importlib
 
 from easyqueue import AsyncQueue
 from aioamqp.exceptions import AioamqpException
+from freezegun import freeze_time
 
 from asyncworker.bucket import Bucket
 from asyncworker.consumer import Consumer
-import asyncworker.consumer
 from asyncworker import conf, App
 from asyncworker.rabbitmq.message import RabbitMQMessage
 from asyncworker.options import Events, Actions, RouteTypes
@@ -373,6 +374,56 @@ class ConsumerTest(asynctest.TestCase):
 
         self.assertCountEqual(
             [mock.call(delivery_tag=10), mock.call(delivery_tag=20)],
+            queue_mock.ack.await_args_list,
+        )
+        self.assertEqual(0, queue_mock.reject.call_count)
+
+    @freeze_time("2019-2-5 15:45:39")
+    async def test_on_queue_message_flush_bucket_when_timeout_was_expired(self):
+        """
+        Confere que o handler é chamado quando o bucket atinge o timeout de flush.
+        E que o handler é chamado com a lista de mensagens.
+        * Bucket deve estart vazio após o "flush"
+        """
+
+        class MyBucket(Bucket):
+            def pop_all(self):
+                return self._items
+
+        handler_mock = CoroutineMock()
+        self.one_route_fixture["handler"] = handler_mock
+        self.one_route_fixture["options"]["bulk_size"] = 5
+
+        consumer = Consumer(
+            self.one_route_fixture,
+            *self.connection_parameters,
+            bucket_class=MyBucket,
+        )
+        queue_mock = CoroutineMock(ack=CoroutineMock())
+
+        await consumer.on_queue_message(
+            {"key": "value"}, delivery_tag=10, queue=queue_mock
+        )
+        self.assertEqual(0, handler_mock.await_count)
+
+        await consumer.on_queue_message(
+            {"key": "value"}, delivery_tag=20, queue=queue_mock
+        )
+        self.assertEqual(0, handler_mock.await_count)
+
+        consumer.bucket.last_bucket_flush = datetime(2019, 2, 5, 15, 45, 29)
+        await consumer.on_queue_message(
+            {"key": "value"}, delivery_tag=30, queue=queue_mock
+        )
+        self.assertEqual(1, handler_mock.await_count)
+        handler_mock.assert_awaited_once_with(consumer.bucket._items)
+
+        self.assertCountEqual(
+            [
+                mock.call(delivery_tag=10),
+                mock.call(delivery_tag=20),
+                mock.call(delivery_tag=30),
+            ],
             queue_mock.ack.await_args_list,
         )
         self.assertEqual(0, queue_mock.reject.call_count)
