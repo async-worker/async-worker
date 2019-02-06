@@ -1,7 +1,4 @@
-from datetime import datetime
-
 import asynctest
-from freezegun import freeze_time
 
 from asyncworker.bucket import Bucket, BucketFullException
 
@@ -73,22 +70,3 @@ class BucketTest(asynctest.TestCase):
 
         bucket._items = []
         self.assertTrue(bucket.is_empty())
-
-    @freeze_time("2019-2-5 15:45:39")
-    def test_tells_if_is_time_to_flush_bucket(self):
-        bucket = Bucket(size=5)
-
-        bucket._items = []
-        bucket.last_bucket_flush = datetime(2019, 2, 5, 15, 45, 39)
-        self.assertFalse(bucket.is_time_to_flush())
-
-        bucket._items = [1, 3, 2]
-        self.assertFalse(bucket.is_time_to_flush())
-
-        bucket._items = [1, 3, 2]
-        bucket.last_bucket_flush = datetime(2019, 2, 5, 15, 44, 39)
-        self.assertTrue(bucket.is_time_to_flush())
-
-        bucket._items = []
-        bucket.last_bucket_flush = datetime(2019, 2, 5, 15, 44, 39)
-        self.assertFalse(bucket.is_time_to_flush())

@@ -1,7 +1,5 @@
-from datetime import datetime, timedelta
-from typing import List, Any, TypeVar, Generic
-
-from asyncworker import conf
+from datetime import datetime
+from typing import List, TypeVar, Generic
 
 T = TypeVar("T")
 
@@ -19,11 +17,6 @@ class Bucket(Generic[T]):
 
     def is_empty(self) -> bool:
         return len(self._items) == 0
-
-    def is_time_to_flush(self) -> bool:
-        return not self.is_empty() and datetime.utcnow() - self.last_bucket_flush >= timedelta(
-            seconds=conf.settings.TIMEOUT_TO_FLUSH_IN_SEC
-        )
 
     def put(self, item: T):
         if self.is_full():
