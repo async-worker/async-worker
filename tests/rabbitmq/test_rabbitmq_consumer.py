@@ -762,7 +762,7 @@ class ConsumerTest(asynctest.TestCase):
             await consumer.start()
         # Realizando sleep para devolver o loop para o clock
         await asyncio.sleep(0.01)
-        self.assertFalse(consumer.clock.is_running())
+        self.assertIsNone(consumer.clock_task)
         await consumer.clock.stop()
 
     async def test_start_create_clock_flusher(self):
@@ -787,7 +787,7 @@ class ConsumerTest(asynctest.TestCase):
             await consumer.start()
         # Realizando sleep para devolver o loop para o clock
         await asyncio.sleep(0.01)
-        self.assertTrue(consumer.clock.is_running())
+        self.assertIsNotNone(consumer.clock_task)
         await consumer.clock.stop()
 
     async def test_start_dont_created_another_clock_when_restart(self):
