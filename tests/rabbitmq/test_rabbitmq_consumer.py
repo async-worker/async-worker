@@ -662,7 +662,9 @@ class ConsumerTest(asynctest.TestCase):
 
         with asynctest.patch.object(
             consumer, "keep_runnig", side_effect=[True, False]
-        ) as keep_running_mock, asynctest.patch.object(consumer, 'clock_task', side_effect=[True, True]):
+        ) as keep_running_mock, asynctest.patch.object(
+            consumer, "clock_task", side_effect=[True, True]
+        ):
             await consumer.start()
 
         self.assertEqual(1, queue_mock.connect.await_count)
@@ -683,7 +685,9 @@ class ConsumerTest(asynctest.TestCase):
         consumer = Consumer(self.one_route_fixture, *self.connection_parameters)
         with unittest.mock.patch.object(
             consumer, "keep_runnig", side_effect=[True, True, False]
-        ), asynctest.patch.object(asyncio, "sleep"), asynctest.patch.object(consumer, 'clock_task', side_effect=[True, True]):
+        ), asynctest.patch.object(asyncio, "sleep"), asynctest.patch.object(
+            consumer, "clock_task", side_effect=[True, True]
+        ):
             is_connected_mock = mock.PropertyMock(
                 side_effect=[False, False, True]
             )
@@ -719,7 +723,11 @@ class ConsumerTest(asynctest.TestCase):
         consumer = Consumer(self.one_route_fixture, *self.connection_parameters)
         with unittest.mock.patch.object(
             consumer, "keep_runnig", side_effect=[True, True, True, False]
-        ), asynctest.patch.object(asyncio, "sleep") as sleep_mock, asynctest.patch.object(consumer, 'clock_task', side_effect=[True, True]):
+        ), asynctest.patch.object(
+            asyncio, "sleep"
+        ) as sleep_mock, asynctest.patch.object(
+            consumer, "clock_task", side_effect=[True, True]
+        ):
             is_connected_mock = mock.PropertyMock(
                 side_effect=[False, True, True, True]
             )
