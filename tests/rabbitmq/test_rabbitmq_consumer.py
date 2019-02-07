@@ -499,7 +499,7 @@ class ConsumerTest(asynctest.TestCase):
         )
         self.assertEqual(0, handler_mock.await_count)
 
-        asyncio.create_task(consumer._flush_clocked(queue_mock))
+        self.loop.create_task(consumer._flush_clocked(queue_mock))
         # Realizando sleep para devolver o loop para o clock
         await asyncio.sleep(0.01)
         self.assertEqual(1, handler_mock.await_count)
@@ -532,7 +532,7 @@ class ConsumerTest(asynctest.TestCase):
         )
         queue_mock = CoroutineMock(ack=CoroutineMock())
 
-        asyncio.create_task(consumer._flush_clocked(queue_mock))
+        self.loop.create_task(consumer._flush_clocked(queue_mock))
         # Realizando sleep para devolver o loop para o clock
         await asyncio.sleep(0.01)
         self.assertEqual(0, handler_mock.await_count)
@@ -561,7 +561,7 @@ class ConsumerTest(asynctest.TestCase):
             "_flush_bucket_if_needed",
             side_effect=[my_except, my_except],
         ) as mocked:
-            asyncio.create_task(consumer._flush_clocked(queue_mock))
+            self.loop.create_task(consumer._flush_clocked(queue_mock))
             # Realizando sleep para devolver o loop para o clock
             await asyncio.sleep(0.01)
             self.assertEqual(2, mocked.await_count)
@@ -662,7 +662,7 @@ class ConsumerTest(asynctest.TestCase):
 
         with asynctest.patch.object(
             consumer, "keep_runnig", side_effect=[True, False]
-        ) as keep_running_mock:
+        ) as keep_running_mock, asynctest.patch.object(consumer, 'clock_task', side_effect=[True, True]):
             await consumer.start()
 
         self.assertEqual(1, queue_mock.connect.await_count)
@@ -683,7 +683,7 @@ class ConsumerTest(asynctest.TestCase):
         consumer = Consumer(self.one_route_fixture, *self.connection_parameters)
         with unittest.mock.patch.object(
             consumer, "keep_runnig", side_effect=[True, True, False]
-        ), asynctest.patch.object(asyncio, "sleep"):
+        ), asynctest.patch.object(asyncio, "sleep"), asynctest.patch.object(consumer, 'clock_task', side_effect=[True, True]):
             is_connected_mock = mock.PropertyMock(
                 side_effect=[False, False, True]
             )
@@ -719,7 +719,7 @@ class ConsumerTest(asynctest.TestCase):
         consumer = Consumer(self.one_route_fixture, *self.connection_parameters)
         with unittest.mock.patch.object(
             consumer, "keep_runnig", side_effect=[True, True, True, False]
-        ), asynctest.patch.object(asyncio, "sleep") as sleep_mock:
+        ), asynctest.patch.object(asyncio, "sleep") as sleep_mock, asynctest.patch.object(consumer, 'clock_task', side_effect=[True, True]):
             is_connected_mock = mock.PropertyMock(
                 side_effect=[False, True, True, True]
             )
@@ -755,6 +755,7 @@ class ConsumerTest(asynctest.TestCase):
         # Realizando sleep para devolver o loop para o clock
         await asyncio.sleep(0.01)
         self.assertFalse(consumer.clock.is_running())
+        await consumer.clock.stop()
 
     async def test_start_create_clock_flusher(self):
         self.one_route_fixture["routes"] = [
@@ -779,6 +780,7 @@ class ConsumerTest(asynctest.TestCase):
         # Realizando sleep para devolver o loop para o clock
         await asyncio.sleep(0.01)
         self.assertTrue(consumer.clock.is_running())
+        await consumer.clock.stop()
 
     async def test_start_dont_created_another_clock_when_restart(self):
         self.one_route_fixture["routes"] = [
@@ -806,3 +808,4 @@ class ConsumerTest(asynctest.TestCase):
         # Realizando sleep para devolver o loop para o clock
         await asyncio.sleep(0.01)
         self.assertTrue(my_task is consumer.clock_task)
+        await consumer.clock.stop()
