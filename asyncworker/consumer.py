@@ -194,7 +194,7 @@ class Consumer(AsyncQueueConsumerDelegate):
 
                     if not self.clock_task:
                         self.clock_task = self._flush_clocked(self.queue)
-                        asyncio.create_task(self.clock_task)
+                        asyncio.get_event_loop().create_task(self.clock_task)
 
                 except Exception as e:
                     await conf.logger.error(
