@@ -61,12 +61,13 @@ class BucketTest(asynctest.TestCase):
 
     def test_tells_if_bucket_is_empty(self):
         bucket = Bucket(size=1)
-        bucket._items = []
+        bucket.pop_all()
         self.assertTrue(bucket.is_empty())
 
         bucket = Bucket(size=10)
-        bucket._items = [1, 2, 3]
+        for i in range(3):
+            bucket.put(i)
         self.assertFalse(bucket.is_empty())
 
-        bucket._items = []
+        bucket.pop_all()
         self.assertTrue(bucket.is_empty())
