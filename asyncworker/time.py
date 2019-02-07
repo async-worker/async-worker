@@ -34,9 +34,6 @@ class ClockTicker(AsyncIterator):
         self.started_at = self.now()
         self._last_tick: Optional[int] = None
 
-    def is_running(self) -> Optional[bool]:
-        return self._running
-
     def now(self) -> int:
         """
         Returns an integer corresponding to the current time in seconds since
