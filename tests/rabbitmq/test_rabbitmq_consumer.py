@@ -570,7 +570,6 @@ class ConsumerTest(asynctest.TestCase):
         await consumer.clock.stop()
         await asyncio.sleep(0.1)
 
-
     async def test_on_message_handle_error_logs_exception(self):
         """
         Logamos a exception lançada pelo handler.
