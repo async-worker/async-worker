@@ -32,13 +32,6 @@ class ClockTicker(AsyncIterator):
         self._running: Optional[bool] = None
         self._main_task: Optional[asyncio.Future] = None
 
-    def now(self) -> int:
-        """
-        Returns an integer corresponding to the current time in seconds since
-        the Epoch
-        """
-        return int(time.time())
-
     def __aiter__(self) -> AsyncIterator:
         if self._running is not None:
             raise RuntimeError("Cannot reuse a clock instance.")
