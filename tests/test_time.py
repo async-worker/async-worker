@@ -1,9 +1,7 @@
 import asyncio
-import datetime
 
 import asynctest
-from asynctest import CoroutineMock, patch, Mock, call
-from freezegun import freeze_time
+from asynctest import CoroutineMock, patch, Mock
 
 from asyncworker.time import ClockTicker
 
@@ -19,39 +17,18 @@ class ClockTickerTests(asynctest.TestCase):
             async for tick in clock:
                 self.fail("Shouldnt be possible to iter on a stopped clock")
 
-    @freeze_time("2006-06-06 06:06:06")
-    async def test_now_should_return_the_current_time_in_secods(self):
-        clock = ClockTicker(seconds=1)
-        self.assertIsInstance(clock.now(), int)
-        self.assertEqual(clock.now(), 1_149_573_966)
-
     async def test_anext_waits_for_a_tick(self):
         clock = ClockTicker(seconds=0.1)
 
-        with patch.object(
-            clock, "_should_iter", side_effect=[False, True, StopAsyncIteration]
-        ), patch("asyncworker.time.asyncio.Event.wait") as wait:
+        async def my_task():
             async for tick in clock:
-                print(tick)
-            wait.assert_awaited_once()
+                await asyncio.sleep(0.2)
 
-    async def test_it_should_iter_if_current_time_is_a_valid_interval(self):
-        with freeze_time("2006-06-06 06:06:06") as frozen_datetime:
-            clock = ClockTicker(seconds=2)
-            self.assertTrue(clock._should_iter())
+        self.loop.create_task(my_task())
+        await asyncio.sleep(0.3)
+        await clock.stop()
 
-            self.assertFalse(clock._should_iter())
-
-            frozen_datetime.tick(delta=datetime.timedelta(seconds=2))
-            self.assertTrue(clock._should_iter())
-
-    async def test_it_shouldnt_iter_if_current_time_is_a_valid_interval(self):
-        with freeze_time("2006-06-06 06:06:06") as frozen_datetime:
-            clock = ClockTicker(seconds=2)
-            self.assertTrue(clock._should_iter())
-
-            frozen_datetime.tick(delta=datetime.timedelta(seconds=3))
-            self.assertFalse(clock._should_iter())
+        self.assertEqual(2, clock.current_iteration)
 
     async def test_stop_stops_the_current_clock_ticker(self):
         clock = ClockTicker(seconds=2)

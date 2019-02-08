@@ -1,14 +1,11 @@
 import asyncio
 import unittest
-from copy import deepcopy
-from datetime import datetime
 
 from asynctest import CoroutineMock, mock
 import asynctest
 
 from easyqueue import AsyncQueue
 from aioamqp.exceptions import AioamqpException
-from freezegun import freeze_time
 
 from asyncworker.bucket import Bucket
 from asyncworker.consumer import Consumer
@@ -52,7 +49,9 @@ class ConsumerTest(asynctest.TestCase):
             }
         )
 
-        mock.patch.object(conf, "settings", mock.Mock(FLUSH_TIMEOUT=1)).start()
+        mock.patch.object(
+            conf, "settings", mock.Mock(FLUSH_TIMEOUT=0.1)
+        ).start()
 
     def tearDown(self):
         mock.patch.stopall()
@@ -545,8 +544,10 @@ class ConsumerTest(asynctest.TestCase):
                 self._items = []
                 return items
 
-        handler_mock = CoroutineMock()
-        self.one_route_fixture["handler"] = handler_mock
+        async def handler(*args):
+            raise Exception()
+
+        self.one_route_fixture["handler"] = handler
         self.one_route_fixture["options"]["bulk_size"] = 3
 
         consumer = Consumer(
@@ -554,17 +555,19 @@ class ConsumerTest(asynctest.TestCase):
             *self.connection_parameters,
             bucket_class=MyBucket,
         )
-        queue_mock = CoroutineMock(ack=CoroutineMock())
-        my_except = CoroutineMock(side_effect=Exception)
-        with mock.patch.object(
-            consumer,
-            "_flush_bucket_if_needed",
-            side_effect=[my_except, my_except],
-        ) as mocked:
-            self.loop.create_task(consumer._flush_clocked(queue_mock))
-            # Realizando sleep para devolver o loop para o clock
-            await asyncio.sleep(0.01)
-            self.assertEqual(2, mocked.await_count)
+        queue_mock = mock.Mock(reject=CoroutineMock())
+        await consumer.on_queue_message({}, 10, queue_mock)
+        self.loop.create_task(consumer._flush_clocked(queue_mock))
+
+        # Realizando sleep para devolver o loop para o clock
+        await asyncio.sleep(0.1)
+        self.assertEqual(1, consumer.clock.current_iteration)
+        await consumer.on_queue_message({}, 10, queue_mock)
+
+        # Realizando sleep para devolver o loop para o clock
+        await asyncio.sleep(0.1)
+        self.assertEqual(2, consumer.clock.current_iteration)
+        await consumer.clock.stop()
 
     async def test_on_message_handle_error_logs_exception(self):
         """
@@ -664,6 +667,8 @@ class ConsumerTest(asynctest.TestCase):
             consumer, "keep_runnig", side_effect=[True, False]
         ) as keep_running_mock, asynctest.patch.object(
             consumer, "clock_task", side_effect=[True, True]
+        ), mock.patch.object(
+            asyncio, "sleep"
         ):
             await consumer.start()
 
@@ -748,7 +753,7 @@ class ConsumerTest(asynctest.TestCase):
         consumer = Consumer(self.one_route_fixture, *self.connection_parameters)
         with unittest.mock.patch.object(
             consumer, "keep_runnig", side_effect=[True, True, True, False]
-        ):
+        ), mock.patch.object(asyncio, "sleep"):
             is_connected_mock = mock.PropertyMock(
                 side_effect=[True, False, True]
             )
@@ -773,7 +778,7 @@ class ConsumerTest(asynctest.TestCase):
         consumer = Consumer(self.one_route_fixture, *self.connection_parameters)
         with unittest.mock.patch.object(
             consumer, "keep_runnig", side_effect=[True, True, True, False]
-        ):
+        ), mock.patch.object(asyncio, "sleep"):
             is_connected_mock = mock.PropertyMock(
                 side_effect=[True, False, False]
             )
