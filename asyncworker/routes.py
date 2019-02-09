@@ -22,7 +22,7 @@ from asyncworker.options import DefaultValues, RouteTypes, Actions
 RouteHandler = Callable[[], Coroutine]
 
 
-class Model(BaseModel, Mapping, abc.ABC):
+class Model(BaseModel, abc.ABC):
     """
     An abstract pydantic BaseModel that also behaves like a Mapping
     """
@@ -51,7 +51,7 @@ class Model(BaseModel, Mapping, abc.ABC):
             return default
 
 
-class Route(Model):
+class Route(Model, abc.ABC):
     """
     An abstract Model that acts like a route factory
     """
