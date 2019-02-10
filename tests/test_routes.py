@@ -81,3 +81,31 @@ class RoutesRegistryTests(unittest.TestCase):
 
         self.assertEqual(route.get("type"), RouteTypes.HTTP)
         self.assertEqual(route.get("Invalid key", "Default"), "Default")
+
+
+class HTTPRoutesTests(unittest.TestCase):
+    def test_it_raise_an_error_for_invalid_methods(self):
+        with self.assertRaises(ValueError):
+            HTTPRoute(
+                methods=["POST", "Xablau"],
+                handler=CoroutineMock(),
+                routes=["/"],
+            )
+
+    def test_valid_http_methods(self):
+        route = HTTPRoute(
+            methods=[
+                "POST",
+                "GET",
+                "DELeTE",
+                "PUT",
+                "head",
+                "options",
+                "patch",
+                "TRACE",
+                "connect",
+            ],
+            handler=CoroutineMock(),
+            routes=["/"],
+        )
+        self.assertIsInstance(route, HTTPRoute)

@@ -12,6 +12,7 @@ from typing import (
     Type,
 )
 
+from aiohttp.hdrs import METH_ALL
 from aiohttp.web_routedef import RouteDef
 from cached_property import cached_property
 from pydantic import BaseModel, validator
@@ -80,6 +81,13 @@ class Route(Model, abc.ABC):
 class HTTPRoute(Route):
     type: RouteTypes = RouteTypes.HTTP
     methods: List[str]
+
+    @validator("methods")
+    def validate_method(cls, v: str):
+        method = v.upper()
+        if method not in METH_ALL:
+            raise ValueError(f"'{v}' isn't a valid supported HTTP method.")
+        return method
 
     def aiohttp_routes(self) -> Iterable[RouteDef]:
         for route in self.routes:
