@@ -1,0 +1,25 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+aioamqp = "==0.12.0"
+
+[dev-packages]
+coverage = "==4.5.2"
+pytest = "==4.0.2"
+pytest-cov = "==2.6.0"
+asynctest = "==0.12.2"
+mypy = "==0.650"
+black = "==18.9b0"
+easyqueue = {editable = true, path = "."}
+
+[requires]
+python_version = "3.6"
+
+[scripts]
+test = "py.test -v --cov=./easyqueue --cov-report term-missing -v"
+lint = "mypy ./ --ignore-missing-imports"
+fmt = "black --py36 -v --line-length 80 ."
+fmt-check = "black --py36 -v --line-length 80 --check ."

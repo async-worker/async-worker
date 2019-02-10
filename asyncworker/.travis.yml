@@ -1,0 +1,20 @@
+language: python
+dist: xenial
+python:
+  - "3.6"
+  - "3.7.1"
+install:
+  - pip install pipenv
+  - pipenv install --system --deploy --ignore-pipfile --dev
+script:
+  - pipenv run lint
+  - pipenv run fmt-check
+  - pipenv run test
+after_success:
+  - codecov
+deploy:
+  provider: pypi
+  user: $PYPI_USERNAME
+  password: $PYPI_PASSWORD
+  on:
+    tags: true
