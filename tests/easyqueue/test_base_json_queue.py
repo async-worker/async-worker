@@ -1,7 +1,7 @@
 import unittest
 from unittest.mock import ANY
 
-from easyqueue.queue import BaseJsonQueue
+from asyncworker.easyqueue.queue import BaseJsonQueue
 
 
 class BaseJsonQueueTests(unittest.TestCase):

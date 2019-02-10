@@ -1,8 +1,8 @@
 import unittest
 from unittest.mock import Mock
 
-from easyqueue.exceptions import UndecodableMessageException
-from easyqueue.message import AMQPMessage
+from asyncworker.easyqueue.exceptions import UndecodableMessageException
+from asyncworker.easyqueue.message import AMQPMessage
 
 
 class AMQPMessageTests(unittest.TestCase):

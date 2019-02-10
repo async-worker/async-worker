@@ -3,8 +3,8 @@ import asyncio
 import asynctest
 from asynctest import Mock, CoroutineMock, call, ANY
 
-from easyqueue.connection import AMQPConnection
-from tests.base import AsyncBaseTestCase
+from asyncworker.easyqueue.connection import AMQPConnection
+from tests.easyqueue.base import AsyncBaseTestCase
 
 
 class AMQPConnectionTests(AsyncBaseTestCase, asynctest.TestCase):
@@ -33,7 +33,8 @@ class AMQPConnectionTests(AsyncBaseTestCase, asynctest.TestCase):
 
         conn = (transport, protocol)
         with asynctest.patch(
-            "easyqueue.connection.aioamqp.connect", return_value=conn
+            "asyncworker.easyqueue.connection.aioamqp.connect",
+            return_value=conn,
         ) as connect:
             await asyncio.gather(
                 *(self.connection._connect() for _ in range(100))
