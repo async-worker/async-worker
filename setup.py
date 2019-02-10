@@ -20,7 +20,7 @@ setup(
     ],
     packages=find_packages(exclude=["contrib", "docs", "tests*"]),
     install_requires=[
-        "easyqueue==2.0.0-rc3",
+        "aioamqp==0.12.0",
         "aiologger==0.3.0",
         "pydantic==0.14",
         "cached-property==1.5.1",
