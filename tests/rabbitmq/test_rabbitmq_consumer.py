@@ -1,15 +1,14 @@
 import asyncio
 import unittest
+
 from asynctest import CoroutineMock, mock
 import asynctest
-import importlib
 
 from easyqueue import AsyncQueue
 from aioamqp.exceptions import AioamqpException
 
 from asyncworker.bucket import Bucket
 from asyncworker.consumer import Consumer
-import asyncworker.consumer
 from asyncworker import conf, App
 from asyncworker.rabbitmq.message import RabbitMQMessage
 from asyncworker.options import Events, Actions, RouteTypes
@@ -49,6 +48,13 @@ class ConsumerTest(asynctest.TestCase):
                 "prefetch_count": 1024,
             }
         )
+
+        mock.patch.object(
+            conf, "settings", mock.Mock(FLUSH_TIMEOUT=0.1)
+        ).start()
+
+    def tearDown(self):
+        mock.patch.stopall()
 
     def test_consumer_adjusts_bulk_size(self):
         """
@@ -463,45 +469,106 @@ class ConsumerTest(asynctest.TestCase):
             queue_mock.reject.await_args_list,
         )
 
-    @unittest.skip("")
     async def test_bulk_flushes_on_timeout_even_with_bucket_not_full(self):
-        """
-        Se nosso bucket não chegar ao total de mensagens do nosso bulk_size, temos
-        que fazer flush de tempos em tempos, senão poderemos ficar eternamente com mensagens presas.
-        """
+        class MyBucket(Bucket):
+            def pop_all(self):
+                global items
+                items = self._items
+                self._items = []
+                return items
+
         handler_mock = CoroutineMock()
         self.one_route_fixture["handler"] = handler_mock
-        self.one_route_fixture["options"]["bulk_size"] = 5
-        self.one_route_fixture["options"]["bulk_flush_interval"] = 3
+        self.one_route_fixture["options"]["bulk_size"] = 3
 
-        consumer = Consumer(self.one_route_fixture, *self.connection_parameters)
-        queue_mock = CoroutineMock(ack=CoroutineMock(), reject=CoroutineMock())
+        consumer = Consumer(
+            self.one_route_fixture,
+            *self.connection_parameters,
+            bucket_class=MyBucket,
+        )
+        queue_mock = CoroutineMock(ack=CoroutineMock())
 
         await consumer.on_queue_message(
             {"key": "value"}, delivery_tag=10, queue=queue_mock
         )
-        await consumer.on_queue_message(
-            {"key": "value"}, delivery_tag=11, queue=queue_mock
-        )
-        # await consumer.on_queue_message({"key": "value"}, delivery_tag=12, queue=queue_mock)
-        # await consumer.on_queue_message({"key": "value"}, delivery_tag=13, queue=queue_mock)
-        # await consumer.on_queue_message({"key": "value"}, delivery_tag=14, queue=queue_mock)
-        await asyncio.sleep(4)
+        self.assertEqual(0, handler_mock.await_count)
 
-        # handler_mock.assert_awaited_once
+        await consumer.on_queue_message(
+            {"key": "value"}, delivery_tag=20, queue=queue_mock
+        )
+        self.assertEqual(0, handler_mock.await_count)
+
+        self.loop.create_task(consumer._flush_clocked(queue_mock))
+        # Realizando sleep para devolver o loop para o clock
+        await asyncio.sleep(0.1)
         self.assertEqual(1, handler_mock.await_count)
-        self.assertEqual(
-            [mock.call(delivery_tag=10), mock.call(delivery_tag=11)],
+        handler_mock.assert_awaited_once_with(items)
+
+        self.assertCountEqual(
+            [mock.call(delivery_tag=10), mock.call(delivery_tag=20)],
             queue_mock.ack.await_args_list,
         )
+        self.assertEqual(0, queue_mock.reject.call_count)
 
-    @unittest.skip("")
-    def test_restart_timeout_on_every_flush(self):
-        self.fail()
+    async def test_do_not_flush_if_bucket_is_already_empty_when_timeout_expires(
+        self
+    ):
+        class MyBucket(Bucket):
+            def pop_all(self):
+                global items
+                items = self._items
+                self._items = []
+                return items
 
-    @unittest.skip("")
-    def test_do_not_flush_if_bucket_is_already_empty_when_timeout_expires(self):
-        self.fail()
+        handler_mock = CoroutineMock()
+        self.one_route_fixture["handler"] = handler_mock
+        self.one_route_fixture["options"]["bulk_size"] = 3
+
+        consumer = Consumer(
+            self.one_route_fixture,
+            *self.connection_parameters,
+            bucket_class=MyBucket,
+        )
+        queue_mock = CoroutineMock(ack=CoroutineMock())
+
+        self.loop.create_task(consumer._flush_clocked(queue_mock))
+        # Realizando sleep para devolver o loop para o clock
+        await asyncio.sleep(0.1)
+        self.assertEqual(0, handler_mock.await_count)
+
+    async def test_clock_flush_dont_stop_on_exception_in_flush_clocked(self):
+        class MyBucket(Bucket):
+            def pop_all(self):
+                global items
+                items = self._items
+                self._items = []
+                return items
+
+        async def handler(*args):
+            raise Exception()
+
+        self.one_route_fixture["handler"] = handler
+        self.one_route_fixture["options"]["bulk_size"] = 3
+
+        consumer = Consumer(
+            self.one_route_fixture,
+            *self.connection_parameters,
+            bucket_class=MyBucket,
+        )
+        queue_mock = mock.Mock(reject=CoroutineMock())
+        await consumer.on_queue_message({}, 10, queue_mock)
+        self.loop.create_task(consumer._flush_clocked(queue_mock))
+
+        # Realizando sleep para devolver o loop para o clock
+        await asyncio.sleep(0.1)
+        self.assertEqual(1, consumer.clock.current_iteration)
+        await consumer.on_queue_message({}, 10, queue_mock)
+
+        # Realizando sleep para devolver o loop para o clock
+        await asyncio.sleep(0.1)
+        self.assertEqual(2, consumer.clock.current_iteration)
+        await consumer.clock.stop()
+        await asyncio.sleep(0.1)
 
     async def test_on_message_handle_error_logs_exception(self):
         """
@@ -595,12 +662,15 @@ class ConsumerTest(asynctest.TestCase):
         queue_mock = CoroutineMock(
             consume=CoroutineMock(), connect=CoroutineMock(), is_connected=False
         )
-        loop = asyncio.get_event_loop()
         consumer.queue = queue_mock
 
         with asynctest.patch.object(
             consumer, "keep_runnig", side_effect=[True, False]
-        ) as keep_running_mock:
+        ) as keep_running_mock, asynctest.patch.object(
+            consumer, "clock_task", side_effect=[True, True]
+        ), mock.patch.object(
+            asyncio, "sleep"
+        ):
             await consumer.start()
 
         self.assertEqual(1, queue_mock.connect.await_count)
@@ -621,7 +691,9 @@ class ConsumerTest(asynctest.TestCase):
         consumer = Consumer(self.one_route_fixture, *self.connection_parameters)
         with unittest.mock.patch.object(
             consumer, "keep_runnig", side_effect=[True, True, False]
-        ), asynctest.patch.object(asyncio, "sleep"):
+        ), asynctest.patch.object(asyncio, "sleep"), asynctest.patch.object(
+            consumer, "clock_task", side_effect=[True, True]
+        ):
             is_connected_mock = mock.PropertyMock(
                 side_effect=[False, False, True]
             )
@@ -630,7 +702,6 @@ class ConsumerTest(asynctest.TestCase):
                 connect=CoroutineMock(side_effect=[AioamqpException, True]),
             )
             type(queue_mock).is_connected = is_connected_mock
-            loop = asyncio.get_event_loop()
             consumer.queue = queue_mock
 
             await consumer.start()
@@ -658,7 +729,11 @@ class ConsumerTest(asynctest.TestCase):
         consumer = Consumer(self.one_route_fixture, *self.connection_parameters)
         with unittest.mock.patch.object(
             consumer, "keep_runnig", side_effect=[True, True, True, False]
-        ), asynctest.patch.object(asyncio, "sleep") as sleep_mock:
+        ), asynctest.patch.object(
+            asyncio, "sleep"
+        ) as sleep_mock, asynctest.patch.object(
+            consumer, "clock_task", side_effect=[True, True]
+        ):
             is_connected_mock = mock.PropertyMock(
                 side_effect=[False, True, True, True]
             )
@@ -666,8 +741,88 @@ class ConsumerTest(asynctest.TestCase):
                 consume=CoroutineMock(), connect=CoroutineMock()
             )
             type(queue_mock).is_connected = is_connected_mock
-            loop = asyncio.get_event_loop()
             consumer.queue = queue_mock
 
             await consumer.start()
             self.assertEqual(3, sleep_mock.await_count)
+
+    async def test_start_dont_created_clock_when_connection_failed(self):
+        self.one_route_fixture["routes"] = [
+            "asgard/counts",
+            "asgard/counts/errors",
+        ]
+        consumer = Consumer(self.one_route_fixture, *self.connection_parameters)
+        with unittest.mock.patch.object(
+            consumer, "keep_runnig", side_effect=[True, True, True, False]
+        ):
+            is_connected_mock = mock.PropertyMock(
+                side_effect=[True, False, True]
+            )
+            queue_mock = CoroutineMock(
+                consume=CoroutineMock(),
+                connect=CoroutineMock(side_effect=[AioamqpException, True]),
+            )
+            type(queue_mock).is_connected = is_connected_mock
+            consumer.queue = queue_mock
+
+            await consumer.start()
+        # Realizando sleep para devolver o loop para o clock
+        await asyncio.sleep(0.1)
+        self.assertIsNone(consumer.clock_task)
+        await consumer.clock.stop()
+        await asyncio.sleep(0.1)
+
+    async def test_start_create_clock_flusher(self):
+        self.one_route_fixture["routes"] = [
+            "asgard/counts",
+            "asgard/counts/errors",
+        ]
+        consumer = Consumer(self.one_route_fixture, *self.connection_parameters)
+        with unittest.mock.patch.object(
+            consumer, "keep_runnig", side_effect=[True, True, True, False]
+        ):
+            is_connected_mock = mock.PropertyMock(
+                side_effect=[True, False, False]
+            )
+            queue_mock = CoroutineMock(
+                consume=CoroutineMock(),
+                connect=CoroutineMock(side_effect=[AioamqpException, True]),
+            )
+            type(queue_mock).is_connected = is_connected_mock
+            consumer.queue = queue_mock
+
+            await consumer.start()
+        # Realizando sleep para devolver o loop para o clock
+        await asyncio.sleep(0.1)
+        self.assertIsNotNone(consumer.clock_task)
+        await consumer.clock.stop()
+        await asyncio.sleep(0.1)
+
+    async def test_start_dont_created_another_clock_when_restart(self):
+        self.one_route_fixture["routes"] = [
+            "asgard/counts",
+            "asgard/counts/errors",
+        ]
+        consumer = Consumer(self.one_route_fixture, *self.connection_parameters)
+        queue_mock = CoroutineMock(
+            consume=CoroutineMock(),
+            connect=CoroutineMock(side_effect=[True, True]),
+        )
+
+        with unittest.mock.patch.object(
+            consumer, "keep_runnig", side_effect=[True, False, True, False]
+        ):
+            is_connected_mock = mock.PropertyMock(side_effect=[False, False])
+            type(queue_mock).is_connected = is_connected_mock
+            consumer.queue = queue_mock
+
+            await consumer.start()
+            my_task = consumer.clock_task
+
+            await consumer.start()
+
+        # Realizando sleep para devolver o loop para o clock
+        await asyncio.sleep(0.1)
+        self.assertTrue(my_task is consumer.clock_task)
+        await consumer.clock.stop()
+        await asyncio.sleep(0.1)

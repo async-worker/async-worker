@@ -1,4 +1,4 @@
-from typing import List, Any, TypeVar, Generic
+from typing import List, TypeVar, Generic
 
 T = TypeVar("T")
 
@@ -12,6 +12,9 @@ class Bucket(Generic[T]):
 
     def is_full(self) -> bool:
         return len(self._items) == self.size
+
+    def is_empty(self) -> bool:
+        return len(self._items) == 0
 
     def put(self, item: T):
         if self.is_full():
