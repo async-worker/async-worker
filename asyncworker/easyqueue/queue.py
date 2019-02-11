@@ -1,8 +1,8 @@
 import abc
 import json
-from typing import Dict, Tuple, Any
+from typing import Dict, Any
 
-from easyqueue.exceptions import UndecodableMessageException
+from asyncworker.easyqueue.exceptions import UndecodableMessageException
 
 
 class DeliveryModes:

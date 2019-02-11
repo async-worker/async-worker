@@ -4,8 +4,8 @@ from aioamqp.channel import Channel
 from aioamqp.envelope import Envelope
 from aioamqp.properties import Properties
 
-from easyqueue.connection import AMQPConnection
-from easyqueue.exceptions import UndecodableMessageException
+from asyncworker.easyqueue.connection import AMQPConnection
+from asyncworker.easyqueue.exceptions import UndecodableMessageException
 
 T = TypeVar("T")
 

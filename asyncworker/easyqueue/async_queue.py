@@ -20,10 +20,9 @@ from aioamqp.channel import Channel
 from aioamqp.envelope import Envelope
 from aioamqp.properties import Properties
 
-from easyqueue.connection import AMQPConnection
-from easyqueue.message import AMQPMessage
-from easyqueue.queue import BaseQueue
-from easyqueue.exceptions import MessageError
+from asyncworker.easyqueue.connection import AMQPConnection
+from asyncworker.easyqueue.message import AMQPMessage
+from asyncworker.easyqueue.queue import BaseQueue
 
 
 def _ensure_connected(coro: Callable[..., Coroutine]):
