@@ -1,6 +1,6 @@
 import asyncio
 import unittest
-from asynctest import CoroutineMock, mock
+from asynctest import CoroutineMock, mock, Mock
 import asynctest
 import importlib
 
@@ -94,7 +94,7 @@ class ConsumerTest(asynctest.TestCase):
     def test_consumer_instantiate_async_queue_default_vhost(self):
         del self.one_route_fixture["options"]["vhost"]
         consumer = Consumer(self.one_route_fixture, *self.connection_parameters)
-        connection_parameters = consumer.queue.connection_parameters
+        connection_parameters = consumer.queue.connection.connection_parameters
 
         self.assertTrue(isinstance(consumer.queue, AsyncJsonQueue))
         self.assertEqual("/", connection_parameters["virtualhost"])
@@ -105,7 +105,7 @@ class ConsumerTest(asynctest.TestCase):
     def test_consumer_instantiate_async_queue_other_vhost(self):
         self.one_route_fixture["options"]["vhost"] = "fluentd"
         consumer = Consumer(self.one_route_fixture, *self.connection_parameters)
-        connection_parameters = consumer.queue.connection_parameters
+        connection_parameters = consumer.queue.connection.connection_parameters
 
         self.assertTrue(isinstance(consumer.queue, AsyncJsonQueue))
         self.assertEqual("fluentd", connection_parameters["virtualhost"])
@@ -113,7 +113,7 @@ class ConsumerTest(asynctest.TestCase):
     def test_consumer_instantiate_async_queue_other_vhost_strip_slash(self):
         self.one_route_fixture["options"]["vhost"] = "/fluentd"
         consumer = Consumer(self.one_route_fixture, *self.connection_parameters)
-        connection_parameters = consumer.queue.connection_parameters
+        connection_parameters = consumer.queue.connection.connection_parameters
 
         self.assertTrue(isinstance(consumer.queue, AsyncJsonQueue))
         self.assertEqual("fluentd", connection_parameters["virtualhost"])
@@ -121,7 +121,7 @@ class ConsumerTest(asynctest.TestCase):
     def test_consumer_instantiate_async_queue_prefetch_count(self):
         self.one_route_fixture["options"]["vhost"] = "/fluentd"
         consumer = Consumer(self.one_route_fixture, *self.connection_parameters)
-        connection_parameters = consumer.queue.connection_parameters
+        connection_parameters = consumer.queue.connection.connection_parameters
 
         self.assertTrue(isinstance(consumer.queue, AsyncJsonQueue))
         self.assertEqual("fluentd", connection_parameters["virtualhost"])
@@ -593,7 +593,8 @@ class ConsumerTest(asynctest.TestCase):
         ]
         consumer = Consumer(self.one_route_fixture, *self.connection_parameters)
         queue_mock = CoroutineMock(
-            consume=CoroutineMock(), connect=CoroutineMock(), is_connected=False
+            consume=CoroutineMock(),
+            connection=Mock(connect=CoroutineMock(), is_connected=False),
         )
         loop = asyncio.get_event_loop()
         consumer.queue = queue_mock
@@ -603,7 +604,7 @@ class ConsumerTest(asynctest.TestCase):
         ) as keep_running_mock:
             await consumer.start()
 
-        self.assertEqual(1, queue_mock.connect.await_count)
+        self.assertEqual(1, queue_mock.connection.connect.await_count)
         self.assertEqual(2, queue_mock.consume.await_count)
         self.assertEqual(
             [
@@ -627,14 +628,15 @@ class ConsumerTest(asynctest.TestCase):
             )
             queue_mock = CoroutineMock(
                 consume=CoroutineMock(),
-                connect=CoroutineMock(side_effect=[AioamqpException, True]),
+                connection=Mock(
+                    connect=CoroutineMock(side_effect=[AioamqpException, True])
+                ),
             )
-            type(queue_mock).is_connected = is_connected_mock
-            loop = asyncio.get_event_loop()
+            type(queue_mock.connection).is_connected = is_connected_mock
             consumer.queue = queue_mock
 
             await consumer.start()
-            self.assertEqual(1, queue_mock.connect.await_count)
+            self.assertEqual(1, queue_mock.connection.connect.await_count)
             self.assertEqual(2, queue_mock.consume.await_count)
             self.assertEqual(
                 [
