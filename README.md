@@ -237,6 +237,8 @@ Por exemplo, se tivermos um `handler` que possui
 
 Nesse caso a `app` irá esperar o timeout do flush para liberar essas mensagens para o `handler`.
 
+Caso queria alterar o tempo default do timeout do flush basta definir env `ASYNCWORKER_FLUSH_TIMEOUT` com um número que representara os segundos em que a app irá esperar para realizar o flush
+
 # HTTP (0.6.0+)
 
 Atualmente, uma das formas mais comuns comunicação entre aplicações é HTTP,
