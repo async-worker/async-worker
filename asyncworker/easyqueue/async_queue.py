@@ -94,6 +94,7 @@ class _ConsumptionHandler:
         msg = AMQPMessage(
             connection=self.queue.connection,
             channel=channel,
+            queue=self.queue,
             envelope=envelope,
             properties=properties,
             delivery_tag=envelope.delivery_tag,

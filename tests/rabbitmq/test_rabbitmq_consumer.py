@@ -11,6 +11,7 @@ from asyncworker.bucket import Bucket
 from asyncworker.consumer import Consumer
 import asyncworker.consumer
 from asyncworker import conf, App
+from asyncworker.easyqueue.message import AMQPMessage
 from asyncworker.rabbitmq.message import RabbitMQMessage
 from asyncworker.options import Events, Actions, RouteTypes
 
@@ -23,8 +24,8 @@ class ConsumerTest(asynctest.TestCase):
     use_default_loop = True
 
     def setUp(self):
-        self.queue_mock = CoroutineMock(
-            ack=CoroutineMock(), reject=CoroutineMock()
+        self.queue_mock = Mock(
+            connection=Mock(is_connected=True), spec=AsyncJsonQueue
         )
         self.logger_mock = CoroutineMock(
             info=CoroutineMock(), debug=CoroutineMock(), error=CoroutineMock()
@@ -49,6 +50,21 @@ class ConsumerTest(asynctest.TestCase):
                 "prefetch_count": 1024,
             }
         )
+        self.mock_message = self._make_msg()
+
+    def _make_msg(self, **kwargs) -> AMQPMessage:
+        default_kwargs = dict(
+            delivery_tag=10,
+            connection=self.queue_mock.connection,
+            channel=Mock(),
+            queue=self.queue_mock,
+            envelope=Mock(),
+            properties=Mock(),
+            deserialization_method=Mock(),
+            queue_name="queue_name",
+            serialized_data=Mock(),
+        )
+        return AMQPMessage(**{**default_kwargs, **kwargs})
 
     def test_consumer_adjusts_bulk_size(self):
         """
@@ -133,11 +149,9 @@ class ConsumerTest(asynctest.TestCase):
 
     async def test_on_queue_message_calls_inner_handler(self):
         consumer = Consumer(self.one_route_fixture, *self.connection_parameters)
-        result = await consumer.on_queue_message(
-            {"key": "value"}, delivery_tag=10, queue=self.queue_mock
-        )
+        result = await consumer.on_queue_message(msg=self.mock_message)
 
-        self.assertEqual((42, {"key": "value"}), result)
+        self.assertEqual((42, self.mock_message.deserialized_data), result)
 
     async def test_on_exception_requeue_message(self):
         """
@@ -156,11 +170,9 @@ class ConsumerTest(asynctest.TestCase):
         consumer = Consumer(route, *self.connection_parameters)
 
         with self.assertRaises(Exception):
-            await consumer.on_queue_message(
-                {"key": 42}, delivery_tag=10, queue=self.queue_mock
-            )
+            await consumer.on_queue_message(msg=self.mock_message)
         self.queue_mock.reject.assert_awaited_with(
-            delivery_tag=10, requeue=True
+            delivery_tag=self.mock_message.delivery_tag, requeue=True
         )
 
     async def test_on_exception_reject_message(self):
@@ -176,11 +188,9 @@ class ConsumerTest(asynctest.TestCase):
         consumer = Consumer(route, *self.connection_parameters)
 
         with self.assertRaises(Exception):
-            await consumer.on_queue_message(
-                {"key": 42}, delivery_tag=10, queue=self.queue_mock
-            )
+            await consumer.on_queue_message(msg=self.mock_message)
         self.queue_mock.reject.assert_awaited_with(
-            delivery_tag=10, requeue=False
+            delivery_tag=self.mock_message.delivery_tag, requeue=False
         )
 
     async def test_on_exception_ack_message(self):
@@ -195,11 +205,11 @@ class ConsumerTest(asynctest.TestCase):
         route = self.app.routes_registry.amqp_routes[0]
         consumer = Consumer(route, *self.connection_parameters)
         with self.assertRaises(Exception):
-            await consumer.on_queue_message(
-                {"key": 42}, delivery_tag=10, queue=self.queue_mock
-            )
+            await consumer.on_queue_message(msg=self.mock_message)
 
-        self.queue_mock.ack.assert_awaited_with(delivery_tag=10)
+        self.queue_mock.ack.assert_awaited_with(
+            delivery_tag=self.mock_message.delivery_tag
+        )
 
     async def test_on_success_ack(self):
         @self.app.route(
@@ -213,10 +223,10 @@ class ConsumerTest(asynctest.TestCase):
         route = self.app.routes_registry.amqp_routes[0]
         consumer = Consumer(route, *self.connection_parameters)
 
-        await consumer.on_queue_message(
-            {"key": 42}, delivery_tag=10, queue=self.queue_mock
+        await consumer.on_queue_message(msg=self.mock_message)
+        self.queue_mock.ack.assert_awaited_with(
+            delivery_tag=self.mock_message.delivery_tag
         )
-        self.queue_mock.ack.assert_awaited_with(delivery_tag=10)
 
     async def test_on_success_reject(self):
         @self.app.route(
@@ -230,11 +240,9 @@ class ConsumerTest(asynctest.TestCase):
         route = self.app.routes_registry.amqp_routes[0]
         consumer = Consumer(route, *self.connection_parameters)
 
-        await consumer.on_queue_message(
-            {"key": 42}, delivery_tag=10, queue=self.queue_mock
-        )
+        await consumer.on_queue_message(msg=self.mock_message)
         self.queue_mock.reject.assert_awaited_with(
-            delivery_tag=10, requeue=False
+            delivery_tag=self.mock_message.delivery_tag, requeue=False
         )
 
     async def test_on_success_requeue(self):
@@ -249,11 +257,9 @@ class ConsumerTest(asynctest.TestCase):
         route = self.app.routes_registry.amqp_routes[0]
         consumer = Consumer(route, *self.connection_parameters)
 
-        await consumer.on_queue_message(
-            {"key": 42}, delivery_tag=10, queue=self.queue_mock
-        )
+        await consumer.on_queue_message(msg=self.mock_message)
         self.queue_mock.reject.assert_awaited_with(
-            delivery_tag=10, requeue=True
+            delivery_tag=self.mock_message.delivery_tag, requeue=True
         )
 
     async def test_on_queue_message_auto_ack_on_success(self):
@@ -262,13 +268,10 @@ class ConsumerTest(asynctest.TestCase):
         devemos fazer o ack da mensagem
         """
         consumer = Consumer(self.one_route_fixture, *self.connection_parameters)
-        expected_body = {"key": "value"}
-        message_mock = RabbitMQMessage(body=expected_body, delivery_tag=10)
 
-        result = await consumer.on_queue_message(
-            expected_body, delivery_tag=10, queue=self.queue_mock
-        )
-        self.assertEqual((42, expected_body), result)
+        result = await consumer.on_queue_message(msg=self.mock_message)
+
+        self.assertEqual((42, self.mock_message.deserialized_data), result)
         self.queue_mock.ack.assert_awaited_once_with(delivery_tag=10)
         self.queue_mock.reject.assert_not_awaited()
 
@@ -285,23 +288,19 @@ class ConsumerTest(asynctest.TestCase):
         self.one_route_fixture["options"]["bulk_size"] = 2
 
         consumer = Consumer(self.one_route_fixture, *self.connection_parameters)
-        queue_mock = CoroutineMock(ack=CoroutineMock(), reject=CoroutineMock())
+
         with self.assertRaises(AttributeError):
-            await consumer.on_queue_message(
-                {"key": "value"}, delivery_tag=10, queue=queue_mock
-            )
-            await consumer.on_queue_message(
-                {"key": "value"}, delivery_tag=11, queue=queue_mock
-            )
+            await consumer.on_queue_message(msg=self._make_msg(delivery_tag=10))
+            await consumer.on_queue_message(msg=self._make_msg(delivery_tag=11))
 
         self.assertCountEqual(
             [
                 mock.call(delivery_tag=10, requeue=True),
                 mock.call(delivery_tag=11, requeue=True),
             ],
-            queue_mock.reject.await_args_list,
+            self.queue_mock.reject.await_args_list,
         )
-        queue_mock.ack.assert_not_awaited
+        self.queue_mock.ack.assert_not_awaited()
 
     async def test_on_queue_message_precondition_failed_on_ack(self):
         consumer = Consumer(self.one_route_fixture, *self.connection_parameters)
@@ -310,7 +309,7 @@ class ConsumerTest(asynctest.TestCase):
         )
         with self.assertRaises(AioamqpException):
             await consumer.on_queue_message(
-                {"key": "value"}, delivery_tag=10, queue=queue_mock
+                msg=self._make_msg(queue=queue_mock)
             )
 
     async def test_on_queue_message_bulk_size_one(self):
@@ -327,17 +326,14 @@ class ConsumerTest(asynctest.TestCase):
             *self.connection_parameters,
             bucket_class=MyBucket,
         )
-        queue_mock = CoroutineMock(ack=CoroutineMock())
 
-        await consumer.on_queue_message(
-            {"key": "value"}, delivery_tag=20, queue=queue_mock
-        )
+        await consumer.on_queue_message(msg=self._make_msg(delivery_tag=20))
         handler_mock.assert_awaited_once_with(consumer.bucket._items)
 
         self.assertEqual(
-            [mock.call(delivery_tag=20)], queue_mock.ack.await_args_list
+            [mock.call(delivery_tag=20)], self.queue_mock.ack.await_args_list
         )
-        self.assertEqual(0, queue_mock.reject.call_count)
+        self.assertEqual(0, self.queue_mock.reject.call_count)
 
     async def test_on_queue_message_bulk_size_bigger_that_one(self):
         """
@@ -359,23 +355,18 @@ class ConsumerTest(asynctest.TestCase):
             *self.connection_parameters,
             bucket_class=MyBucket,
         )
-        queue_mock = CoroutineMock(ack=CoroutineMock())
 
-        await consumer.on_queue_message(
-            {"key": "value"}, delivery_tag=10, queue=queue_mock
-        )
+        await consumer.on_queue_message(msg=self._make_msg(delivery_tag=10))
         self.assertEqual(0, handler_mock.await_count)
 
-        await consumer.on_queue_message(
-            {"key": "value"}, delivery_tag=20, queue=queue_mock
-        )
+        await consumer.on_queue_message(msg=self._make_msg(delivery_tag=20))
         handler_mock.assert_awaited_once_with(consumer.bucket._items)
 
         self.assertCountEqual(
             [mock.call(delivery_tag=10), mock.call(delivery_tag=20)],
-            queue_mock.ack.await_args_list,
+            self.queue_mock.ack.await_args_list,
         )
-        self.assertEqual(0, queue_mock.reject.call_count)
+        self.assertEqual(0, self.queue_mock.reject.call_count)
 
     async def test_on_queue_message_bulk_mixed_ack_and_reject(self):
         async def handler(messages):
@@ -389,19 +380,69 @@ class ConsumerTest(asynctest.TestCase):
         queue_mock = CoroutineMock(ack=CoroutineMock(), reject=CoroutineMock())
 
         await consumer.on_queue_message(
-            {"key": "value"}, delivery_tag=10, queue=queue_mock
+            AMQPMessage(
+                delivery_tag=10,
+                connection=self.queue_mock.connection,
+                channel=Mock(),
+                queue=self.queue_mock,
+                envelope=Mock(),
+                properties=Mock(),
+                deserialization_method=Mock(),
+                queue_name="queue_name",
+                serialized_data=Mock(),
+            )
         )
         await consumer.on_queue_message(
-            {"key": "value"}, delivery_tag=11, queue=queue_mock
+            AMQPMessage(
+                delivery_tag=11,
+                connection=self.queue_mock.connection,
+                channel=Mock(),
+                queue=self.queue_mock,
+                envelope=Mock(),
+                properties=Mock(),
+                deserialization_method=Mock(),
+                queue_name="queue_name",
+                serialized_data=Mock(),
+            )
         )
         await consumer.on_queue_message(
-            {"key": "value"}, delivery_tag=12, queue=queue_mock
+            AMQPMessage(
+                delivery_tag=12,
+                connection=self.queue_mock.connection,
+                channel=Mock(),
+                queue=self.queue_mock,
+                envelope=Mock(),
+                properties=Mock(),
+                deserialization_method=Mock(),
+                queue_name="queue_name",
+                serialized_data=Mock(),
+            )
         )
         await consumer.on_queue_message(
-            {"key": "value"}, delivery_tag=13, queue=queue_mock
+            AMQPMessage(
+                delivery_tag=13,
+                connection=self.queue_mock.connection,
+                channel=Mock(),
+                queue=self.queue_mock,
+                envelope=Mock(),
+                properties=Mock(),
+                deserialization_method=Mock(),
+                queue_name="queue_name",
+                serialized_data=Mock(),
+            )
         )
         await consumer.on_queue_message(
-            {"key": "value"}, delivery_tag=14, queue=queue_mock
+            AMQPMessage(
+                delivery_tag=14,
+                connection=self.queue_mock.connection,
+                channel=Mock(),
+                queue=self.queue_mock,
+                envelope=Mock(),
+                properties=Mock(),
+                deserialization_method=Mock(),
+                queue_name="queue_name",
+                serialized_data=Mock(),
+            )
         )
 
         self.assertCountEqual(
@@ -410,14 +451,14 @@ class ConsumerTest(asynctest.TestCase):
                 mock.call(delivery_tag=13),
                 mock.call(delivery_tag=14),
             ],
-            queue_mock.ack.await_args_list,
+            self.queue_mock.ack.await_args_list,
         )
         self.assertCountEqual(
             [
                 mock.call(delivery_tag=11, requeue=True),
                 mock.call(delivery_tag=12, requeue=True),
             ],
-            queue_mock.reject.await_args_list,
+            self.queue_mock.reject.await_args_list,
         )
 
     async def test_on_queue_message_bulk_mixed_ack_and_reject_on_success_reject(
@@ -434,23 +475,12 @@ class ConsumerTest(asynctest.TestCase):
         self.one_route_fixture["options"][Events.ON_SUCCESS] = Actions.REJECT
 
         consumer = Consumer(self.one_route_fixture, *self.connection_parameters)
-        queue_mock = CoroutineMock(ack=CoroutineMock(), reject=CoroutineMock())
 
-        await consumer.on_queue_message(
-            {"key": "value"}, delivery_tag=10, queue=queue_mock
-        )
-        await consumer.on_queue_message(
-            {"key": "value"}, delivery_tag=11, queue=queue_mock
-        )
-        await consumer.on_queue_message(
-            {"key": "value"}, delivery_tag=12, queue=queue_mock
-        )
-        await consumer.on_queue_message(
-            {"key": "value"}, delivery_tag=13, queue=queue_mock
-        )
-        await consumer.on_queue_message(
-            {"key": "value"}, delivery_tag=14, queue=queue_mock
-        )
+        await consumer.on_queue_message(msg=self._make_msg(delivery_tag=10))
+        await consumer.on_queue_message(msg=self._make_msg(delivery_tag=11))
+        await consumer.on_queue_message(msg=self._make_msg(delivery_tag=12))
+        await consumer.on_queue_message(msg=self._make_msg(delivery_tag=13))
+        await consumer.on_queue_message(msg=self._make_msg(delivery_tag=14))
 
         self.assertCountEqual(
             [
@@ -460,7 +490,7 @@ class ConsumerTest(asynctest.TestCase):
                 mock.call(delivery_tag=13, requeue=False),
                 mock.call(delivery_tag=14, requeue=False),
             ],
-            queue_mock.reject.await_args_list,
+            self.queue_mock.reject.await_args_list,
         )
 
     @unittest.skip("")

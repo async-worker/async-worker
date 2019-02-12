@@ -522,6 +522,7 @@ class AsyncQueueConsumerHandlerMethodsTests(
                 msg=AMQPMessage(
                     connection=self.queue.connection,
                     channel=self.queue.connection.channel,
+                    queue=self.queue,
                     envelope=self.envelope,
                     properties=self.properties,
                     delivery_tag=self.envelope.delivery_tag,

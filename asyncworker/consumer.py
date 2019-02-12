@@ -1,6 +1,6 @@
 import asyncio
 import traceback
-from typing import Type, Dict
+from typing import Type, Dict, List
 
 from asyncworker.easyqueue.async_queue import (
     AsyncQueueConsumerDelegate,
@@ -9,6 +9,7 @@ from asyncworker.easyqueue.async_queue import (
 from aioamqp.exceptions import AioamqpException
 
 from asyncworker import conf
+from asyncworker.easyqueue.message import AMQPMessage
 from asyncworker.options import Events
 from .bucket import Bucket
 from .rabbitmq import RabbitMQMessage
@@ -70,16 +71,10 @@ class Consumer(AsyncQueueConsumerDelegate):
         """
         pass
 
-    async def on_queue_message(self, content, delivery_tag, queue):
+    async def on_queue_message(self, msg: AMQPMessage):
         """
         Callback called every time that a new, valid and deserialized message
         is ready to be handled.
-
-        :param delivery_tag: delivery_tag of the consumed message
-        :type delivery_tag: int
-        :param content: parsed message body
-        :type content: dict
-        :type queue: AsyncJsonQueue
         """
         rv = None
         all_messages = []
@@ -87,8 +82,8 @@ class Consumer(AsyncQueueConsumerDelegate):
 
             if not self.bucket.is_full():
                 message = RabbitMQMessage(
-                    body=content,
-                    delivery_tag=delivery_tag,
+                    body=msg.deserialized_data,
+                    delivery_tag=msg.delivery_tag,
                     on_success=self._route_options[Events.ON_SUCCESS],
                     on_exception=self._route_options[Events.ON_EXCEPTION],
                 )
@@ -98,14 +93,14 @@ class Consumer(AsyncQueueConsumerDelegate):
                 all_messages = self.bucket.pop_all()
                 rv = await self._handler(all_messages)
                 await asyncio.gather(
-                    *(m.process_success(queue) for m in all_messages)
+                    *(m.process_success(msg._queue) for m in all_messages)
                 )
             return rv
         except AioamqpException as aioamqpException:
             raise aioamqpException
         except Exception as e:
             await asyncio.gather(
-                *(m.process_exception(queue) for m in all_messages)
+                *(m.process_exception(msg._queue) for m in all_messages)
             )
             raise e
 
