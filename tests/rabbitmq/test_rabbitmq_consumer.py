@@ -2,17 +2,14 @@ import asyncio
 import unittest
 from asynctest import CoroutineMock, mock, Mock
 import asynctest
-import importlib
 
 from asyncworker.easyqueue.async_queue import AsyncJsonQueue
 from aioamqp.exceptions import AioamqpException
 
 from asyncworker.bucket import Bucket
 from asyncworker.consumer import Consumer
-import asyncworker.consumer
 from asyncworker import conf, App
 from asyncworker.easyqueue.message import AMQPMessage
-from asyncworker.rabbitmq.message import RabbitMQMessage
 from asyncworker.options import Events, Actions, RouteTypes
 
 
