@@ -82,7 +82,7 @@ class BaseJsonQueue(BaseQueue):
 
 def _ensure_connected(coro: Callable[..., Coroutine]):
     @wraps(coro)
-    async def wrapper(self: "AsyncJsonQueue", *args, **kwargs):
+    async def wrapper(self: "JsonQueue", *args, **kwargs):
         retries = 0
         while self.is_running and not self.connection.is_connected:
             try:
@@ -113,7 +113,7 @@ class _ConsumptionHandler:
     def __init__(
         self,
         delegate: "QueueConsumerDelegate",
-        queue: "AsyncJsonQueue",
+        queue: "JsonQueue",
         queue_name: str,
     ) -> None:
         self.delegate = delegate
@@ -164,7 +164,7 @@ class _ConsumptionHandler:
         return self.loop.create_task(callback)
 
 
-class AsyncJsonQueue(BaseQueue, Generic[T]):
+class JsonQueue(BaseQueue, Generic[T]):
     _transport: Optional[asyncio.BaseTransport]
 
     def __init__(
@@ -318,7 +318,7 @@ class AsyncJsonQueue(BaseQueue, Generic[T]):
 
 class QueueConsumerDelegate(metaclass=abc.ABCMeta):
     async def on_before_start_consumption(
-        self, queue_name: str, queue: AsyncJsonQueue
+        self, queue_name: str, queue: JsonQueue
     ):
         """
         Coroutine called before queue consumption starts. May be overwritten to
@@ -327,13 +327,11 @@ class QueueConsumerDelegate(metaclass=abc.ABCMeta):
         :param queue_name: Queue name that will be consumed
         :type queue_name: str
         :param queue: AsynQueue instanced
-        :type queue: AsyncJsonQueue
+        :type queue: JsonQueue
         """
         pass
 
-    async def on_consumption_start(
-        self, consumer_tag: str, queue: AsyncJsonQueue
-    ):
+    async def on_consumption_start(self, consumer_tag: str, queue: JsonQueue):
         """
         Coroutine called once consumption started.
         """

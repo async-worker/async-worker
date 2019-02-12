@@ -3,7 +3,7 @@ from unittest.mock import patch
 import aioamqp
 from asynctest import CoroutineMock
 
-from asyncworker.easyqueue.queue import AsyncJsonQueue, QueueConsumerDelegate
+from asyncworker.easyqueue.queue import JsonQueue, QueueConsumerDelegate
 
 
 class AsyncBaseTestCase:
@@ -18,9 +18,7 @@ class AsyncBaseTestCase:
             virtual_host="have",
             heartbeat=5,
         )
-        self.queue = AsyncJsonQueue(
-            **self.conn_params, delegate=self.get_consumer()
-        )
+        self.queue = JsonQueue(**self.conn_params, delegate=self.get_consumer())
         self.mock_connection()
 
     def tearDown(self):

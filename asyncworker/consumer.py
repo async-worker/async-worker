@@ -2,7 +2,7 @@ import asyncio
 import traceback
 from typing import Type, Dict, List
 
-from asyncworker.easyqueue.queue import AsyncJsonQueue, QueueConsumerDelegate
+from asyncworker.easyqueue.queue import JsonQueue, QueueConsumerDelegate
 from aioamqp.exceptions import AioamqpException
 
 from asyncworker import conf
@@ -33,7 +33,7 @@ class Consumer(QueueConsumerDelegate):
         self.bucket = bucket_class(
             size=min(self._route_options["bulk_size"], prefetch_count)
         )
-        self.queue: AsyncJsonQueue = AsyncJsonQueue(
+        self.queue: JsonQueue = JsonQueue(
             host,
             username,
             password,
@@ -47,7 +47,7 @@ class Consumer(QueueConsumerDelegate):
         return self._queue_name
 
     async def on_before_start_consumption(
-        self, queue_name: str, queue: "AsyncJsonQueue"
+        self, queue_name: str, queue: "JsonQueue"
     ):
         """
         Coroutine called before queue consumption starts. May be overwritten to
@@ -56,13 +56,11 @@ class Consumer(QueueConsumerDelegate):
         :param queue_name: Queue name that will be consumed
         :type queue_name: str
         :param queue: AsynQueue instanced
-        :type queue: AsyncJsonQueue
+        :type queue: JsonQueue
         """
         pass
 
-    async def on_consumption_start(
-        self, consumer_tag: str, queue: "AsyncJsonQueue"
-    ):
+    async def on_consumption_start(self, consumer_tag: str, queue: "JsonQueue"):
         """
         Coroutine called once consumption started.
         """
@@ -112,7 +110,7 @@ class Consumer(QueueConsumerDelegate):
         :type delivery_tag: int
         :param error: THe error that caused the callback to be called
         :type error: MessageError
-        :type queue: AsyncJsonQueue
+        :type queue: JsonQueue
         """
         await conf.logger.error(
             {
@@ -151,7 +149,7 @@ class Consumer(QueueConsumerDelegate):
         }
         await conf.logger.error(current_exception)
 
-    async def consume_all_queues(self, queue: AsyncJsonQueue):
+    async def consume_all_queues(self, queue: JsonQueue):
         for queue_name in self._queue_name:
             # Por enquanto não estamos guardando a consumer_tag retornada
             # se precisar, podemos passar a guardar.
