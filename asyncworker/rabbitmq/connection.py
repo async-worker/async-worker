@@ -1,7 +1,7 @@
 from collections import Mapping
 from typing import Dict, List, Union, Iterator, Any
 
-from asyncworker.easyqueue.async_queue import AsyncJsonQueue
+from asyncworker.easyqueue.queue import AsyncJsonQueue
 
 from asyncworker.conf import settings
 

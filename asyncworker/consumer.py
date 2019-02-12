@@ -2,9 +2,9 @@ import asyncio
 import traceback
 from typing import Type, Dict, List
 
-from asyncworker.easyqueue.async_queue import (
-    AsyncQueueConsumerDelegate,
+from asyncworker.easyqueue.queue import (
     AsyncJsonQueue,
+    AsyncQueueConsumerDelegate,
 )
 from aioamqp.exceptions import AioamqpException
 

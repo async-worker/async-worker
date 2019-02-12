@@ -1,4 +1,4 @@
-from asyncworker.easyqueue.async_queue import AsyncJsonQueue
+from asyncworker.easyqueue.queue import AsyncJsonQueue
 from asyncworker.options import Actions
 
 

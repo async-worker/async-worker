@@ -5,11 +5,11 @@ import aioamqp
 import asynctest
 from asynctest.mock import CoroutineMock, Mock
 from unittest.mock import patch, call, ANY
-from asyncworker.easyqueue.async_queue import (
-    AsyncJsonQueue,
-    AsyncQueueConsumerDelegate,
+from asyncworker.easyqueue.queue import (
     _ensure_connected,
     _ConsumptionHandler,
+    AsyncJsonQueue,
+    AsyncQueueConsumerDelegate,
 )
 from asyncworker.easyqueue.message import AMQPMessage
 
@@ -392,7 +392,7 @@ class AsyncQueueConsumerTests(AsyncBaseTestCase, asynctest.TestCase):
 
         self.queue.prefetch_count = expected_prefetch_count
         with patch(
-            "asyncworker.easyqueue.async_queue._ConsumptionHandler",
+            "asyncworker.easyqueue.queue._ConsumptionHandler",
             return_value=Mock(spec=_ConsumptionHandler),
         ) as Handler:
             delegate = Mock(spec=AsyncQueueConsumerDelegate)
@@ -593,7 +593,7 @@ class EnsureConnectedDecoratorTests(asynctest.TestCase):
         )
         coro = CoroutineMock()
         with asynctest.patch(
-            "asyncworker.easyqueue.async_queue.asyncio.sleep"
+            "asyncworker.easyqueue.queue.asyncio.sleep"
         ) as sleep:
             wrapped = _ensure_connected(coro)
             await wrapped(async_queue, 1, dog="Xablau")
@@ -617,7 +617,7 @@ class EnsureConnectedDecoratorTests(asynctest.TestCase):
         )
         coro = CoroutineMock()
         with asynctest.patch(
-            "asyncworker.easyqueue.async_queue.asyncio.sleep"
+            "asyncworker.easyqueue.queue.asyncio.sleep"
         ) as sleep:
             wrapped = _ensure_connected(coro)
             await wrapped(async_queue, 1, dog="Xablau")

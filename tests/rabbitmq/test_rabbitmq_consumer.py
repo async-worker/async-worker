@@ -3,7 +3,7 @@ import unittest
 from asynctest import CoroutineMock, mock, Mock
 import asynctest
 
-from asyncworker.easyqueue.async_queue import AsyncJsonQueue
+from asyncworker.easyqueue.queue import AsyncJsonQueue
 from aioamqp.exceptions import AioamqpException
 
 from asyncworker.bucket import Bucket

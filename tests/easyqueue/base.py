@@ -3,7 +3,7 @@ from unittest.mock import patch
 import aioamqp
 from asynctest import CoroutineMock
 
-from asyncworker.easyqueue.async_queue import (
+from asyncworker.easyqueue.queue import (
     AsyncJsonQueue,
     AsyncQueueConsumerDelegate,
 )
