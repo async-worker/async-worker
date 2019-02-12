@@ -3,10 +3,7 @@ from unittest.mock import patch
 import aioamqp
 from asynctest import CoroutineMock
 
-from asyncworker.easyqueue.queue import (
-    AsyncJsonQueue,
-    AsyncQueueConsumerDelegate,
-)
+from asyncworker.easyqueue.queue import AsyncJsonQueue, QueueConsumerDelegate
 
 
 class AsyncBaseTestCase:
@@ -53,5 +50,5 @@ class AsyncBaseTestCase:
         )
         self._connect = self._connect_patch.start()
 
-    def get_consumer(self) -> AsyncQueueConsumerDelegate:
+    def get_consumer(self) -> QueueConsumerDelegate:
         return CoroutineMock()

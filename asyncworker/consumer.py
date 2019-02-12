@@ -2,10 +2,7 @@ import asyncio
 import traceback
 from typing import Type, Dict, List
 
-from asyncworker.easyqueue.queue import (
-    AsyncJsonQueue,
-    AsyncQueueConsumerDelegate,
-)
+from asyncworker.easyqueue.queue import AsyncJsonQueue, QueueConsumerDelegate
 from aioamqp.exceptions import AioamqpException
 
 from asyncworker import conf
@@ -15,7 +12,7 @@ from .bucket import Bucket
 from .rabbitmq import RabbitMQMessage
 
 
-class Consumer(AsyncQueueConsumerDelegate):
+class Consumer(QueueConsumerDelegate):
     def __init__(
         self,
         route_info: Dict,

@@ -112,7 +112,7 @@ T = TypeVar("T")
 class _ConsumptionHandler:
     def __init__(
         self,
-        delegate: "AsyncQueueConsumerDelegate",
+        delegate: "QueueConsumerDelegate",
         queue: "AsyncJsonQueue",
         queue_name: str,
     ) -> None:
@@ -172,8 +172,8 @@ class AsyncJsonQueue(BaseQueue, Generic[T]):
         host: str,
         username: str,
         password: str,
-        delegate_class: Type["AsyncQueueConsumerDelegate"] = None,
-        delegate: Optional["AsyncQueueConsumerDelegate"] = None,
+        delegate_class: Type["QueueConsumerDelegate"] = None,
+        delegate: Optional["QueueConsumerDelegate"] = None,
         virtual_host: str = "/",
         heartbeat: int = 60,
         prefetch_count: int = 100,
@@ -267,7 +267,7 @@ class AsyncJsonQueue(BaseQueue, Generic[T]):
     async def consume(
         self,
         queue_name: str,
-        delegate: "AsyncQueueConsumerDelegate",
+        delegate: "QueueConsumerDelegate",
         consumer_name: str = "",
     ) -> str:
         """
@@ -316,7 +316,7 @@ class AsyncJsonQueue(BaseQueue, Generic[T]):
         return await self.connection.channel.basic_cancel(consumer_tag)
 
 
-class AsyncQueueConsumerDelegate(metaclass=abc.ABCMeta):
+class QueueConsumerDelegate(metaclass=abc.ABCMeta):
     async def on_before_start_consumption(
         self, queue_name: str, queue: AsyncJsonQueue
     ):
