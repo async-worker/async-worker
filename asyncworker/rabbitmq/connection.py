@@ -32,7 +32,7 @@ class AMQPConnection(Mapping):
         try:
             return self.__connections[key]
         except KeyError:
-            conn = AsyncJsonQueue(
+            conn: AsyncJsonQueue = AsyncJsonQueue(
                 host=self.hostname,
                 username=self.username,
                 password=self.password,

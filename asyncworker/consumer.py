@@ -36,7 +36,7 @@ class Consumer(AsyncQueueConsumerDelegate):
         self.bucket = bucket_class(
             size=min(self._route_options["bulk_size"], prefetch_count)
         )
-        self.queue = AsyncJsonQueue(
+        self.queue: AsyncJsonQueue = AsyncJsonQueue(
             host,
             username,
             password,
@@ -77,7 +77,7 @@ class Consumer(AsyncQueueConsumerDelegate):
         is ready to be handled.
         """
         rv = None
-        all_messages = []
+        all_messages: List[RabbitMQMessage] = []
         try:
 
             if not self.bucket.is_full():
