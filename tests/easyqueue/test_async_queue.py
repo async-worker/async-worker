@@ -3,6 +3,7 @@ import logging
 
 import aioamqp
 import asynctest
+from aioamqp.channel import Channel
 from asynctest.mock import CoroutineMock, Mock
 from unittest.mock import patch, call, ANY
 from asyncworker.easyqueue.queue import (
@@ -472,6 +473,17 @@ class AsyncQueueConsumerTests(AsyncBaseTestCase, asynctest.TestCase):
         delegate.on_consumption_start.assert_awaited_once_with(
             consumer_tag=self.consumer_tag, queue=self.queue
         )
+
+    async def test_calling_stop_consumer_stops_consumer(self):
+        with patch.object(
+            self.queue.connection, "channel", Mock(spec=Channel)
+        ) as channel:
+            await self.queue.stop_consumer(consumer_tag="a_consumer_tag")
+            channel.basic_cancel.assert_awaited_once_with("a_consumer_tag")
+
+    async def test_calling_stop_consumer_raises_an_error_if_not_connected(self):
+        with self.assertRaises(ConnectionError):
+            await self.queue.stop_consumer(consumer_tag="a_consumer_tag")
 
 
 class AsyncQueueConsumerHandlerMethodsTests(
