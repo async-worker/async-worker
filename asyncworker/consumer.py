@@ -76,19 +76,17 @@ class Consumer(QueueConsumerDelegate):
         """
         rv = None
         all_messages: List[RabbitMQMessage] = []
-        try:
+        if not self.bucket.is_full():
+            message = RabbitMQMessage(
+                body=msg.deserialized_data,
+                delivery_tag=msg.delivery_tag,
+                on_success=self._route_options[Events.ON_SUCCESS],
+                on_exception=self._route_options[Events.ON_EXCEPTION],
+            )
+            self.bucket.put(message)
 
-            if not self.bucket.is_full():
-                message = RabbitMQMessage(
-                    body=msg.deserialized_data,
-                    delivery_tag=msg.delivery_tag,
-                    on_success=self._route_options[Events.ON_SUCCESS],
-                    on_exception=self._route_options[Events.ON_EXCEPTION],
-                )
-                self.bucket.put(message)
-
-            if self.bucket.is_full():
-                return await self._flush_bucket_if_needed(msg._queue)
+        if self.bucket.is_full():
+            return await self._flush_bucket_if_needed(msg._queue)
 
     async def _flush_clocked(self, queue):
         async for _ in self.clock:

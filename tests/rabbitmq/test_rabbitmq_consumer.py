@@ -476,18 +476,20 @@ class ConsumerTest(asynctest.TestCase):
         await consumer.on_queue_message(msgs[1])
         handler_mock.assert_not_awaited()
 
-
         await asyncio.sleep(4)
 
         self.loop.create_task(consumer._flush_clocked(queue_mock))
         # Realizando sleep para devolver o loop para o clock
         await asyncio.sleep(0.1)
-        self.assertEqual(1, handler_mock.await_count)
+
         handler_mock.assert_awaited_once_with(items)
 
-        self.assertCountEqual(
-            [mock.call(delivery_tag=10), mock.call(delivery_tag=20)],
-            queue_mock.ack.await_args_list,
+        queue_mock.ack.assert_has_awaits(
+            [
+                mock.call(delivery_tag=msgs[0].delivery_tag),
+                mock.call(delivery_tag=msgs[1].delivery_tag),
+            ],
+            any_order=True,
         )
         queue_mock.reject.assert_not_called()
 
@@ -537,13 +539,13 @@ class ConsumerTest(asynctest.TestCase):
             bucket_class=MyBucket,
         )
         queue_mock = mock.Mock(reject=CoroutineMock())
-        await consumer.on_queue_message({}, 10, queue_mock)
+        await consumer.on_queue_message(self._make_msg())
         self.loop.create_task(consumer._flush_clocked(queue_mock))
 
         # Realizando sleep para devolver o loop para o clock
         await asyncio.sleep(0.1)
         self.assertEqual(1, consumer.clock.current_iteration)
-        await consumer.on_queue_message({}, 10, queue_mock)
+        await consumer.on_queue_message(self._make_msg())
 
         # Realizando sleep para devolver o loop para o clock
         await asyncio.sleep(0.1)
@@ -770,9 +772,11 @@ class ConsumerTest(asynctest.TestCase):
             )
             queue_mock = CoroutineMock(
                 consume=CoroutineMock(),
-                connect=CoroutineMock(side_effect=[AioamqpException, True]),
+                connection=Mock(
+                    connect=CoroutineMock(side_effect=[AioamqpException, True])
+                ),
             )
-            type(queue_mock).is_connected = is_connected_mock
+            type(queue_mock.connection).is_connected = is_connected_mock
             consumer.queue = queue_mock
 
             await consumer.start()
