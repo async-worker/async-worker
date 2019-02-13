@@ -31,14 +31,6 @@ class ClockTicker(AsyncIterator):
         self._tick_event = asyncio.Event()
         self._running: Optional[bool] = None
         self._main_task: Optional[asyncio.Future] = None
-        self.started_at = self.now()
-
-    def now(self) -> int:
-        """
-        Returns an integer corresponding to the current time in seconds since
-        the Epoch
-        """
-        return int(time.time())
 
     def __aiter__(self) -> AsyncIterator:
         if self._running is not None:
@@ -52,16 +44,12 @@ class ClockTicker(AsyncIterator):
         if not self._running:
             raise StopAsyncIteration
 
-        while not self._should_iter():
-            await self._tick_event.wait()
-
         self._tick_event.clear()
+        await self._tick_event.wait()
+
         i = self.current_iteration
         self.current_iteration += 1
         return i
-
-    def _should_iter(self) -> bool:
-        return (self.now() - self.started_at) % self.seconds == 0
 
     async def _run(self) -> None:
         while self._running:

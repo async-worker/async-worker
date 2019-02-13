@@ -226,6 +226,19 @@ async def _handler(dat):
 
 Nesse exemplo, o `_handler` só será chamado quando o async-worker tiver, **já nas mãos**, 1000 itens. Os 1000 itens serão passados de uma única vez para o handler, em uma lista.
 
+#### Flush timeout
+
+Com o flush timeout a `app` não necessita ficar presa esperando o bucket encher para conseguir processar as mensagens.
+Após o tempo do `FLUSH_TIMEOUT`, que são 60 segundos por default, a `app` irá enviar todas as mensagens que já possui para o `_handler`.
+Por exemplo, se tivermos um `handler` que possui
+ - Um `BULK_SIZE` de 1.000
+ - As mensagens para esse handles são publicadas diariamente
+ - E o bucket desse handler ficou com 500 mensagens
+
+Nesse caso a `app` irá esperar o timeout do flush para liberar essas mensagens para o `handler`.
+
+Caso queria alterar o tempo default do timeout do flush basta definir env `ASYNCWORKER_FLUSH_TIMEOUT` com um número que representara os segundos em que a app irá esperar para realizar o flush
+
 # HTTP (0.6.0+)
 
 Atualmente, uma das formas mais comuns comunicação entre aplicações é HTTP,

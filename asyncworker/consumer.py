@@ -8,6 +8,7 @@ from aioamqp.exceptions import AioamqpException
 from asyncworker import conf
 from asyncworker.easyqueue.message import AMQPMessage
 from asyncworker.options import Events
+from asyncworker.time import ClockTicker
 from .bucket import Bucket
 from .rabbitmq import RabbitMQMessage
 
@@ -41,6 +42,8 @@ class Consumer(QueueConsumerDelegate):
             delegate=self,
             prefetch_count=prefetch_count,
         )
+        self.clock = ClockTicker(seconds=conf.settings.FLUSH_TIMEOUT)
+        self.clock_task = None
 
     @property
     def queue_name(self) -> str:
@@ -85,17 +88,36 @@ class Consumer(QueueConsumerDelegate):
                 self.bucket.put(message)
 
             if self.bucket.is_full():
+                return await self._flush_bucket_if_needed(msg._queue)
+
+    async def _flush_clocked(self, queue):
+        async for _ in self.clock:
+            try:
+                await self._flush_bucket_if_needed(queue)
+            except Exception as e:
+                await conf.logger.error(
+                    {
+                        "type": "flush-bucket-failed",
+                        "dest": self.host,
+                        "retry": True,
+                        "exc_traceback": traceback.format_exc(),
+                    }
+                )
+
+    async def _flush_bucket_if_needed(self, queue):
+        try:
+            if not self.bucket.is_empty():
                 all_messages = self.bucket.pop_all()
                 rv = await self._handler(all_messages)
                 await asyncio.gather(
-                    *(m.process_success(msg._queue) for m in all_messages)
+                    *(m.process_success(queue) for m in all_messages)
                 )
-            return rv
+                return rv
         except AioamqpException as aioamqpException:
             raise aioamqpException
         except Exception as e:
             await asyncio.gather(
-                *(m.process_exception(msg._queue) for m in all_messages)
+                *(m.process_exception(queue) for m in all_messages)
             )
             raise e
 
@@ -167,6 +189,11 @@ class Consumer(QueueConsumerDelegate):
                 try:
                     await self.queue.connection.connect()
                     await self.consume_all_queues(self.queue)
+
+                    if not self.clock_task:
+                        self.clock_task = self._flush_clocked(self.queue)
+                        asyncio.get_event_loop().create_task(self.clock_task)
+
                 except Exception as e:
                     await conf.logger.error(
                         {
