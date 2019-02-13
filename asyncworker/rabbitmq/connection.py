@@ -1,7 +1,7 @@
 from collections import Mapping
 from typing import Dict, List, Union, Iterator, Any
 
-from easyqueue import AsyncQueue
+from asyncworker.easyqueue.queue import JsonQueue
 
 from asyncworker.conf import settings
 
@@ -14,7 +14,7 @@ class AMQPConnection(Mapping):
         self.hostname = hostname
         self.username = username
         self.password = password
-        self.__connections: Dict[str, AsyncQueue] = {}
+        self.__connections: Dict[str, JsonQueue] = {}
 
     def __len__(self) -> int:
         return len(self.__connections)
@@ -22,9 +22,9 @@ class AMQPConnection(Mapping):
     def __iter__(self) -> Iterator[str]:
         return iter(self.__connections)
 
-    def __getitem__(self, key: str) -> AsyncQueue:
+    def __getitem__(self, key: str) -> JsonQueue:
         """
-        Gets a AsyncQueue instance for a given virtual host
+        Gets a JsonQueue instance for a given virtual host
 
         :param key: The virtual host of the connection
         :return: An instance of the connection
@@ -32,7 +32,7 @@ class AMQPConnection(Mapping):
         try:
             return self.__connections[key]
         except KeyError:
-            conn = AsyncQueue(
+            conn: JsonQueue = JsonQueue(
                 host=self.hostname,
                 username=self.username,
                 password=self.password,
@@ -41,7 +41,7 @@ class AMQPConnection(Mapping):
             self.__connections[key] = conn
             return conn
 
-    def register(self, queue: AsyncQueue) -> None:
+    def register(self, queue: JsonQueue) -> None:
         self.__connections[queue.virtual_host] = queue
 
     async def put(

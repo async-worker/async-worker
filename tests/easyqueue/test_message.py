@@ -21,6 +21,7 @@ class AMQPMessageTests(unittest.TestCase):
             envelope=Mock(),
             properties=Mock(),
             deserialization_method=deserializer,
+            queue=Mock(),
         )
 
         with self.assertRaises(UndecodableMessageException):
@@ -41,6 +42,7 @@ class AMQPMessageTests(unittest.TestCase):
             envelope=Mock(),
             properties=Mock(),
             deserialization_method=deserializer,
+            queue=Mock(),
         )
 
         self.assertEqual(msg.deserialized_data, ["Xablau"])
@@ -50,6 +52,7 @@ class AMQPMessageTests(unittest.TestCase):
         deserializer = Mock(return_value=["Xablau"])
 
         msg = AMQPMessage(
+            queue=Mock(),
             connection=Mock(),
             channel=Mock(),
             queue_name=Mock(),
@@ -74,6 +77,7 @@ class AMQPMessageTests(unittest.TestCase):
             envelope=Mock(),
             properties=Mock(),
             deserialization_method=Mock(),
+            queue=Mock(),
         )
         msg2 = AMQPMessage(
             connection=msg1.connection,
@@ -84,6 +88,7 @@ class AMQPMessageTests(unittest.TestCase):
             envelope=msg1._envelope,
             properties=msg1._properties,
             deserialization_method=msg1._deserialization_method,
+            queue=msg1._queue,
         )
         self.assertEqual(msg1, msg2)
 
@@ -97,6 +102,7 @@ class AMQPMessageTests(unittest.TestCase):
             envelope=Mock(),
             properties=Mock(),
             deserialization_method=Mock(),
+            queue=Mock(),
         )
 
         msg2 = AMQPMessage(
@@ -108,5 +114,6 @@ class AMQPMessageTests(unittest.TestCase):
             envelope=msg1._envelope,
             properties=msg1._properties,
             deserialization_method=msg1._deserialization_method,
+            queue=Mock(),
         )
         self.assertNotEqual(msg1, msg2)

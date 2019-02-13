@@ -223,7 +223,9 @@ class RabbitMQAppTest(asynctest.TestCase):
         self.assertEqual(["asgard/counts"], consumers[0].queue_name)
         self.assertEqual("/", consumers[0].vhost)
 
-        queue_connection_parameters = consumers[0].queue.connection_parameters
+        queue_connection_parameters = consumers[
+            0
+        ].queue.connection.connection_parameters
         self.assertEqual(
             self.connection_parameters["host"],
             queue_connection_parameters["host"],
@@ -264,7 +266,9 @@ class RabbitMQAppTest(asynctest.TestCase):
 
         self.assertEqual(["asgard/counts"], consumers[0].queue_name)
         self.assertEqual("/", consumers[0].vhost)
-        queue_connection_parameters = consumers[0].queue.connection_parameters
+        queue_connection_parameters = consumers[
+            0
+        ].queue.connection.connection_parameters
         self.assertEqual(
             self.connection_parameters["host"],
             queue_connection_parameters["host"],
@@ -284,7 +288,9 @@ class RabbitMQAppTest(asynctest.TestCase):
 
         self.assertEqual(["asgard/counts/errors"], consumers[1].queue_name)
         self.assertEqual("fluentd", consumers[1].vhost)
-        queue_connection_parameters = consumers[1].queue.connection_parameters
+        queue_connection_parameters = consumers[
+            1
+        ].queue.connection.connection_parameters
         self.assertEqual(
             self.connection_parameters["host"],
             queue_connection_parameters["host"],

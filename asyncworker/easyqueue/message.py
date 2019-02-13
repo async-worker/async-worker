@@ -4,8 +4,8 @@ from aioamqp.channel import Channel
 from aioamqp.envelope import Envelope
 from aioamqp.properties import Properties
 
-from easyqueue.connection import AMQPConnection
-from easyqueue.exceptions import UndecodableMessageException
+from asyncworker.easyqueue.connection import AMQPConnection
+from asyncworker.easyqueue.exceptions import UndecodableMessageException
 
 T = TypeVar("T")
 
@@ -21,6 +21,7 @@ class AMQPMessage(Generic[T]):
         "_properties",
         "_deserialization_method",
         "_deserialized_data",
+        "_queue",
     )
 
     def __init__(
@@ -33,6 +34,7 @@ class AMQPMessage(Generic[T]):
         envelope: Envelope,
         properties: Properties,
         deserialization_method: Callable[[bytes], T],
+        queue,
     ) -> None:
         self.queue_name = queue_name
         self.serialized_data = serialized_data
@@ -44,6 +46,7 @@ class AMQPMessage(Generic[T]):
         self._deserialization_method = deserialization_method
 
         self._deserialized_data: Optional[T] = None
+        self._queue = queue
 
     @property
     def deserialized_data(self) -> T:
