@@ -3,7 +3,7 @@ import unittest
 from asynctest import CoroutineMock, mock, Mock
 import asynctest
 
-from asyncworker.easyqueue.async_queue import AsyncJsonQueue
+from asyncworker.easyqueue.queue import JsonQueue
 from aioamqp.exceptions import AioamqpException
 
 from asyncworker.bucket import Bucket
@@ -22,7 +22,7 @@ class ConsumerTest(asynctest.TestCase):
 
     def setUp(self):
         self.queue_mock = Mock(
-            connection=Mock(is_connected=True), spec=AsyncJsonQueue
+            connection=Mock(is_connected=True), spec=JsonQueue
         )
         self.logger_mock = CoroutineMock(
             info=CoroutineMock(), debug=CoroutineMock(), error=CoroutineMock()
@@ -109,7 +109,7 @@ class ConsumerTest(asynctest.TestCase):
         consumer = Consumer(self.one_route_fixture, *self.connection_parameters)
         connection_parameters = consumer.queue.connection.connection_parameters
 
-        self.assertTrue(isinstance(consumer.queue, AsyncJsonQueue))
+        self.assertTrue(isinstance(consumer.queue, JsonQueue))
         self.assertEqual("/", connection_parameters["virtualhost"])
         self.assertEqual("127.0.0.1", connection_parameters["host"])
         self.assertEqual("guest", connection_parameters["login"])
@@ -120,7 +120,7 @@ class ConsumerTest(asynctest.TestCase):
         consumer = Consumer(self.one_route_fixture, *self.connection_parameters)
         connection_parameters = consumer.queue.connection.connection_parameters
 
-        self.assertTrue(isinstance(consumer.queue, AsyncJsonQueue))
+        self.assertTrue(isinstance(consumer.queue, JsonQueue))
         self.assertEqual("fluentd", connection_parameters["virtualhost"])
 
     def test_consumer_instantiate_async_queue_other_vhost_strip_slash(self):
@@ -128,7 +128,7 @@ class ConsumerTest(asynctest.TestCase):
         consumer = Consumer(self.one_route_fixture, *self.connection_parameters)
         connection_parameters = consumer.queue.connection.connection_parameters
 
-        self.assertTrue(isinstance(consumer.queue, AsyncJsonQueue))
+        self.assertTrue(isinstance(consumer.queue, JsonQueue))
         self.assertEqual("fluentd", connection_parameters["virtualhost"])
 
     def test_consumer_instantiate_async_queue_prefetch_count(self):
@@ -136,7 +136,7 @@ class ConsumerTest(asynctest.TestCase):
         consumer = Consumer(self.one_route_fixture, *self.connection_parameters)
         connection_parameters = consumer.queue.connection.connection_parameters
 
-        self.assertTrue(isinstance(consumer.queue, AsyncJsonQueue))
+        self.assertTrue(isinstance(consumer.queue, JsonQueue))
         self.assertEqual("fluentd", connection_parameters["virtualhost"])
         self.assertEqual(1024, consumer.queue.prefetch_count)
 
