@@ -1,4 +1,4 @@
-from asyncworker.easyqueue.queue import AsyncJsonQueue
+from asyncworker.easyqueue.queue import JsonQueue
 from asyncworker.options import Actions
 
 
@@ -22,7 +22,7 @@ class RabbitMQMessage:
     def accept(self):
         self._final_action = Actions.ACK
 
-    async def _process_action(self, action: Actions, queue: AsyncJsonQueue):
+    async def _process_action(self, action: Actions, queue: JsonQueue):
         if action == Actions.REJECT:
             await queue.reject(delivery_tag=self._delivery_tag, requeue=False)
         elif action == Actions.REQUEUE:
@@ -30,10 +30,10 @@ class RabbitMQMessage:
         elif action == Actions.ACK:
             await queue.ack(delivery_tag=self._delivery_tag)
 
-    async def process_success(self, queue: AsyncJsonQueue):
+    async def process_success(self, queue: JsonQueue):
         action = self._final_action or self._on_success_action
         return await self._process_action(action, queue)
 
-    async def process_exception(self, queue: AsyncJsonQueue):
+    async def process_exception(self, queue: JsonQueue):
         action = self._final_action or self._on_exception_action
         return await self._process_action(action, queue)

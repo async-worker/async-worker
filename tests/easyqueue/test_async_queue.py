@@ -9,8 +9,8 @@ from unittest.mock import patch, call, ANY
 from asyncworker.easyqueue.queue import (
     _ensure_connected,
     _ConsumptionHandler,
-    AsyncJsonQueue,
-    AsyncQueueConsumerDelegate,
+    JsonQueue,
+    QueueConsumerDelegate,
 )
 from asyncworker.easyqueue.message import AMQPMessage
 
@@ -27,9 +27,7 @@ class AsyncBaseTestCase:
             virtual_host="have",
             heartbeat=5,
         )
-        self.queue = AsyncJsonQueue(
-            **self.conn_params, delegate=self.get_consumer()
-        )
+        self.queue = JsonQueue(**self.conn_params, delegate=self.get_consumer())
         self.mock_connection()
 
     def tearDown(self):
@@ -61,7 +59,7 @@ class AsyncBaseTestCase:
         )
         self._connect = self._connect_patch.start()
 
-    def get_consumer(self) -> AsyncQueueConsumerDelegate:
+    def get_consumer(self) -> QueueConsumerDelegate:
         raise NotImplementedError
 
 
@@ -71,7 +69,7 @@ class AsynQueueTests(asynctest.TestCase):
     ):
         invalid_value = -666
         with self.assertRaises(ValueError):
-            AsyncJsonQueue(
+            JsonQueue(
                 host="Olha",
                 username="a",
                 password="explosão",
@@ -84,7 +82,7 @@ class AsynQueueTests(asynctest.TestCase):
         self
     ):
         valid_value = 666
-        queue = AsyncJsonQueue(
+        queue = JsonQueue(
             host="Essa",
             username="menina",
             password="é terrorista",
@@ -98,7 +96,7 @@ class AsynQueueTests(asynctest.TestCase):
         self
     ):
         valid_value = 0
-        queue = AsyncJsonQueue(
+        queue = JsonQueue(
             host="diogommartins.com",
             username="diogo",
             password="XablauBolado",
@@ -112,7 +110,7 @@ class AsynQueueTests(asynctest.TestCase):
         self
     ):
         with self.assertRaises(ValueError):
-            AsyncJsonQueue(
+            JsonQueue(
                 host="diogommartins.com",
                 username="diogo",
                 password="XablauBolado",
@@ -122,19 +120,19 @@ class AsynQueueTests(asynctest.TestCase):
             )
 
     async def test_its_possibile_to_initialize_without_a_delegate(self):
-        queue = AsyncJsonQueue(
+        queue = JsonQueue(
             host="diogommartins.com",
             username="diogo",
             password="XablauBolado",
             loop=Mock(),
         )
-        self.assertIsInstance(queue, AsyncJsonQueue)
+        self.assertIsInstance(queue, JsonQueue)
 
     async def test_it_initializes_a_delegate_if_delegate_class_is_provided(
         self
     ):
         delegate_class = Mock()
-        AsyncJsonQueue(Mock(), Mock(), Mock(), delegate_class=delegate_class)
+        JsonQueue(Mock(), Mock(), Mock(), delegate_class=delegate_class)
         delegate_class.assert_called_once_with()
 
 
@@ -369,14 +367,14 @@ class AsyncQueueConsumerTests(AsyncBaseTestCase, asynctest.TestCase):
         ):
             queue_name = Mock()
             await self.queue.consume(
-                queue_name, delegate=Mock(spec=AsyncQueueConsumerDelegate)
+                queue_name, delegate=Mock(spec=QueueConsumerDelegate)
             )
             connect.assert_awaited_once()
 
     async def test_calling_consume_starts_message_consumption(self):
         await self.queue.connection._connect()
         await self.queue.consume(
-            queue_name=Mock(), delegate=Mock(spec=AsyncQueueConsumerDelegate)
+            queue_name=Mock(), delegate=Mock(spec=QueueConsumerDelegate)
         )
 
         self.assertEqual(
@@ -396,7 +394,7 @@ class AsyncQueueConsumerTests(AsyncBaseTestCase, asynctest.TestCase):
             "asyncworker.easyqueue.queue._ConsumptionHandler",
             return_value=Mock(spec=_ConsumptionHandler),
         ) as Handler:
-            delegate = Mock(spec=AsyncQueueConsumerDelegate)
+            delegate = Mock(spec=QueueConsumerDelegate)
             await self.queue.consume(
                 queue_name=queue_name,
                 consumer_name=consumer_name,
@@ -439,7 +437,7 @@ class AsyncQueueConsumerTests(AsyncBaseTestCase, asynctest.TestCase):
         expected_prefetch_count = 666
         self.queue.prefetch_count = expected_prefetch_count
         await self.queue.consume(
-            queue_name=Mock(), delegate=Mock(spec=AsyncQueueConsumerDelegate)
+            queue_name=Mock(), delegate=Mock(spec=QueueConsumerDelegate)
         )
 
         expected = call(
@@ -452,7 +450,7 @@ class AsyncQueueConsumerTests(AsyncBaseTestCase, asynctest.TestCase):
         )
 
     async def test_calling_consume_starts_a_connection(self):
-        consumer = Mock(spec=AsyncQueueConsumerDelegate)
+        consumer = Mock(spec=QueueConsumerDelegate)
         self.assertFalse(self._connect.called)
         await self.queue.consume(
             queue_name=self.test_queue_name, delegate=consumer
@@ -462,7 +460,7 @@ class AsyncQueueConsumerTests(AsyncBaseTestCase, asynctest.TestCase):
     async def test_calling_consume_notifies_delegate(self):
         expected_prefetch_count = 666
         self.queue.prefetch_count = expected_prefetch_count
-        delegate = Mock(spec=AsyncQueueConsumerDelegate)
+        delegate = Mock(spec=QueueConsumerDelegate)
         await self.queue.consume(
             queue_name=self.test_queue_name, delegate=delegate
         )
@@ -492,12 +490,12 @@ class AsyncQueueConsumerHandlerMethodsTests(
     consumer_tag = "666"
 
     def get_consumer(self):
-        return Mock(spec=AsyncQueueConsumerDelegate)
+        return Mock(spec=QueueConsumerDelegate)
 
     async def setUp(self):
         super().setUp()
         self.properties = Mock(name="Properties")
-        self.delegate = Mock(spec=AsyncQueueConsumerDelegate)
+        self.delegate = Mock(spec=QueueConsumerDelegate)
         consumer_tag = await self.queue.consume(
             queue_name=self.test_queue_name,
             delegate=self.delegate,
