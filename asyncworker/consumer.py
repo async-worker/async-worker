@@ -8,6 +8,7 @@ from aioamqp.exceptions import AioamqpException
 from asyncworker import conf
 from asyncworker.options import Events
 from asyncworker.routes import AMQPRoute
+from asyncworker.time import ClockTicker
 from .bucket import Bucket
 from .rabbitmq import RabbitMQMessage
 
@@ -41,6 +42,8 @@ class Consumer(AsyncQueueConsumerDelegate):
             delegate=self,
             prefetch_count=prefetch_count,
         )
+        self.clock = ClockTicker(seconds=conf.settings.FLUSH_TIMEOUT)
+        self.clock_task = None
 
     @property
     def queue_name(self) -> str:
@@ -79,26 +82,40 @@ class Consumer(AsyncQueueConsumerDelegate):
         :type content: dict
         :type queue: AsyncQueue
         """
-        rv = None
-        all_messages = []
-        try:
+        if not self.bucket.is_full():
+            message = RabbitMQMessage(
+                body=content,
+                delivery_tag=delivery_tag,
+                on_success=self._route_options[Events.ON_SUCCESS],
+                on_exception=self._route_options[Events.ON_EXCEPTION],
+            )
+            self.bucket.put(message)
+        if self.bucket.is_full():
+            return await self._flush_bucket_if_needed(queue)
 
-            if not self.bucket.is_full():
-                message = RabbitMQMessage(
-                    body=content,
-                    delivery_tag=delivery_tag,
-                    on_success=self._route_options[Events.ON_SUCCESS],
-                    on_exception=self._route_options[Events.ON_EXCEPTION],
+    async def _flush_clocked(self, queue):
+        async for _ in self.clock:
+            try:
+                await self._flush_bucket_if_needed(queue)
+            except Exception as e:
+                await conf.logger.error(
+                    {
+                        "type": "flush-bucket-failed",
+                        "dest": self.host,
+                        "retry": True,
+                        "exc_traceback": traceback.format_exc(),
+                    }
                 )
-                self.bucket.put(message)
 
-            if self.bucket.is_full():
+    async def _flush_bucket_if_needed(self, queue):
+        try:
+            if not self.bucket.is_empty():
                 all_messages = self.bucket.pop_all()
                 rv = await self._handler(all_messages)
                 await asyncio.gather(
                     *(m.process_success(queue) for m in all_messages)
                 )
-            return rv
+                return rv
         except AioamqpException as aioamqpException:
             raise aioamqpException
         except Exception as e:
@@ -175,6 +192,11 @@ class Consumer(AsyncQueueConsumerDelegate):
                 try:
                     await self.queue.connect()
                     await self.consume_all_queues(self.queue)
+
+                    if not self.clock_task:
+                        self.clock_task = self._flush_clocked(self.queue)
+                        asyncio.get_event_loop().create_task(self.clock_task)
+
                 except Exception as e:
                     await conf.logger.error(
                         {
