@@ -185,7 +185,6 @@ class Consumer(QueueConsumerDelegate):
         while self.keep_runnig():
             if not self.queue.connection.is_connected:
                 try:
-                    await self.queue.connection.connect()
                     await self.consume_all_queues(self.queue)
 
                     if not self.clock_task:
