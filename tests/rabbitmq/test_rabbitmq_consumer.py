@@ -175,7 +175,7 @@ class ConsumerTest(asynctest.TestCase):
         with self.assertRaises(Exception):
             await consumer.on_queue_message(msg=self.mock_message)
         self.queue_mock.reject.assert_awaited_with(
-            delivery_tag=self.mock_message.delivery_tag, requeue=True
+            self.mock_message, requeue=True
         )
 
     async def test_on_exception_reject_message(self):
@@ -193,7 +193,7 @@ class ConsumerTest(asynctest.TestCase):
         with self.assertRaises(Exception):
             await consumer.on_queue_message(msg=self.mock_message)
         self.queue_mock.reject.assert_awaited_with(
-            delivery_tag=self.mock_message.delivery_tag, requeue=False
+            self.mock_message, requeue=False
         )
 
     async def test_on_exception_ack_message(self):
@@ -210,9 +210,7 @@ class ConsumerTest(asynctest.TestCase):
         with self.assertRaises(Exception):
             await consumer.on_queue_message(msg=self.mock_message)
 
-        self.queue_mock.ack.assert_awaited_with(
-            delivery_tag=self.mock_message.delivery_tag
-        )
+        self.queue_mock.ack.assert_awaited_with(self.mock_message)
 
     async def test_on_success_ack(self):
         @self.app.route(
@@ -227,9 +225,7 @@ class ConsumerTest(asynctest.TestCase):
         consumer = Consumer(route, *self.connection_parameters)
 
         await consumer.on_queue_message(msg=self.mock_message)
-        self.queue_mock.ack.assert_awaited_with(
-            delivery_tag=self.mock_message.delivery_tag
-        )
+        self.queue_mock.ack.assert_awaited_with(self.mock_message)
 
     async def test_on_success_reject(self):
         @self.app.route(
@@ -245,7 +241,7 @@ class ConsumerTest(asynctest.TestCase):
 
         await consumer.on_queue_message(msg=self.mock_message)
         self.queue_mock.reject.assert_awaited_with(
-            delivery_tag=self.mock_message.delivery_tag, requeue=False
+            self.mock_message, requeue=False
         )
 
     async def test_on_success_requeue(self):
@@ -262,7 +258,7 @@ class ConsumerTest(asynctest.TestCase):
 
         await consumer.on_queue_message(msg=self.mock_message)
         self.queue_mock.reject.assert_awaited_with(
-            delivery_tag=self.mock_message.delivery_tag, requeue=True
+            self.mock_message, requeue=True
         )
 
     async def test_on_queue_message_auto_ack_on_success(self):
@@ -275,9 +271,7 @@ class ConsumerTest(asynctest.TestCase):
         result = await consumer.on_queue_message(msg=self.mock_message)
 
         self.assertEqual((42, self.mock_message.deserialized_data), result)
-        self.queue_mock.ack.assert_awaited_once_with(
-            delivery_tag=self.mock_message.delivery_tag
-        )
+        self.queue_mock.ack.assert_awaited_once_with(self.mock_message)
         self.queue_mock.reject.assert_not_awaited()
 
     async def test_on_exception_default_action_bulk_messages(self):
@@ -301,8 +295,8 @@ class ConsumerTest(asynctest.TestCase):
 
         self.queue_mock.reject.assert_has_awaits(
             [
-                mock.call(delivery_tag=msgs[0].delivery_tag, requeue=True),
-                mock.call(delivery_tag=msgs[1].delivery_tag, requeue=True),
+                mock.call(msgs[0], requeue=True),
+                mock.call(msgs[1], requeue=True),
             ],
             any_order=True,
         )
@@ -336,9 +330,7 @@ class ConsumerTest(asynctest.TestCase):
         await consumer.on_queue_message(msg=msg)
         handler_mock.assert_awaited_once_with(consumer.bucket._items)
 
-        self.queue_mock.ack.assert_awaited_once_with(
-            delivery_tag=msg.delivery_tag
-        )
+        self.queue_mock.ack.assert_awaited_once_with(msg)
         self.assertEqual(0, self.queue_mock.reject.call_count)
 
     async def test_on_queue_message_bulk_size_bigger_that_one(self):
@@ -372,11 +364,7 @@ class ConsumerTest(asynctest.TestCase):
         handler_mock.assert_awaited_once_with(consumer.bucket._items)
 
         self.queue_mock.ack.assert_has_awaits(
-            [
-                mock.call(delivery_tag=msgs[0].delivery_tag),
-                mock.call(delivery_tag=msgs[1].delivery_tag),
-            ],
-            any_order=True,
+            [mock.call(msgs[0]), mock.call(msgs[1])], any_order=True
         )
 
         self.queue_mock.reject.assert_not_awaited()
@@ -402,17 +390,13 @@ class ConsumerTest(asynctest.TestCase):
         await consumer.on_queue_message(self._make_msg(delivery_tag=14))
 
         self.queue_mock.ack.assert_has_awaits(
-            [
-                mock.call(delivery_tag=msgs[0].delivery_tag),
-                mock.call(delivery_tag=msgs[3].delivery_tag),
-                mock.call(delivery_tag=msgs[4].delivery_tag),
-            ],
+            [mock.call(msgs[0]), mock.call(msgs[3]), mock.call(msgs[4])],
             any_order=True,
         )
         self.queue_mock.reject.assert_has_awaits(
             [
-                mock.call(delivery_tag=msgs[1].delivery_tag, requeue=True),
-                mock.call(delivery_tag=msgs[2].delivery_tag, requeue=True),
+                mock.call(msgs[1], requeue=True),
+                mock.call(msgs[2], requeue=True),
             ],
             any_order=True,
         )
@@ -438,11 +422,11 @@ class ConsumerTest(asynctest.TestCase):
 
         self.queue_mock.reject.assert_has_awaits(
             [
-                mock.call(delivery_tag=msgs[0].delivery_tag, requeue=False),
-                mock.call(delivery_tag=msgs[1].delivery_tag, requeue=True),
-                mock.call(delivery_tag=msgs[2].delivery_tag, requeue=True),
-                mock.call(delivery_tag=msgs[3].delivery_tag, requeue=False),
-                mock.call(delivery_tag=msgs[4].delivery_tag, requeue=False),
+                mock.call(msgs[0], requeue=False),
+                mock.call(msgs[1], requeue=True),
+                mock.call(msgs[2], requeue=True),
+                mock.call(msgs[3], requeue=False),
+                mock.call(msgs[4], requeue=False),
             ],
             any_order=True,
         )
@@ -476,8 +460,6 @@ class ConsumerTest(asynctest.TestCase):
         await consumer.on_queue_message(msgs[1])
         handler_mock.assert_not_awaited()
 
-        await asyncio.sleep(4)
-
         self.loop.create_task(consumer._flush_clocked(queue_mock))
         # Realizando sleep para devolver o loop para o clock
         await asyncio.sleep(0.1)
@@ -485,11 +467,7 @@ class ConsumerTest(asynctest.TestCase):
         handler_mock.assert_awaited_once_with(items)
 
         queue_mock.ack.assert_has_awaits(
-            [
-                mock.call(delivery_tag=msgs[0].delivery_tag),
-                mock.call(delivery_tag=msgs[1].delivery_tag),
-            ],
-            any_order=True,
+            [mock.call(msgs[0]), mock.call(msgs[1])], any_order=True
         )
         queue_mock.reject.assert_not_called()
 
@@ -541,17 +519,16 @@ class ConsumerTest(asynctest.TestCase):
         queue_mock = mock.Mock(reject=CoroutineMock())
         await consumer.on_queue_message(self._make_msg())
         self.loop.create_task(consumer._flush_clocked(queue_mock))
+        self.assertEqual(0, consumer.clock.current_iteration)
 
         # Realizando sleep para devolver o loop para o clock
         await asyncio.sleep(0.1)
         self.assertEqual(1, consumer.clock.current_iteration)
-        await consumer.on_queue_message(self._make_msg())
 
         # Realizando sleep para devolver o loop para o clock
-        await asyncio.sleep(0.1)
-        self.assertEqual(2, consumer.clock.current_iteration)
+        await asyncio.sleep(0.3)
+        self.assertGreaterEqual(consumer.clock.current_iteration, 2)
         await consumer.clock.stop()
-        await asyncio.sleep(0.1)
 
     async def test_on_message_handle_error_logs_exception(self):
         """
@@ -630,8 +607,8 @@ class ConsumerTest(asynctest.TestCase):
 
         queue_mock.consume.assert_has_awaits(
             [
-                mock.call(queue_name="asgard/counts"),
-                mock.call(queue_name="asgard/counts/errors"),
+                mock.call(queue_name="asgard/counts", delegate=consumer),
+                mock.call(queue_name="asgard/counts/errors", delegate=consumer),
             ],
             any_order=True,
         )

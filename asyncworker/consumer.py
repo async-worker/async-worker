@@ -80,6 +80,7 @@ class Consumer(QueueConsumerDelegate):
             message = RabbitMQMessage(
                 body=msg.deserialized_data,
                 delivery_tag=msg.delivery_tag,
+                amqp=msg,
                 on_success=self._route_options[Events.ON_SUCCESS],
                 on_exception=self._route_options[Events.ON_EXCEPTION],
             )
@@ -176,7 +177,7 @@ class Consumer(QueueConsumerDelegate):
             await conf.logger.debug(
                 {"queue": queue_name, "event": "start-consume"}
             )
-            await queue.consume(queue_name=queue_name)
+            await queue.consume(queue_name=queue_name, delegate=self)
 
     def keep_runnig(self):
         return True

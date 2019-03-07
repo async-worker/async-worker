@@ -28,6 +28,11 @@ python_version = "3.6"
 
 [scripts]
 test = "py.test -sv --cov=asyncworker --cov-report term-missing -v"
+itest = "py.test -sv --cov=asyncworker --cov-report term-missing -v itests/"
+all-tests = "py.test -sv --cov=asyncworker --cov-report term-missing -v tests/ itests/"
 lint = "mypy asyncworker --ignore-missing-imports"
 format = "black --py36 -v --line-length 80 ."
 format-check = "black --py36 -v --line-length 80 --check ."
+
+[pipenv]
+allow_prereleases = true
