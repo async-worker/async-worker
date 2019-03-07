@@ -1,86 +1,166 @@
+import abc
 from collections import UserDict
-from typing import Callable, Coroutine, Dict, List, Any
+from typing import (
+    Callable,
+    Coroutine,
+    Dict,
+    List,
+    Any,
+    Union,
+    Iterable,
+    Mapping,
+    Type,
+)
 
+from aiohttp.hdrs import METH_ALL
+from aiohttp.web_routedef import RouteDef
 from cached_property import cached_property
+from pydantic import BaseModel, validator
 
 from asyncworker.conf import settings
-from asyncworker.options import DefaultValues, Events, Options, RouteTypes
+from asyncworker.options import DefaultValues, RouteTypes, Actions
 
 RouteHandler = Callable[[], Coroutine]
-Route = Dict[str, Any]
+
+
+class Model(BaseModel, abc.ABC):
+    """
+    An abstract pydantic BaseModel that also behaves like a Mapping
+    """
+
+    def __getitem__(self, item):
+        try:
+            return self.__getattr__(item)
+        except AttributeError as e:
+            raise KeyError from e
+
+    def __eq__(self, other):
+        if isinstance(other, dict):
+            return self.dict() == other
+        return super(Model, self).__eq__(other)
+
+    def __len__(self):
+        return len(self.fields)
+
+    def keys(self):
+        return self.fields.keys()
+
+    def get(self, key, default=None):
+        try:
+            return self[key]
+        except KeyError:
+            return default
+
+
+class Route(Model, abc.ABC):
+    """
+    An abstract Model that acts like a route factory
+    """
+
+    type: RouteTypes
+    handler: Any
+    routes: List[str]
+    default_options: dict = {}
+
+    @staticmethod
+    def factory(data: Dict) -> "Route":
+        try:
+            type_ = data.pop("type")
+        except KeyError as e:
+            raise ValueError("Routes must have a type") from e
+
+        if type_ == RouteTypes.HTTP:
+            return HTTPRoute(**data)
+        if type_ == RouteTypes.AMQP_RABBITMQ:
+            return AMQPRoute(**data)
+        if type_ == RouteTypes.SSE:
+            return SSERoute(**data)
+        raise ValueError(f"'{type_}' is an invalid RouteType.")
+
+
+class HTTPRoute(Route):
+    type: RouteTypes = RouteTypes.HTTP
+    methods: List[str]
+
+    @validator("methods")
+    def validate_method(cls, v: str):
+        method = v.upper()
+        if method not in METH_ALL:
+            raise ValueError(f"'{v}' isn't a valid supported HTTP method.")
+        return method
+
+    def aiohttp_routes(self) -> Iterable[RouteDef]:
+        for route in self.routes:
+            for method in self.methods:
+                kwargs = {"allow_head": False} if method == "GET" else {}
+                yield RouteDef(
+                    method=method,
+                    path=route,
+                    handler=self.handler,
+                    kwargs=kwargs,
+                )
+
+
+class _AMQPRouteOptions(Model):
+    bulk_size: int = DefaultValues.BULK_SIZE
+    bulk_flush_interval: int = DefaultValues.BULK_FLUSH_INTERVAL
+    on_success: Actions = DefaultValues.ON_SUCCESS
+    on_exception: Actions = DefaultValues.ON_EXCEPTION
+
+
+class AMQPRoute(Route):
+    type: RouteTypes = RouteTypes.AMQP_RABBITMQ
+    vhost: str = settings.AMQP_DEFAULT_VHOST
+    options: _AMQPRouteOptions
+
+
+class _SSERouteOptions(Model):
+    bulk_size: int = DefaultValues.BULK_SIZE
+    bulk_flush_interval: int = DefaultValues.BULK_FLUSH_INTERVAL
+    headers: Dict[str, str] = {}
+
+
+class SSERoute(Route):
+    type: RouteTypes = RouteTypes.SSE
+    headers: Dict[str, str] = {}
+    options: _SSERouteOptions = _SSERouteOptions()
+
+    @validator("options", pre=True, whole=True, always=True)
+    def add_default_headers(cls, v, values, **kwargs):
+        headers = {
+            **values.pop("headers", {}),
+            **values.pop("default_options", {}).get("headers", {}),
+        }
+        v["headers"] = headers
+
+        return v
 
 
 class RoutesRegistry(UserDict):
-    @cached_property
-    def http_routes(self) -> List[Route]:
-        routes = []
-        for handler, route in self.items():
-            if route["type"] is not RouteTypes.HTTP:
-                continue
-            for path in route["routes"]:
-                for method in route["methods"]:
-                    routes.append(
-                        {"method": method, "path": path, "handler": handler}
-                    )
-        return routes
+    def _get_routes_for_type(self, route_type: Type) -> Iterable:
+        return tuple((r for r in self.values() if isinstance(r, route_type)))
 
     @cached_property
-    def amqp_routes(self) -> List[Dict]:
-        routes = []
-        for handler, route in self.items():
-            if route["type"] is not RouteTypes.AMQP_RABBITMQ:
-                continue
-            options = route["options"]
-            routes.append(
-                {
-                    "routes": route["routes"],
-                    "handler": handler,
-                    "options": {
-                        "vhost": route.get(
-                            "vhost", settings.AMQP_DEFAULT_VHOST
-                        ),
-                        "bulk_size": options.get(
-                            Options.BULK_SIZE, DefaultValues.BULK_SIZE
-                        ),
-                        "bulk_flush_interval": options.get(
-                            Options.BULK_FLUSH_INTERVAL,
-                            DefaultValues.BULK_FLUSH_INTERVAL,
-                        ),
-                        Events.ON_SUCCESS: options.get(
-                            Events.ON_SUCCESS, DefaultValues.ON_SUCCESS
-                        ),
-                        Events.ON_EXCEPTION: options.get(
-                            Events.ON_EXCEPTION, DefaultValues.ON_EXCEPTION
-                        ),
-                    },
-                }
-            )
-        return routes
+    def http_routes(self) -> Iterable[HTTPRoute]:
+        return self._get_routes_for_type(HTTPRoute)
 
     @cached_property
-    def sse_routes(self) -> List[Route]:
-        routes = []
-        for handler, route in self.items():
-            if route["type"] is not RouteTypes.SSE:
-                continue
+    def amqp_routes(self) -> Iterable[AMQPRoute]:
+        return self._get_routes_for_type(AMQPRoute)
 
-            options = route["options"]
-            headers = route.pop("headers", {})
-            default_headers = route["default_options"].get("headers", {})
-            routes.append(
-                {
-                    "routes": route["routes"],
-                    "handler": handler,
-                    "options": {
-                        "bulk_size": options.get(
-                            Options.BULK_SIZE, DefaultValues.BULK_SIZE
-                        ),
-                        "bulk_flush_interval": options.get(
-                            Options.BULK_FLUSH_INTERVAL,
-                            DefaultValues.BULK_FLUSH_INTERVAL,
-                        ),
-                        "headers": {**headers, **default_headers},
-                    },
-                }
-            )
-        return routes
+    @cached_property
+    def sse_routes(self) -> Iterable[SSERoute]:
+        return self._get_routes_for_type(SSERoute)
+
+    def __setitem__(self, key: RouteHandler, value: Union[Dict, Route]):
+        if not isinstance(value, Route):
+            route = Route.factory({"handler": key, **value})
+        else:
+            route = value
+        super(RoutesRegistry, self).__setitem__(key, route)
+
+    def add_route(self, route: Route) -> None:
+        self[route.handler] = route
+
+    def route_for(self, handler: RouteHandler) -> Route:
+        return self[handler]

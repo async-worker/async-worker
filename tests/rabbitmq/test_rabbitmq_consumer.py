@@ -32,8 +32,8 @@ class ConsumerTest(asynctest.TestCase):
         self.one_route_fixture = {
             "routes": ["/asgard/counts/ok"],
             "handler": _handler,
+            "vhost": "/",
             "options": {
-                "vhost": "/",
                 "bulk_size": 1,
                 "bulk_flush_interval": 60,
                 Events.ON_SUCCESS: Actions.ACK,
@@ -98,7 +98,7 @@ class ConsumerTest(asynctest.TestCase):
         )
 
     def test_consumer_instantiate_async_queue_default_vhost(self):
-        del self.one_route_fixture["options"]["vhost"]
+        del self.one_route_fixture["vhost"]
         consumer = Consumer(self.one_route_fixture, *self.connection_parameters)
         connection_parameters = consumer.queue.connection_parameters
 
@@ -109,7 +109,7 @@ class ConsumerTest(asynctest.TestCase):
         self.assertEqual("guest", connection_parameters["password"])
 
     def test_consumer_instantiate_async_queue_other_vhost(self):
-        self.one_route_fixture["options"]["vhost"] = "fluentd"
+        self.one_route_fixture["vhost"] = "fluentd"
         consumer = Consumer(self.one_route_fixture, *self.connection_parameters)
         connection_parameters = consumer.queue.connection_parameters
 
@@ -117,7 +117,7 @@ class ConsumerTest(asynctest.TestCase):
         self.assertEqual("fluentd", connection_parameters["virtualhost"])
 
     def test_consumer_instantiate_async_queue_other_vhost_strip_slash(self):
-        self.one_route_fixture["options"]["vhost"] = "/fluentd"
+        self.one_route_fixture["vhost"] = "/fluentd"
         consumer = Consumer(self.one_route_fixture, *self.connection_parameters)
         connection_parameters = consumer.queue.connection_parameters
 
@@ -125,7 +125,7 @@ class ConsumerTest(asynctest.TestCase):
         self.assertEqual("fluentd", connection_parameters["virtualhost"])
 
     def test_consumer_instantiate_async_queue_prefetch_count(self):
-        self.one_route_fixture["options"]["vhost"] = "/fluentd"
+        self.one_route_fixture["vhost"] = "/fluentd"
         consumer = Consumer(self.one_route_fixture, *self.connection_parameters)
         connection_parameters = consumer.queue.connection_parameters
 
