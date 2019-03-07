@@ -11,7 +11,7 @@ script: pipenv run lint && pipenv run format-check && pipenv run test
 after_success:
   - codecov
 services:
-  - rabbitmq:3.6-management
+  - rabbitmq
 deploy:
   provider: pypi
   user: $PYPI_USERNAME
