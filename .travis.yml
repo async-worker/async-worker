@@ -7,7 +7,7 @@ install:
   - pip install -U pip==18.0 pipenv==2018.7.1
   - pipenv install --system --deploy --ignore-pipfile --dev
   - pipenv run pip install -e .
-script: pipenv run lint && pipenv run format-check && pipenv run test
+script: pipenv run lint && pipenv run format-check && pipenv run all-tests
 after_success:
   - codecov
 services:
