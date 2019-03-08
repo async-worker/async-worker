@@ -6,6 +6,7 @@ from signal import Signals
 
 from asyncworker import BaseApp
 from asyncworker.options import RouteTypes, DefaultValues, Options
+from asyncworker.routes import AMQPRoute
 from asyncworker.task_runners import ScheduledTaskRunner
 
 
@@ -74,19 +75,8 @@ class BaseAppTests(asynctest.TestCase):
             handler
         )
 
-        self.assertEqual(
-            self.app.routes_registry,
-            {
-                handler: {
-                    "type": RouteTypes.AMQP_RABBITMQ,
-                    "routes": ["route"],
-                    "handler": handler,
-                    "options": {},
-                    "default_options": self.app.default_route_options,
-                    "dog": "Xablau",
-                }
-            },
-        )
+        self.assertEqual(len(self.app.routes_registry), 1)
+        self.assertIsInstance(self.app.routes_registry[handler], AMQPRoute)
 
     async def test_run_on_startup_registers_a_coroutine_to_be_executed_on_startup(
         self
@@ -95,12 +85,12 @@ class BaseAppTests(asynctest.TestCase):
 
         self.app.run_on_startup(coro)
 
-        self.assertIn(coro, self.app._on_startup)
+        self.assertEqual(coro, self.app._on_startup[-1])
 
         await self.app.startup()
         coro.assert_awaited_once_with(self.app)
 
-    async def test_startup_calls_user_registered_startup_routines_before_app_signal_handlers_startup(
+    async def test_startup_calls_user_registered_startup_routines_after_app_signal_handlers_startup(
         self
     ):
         coro = CoroutineMock()
@@ -109,7 +99,7 @@ class BaseAppTests(asynctest.TestCase):
 
         self.assertEqual(
             self.app._on_startup,
-            [coro, *(handler.startup for handler in self.app.handlers)],
+            [*(handler.startup for handler in self.app.handlers), coro],
         )
 
     async def test_run_on_shutdown_registers_a_coroutine_to_be_executed_on_shutdown(

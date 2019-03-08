@@ -1,6 +1,6 @@
 import asyncio
 import traceback
-from typing import Type, Dict, List
+from typing import Type, Dict, Union, List
 
 from asyncworker.easyqueue.queue import JsonQueue, QueueConsumerDelegate
 from aioamqp.exceptions import AioamqpException
@@ -8,6 +8,7 @@ from aioamqp.exceptions import AioamqpException
 from asyncworker import conf
 from asyncworker.easyqueue.message import AMQPMessage
 from asyncworker.options import Events
+from asyncworker.routes import AMQPRoute
 from asyncworker.time import ClockTicker
 from .bucket import Bucket
 from .rabbitmq import RabbitMQMessage
@@ -16,7 +17,7 @@ from .rabbitmq import RabbitMQMessage
 class Consumer(QueueConsumerDelegate):
     def __init__(
         self,
-        route_info: Dict,
+        route_info: Union[Dict, AMQPRoute],
         host: str,
         username: str,
         password: str,
@@ -28,7 +29,7 @@ class Consumer(QueueConsumerDelegate):
         self._queue_name = route_info["routes"]
         self._route_options = route_info["options"]
         self.host = host
-        self.vhost = self._route_options.get("vhost", "/")
+        self.vhost = route_info.get("vhost", "/")
         if self.vhost != "/":
             self.vhost = self.vhost.lstrip("/")
         self.bucket = bucket_class(

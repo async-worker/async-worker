@@ -42,6 +42,7 @@ class AppTest(asynctest.TestCase):
         routes = app.routes_registry.sse_routes
         self.assertIsNotNone(routes)
         expected_registry_entry = {
+            "type": RouteTypes.SSE,
             "routes": expected_route,
             "handler": _handler,
             "options": {
@@ -71,6 +72,7 @@ class AppTest(asynctest.TestCase):
         routes = app.routes_registry.sse_routes
         self.assertIsNotNone(routes)
         expected_registry_entry = {
+            "type": RouteTypes.SSE,
             "routes": expected_route,
             "handler": _handler,
             "options": {

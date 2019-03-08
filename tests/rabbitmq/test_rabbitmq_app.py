@@ -38,17 +38,19 @@ class RabbitMQAppTest(asynctest.TestCase):
 
         self.assertIsNotNone(app.routes_registry)
         expected_registry_entry = {
+            "type": RouteTypes.AMQP_RABBITMQ,
             "routes": expected_routes,
             "handler": _handler,
+            "default_options": {},
+            "vhost": expected_vhost,
             "options": {
-                "vhost": expected_vhost,
                 "bulk_size": 1024,
                 "bulk_flush_interval": 120,
                 Events.ON_SUCCESS: Actions.ACK,
                 Events.ON_EXCEPTION: Actions.REQUEUE,
             },
         }
-        route = app.routes_registry.amqp_routes[0]
+        route = app.routes_registry.route_for(_handler)
         self.assertEqual(expected_registry_entry, route)
         self.assertEqual(42, await route["handler"](None))
 
@@ -88,7 +90,7 @@ class RabbitMQAppTest(asynctest.TestCase):
 
         self.assertIsNotNone(app.routes_registry)
         route = app.routes_registry.amqp_routes[0]
-        self.assertEqual(expected_vhost, route["options"]["vhost"])
+        self.assertEqual(expected_vhost, route["vhost"])
         self.assertEqual(42, await route["handler"](None))
 
     async def test_register_bulk_size(self):
