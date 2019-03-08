@@ -6,7 +6,7 @@ here = path.abspath(path.dirname(__file__))
 
 setup(
     name="async-worker",
-    version="0.8.0",
+    version="0.9.0-rc2",
     description="Microframework para escrever consumers para RabbitMQ",
     long_description="Microframework para escrever consumers para RabbitMQ",
     url="https://github.com/B2W-BIT/async-worker",
@@ -20,8 +20,8 @@ setup(
     ],
     packages=find_packages(exclude=["contrib", "docs", "tests*"]),
     install_requires=[
-        "easyqueue==2.0.0-rc3",
-        "aiologger==0.3.0",
+        "aioamqp==0.12.0",
+        "aiologger>=0.4.0-rc1",
         "pydantic==0.14",
         "cached-property==1.5.1",
         "aiohttp==3.4.4",

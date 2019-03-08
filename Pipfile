@@ -4,9 +4,8 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-aioamqp = "==0.11.0"
+aioamqp = "==0.12.0"
 aiohttp = "==3.5.4"
-easyqueue = "==2.0.0-rc3"
 pydantic = "==0.14"
 cached-property = "==1.5.1"
 codecov = "==1.0.0"
@@ -29,6 +28,11 @@ python_version = "3.6"
 
 [scripts]
 test = "py.test -sv --cov=asyncworker --cov-report term-missing -v"
+itest = "py.test -sv --cov=asyncworker --cov-report term-missing -v itests/"
+all-tests = "py.test -sv --cov=asyncworker --cov-report term-missing -v tests/ itests/"
 lint = "mypy asyncworker --ignore-missing-imports"
 format = "black --py36 -v --line-length 80 ."
 format-check = "black --py36 -v --line-length 80 --check ."
+
+[pipenv]
+allow_prereleases = true

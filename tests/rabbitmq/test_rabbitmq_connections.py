@@ -1,6 +1,6 @@
 import asynctest
 from asynctest import Mock
-from easyqueue import AsyncQueue
+from asyncworker.easyqueue.queue import JsonQueue
 
 from asyncworker.conf import settings
 from asyncworker.rabbitmq.connection import AMQPConnection
@@ -32,8 +32,8 @@ class AMQPConnectionTests(asynctest.TestCase):
         self.assertEqual(len(self.rabbitmq_connection), 1)
 
     def test_rabbitmq_connection_is_iterable(self):
-        connection_a = asynctest.Mock(virtual_host="a", spec=AsyncQueue)
-        connection_b = asynctest.Mock(virtual_host="b", spec=AsyncQueue)
+        connection_a = asynctest.Mock(virtual_host="a", spec=JsonQueue)
+        connection_b = asynctest.Mock(virtual_host="b", spec=JsonQueue)
 
         self.rabbitmq_connection.register(connection_a)
         self.rabbitmq_connection.register(connection_b)
@@ -42,8 +42,8 @@ class AMQPConnectionTests(asynctest.TestCase):
         self.assertEqual(as_dict, {"a": connection_a, "b": connection_b})
 
     def test_register_registers_a_new_unique_connection_for_a_given_vhost(self):
-        connection_a = asynctest.Mock(virtual_host="a", spec=AsyncQueue)
-        connection_b = asynctest.Mock(virtual_host="b", spec=AsyncQueue)
+        connection_a = asynctest.Mock(virtual_host="a", spec=JsonQueue)
+        connection_b = asynctest.Mock(virtual_host="b", spec=JsonQueue)
 
         self.rabbitmq_connection.register(connection_a)
         self.rabbitmq_connection.register(connection_b)
@@ -52,8 +52,8 @@ class AMQPConnectionTests(asynctest.TestCase):
         self.assertEqual(self.rabbitmq_connection["b"], connection_b)
 
     async def test_put_uses_the_right_connection_for_a_given_vhost(self):
-        connection_a = asynctest.Mock(virtual_host="a", spec=AsyncQueue)
-        connection_b = asynctest.Mock(virtual_host="b", spec=AsyncQueue)
+        connection_a = asynctest.Mock(virtual_host="a", spec=JsonQueue)
+        connection_b = asynctest.Mock(virtual_host="b", spec=JsonQueue)
 
         self.rabbitmq_connection.register(connection_a)
         self.rabbitmq_connection.register(connection_b)
@@ -75,9 +75,9 @@ class AMQPConnectionTests(asynctest.TestCase):
 
     async def test_put_uses_the_default_vhost_if_none_is_provided(self):
         connection_a = asynctest.Mock(
-            virtual_host=settings.AMQP_DEFAULT_VHOST, spec=AsyncQueue
+            virtual_host=settings.AMQP_DEFAULT_VHOST, spec=JsonQueue
         )
-        connection_b = asynctest.Mock(virtual_host="b", spec=AsyncQueue)
+        connection_b = asynctest.Mock(virtual_host="b", spec=JsonQueue)
 
         self.rabbitmq_connection.register(connection_a)
         self.rabbitmq_connection.register(connection_b)
@@ -97,10 +97,10 @@ class AMQPConnectionTests(asynctest.TestCase):
     async def test_put_initializes_a_new_connection_if_a_connection_wasnt_initialized_for_a_given_vhost(
         self
     ):
-        connection_a = asynctest.Mock(virtual_host="a", spec=AsyncQueue)
+        connection_a = asynctest.Mock(virtual_host="a", spec=JsonQueue)
 
         with asynctest.patch(
-            "asyncworker.rabbitmq.connection.AsyncQueue",
+            "asyncworker.rabbitmq.connection.JsonQueue",
             return_value=connection_a,
         ):
             await self.rabbitmq_connection.put(

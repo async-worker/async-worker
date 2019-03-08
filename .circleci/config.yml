@@ -1,0 +1,30 @@
+version: 2.1
+#orbs:
+#  codecov: codecov/codecov@1.0.2
+jobs:
+  test:
+    docker:
+      - image: circleci/python:3.6
+      - image: rabbitmq:3.7-alpine
+    steps:
+      - checkout
+      - run:
+          name: Install pip/pipenv
+          command: pip install --user -U pip==18.0 pipenv==2018.7.1
+      - run:
+          name: Install Pipfile.lock
+          command: pipenv install --deploy --ignore-pipfile --dev
+      - run:
+          name: Install asyncworker dev-mode
+          command: pipenv run pip install -e .
+      - run:
+          name: Run All (lint, fmt, tests)
+          command: pipenv run lint && pipenv run format-check && pipenv run all-tests
+          #      - codecov/upload:
+          #file: .coverage
+
+workflows:
+  version: 2
+  test:
+    jobs:
+      - test

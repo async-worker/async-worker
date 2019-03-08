@@ -1,19 +1,21 @@
 import asyncio
 import traceback
-from typing import Type, Dict, Union
+from typing import Dict, List, Type, Union
 
-from easyqueue import AsyncQueueConsumerDelegate, AsyncQueue
 from aioamqp.exceptions import AioamqpException
 
 from asyncworker import conf
+from asyncworker.easyqueue.message import AMQPMessage
+from asyncworker.easyqueue.queue import JsonQueue, QueueConsumerDelegate
 from asyncworker.options import Events
 from asyncworker.routes import AMQPRoute
 from asyncworker.time import ClockTicker
+
 from .bucket import Bucket
 from .rabbitmq import RabbitMQMessage
 
 
-class Consumer(AsyncQueueConsumerDelegate):
+class Consumer(QueueConsumerDelegate):
     def __init__(
         self,
         route_info: Union[Dict, AMQPRoute],
@@ -34,7 +36,7 @@ class Consumer(AsyncQueueConsumerDelegate):
         self.bucket = bucket_class(
             size=min(self._route_options["bulk_size"], prefetch_count)
         )
-        self.queue = AsyncQueue(
+        self.queue: JsonQueue = JsonQueue(
             host,
             username,
             password,
@@ -50,7 +52,7 @@ class Consumer(AsyncQueueConsumerDelegate):
         return self._queue_name
 
     async def on_before_start_consumption(
-        self, queue_name: str, queue: "AsyncQueue"
+        self, queue_name: str, queue: "JsonQueue"
     ):
         """
         Coroutine called before queue consumption starts. May be overwritten to
@@ -59,39 +61,35 @@ class Consumer(AsyncQueueConsumerDelegate):
         :param queue_name: Queue name that will be consumed
         :type queue_name: str
         :param queue: AsynQueue instanced
-        :type queue: AsyncQueue
+        :type queue: JsonQueue
         """
         pass
 
-    async def on_consumption_start(
-        self, consumer_tag: str, queue: "AsyncQueue"
-    ):
+    async def on_consumption_start(self, consumer_tag: str, queue: "JsonQueue"):
         """
         Coroutine called once consumption started.
         """
         pass
 
-    async def on_queue_message(self, content, delivery_tag, queue):
+    async def on_queue_message(self, msg: AMQPMessage):
         """
         Callback called every time that a new, valid and deserialized message
         is ready to be handled.
-
-        :param delivery_tag: delivery_tag of the consumed message
-        :type delivery_tag: int
-        :param content: parsed message body
-        :type content: dict
-        :type queue: AsyncQueue
         """
+        rv = None
+        all_messages: List[RabbitMQMessage] = []
         if not self.bucket.is_full():
             message = RabbitMQMessage(
-                body=content,
-                delivery_tag=delivery_tag,
+                body=msg.deserialized_data,
+                delivery_tag=msg.delivery_tag,
+                amqp=msg,
                 on_success=self._route_options[Events.ON_SUCCESS],
                 on_exception=self._route_options[Events.ON_EXCEPTION],
             )
             self.bucket.put(message)
+
         if self.bucket.is_full():
-            return await self._flush_bucket_if_needed(queue)
+            return await self._flush_bucket_if_needed(msg._queue)
 
     async def _flush_clocked(self, queue):
         async for _ in self.clock:
@@ -111,6 +109,13 @@ class Consumer(AsyncQueueConsumerDelegate):
         try:
             if not self.bucket.is_empty():
                 all_messages = self.bucket.pop_all()
+                await conf.logger.debug(
+                    {
+                        "event": "bucket-flush",
+                        "bucket-size": len(all_messages),
+                        "handler": self._handler.__name__,
+                    }
+                )
                 rv = await self._handler(all_messages)
                 await asyncio.gather(
                     *(m.process_success(queue) for m in all_messages)
@@ -135,7 +140,7 @@ class Consumer(AsyncQueueConsumerDelegate):
         :type delivery_tag: int
         :param error: THe error that caused the callback to be called
         :type error: MessageError
-        :type queue: AsyncQueue
+        :type queue: JsonQueue
         """
         await conf.logger.error(
             {
@@ -174,23 +179,22 @@ class Consumer(AsyncQueueConsumerDelegate):
         }
         await conf.logger.error(current_exception)
 
-    async def consume_all_queues(self, queue: AsyncQueue):
+    async def consume_all_queues(self, queue: JsonQueue):
         for queue_name in self._queue_name:
             # Por enquanto não estamos guardando a consumer_tag retornada
             # se precisar, podemos passar a guardar.
             await conf.logger.debug(
                 {"queue": queue_name, "event": "start-consume"}
             )
-            await queue.consume(queue_name=queue_name)
+            await queue.consume(queue_name=queue_name, delegate=self)
 
     def keep_runnig(self):
         return True
 
     async def start(self):
         while self.keep_runnig():
-            if not self.queue.is_connected:
+            if not self.queue.connection.is_connected:
                 try:
-                    await self.queue.connect()
                     await self.consume_all_queues(self.queue)
 
                     if not self.clock_task:
