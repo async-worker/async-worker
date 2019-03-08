@@ -1,16 +1,16 @@
 import asyncio
 import unittest
-from asynctest import CoroutineMock, mock, Mock
+
 import asynctest
-
-from asyncworker.easyqueue.queue import JsonQueue
 from aioamqp.exceptions import AioamqpException
+from asynctest import CoroutineMock, Mock, mock
 
+from asyncworker import App, conf
 from asyncworker.bucket import Bucket
 from asyncworker.consumer import Consumer
-from asyncworker import conf, App
 from asyncworker.easyqueue.message import AMQPMessage
-from asyncworker.options import Events, Actions, RouteTypes
+from asyncworker.easyqueue.queue import JsonQueue
+from asyncworker.options import Actions, Events, RouteTypes
 
 
 async def _handler(message):
@@ -317,7 +317,7 @@ class ConsumerTest(asynctest.TestCase):
             def pop_all(self):
                 return self._items
 
-        handler_mock = CoroutineMock()
+        handler_mock = CoroutineMock(__name__="handler")
         self.one_route_fixture["handler"] = handler_mock
         self.one_route_fixture["options"]["bulk_size"] = 1
 
@@ -344,7 +344,7 @@ class ConsumerTest(asynctest.TestCase):
             def pop_all(self):
                 return self._items
 
-        handler_mock = CoroutineMock()
+        handler_mock = CoroutineMock(__name__="handler")
         self.one_route_fixture["handler"] = handler_mock
         self.one_route_fixture["options"]["bulk_size"] = 2
 
@@ -439,7 +439,7 @@ class ConsumerTest(asynctest.TestCase):
                 self._items = []
                 return items
 
-        handler_mock = CoroutineMock()
+        handler_mock = CoroutineMock(__name__="handler")
         self.one_route_fixture["handler"] = handler_mock
         self.one_route_fixture["options"]["bulk_size"] = 3
 
