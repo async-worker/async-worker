@@ -1,15 +1,16 @@
 import asyncio
 import traceback
-from typing import Type, Dict, Union, List
+from typing import Dict, List, Type, Union
 
-from asyncworker.easyqueue.queue import JsonQueue, QueueConsumerDelegate
 from aioamqp.exceptions import AioamqpException
 
 from asyncworker import conf
 from asyncworker.easyqueue.message import AMQPMessage
+from asyncworker.easyqueue.queue import JsonQueue, QueueConsumerDelegate
 from asyncworker.options import Events
 from asyncworker.routes import AMQPRoute
 from asyncworker.time import ClockTicker
+
 from .bucket import Bucket
 from .rabbitmq import RabbitMQMessage
 
@@ -108,6 +109,13 @@ class Consumer(QueueConsumerDelegate):
         try:
             if not self.bucket.is_empty():
                 all_messages = self.bucket.pop_all()
+                await conf.logger.debug(
+                    {
+                        "event": "bucket-flush",
+                        "bucket-size": len(all_messages),
+                        "handler": self._handler.__name__,
+                    }
+                )
                 rv = await self._handler(all_messages)
                 await asyncio.gather(
                     *(m.process_success(queue) for m in all_messages)
