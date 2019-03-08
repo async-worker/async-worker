@@ -1,6 +1,6 @@
-version: 2
-orbs:
-  codecov: codecov/codecov@1.0.2
+version: 2.1
+#orbs:
+#  codecov: codecov/codecov@1.0.2
 jobs:
   test:
     docker:
@@ -10,21 +10,21 @@ jobs:
       - checkout
       - run:
           name: Install pip/pipenv
-          command: pip install -U pip==18.0 pipenv==2018.7.1
+          command: pip install --user -U pip==18.0 pipenv==2018.7.1
       - run:
           name: Install Pipfile.lock
-          command: pipenv install --system --deploy --ignore-pipfile --dev
+          command: pipenv install --deploy --ignore-pipfile --dev
       - run:
           name: Install asyncworker dev-mode
           command: pipenv run pip install -e .
       - run:
           name: Run All (lint, fmt, tests)
           command: pipenv run lint && pipenv run format-check && pipenv run all-tests
-      - codecov/upload:
-          file: .coverage
+          #      - codecov/upload:
+          #file: .coverage
 
 workflows:
   version: 2
-  build_and_test:
+  test:
     jobs:
       - test
