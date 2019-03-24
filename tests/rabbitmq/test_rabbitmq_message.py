@@ -18,7 +18,7 @@ class RabbitMQMessageTest(asynctest.TestCase):
         Default é ACK, caso não digamos nada
         """
         message = RabbitMQMessage(
-            body={}, delivery_tag=10, amqp=self.AMQPMessage_mock
+            body={}, delivery_tag=10, amqp_message=self.AMQPMessage_mock
         )
 
         await message.process_success(self.queue_mock)
@@ -30,7 +30,7 @@ class RabbitMQMessageTest(asynctest.TestCase):
             body={},
             delivery_tag=10,
             on_success=Actions.ACK,
-            amqp=self.AMQPMessage_mock,
+            amqp_message=self.AMQPMessage_mock,
         )
 
         await message.process_success(self.queue_mock)
@@ -42,7 +42,7 @@ class RabbitMQMessageTest(asynctest.TestCase):
             body={},
             delivery_tag=10,
             on_success=Actions.REJECT,
-            amqp=self.AMQPMessage_mock,
+            amqp_message=self.AMQPMessage_mock,
         )
 
         await message.process_success(self.queue_mock)
@@ -56,7 +56,7 @@ class RabbitMQMessageTest(asynctest.TestCase):
             body={},
             delivery_tag=10,
             on_success=Actions.REQUEUE,
-            amqp=self.AMQPMessage_mock,
+            amqp_message=self.AMQPMessage_mock,
         )
 
         await message.process_success(self.queue_mock)
@@ -70,7 +70,7 @@ class RabbitMQMessageTest(asynctest.TestCase):
             body={},
             delivery_tag=10,
             on_success=Actions.ACK,
-            amqp=self.AMQPMessage_mock,
+            amqp_message=self.AMQPMessage_mock,
         )
         message.reject(requeue=True)
         await message.process_success(self.queue_mock)
@@ -84,7 +84,7 @@ class RabbitMQMessageTest(asynctest.TestCase):
             body={},
             delivery_tag=10,
             on_success=Actions.ACK,
-            amqp=self.AMQPMessage_mock,
+            amqp_message=self.AMQPMessage_mock,
         )
         message.reject(requeue=False)
         await message.process_success(self.queue_mock)
@@ -98,7 +98,7 @@ class RabbitMQMessageTest(asynctest.TestCase):
             body={},
             delivery_tag=10,
             on_success=Actions.REJECT,
-            amqp=self.AMQPMessage_mock,
+            amqp_message=self.AMQPMessage_mock,
         )
         message.accept()
         await message.process_success(self.queue_mock)
@@ -110,7 +110,7 @@ class RabbitMQMessageTest(asynctest.TestCase):
             body={},
             delivery_tag=10,
             on_success=Actions.REJECT,
-            amqp=self.AMQPMessage_mock,
+            amqp_message=self.AMQPMessage_mock,
         )
         message.reject(requeue=True)
         await message.process_success(self.queue_mock)
@@ -124,7 +124,7 @@ class RabbitMQMessageTest(asynctest.TestCase):
             body={},
             delivery_tag=10,
             on_success=Actions.REQUEUE,
-            amqp=self.AMQPMessage_mock,
+            amqp_message=self.AMQPMessage_mock,
         )
         message.accept()
         await message.process_success(self.queue_mock)
@@ -136,7 +136,7 @@ class RabbitMQMessageTest(asynctest.TestCase):
             body={},
             delivery_tag=10,
             on_success=Actions.REQUEUE,
-            amqp=self.AMQPMessage_mock,
+            amqp_message=self.AMQPMessage_mock,
         )
         message.reject(requeue=False)
         await message.process_success(self.queue_mock)
@@ -147,7 +147,7 @@ class RabbitMQMessageTest(asynctest.TestCase):
 
     async def test_process_exception_default_action(self):
         message = RabbitMQMessage(
-            body={}, delivery_tag=10, amqp=self.AMQPMessage_mock
+            body={}, delivery_tag=10, amqp_message=self.AMQPMessage_mock
         )
 
         await message.process_exception(self.queue_mock)
@@ -161,7 +161,7 @@ class RabbitMQMessageTest(asynctest.TestCase):
             body={},
             delivery_tag=10,
             on_exception=Actions.REQUEUE,
-            amqp=self.AMQPMessage_mock,
+            amqp_message=self.AMQPMessage_mock,
         )
 
         await message.process_exception(self.queue_mock)
@@ -175,7 +175,7 @@ class RabbitMQMessageTest(asynctest.TestCase):
             body={},
             delivery_tag=10,
             on_exception=Actions.ACK,
-            amqp=self.AMQPMessage_mock,
+            amqp_message=self.AMQPMessage_mock,
         )
 
         await message.process_exception(self.queue_mock)
@@ -187,7 +187,7 @@ class RabbitMQMessageTest(asynctest.TestCase):
             body={},
             delivery_tag=10,
             on_exception=Actions.REJECT,
-            amqp=self.AMQPMessage_mock,
+            amqp_message=self.AMQPMessage_mock,
         )
 
         await message.process_exception(self.queue_mock)
@@ -201,7 +201,7 @@ class RabbitMQMessageTest(asynctest.TestCase):
             body={},
             delivery_tag=10,
             on_exception=Actions.ACK,
-            amqp=self.AMQPMessage_mock,
+            amqp_message=self.AMQPMessage_mock,
         )
         message.reject(requeue=True)
 
@@ -216,7 +216,7 @@ class RabbitMQMessageTest(asynctest.TestCase):
             body={},
             delivery_tag=10,
             on_exception=Actions.ACK,
-            amqp=self.AMQPMessage_mock,
+            amqp_message=self.AMQPMessage_mock,
         )
         message.reject(requeue=False)
 
@@ -231,7 +231,7 @@ class RabbitMQMessageTest(asynctest.TestCase):
             body={},
             delivery_tag=10,
             on_exception=Actions.REJECT,
-            amqp=self.AMQPMessage_mock,
+            amqp_message=self.AMQPMessage_mock,
         )
         message.accept()
 
@@ -244,7 +244,7 @@ class RabbitMQMessageTest(asynctest.TestCase):
             body={},
             delivery_tag=10,
             on_exception=Actions.REJECT,
-            amqp=self.AMQPMessage_mock,
+            amqp_message=self.AMQPMessage_mock,
         )
         message.reject(requeue=True)
 
@@ -259,7 +259,7 @@ class RabbitMQMessageTest(asynctest.TestCase):
             body={},
             delivery_tag=10,
             on_exception=Actions.REQUEUE,
-            amqp=self.AMQPMessage_mock,
+            amqp_message=self.AMQPMessage_mock,
         )
         message.accept()
 
@@ -272,7 +272,7 @@ class RabbitMQMessageTest(asynctest.TestCase):
             body={},
             delivery_tag=10,
             on_exception=Actions.REQUEUE,
-            amqp=self.AMQPMessage_mock,
+            amqp_message=self.AMQPMessage_mock,
         )
         message.reject(requeue=False)
 

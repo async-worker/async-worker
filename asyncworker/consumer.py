@@ -82,7 +82,7 @@ class Consumer(QueueConsumerDelegate):
             message = RabbitMQMessage(
                 body=msg.deserialized_data,
                 delivery_tag=msg.delivery_tag,
-                amqp=msg,
+                amqp_message=msg,
                 on_success=self._route_options[Events.ON_SUCCESS],
                 on_exception=self._route_options[Events.ON_EXCEPTION],
             )
