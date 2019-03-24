@@ -76,8 +76,6 @@ class Consumer(QueueConsumerDelegate):
         Callback called every time that a new, valid and deserialized message
         is ready to be handled.
         """
-        rv = None
-        all_messages: List[RabbitMQMessage] = []
         if not self.bucket.is_full():
             message = RabbitMQMessage(
                 body=msg.deserialized_data,
