@@ -31,18 +31,18 @@ class RabbitMQMessage:
     def accept(self):
         self._final_action = Actions.ACK
 
-    async def _process_action(self, action: Actions, queue: JsonQueue):
+    async def _process_action(self, action: Actions):
         if action == Actions.REJECT:
-            await queue.reject(self._amqp_message, requeue=False)
+            await self._amqp_message.reject(requeue=False)
         elif action == Actions.REQUEUE:
-            await queue.reject(self._amqp_message, requeue=True)
+            await self._amqp_message.reject(requeue=True)
         elif action == Actions.ACK:
-            await queue.ack(self._amqp_message)
+            await self._amqp_message.ack()
 
-    async def process_success(self, queue: JsonQueue):
+    async def process_success(self):
         action = self._final_action or self._on_success_action
-        return await self._process_action(action, queue)
+        return await self._process_action(action)
 
-    async def process_exception(self, queue: JsonQueue):
+    async def process_exception(self):
         action = self._final_action or self._on_exception_action
-        return await self._process_action(action, queue)
+        return await self._process_action(action)

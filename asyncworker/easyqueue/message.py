@@ -72,3 +72,11 @@ class AMQPMessage(Generic[T]):
                 return False
 
         return True
+
+    async def ack(self):
+        return await self.channel.basic_client_ack(self.delivery_tag)
+
+    async def reject(self, requeue=False):
+        return await self.channel.basic_reject(
+            delivery_tag=self.delivery_tag, requeue=requeue
+        )
