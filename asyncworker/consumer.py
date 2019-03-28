@@ -78,7 +78,6 @@ class Consumer(QueueConsumerDelegate):
         """
         if not self.bucket.is_full():
             message = RabbitMQMessage(
-                body=msg.deserialized_data,
                 delivery_tag=msg.delivery_tag,
                 amqp_message=msg,
                 on_success=self._route_options[Events.ON_SUCCESS],
