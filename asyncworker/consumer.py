@@ -86,12 +86,12 @@ class Consumer(QueueConsumerDelegate):
             self.bucket.put(message)
 
         if self.bucket.is_full():
-            return await self._flush_bucket_if_needed(msg._queue)
+            return await self._flush_bucket_if_needed()
 
-    async def _flush_clocked(self, queue):
+    async def _flush_clocked(self):
         async for _ in self.clock:
             try:
-                await self._flush_bucket_if_needed(queue)
+                await self._flush_bucket_if_needed()
             except Exception as e:
                 await conf.logger.error(
                     {
@@ -102,7 +102,7 @@ class Consumer(QueueConsumerDelegate):
                     }
                 )
 
-    async def _flush_bucket_if_needed(self, queue):
+    async def _flush_bucket_if_needed(self):
         try:
             if not self.bucket.is_empty():
                 all_messages = self.bucket.pop_all()
@@ -115,15 +115,13 @@ class Consumer(QueueConsumerDelegate):
                 )
                 rv = await self._handler(all_messages)
                 await asyncio.gather(
-                    *(m.process_success(queue) for m in all_messages)
+                    *(m.process_success() for m in all_messages)
                 )
                 return rv
         except AioamqpException as aioamqpException:
             raise aioamqpException
         except Exception as e:
-            await asyncio.gather(
-                *(m.process_exception(queue) for m in all_messages)
-            )
+            await asyncio.gather(*(m.process_exception() for m in all_messages))
             raise e
 
     async def on_queue_error(self, body, delivery_tag, error, queue):
@@ -195,7 +193,7 @@ class Consumer(QueueConsumerDelegate):
                     await self.consume_all_queues(self.queue)
 
                     if not self.clock_task:
-                        self.clock_task = self._flush_clocked(self.queue)
+                        self.clock_task = self._flush_clocked()
                         asyncio.get_event_loop().create_task(self.clock_task)
 
                 except Exception as e:
