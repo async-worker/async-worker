@@ -274,32 +274,6 @@ class AsyncQueueConnectionTests(AsyncBaseTestCase, asynctest.TestCase):
             )
         self.queue.connection.channel.publish.assert_not_called()
 
-    async def test_it_acks_messages(self):
-        msg = Mock(
-            channel=Mock(basic_client_ack=CoroutineMock()), delivery_tag=666
-        )
-
-        await self.queue.ack(msg=msg)
-
-        msg.channel.basic_client_ack.assert_awaited_once_with(msg.delivery_tag)
-
-    async def test_it_rejects_messages_without_requeue(self):
-        msg = Mock(channel=Mock(basic_reject=CoroutineMock()), delivery_tag=666)
-
-        await self.queue.reject(msg=msg)
-
-        msg.channel.basic_reject.assert_awaited_once_with(
-            delivery_tag=msg.delivery_tag, requeue=False
-        )
-
-    async def test_it_rejects_messages_with_requeue(self):
-        msg = Mock(channel=Mock(basic_reject=CoroutineMock()), delivery_tag=666)
-
-        await self.queue.reject(msg=msg, requeue=True)
-        msg.channel.basic_reject.assert_awaited_once_with(
-            delivery_tag=msg.delivery_tag, requeue=True
-        )
-
 
 class AsyncQueueConsumerTests(AsyncBaseTestCase, asynctest.TestCase):
     consumer_tag = "666"
