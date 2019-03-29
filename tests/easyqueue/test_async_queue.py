@@ -283,16 +283,6 @@ class AsyncQueueConnectionTests(AsyncBaseTestCase, asynctest.TestCase):
 
         msg.channel.basic_client_ack.assert_awaited_once_with(msg.delivery_tag)
 
-    async def test_connect_gets_awaited_if_ack_is_called_before_connect(self):
-        channel = Mock(is_open=False, basic_client_ack=CoroutineMock())
-        with asynctest.patch.object(
-            self.queue.connection, "_connect"
-        ) as connect, asynctest.patch.object(
-            self.queue.connection, "channel", channel
-        ):
-            await self.queue.ack(msg=Mock(channel=channel))
-            connect.assert_awaited_once()
-
     async def test_it_rejects_messages_without_requeue(self):
         msg = Mock(channel=Mock(basic_reject=CoroutineMock()), delivery_tag=666)
 
@@ -309,18 +299,6 @@ class AsyncQueueConnectionTests(AsyncBaseTestCase, asynctest.TestCase):
         msg.channel.basic_reject.assert_awaited_once_with(
             delivery_tag=msg.delivery_tag, requeue=True
         )
-
-    async def test_connect_gets_awaited_if_reject_is_called_before_connect(
-        self
-    ):
-        channel = Mock(is_open=False, basic_reject=CoroutineMock())
-        with asynctest.patch.object(
-            self.queue.connection, "_connect"
-        ) as connect, asynctest.patch.object(
-            self.queue.connection, "channel", channel
-        ):
-            await self.queue.reject(msg=Mock(channel=channel))
-            connect.assert_awaited_once()
 
 
 class AsyncQueueConsumerTests(AsyncBaseTestCase, asynctest.TestCase):
