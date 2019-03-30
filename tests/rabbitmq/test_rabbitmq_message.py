@@ -1,6 +1,9 @@
+import json
+
 import asynctest
 from asynctest.mock import CoroutineMock, Mock
 
+from asyncworker.easyqueue.message import AMQPMessage
 from asyncworker.rabbitmq import RabbitMQMessage
 from asyncworker.options import Actions
 
@@ -233,3 +236,41 @@ class RabbitMQMessageTest(asynctest.TestCase):
         await message.process_exception()
         self.amqp_message.reject.assert_awaited_with(requeue=False)
         self.amqp_message.ack.assert_not_awaited()
+
+    def test_serialized_data_property(self):
+        amqp_message = AMQPMessage(
+            connection=Mock(),
+            channel=Mock(),
+            queue_name=Mock(),
+            serialized_data=Mock(),
+            delivery_tag=Mock(),
+            envelope=Mock(),
+            properties=Mock(),
+            deserialization_method=Mock(),
+            queue=Mock(),
+        )
+        message = RabbitMQMessage(
+            delivery_tag=10,
+            on_exception=Actions.REQUEUE,
+            amqp_message=amqp_message,
+        )
+        self.assertEqual(message.serialized_data, amqp_message.serialized_data)
+
+    def test_body_property(self):
+        amqp_message = AMQPMessage(
+            connection=Mock(),
+            channel=Mock(),
+            queue_name=Mock(),
+            serialized_data='["Xablau", "Xena"]',
+            delivery_tag=Mock(),
+            envelope=Mock(),
+            properties=Mock(),
+            deserialization_method=json.loads,
+            queue=Mock(),
+        )
+        message = RabbitMQMessage(
+            delivery_tag=10,
+            on_exception=Actions.REQUEUE,
+            amqp_message=amqp_message,
+        )
+        self.assertEqual(message.body, ["Xablau", "Xena"])
