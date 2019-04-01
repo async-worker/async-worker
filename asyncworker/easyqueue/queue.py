@@ -224,16 +224,6 @@ class JsonQueue(BaseQueue, Generic[T]):
         return json.loads(body.decode())
 
     @_ensure_connected
-    async def ack(self, msg: AMQPMessage[T]):
-        return await msg.channel.basic_client_ack(msg.delivery_tag)
-
-    @_ensure_connected
-    async def reject(self, msg: AMQPMessage[T], requeue=False):
-        return await msg.channel.basic_reject(
-            delivery_tag=msg.delivery_tag, requeue=requeue
-        )
-
-    @_ensure_connected
     async def put(
         self,
         routing_key: str,
