@@ -4,7 +4,8 @@ from collections import MutableMapping
 from typing import Iterable, Tuple, Callable, Coroutine, Dict, Optional
 
 from asyncworker.conf import logger
-from asyncworker.signals.handlers.base import SignalHandler
+from asyncworker.signals.handlers.http import HTTPServer
+from asyncworker.signals.handlers.rabbitmq import RabbitMQ
 from asyncworker.routes import RoutesRegistry
 from asyncworker.options import RouteTypes, Options, DefaultValues
 from asyncworker.signals.base import Signal, Freezable
@@ -12,8 +13,8 @@ from asyncworker.task_runners import ScheduledTaskRunner
 from asyncworker.utils import entrypoint
 
 
-class BaseApp(MutableMapping, Freezable):
-    handlers: Tuple[SignalHandler, ...]
+class App(MutableMapping, Freezable):
+    handlers = (RabbitMQ(), HTTPServer())
     shutdown_os_signals = (Signals.SIGINT, Signals.SIGTERM)
 
     def __init__(self) -> None:
@@ -114,13 +115,13 @@ class BaseApp(MutableMapping, Freezable):
 
         return wrapper
 
-    def run_on_startup(self, coro: Callable[["BaseApp"], Coroutine]) -> None:
+    def run_on_startup(self, coro: Callable[["App"], Coroutine]) -> None:
         """
         Registers a coroutine to be awaited for during app startup
         """
         self._on_startup.append(coro)
 
-    def run_on_shutdown(self, coro: Callable[["BaseApp"], Coroutine]) -> None:
+    def run_on_shutdown(self, coro: Callable[["App"], Coroutine]) -> None:
         """
         Registers a coroutine to be awaited for during app shutdown
         """

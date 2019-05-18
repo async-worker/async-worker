@@ -2,7 +2,7 @@ import asyncio
 from typing import Callable, Coroutine, Set, TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from asyncworker.base import BaseApp  # pragma: nocover
+    from asyncworker.app import App  # pragma: nocover
 from asyncworker.time import ClockTicker
 
 
@@ -10,8 +10,8 @@ class ScheduledTaskRunner:
     def __init__(
         self,
         seconds: int,
-        task: Callable[["BaseApp"], Coroutine],
-        app: "BaseApp",
+        task: Callable[["App"], Coroutine],
+        app: "App",
         max_concurrency: int,
     ) -> None:
         self.seconds = seconds
@@ -42,11 +42,11 @@ class ScheduledTaskRunner:
             self.task_is_done_event.set()
             self.running_tasks.remove(asyncio.Task.current_task())
 
-    async def start(self, app: "BaseApp") -> asyncio.Future:
+    async def start(self, app: "App") -> asyncio.Future:
         self._started = True
         return asyncio.ensure_future(self._run())
 
-    async def stop(self, app: "BaseApp") -> None:
+    async def stop(self, app: "App") -> None:
         await self.clock.stop()
         await asyncio.gather(*self.running_tasks)
 
