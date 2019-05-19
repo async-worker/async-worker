@@ -8,6 +8,8 @@ class Settings(BaseSettings):
     LOGLEVEL: str = "ERROR"
 
     AMQP_DEFAULT_VHOST: str = "/"
+    AMQP_DEFAULT_PREFETCH_COUNT: int = 128
+    AMQP_DEFAULT_HEARTBEAT: int = 60
 
     HTTP_HOST: str = "127.0.0.1"
     HTTP_PORT: int = 8080
