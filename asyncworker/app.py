@@ -1,7 +1,7 @@
 import asyncio
 from signal import Signals
 from collections import MutableMapping
-from typing import Iterable, Tuple, Callable, Coroutine, Dict, Optional
+from typing import Iterable, Callable, Coroutine, Dict, Any
 
 from asyncworker.conf import logger
 from asyncworker.signals.handlers.http import HTTPServer
@@ -17,13 +17,15 @@ class App(MutableMapping, Freezable):
     handlers = (RabbitMQ(), HTTPServer())
     shutdown_os_signals = (Signals.SIGINT, Signals.SIGTERM)
 
-    def __init__(self) -> None:
+    def __init__(self, connections: Iterable) -> None:
         self.loop = asyncio.get_event_loop()
         self.routes_registry = RoutesRegistry()
         self.default_route_options: dict = {}
 
-        self._state: dict = {}
+        self._state: Dict[Any, Any] = self._get_initial_state()
         self._frozen = False
+        self._add_connections(connections)
+
         self._on_startup: Signal = Signal(self)
         self._on_shutdown: Signal = Signal(self)
 
@@ -39,6 +41,15 @@ class App(MutableMapping, Freezable):
             raise RuntimeError(
                 "You shouldnt change the state of started " "application"
             )
+
+    def _get_initial_state(self) -> Dict[Any, Any]:
+        return {route_type: {} for route_type in RouteTypes}
+
+    def _add_connections(self, connections):
+        for route_type in RouteTypes:
+            self[route_type]["connections"] = []
+        for connection in connections:
+            self[connection.route_type]["connections"].append(connection)
 
     def frozen(self) -> bool:
         return self._frozen
