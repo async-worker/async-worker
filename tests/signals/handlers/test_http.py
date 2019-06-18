@@ -35,7 +35,7 @@ class HTTPServerTests(asynctest.TestCase):
                 },
             }
         )
-        self.app = App("localhost", "guest", "guest", 1)
+        self.app = App(connections=[])
 
     @asynctest.patch("asyncworker.signals.handlers.http.web.TCPSite.start")
     async def test_startup_initializes_an_web_application(self, start):
@@ -93,7 +93,7 @@ class HTTPServerTests(asynctest.TestCase):
     ):
         self.app.routes_registry = self.routes_registry
 
-        self.assertEqual(self.app, {})
+        self.assertNotIn("runner", self.app[RouteTypes.HTTP])
 
         await self.signal_handler.shutdown(self.app)
 

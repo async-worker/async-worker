@@ -9,23 +9,25 @@ from asyncworker.options import (
     Actions,
     RouteTypes,
 )
+from asyncworker.rabbitmq.connection import AMQPConnection
+from asyncworker.routes import AMQPRoute
 
 
 class RabbitMQAppTest(asynctest.TestCase):
     use_default_loop = True
 
     def setUp(self):
-        self.connection_parameters = {
-            "host": "127.0.0.1",
-            "user": "guest",
-            "password": "guest",
-            "prefetch_count": 1024,
-        }
+        self.connection = AMQPConnection(
+            hostname="127.0.0.1",
+            username="guest",
+            password="guest",
+            prefetch=1024,
+        )
 
     async def test_check_route_registry_full_options(self):
         expected_routes = ["/asgard/counts/ok"]
         expected_vhost = "/"
-        app = App(**self.connection_parameters)
+        app = App(connections=[self.connection])
 
         @app.route(
             expected_routes,
@@ -37,25 +39,25 @@ class RabbitMQAppTest(asynctest.TestCase):
             return 42
 
         self.assertIsNotNone(app.routes_registry)
-        expected_registry_entry = {
-            "type": RouteTypes.AMQP_RABBITMQ,
-            "routes": expected_routes,
-            "handler": _handler,
-            "default_options": {},
-            "vhost": expected_vhost,
-            "options": {
+        expected_registry_entry = AMQPRoute(
+            type=RouteTypes.AMQP_RABBITMQ,
+            routes=expected_routes,
+            handler=_handler,
+            default_options={},
+            vhost=expected_vhost,
+            options={
                 "bulk_size": 1024,
                 "bulk_flush_interval": 120,
                 Events.ON_SUCCESS: Actions.ACK,
                 Events.ON_EXCEPTION: Actions.REQUEUE,
             },
-        }
+        )
         route = app.routes_registry.route_for(_handler)
         self.assertEqual(expected_registry_entry, route)
         self.assertEqual(42, await route["handler"](None))
 
     async def test_register_hander_on_route_registry(self):
-        app = App(**self.connection_parameters)
+        app = App(connections=[self.connection])
 
         @app.route(["/asgard/counts/ok"], type=RouteTypes.AMQP_RABBITMQ)
         async def _handler(message):
@@ -68,7 +70,7 @@ class RabbitMQAppTest(asynctest.TestCase):
 
     async def test_register_list_of_routes_to_the_same_handler(self):
         expected_routes = ["/asgard/counts/ok", "/asgard/counts/errors"]
-        app = App(**self.connection_parameters)
+        app = App(connections=[self.connection])
 
         @app.route(expected_routes, type=RouteTypes.AMQP_RABBITMQ)
         async def _handler(message):
@@ -82,7 +84,7 @@ class RabbitMQAppTest(asynctest.TestCase):
     async def test_register_with_default_vhost(self):
         expected_route = ["/asgard/counts/ok"]
         expected_vhost = settings.AMQP_DEFAULT_VHOST
-        app = App(**self.connection_parameters)
+        app = App(connections=[self.connection])
 
         @app.route(expected_route, type=RouteTypes.AMQP_RABBITMQ)
         async def _handler(message):
@@ -95,7 +97,7 @@ class RabbitMQAppTest(asynctest.TestCase):
 
     async def test_register_bulk_size(self):
         expected_bulk_size = 1024
-        app = App(**self.connection_parameters)
+        app = App(connections=[self.connection])
 
         @app.route(
             ["my-queue"],
@@ -112,7 +114,7 @@ class RabbitMQAppTest(asynctest.TestCase):
 
     async def test_register_bulk_flush_timeout(self):
         expected_bulk_flush_interval = 120
-        app = App(**self.connection_parameters)
+        app = App(connections=[self.connection])
 
         @app.route(
             ["my-queue"],
@@ -133,7 +135,7 @@ class RabbitMQAppTest(asynctest.TestCase):
     async def test_register_default_bulk_size_and_default_bulk_flush_timeout(
         self
     ):
-        app = App(**self.connection_parameters)
+        app = App(connections=[self.connection])
 
         @app.route(["my-queue"], type=RouteTypes.AMQP_RABBITMQ)
         async def _handler(message):
@@ -149,7 +151,7 @@ class RabbitMQAppTest(asynctest.TestCase):
         self.assertEqual(42, await route["handler"](None))
 
     async def test_register_action_on_success(self):
-        app = App(**self.connection_parameters)
+        app = App(connections=[self.connection])
 
         @app.route(
             ["my-queue"],
@@ -166,7 +168,7 @@ class RabbitMQAppTest(asynctest.TestCase):
         )
 
     async def test_register_action_on_exception(self):
-        app = App(**self.connection_parameters)
+        app = App(connections=[self.connection])
 
         @app.route(
             ["my-queue"],
@@ -183,7 +185,7 @@ class RabbitMQAppTest(asynctest.TestCase):
         )
 
     async def test_test_register_default_actions(self):
-        app = App(**self.connection_parameters)
+        app = App(connections=[self.connection])
 
         @app.route(["my-queue"], type=RouteTypes.AMQP_RABBITMQ)
         async def _handler(message):
@@ -195,16 +197,11 @@ class RabbitMQAppTest(asynctest.TestCase):
         self.assertEqual(Actions.REQUEUE, route["options"][Events.ON_EXCEPTION])
 
     async def test_app_receives_queue_connection(self):
-        app = App(
-            host="127.0.0.1",
-            user="guest",
-            password="guest",
-            prefetch_count=1024,
+        app = App(connections=[self.connection])
+
+        self.assertEqual(
+            app[RouteTypes.AMQP_RABBITMQ]["connections"], [self.connection]
         )
-        self.assertEqual("127.0.0.1", app.host)
-        self.assertEqual("guest", app.user)
-        self.assertEqual("guest", app.password)
-        self.assertEqual(1024, app.prefetch_count)
 
     async def test_instantiate_one_consumer_per_handler_one_handler_registered(
         self
@@ -213,7 +210,7 @@ class RabbitMQAppTest(asynctest.TestCase):
         Para cada handler registrado, teremos um Consumer. Esse Consumer conseguirá consumir múltiplas
         filas, se necessário.
         """
-        app = App(**self.connection_parameters)
+        app = App(connections=[self.connection])
 
         @app.route(["asgard/counts"], type=RouteTypes.AMQP_RABBITMQ, vhost="/")
         async def _handler(message):
@@ -229,26 +226,22 @@ class RabbitMQAppTest(asynctest.TestCase):
             0
         ].queue.connection.connection_parameters
         self.assertEqual(
-            self.connection_parameters["host"],
-            queue_connection_parameters["host"],
+            self.connection.hostname, queue_connection_parameters["host"]
         )
         self.assertEqual(
-            self.connection_parameters["user"],
-            queue_connection_parameters["login"],
+            self.connection.username, queue_connection_parameters["login"]
         )
         self.assertEqual(
-            self.connection_parameters["password"],
-            queue_connection_parameters["password"],
+            self.connection.password, queue_connection_parameters["password"]
         )
         self.assertEqual(
-            self.connection_parameters["prefetch_count"],
-            consumers[0].queue.prefetch_count,
+            self.connection.prefetch, consumers[0].queue.prefetch_count
         )
 
     async def test_instantiate_one_consumer_per_handler_multiple_handlers_registered_bla(
         self
     ):
-        app = App(**self.connection_parameters)
+        app = App(connections=[self.connection])
 
         @app.route(["asgard/counts"], type=RouteTypes.AMQP_RABBITMQ, vhost="/")
         async def _handler(message):
@@ -272,20 +265,16 @@ class RabbitMQAppTest(asynctest.TestCase):
             0
         ].queue.connection.connection_parameters
         self.assertEqual(
-            self.connection_parameters["host"],
-            queue_connection_parameters["host"],
+            self.connection.hostname, queue_connection_parameters["host"]
         )
         self.assertEqual(
-            self.connection_parameters["user"],
-            queue_connection_parameters["login"],
+            self.connection.username, queue_connection_parameters["login"]
         )
         self.assertEqual(
-            self.connection_parameters["password"],
-            queue_connection_parameters["password"],
+            self.connection.password, queue_connection_parameters["password"]
         )
         self.assertEqual(
-            self.connection_parameters["prefetch_count"],
-            consumers[0].queue.prefetch_count,
+            self.connection.prefetch, consumers[0].queue.prefetch_count
         )
 
         self.assertEqual(["asgard/counts/errors"], consumers[1].queue_name)
@@ -294,18 +283,14 @@ class RabbitMQAppTest(asynctest.TestCase):
             1
         ].queue.connection.connection_parameters
         self.assertEqual(
-            self.connection_parameters["host"],
-            queue_connection_parameters["host"],
+            self.connection.hostname, queue_connection_parameters["host"]
         )
         self.assertEqual(
-            self.connection_parameters["user"],
-            queue_connection_parameters["login"],
+            self.connection.username, queue_connection_parameters["login"]
         )
         self.assertEqual(
-            self.connection_parameters["password"],
-            queue_connection_parameters["password"],
+            self.connection.password, queue_connection_parameters["password"]
         )
         self.assertEqual(
-            self.connection_parameters["prefetch_count"],
-            consumers[1].queue.prefetch_count,
+            self.connection.prefetch, consumers[1].queue.prefetch_count
         )

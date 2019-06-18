@@ -3,14 +3,14 @@ import asyncio
 import asynctest
 from asynctest import CoroutineMock, patch, call, Mock
 
-from asyncworker import BaseApp
+from asyncworker.app import App
 from asyncworker.task_runners import ScheduledTaskRunner
 
 
 class ScheduledTaskRunnerTests(asynctest.TestCase):
     async def setUp(self):
         self.task = CoroutineMock()
-        self.app = asynctest.Mock(spec=BaseApp)
+        self.app = asynctest.Mock(spec=App)
         self.seconds = 10
         self.max_concurrency = 2
 

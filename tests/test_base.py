@@ -4,7 +4,7 @@ import asynctest
 from asynctest import Mock, CoroutineMock, patch, call
 from signal import Signals
 
-from asyncworker import BaseApp
+from asyncworker.app import App
 from asyncworker.options import RouteTypes, DefaultValues, Options
 from asyncworker.routes import AMQPRoute
 from asyncworker.task_runners import ScheduledTaskRunner
@@ -12,13 +12,13 @@ from asyncworker.task_runners import ScheduledTaskRunner
 
 class BaseAppTests(asynctest.TestCase):
     async def setUp(self):
-        class MyApp(BaseApp):
+        class MyApp(App):
             handlers = (
                 Mock(startup=CoroutineMock(), shutdown=CoroutineMock()),
             )
 
         self.appCls = MyApp
-        self.app = MyApp()
+        self.app = MyApp(connections=[])
 
     async def test_setitem_changes_internal_state_if_not_frozen(self):
         self.app["foo"] = foo = asynctest.Mock()
@@ -45,16 +45,16 @@ class BaseAppTests(asynctest.TestCase):
 
         self.assertEqual(self.app["dog"], "Xablau")
 
-    async def test_len_returns_internal_state_value(self):
+    async def test_len_returns_internal_state_len_value(self):
         self.app.update(pet="dog", name="Xablau")
 
-        self.assertEqual(len(self.app), 2)
+        self.assertEqual(len(self.app), len(dict(self.app)))
 
     async def test_iter_iters_through_internal_state_value(self):
         self.app.update(pet="dog", name="Xablau")
 
         state = dict(**self.app)
-        self.assertEqual(state, {"pet": "dog", "name": "Xablau"})
+        self.assertDictContainsSubset({"pet": "dog", "name": "Xablau"}, state)
 
     async def test_startup_freezes_applications_and_sends_the_on_startup_signal(
         self
@@ -144,7 +144,7 @@ class BaseAppTests(asynctest.TestCase):
         self
     ):
         with patch(
-            "asyncworker.base.ScheduledTaskRunner", spec=ScheduledTaskRunner
+            "asyncworker.app.ScheduledTaskRunner", spec=ScheduledTaskRunner
         ) as Runner:
             seconds = 10
             coro = Mock(start=CoroutineMock(), stop=CoroutineMock())
@@ -165,7 +165,7 @@ class BaseAppTests(asynctest.TestCase):
         self
     ):
         with patch(
-            "asyncworker.base.ScheduledTaskRunner", spec=ScheduledTaskRunner
+            "asyncworker.app.ScheduledTaskRunner", spec=ScheduledTaskRunner
         ) as Runner:
             seconds = 10
             coro = Mock(start=CoroutineMock(), stop=CoroutineMock())
