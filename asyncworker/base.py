@@ -67,8 +67,7 @@ class BaseApp(MutableMapping, Freezable):
         await logger.debug({"event": "Booting App..."})
         await self.startup()
 
-        while True:
-            await asyncio.sleep(10)
+        await self._on_shutdown.sent_event.wait()
 
     async def startup(self):
         """
