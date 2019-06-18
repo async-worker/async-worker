@@ -1,12 +1,12 @@
 from typing import Dict
 
-from asyncworker import BaseApp
+from asyncworker.app import App
 from asyncworker.signals.handlers.sse import SSE
 
 SSE_DEFAULT_HEADERS = {"Accept": "text/event-stream"}
 
 
-class SSEApplication(BaseApp):
+class SSEApplication(App):
     handlers = (SSE(),)
 
     def __init__(
