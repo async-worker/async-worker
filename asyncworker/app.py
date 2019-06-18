@@ -1,7 +1,7 @@
 import asyncio
 from signal import Signals
 from collections import MutableMapping
-from typing import Iterable, Callable, Coroutine, Dict, Any
+from typing import Iterable, Callable, Coroutine, Dict, Any, Optional
 
 from asyncworker.conf import logger
 from asyncworker.signals.handlers.http import HTTPServer
@@ -17,7 +17,9 @@ class App(MutableMapping, Freezable):
     handlers = (RabbitMQ(), HTTPServer())
     shutdown_os_signals = (Signals.SIGINT, Signals.SIGTERM)
 
-    def __init__(self, connections: Iterable) -> None:
+    def __init__(self, connections: Optional[Iterable] = None) -> None:
+        if connections is None:
+            connections = []
         self.loop = asyncio.get_event_loop()
         self.routes_registry = RoutesRegistry()
         self.default_route_options: dict = {}

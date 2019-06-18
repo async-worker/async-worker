@@ -8,8 +8,8 @@ from typing import (
     Any,
     Union,
     Iterable,
-    Mapping,
     Type,
+    Optional,
 )
 
 from aiohttp.hdrs import METH_ALL
@@ -19,6 +19,7 @@ from pydantic import BaseModel, validator
 
 from asyncworker.conf import settings
 from asyncworker.options import DefaultValues, RouteTypes, Actions
+from asyncworker.rabbitmq.connection import AMQPConnection
 
 RouteHandler = Callable[[], Coroutine]
 
@@ -106,6 +107,10 @@ class _AMQPRouteOptions(Model):
     bulk_flush_interval: int = DefaultValues.BULK_FLUSH_INTERVAL
     on_success: Actions = DefaultValues.ON_SUCCESS
     on_exception: Actions = DefaultValues.ON_EXCEPTION
+    connection: Optional[AMQPConnection]
+
+    class Config:
+        arbitrary_types_allowed = True
 
 
 class AMQPRoute(Route):
