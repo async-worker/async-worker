@@ -67,7 +67,7 @@ class BaseApp(MutableMapping, Freezable):
         await logger.debug({"event": "Booting App..."})
         await self.startup()
 
-        await self._on_shutdown.sent_event.wait()
+        await self._on_shutdown.wait()
 
     async def startup(self):
         """

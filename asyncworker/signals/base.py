@@ -11,8 +11,9 @@ class Freezable(metaclass=abc.ABCMeta):
         raise NotImplementedError
 
 
-class Signal(UserList):
-    """Coroutine-based signal implementation.
+class Signal(UserList, asyncio.Event):
+    """
+    Coroutine-based signal implementation tha behaves as an `asyncio.Event`.
 
     To connect a callback to a signal, use any list method.
 
@@ -21,10 +22,10 @@ class Signal(UserList):
     """
 
     def __init__(self, owner: Freezable) -> None:
-        super().__init__()
+        UserList.__init__(self)
+        asyncio.Event.__init__(self)
         self._owner = owner
         self.frozen = False
-        self.sent_event = asyncio.Event()
 
     def __repr__(self):
         return "<Signal owner={}, frozen={}, {!r}>".format(
@@ -43,4 +44,4 @@ class Signal(UserList):
 
         self.frozen = True
         await self._owner.freeze()
-        self.sent_event.set()
+        self.set()
