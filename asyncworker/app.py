@@ -4,17 +4,19 @@ from collections import MutableMapping
 from typing import Iterable, Callable, Coroutine, Dict, Any, Optional
 
 from asyncworker.conf import logger
+from asyncworker.exceptions import InvalidRoute
 from asyncworker.signals.handlers.http import HTTPServer
 from asyncworker.signals.handlers.rabbitmq import RabbitMQ
-from asyncworker.routes import RoutesRegistry
+from asyncworker.routes import RoutesRegistry, Route
 from asyncworker.options import RouteTypes, Options, DefaultValues
 from asyncworker.signals.base import Signal, Freezable
+from asyncworker.signals.handlers.sse import SSE
 from asyncworker.task_runners import ScheduledTaskRunner
 from asyncworker.utils import entrypoint
 
 
 class App(MutableMapping, Freezable):
-    handlers = (RabbitMQ(), HTTPServer())
+    handlers = (RabbitMQ(), HTTPServer(), SSE())
     shutdown_os_signals = (Signals.SIGINT, Signals.SIGTERM)
 
     def __init__(self, connections: Optional[Iterable] = None) -> None:
@@ -167,3 +169,26 @@ class App(MutableMapping, Freezable):
             return task
 
         return wrapper
+
+    def get_connection_for_route(self, route_info: Route):
+        route_connection = route_info.options.get("connection")
+        connections = self[route_info.type]["connections"]
+        if route_connection is not None:
+            connection = route_connection
+        elif len(connections) > 1:
+            raise InvalidRoute(
+                f"Invalid route definition for App. You are trying to "
+                f"define a {route_info.type} into an asyncworker.App "
+                f"with multiple connections without specifying which "
+                f"one to use."
+            )
+        else:
+            try:
+                connection = connections[0]
+            except IndexError as e:
+                raise InvalidRoute(
+                    f"Invalid route definition for App. You are trying to "
+                    f"define a {route_info.type} without an "
+                    f"Connection registered on App"
+                ) from e
+        return connection
