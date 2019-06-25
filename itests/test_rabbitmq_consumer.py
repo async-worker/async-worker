@@ -2,7 +2,7 @@ from asynctest import TestCase, skip
 import asyncio
 
 from asyncworker import App, RouteTypes
-
+from asyncworker.rabbitmq.connection import AMQPConnection
 
 consume_callback_shoud_not_be_called = False
 handler_with_requeue_called = 0
@@ -13,10 +13,13 @@ successful_message_value_is_equal = False
 class RabbitMQConsumerTest(TestCase):
     async def setUp(self):
         self.queue_name = "test"
-        self.app = App("127.0.0.1", "guest", "guest", 1)
+        self.connection = AMQPConnection(
+            hostname="127.0.0.1", username="guest", password="guest", prefetch=1
+        )
+        self.app = App(connections=[self.connection])
 
     async def tearDown(self):
-        await self.app[RouteTypes.AMQP_RABBITMQ]["connection"][
+        await self.app[RouteTypes.AMQP_RABBITMQ]["connections"][0][
             "/"
         ].connection.channel.queue_delete(self.queue_name)
         handler_without_requeue_called = 0
@@ -37,7 +40,7 @@ class RabbitMQConsumerTest(TestCase):
             )
 
         await self.app.startup()
-        queue = self.app[RouteTypes.AMQP_RABBITMQ]["connection"]["/"]
+        queue = self.connection["/"]
         await queue.connection._connect()
         await queue.connection.channel.queue_declare(self.queue_name)
 
@@ -63,7 +66,7 @@ class RabbitMQConsumerTest(TestCase):
             value = messages[0].field  # AttributeError
 
         await self.app.startup()
-        queue = self.app[RouteTypes.AMQP_RABBITMQ]["connection"]["/"]
+        queue = self.connection["/"]
         await queue.connection._connect()
         await queue.connection.channel.queue_declare(self.queue_name)
 
@@ -89,7 +92,7 @@ class RabbitMQConsumerTest(TestCase):
             value = messages[0].field  # AttributeError
 
         await self.app.startup()
-        queue = self.app[RouteTypes.AMQP_RABBITMQ]["connection"]["/"]
+        queue = self.connection["/"]
         await queue.connection._connect()
         await queue.connection.channel.queue_declare(self.queue_name)
 
@@ -106,7 +109,7 @@ class RabbitMQConsumerTest(TestCase):
             global consume_callback_shoud_not_be_called
             consume_callback_shoud_not_be_called = True
 
-        queue = self.app[RouteTypes.AMQP_RABBITMQ]["connection"]["/"]
+        queue = self.connection["/"]
         await queue.connection._connect()
         await queue.connection.channel.basic_consume(
             callback, queue_name=self.queue_name
