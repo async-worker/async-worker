@@ -54,12 +54,12 @@ Se o handler rodar sem erros, a mensagem é automaticamente confirmada (ack).
 ### Worker lendo dados de um endpoint Server Side Events
 
 ```python
-from asyncworker import RouteTypes
-from asyncworker.sse.app import SSEApplication
-import logging
+from asyncworker import App, RouteTypes, Options
+from asyncworker.sse.connection import SSEConnection
 
 
-app = SSEApplication(url="http://172.18.0.31:8080/", logger=logging.getLogger())
+conn = SSEConnection(url="http://172.18.0.31:8080/")
+app = App(connections=[conn])
 
 @app.route(["/v2/events"], type=RouteTypes.SSE, options={Options.BULK_SIZE: 2})
 async def _on_event(events):
