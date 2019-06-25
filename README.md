@@ -35,14 +35,17 @@ Por causa dessa incompatibilidade com múltiplos loops para escrever testes voc�
 ```python
 
 from asyncworker import App, RouteTypes
+from asyncworker.rabbitmq.connection import AMQPConnection 
 
-app = App(host="127.0.0.1", user="guest", password="guest", prefetch_count=256)
+
+amqp_conn = AMQPConnection(host="127.0.0.1", user="guest", password="guest", prefetch_count=256)
+app = App(connections=[amqp_conn])
 
 @app.route(["asgard/counts", "asgard/counts/errors"],
            type=RouteTypes.AMQP_RABBITMQ,
            vhost="fluentd")
 async def drain_handler(message):
-    logger.info(message)
+    print(message)
 
 ```
 
@@ -58,8 +61,8 @@ from asyncworker import App, RouteTypes, Options
 from asyncworker.sse.connection import SSEConnection
 
 
-conn = SSEConnection(url="http://172.18.0.31:8080/")
-app = App(connections=[conn])
+sse_conn = SSEConnection(url="http://172.18.0.31:8080/")
+app = App(connections=[sse_conn])
 
 @app.route(["/v2/events"], type=RouteTypes.SSE, options={Options.BULK_SIZE: 2})
 async def _on_event(events):
@@ -249,9 +252,11 @@ e com o async-worker você também consegue utilizar esse protocolo nos seus han
 ```python
 from aiohttp import web
 from asyncworker import App, RouteTypes
+from asyncworker.rabbitmq.connection import AMQPConnection 
 
 
-app = App(host="localhost", user="guest", password="guest", prefetch_count=1024)
+amqp_conn = AMQPConnection(host="localhost", user="guest", password="guest", prefetch_count=1024)
+app = App(connections=[amqp_conn])
 
 
 @app.route(routes=['/', '/hello'], methods=['GET'], type=RouteTypes.HTTP)
