@@ -19,7 +19,7 @@ pytest-cov = "==2.6.0"
 codecov = "==1.0.0"
 freezegun = "==0.3.10"
 async-worker = {editable = true,path = "."}
-mypy = "==0.630"
+mypy = "==0.711"
 black = "==18.9b0"
 ipdb = "==0.11"
 
