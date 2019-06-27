@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import Any
+from typing import Optional
 
 from asyncworker.routes import RouteTypes
 
@@ -7,7 +7,6 @@ from asyncworker.routes import RouteTypes
 @dataclass
 class SSEConnection:
     url: str
-    user: str = None
-    password: str = None
+    user: Optional[str] = None
+    password: Optional[str] = None
     route_type = RouteTypes.SSE
-    logger: Any = None  # fixme: shouldn't be here

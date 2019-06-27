@@ -53,6 +53,10 @@ class Model(BaseModel, abc.ABC):
             return default
 
 
+class _RouteOptions(Model):
+    pass
+
+
 class Route(Model, abc.ABC):
     """
     An abstract Model that acts like a route factory
@@ -61,6 +65,7 @@ class Route(Model, abc.ABC):
     type: RouteTypes
     handler: Any
     routes: List[str]
+    options: _RouteOptions = _RouteOptions()
     default_options: dict = {}
 
     @staticmethod
@@ -102,7 +107,7 @@ class HTTPRoute(Route):
                 )
 
 
-class _AMQPRouteOptions(Model):
+class _AMQPRouteOptions(_RouteOptions):
     bulk_size: int = DefaultValues.BULK_SIZE
     bulk_flush_interval: int = DefaultValues.BULK_FLUSH_INTERVAL
     on_success: Actions = DefaultValues.ON_SUCCESS
@@ -119,7 +124,7 @@ class AMQPRoute(Route):
     options: _AMQPRouteOptions
 
 
-class _SSERouteOptions(Model):
+class _SSERouteOptions(_RouteOptions):
     bulk_size: int = DefaultValues.BULK_SIZE
     bulk_flush_interval: int = DefaultValues.BULK_FLUSH_INTERVAL
     headers: Dict[str, str] = {}

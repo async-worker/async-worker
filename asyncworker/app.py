@@ -46,8 +46,9 @@ class App(MutableMapping, Freezable):
                 "You shouldnt change the state of started " "application"
             )
 
-    def _get_initial_state(self) -> Dict[Any, Any]:
-        return {route_type: {} for route_type in RouteTypes}
+    def _get_initial_state(self) -> Dict[str, Dict]:
+        # fixme: typeignore reason - https://github.com/python/mypy/issues/4537
+        return {route_type: {} for route_type in RouteTypes}  # type: ignore
 
     def _add_connections(self, connections):
         for route_type in RouteTypes:
