@@ -1,4 +1,5 @@
 from collections import Mapping
+from dataclasses import dataclass
 from typing import Dict, List, Union, Iterator, Any, Optional
 
 from asyncworker.options import RouteTypes
@@ -10,24 +11,17 @@ from asyncworker.conf import settings
 Message = Union[List, Dict]
 
 
+@dataclass
 class AMQPConnection(Mapping):
+    hostname: str
+    username: str
+    password: str
     route_type = RouteTypes.AMQP_RABBITMQ
+    prefetch: int = settings.AMQP_DEFAULT_PREFETCH_COUNT
+    heartbeat: int = settings.AMQP_DEFAULT_HEARTBEAT
+    name: Optional[str] = None
 
-    def __init__(
-        self,
-        hostname: str,
-        username: str,
-        password: str,
-        prefetch: int = settings.AMQP_DEFAULT_PREFETCH_COUNT,
-        heartbeat: int = settings.AMQP_DEFAULT_HEARTBEAT,
-        name: Optional[str] = None,
-    ) -> None:
-        self.hostname = hostname
-        self.username = username
-        self.password = password
-        self.name = name
-        self.prefetch = prefetch
-        self.heartbeat = heartbeat
+    def __post_init__(self) -> None:
         self.__connections: Dict[str, JsonQueue] = {}
 
     def __len__(self) -> int:

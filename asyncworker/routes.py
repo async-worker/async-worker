@@ -35,6 +35,12 @@ class Model(BaseModel, abc.ABC):
         except AttributeError as e:
             raise KeyError from e
 
+    def __setitem__(self, key, value):
+        try:
+            return self.__setattr__(key, value)
+        except AttributeError as e:
+            raise KeyError from e
+
     def __eq__(self, other):
         if isinstance(other, dict):
             return self.dict() == other
@@ -66,7 +72,6 @@ class Route(Model, abc.ABC):
     handler: Any
     routes: List[str]
     options: _RouteOptions = _RouteOptions()
-    default_options: dict = {}
 
     @staticmethod
     def factory(data: Dict) -> "Route":
@@ -87,6 +92,7 @@ class Route(Model, abc.ABC):
 class HTTPRoute(Route):
     type: RouteTypes = RouteTypes.HTTP
     methods: List[str]
+    options: _RouteOptions = _RouteOptions()
 
     @validator("methods")
     def validate_method(cls, v: str):
