@@ -9,7 +9,7 @@ from asyncworker.options import (
     Actions,
     RouteTypes,
 )
-from asyncworker.rabbitmq.connection import AMQPConnection
+from asyncworker.connections import AMQPConnection
 from asyncworker.routes import AMQPRoute
 
 

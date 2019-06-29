@@ -3,7 +3,7 @@ from asynctest import CoroutineMock, Mock, call, MagicMock
 from asyncworker.signals.handlers.sse import SSE
 from asyncworker.routes import RoutesRegistry
 from asyncworker.options import RouteTypes
-from asyncworker.sse.connection import SSEConnection
+from asyncworker.connections import SSEConnection
 
 
 class AMQPTests(asynctest.TestCase):

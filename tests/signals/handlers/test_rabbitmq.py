@@ -4,7 +4,7 @@ from asynctest import CoroutineMock, Mock, call, patch, ANY
 from asyncworker import App
 from asyncworker.consumer import Consumer
 from asyncworker.exceptions import InvalidRoute
-from asyncworker.rabbitmq.connection import AMQPConnection
+from asyncworker.connections import AMQPConnection
 from asyncworker.signals.handlers.rabbitmq import RabbitMQ
 from asyncworker.routes import RoutesRegistry
 from asyncworker.options import RouteTypes

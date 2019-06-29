@@ -1,11 +1,18 @@
-from collections import Mapping
+from collections import defaultdict
 from dataclasses import dataclass
-from typing import Dict, List, Union, Iterator, Any, Optional
-
-from asyncworker.options import RouteTypes
+from typing import Optional, Union, List, Dict, Iterator, Any, Type, Mapping
+from asyncworker.routes import RouteTypes
+from asyncworker.conf import settings
 from asyncworker.easyqueue.queue import JsonQueue
 
-from asyncworker.conf import settings
+
+@dataclass
+class SSEConnection:
+    url: str
+    user: Optional[str] = None
+    password: Optional[str] = None
+    route_type = RouteTypes.SSE
+    name: Optional[str] = None
 
 
 Message = Union[List, Dict]

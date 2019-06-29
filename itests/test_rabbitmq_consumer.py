@@ -1,8 +1,8 @@
-from asynctest import TestCase, skip
+from asynctest import TestCase
 import asyncio
 
 from asyncworker import App, RouteTypes
-from asyncworker.rabbitmq.connection import AMQPConnection
+from asyncworker.connections import AMQPConnection
 
 consume_callback_shoud_not_be_called = False
 handler_with_requeue_called = 0

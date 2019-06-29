@@ -13,7 +13,7 @@ from asyncworker.options import (
     RouteTypes,
 )
 
-from asyncworker.sse.connection import SSEConnection
+from asyncworker.connections import SSEConnection
 
 
 class AppTest(asynctest.TestCase):

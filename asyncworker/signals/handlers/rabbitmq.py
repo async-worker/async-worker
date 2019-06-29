@@ -2,7 +2,7 @@ from typing import TYPE_CHECKING
 
 from asyncworker.consumer import Consumer
 from asyncworker.signals.handlers.base import SignalHandler
-from asyncworker.rabbitmq.connection import AMQPConnection
+from asyncworker.connections import AMQPConnection
 from asyncworker.options import RouteTypes
 
 if TYPE_CHECKING:  # pragma: no cover

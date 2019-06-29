@@ -35,7 +35,7 @@ Por causa dessa incompatibilidade com múltiplos loops para escrever testes voc�
 ```python
 
 from asyncworker import App, RouteTypes
-from asyncworker.rabbitmq.connection import AMQPConnection 
+from asyncworker.connections import AMQPConnection 
 
 
 amqp_conn = AMQPConnection(host="127.0.0.1", user="guest", password="guest", prefetch_count=256)
@@ -58,7 +58,7 @@ Se o handler rodar sem erros, a mensagem é automaticamente confirmada (ack).
 
 ```python
 from asyncworker import App, RouteTypes, Options
-from asyncworker.sse.connection import SSEConnection
+from asyncworker.connections import SSEConnection
 
 
 sse_conn = SSEConnection(url="http://172.18.0.31:8080/")
@@ -252,7 +252,7 @@ e com o async-worker você também consegue utilizar esse protocolo nos seus han
 ```python
 from aiohttp import web
 from asyncworker import App, RouteTypes
-from asyncworker.rabbitmq.connection import AMQPConnection 
+from asyncworker.connections import AMQPConnection 
 
 
 amqp_conn = AMQPConnection(host="localhost", user="guest", password="guest", prefetch_count=1024)
