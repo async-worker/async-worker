@@ -21,12 +21,12 @@ class App(MutableMapping, Freezable):
     shutdown_os_signals = (Signals.SIGINT, Signals.SIGTERM)
 
     def __init__(self, connections: Optional[Iterable] = None) -> None:
+        Freezable.__init__(self)
         self.loop = asyncio.get_event_loop()
         self.routes_registry = RoutesRegistry()
         self.default_route_options: dict = {}
 
         self._state: Dict[Any, Any] = self._get_initial_state()
-        self._frozen = False
         self.connections = ConnectionsMapping()
         if connections:
             self.connections.add(connections)
@@ -42,7 +42,7 @@ class App(MutableMapping, Freezable):
             self.loop.add_signal_handler(signal, self.shutdown)
 
     def _check_frozen(self):
-        if self.frozen():
+        if self.frozen:
             raise RuntimeError(
                 "You shouldn't change the state of a started application"
             )
@@ -59,12 +59,6 @@ class App(MutableMapping, Freezable):
     def _get_initial_state(self) -> Dict[str, Dict]:
         # fixme: typeignore reason - https://github.com/python/mypy/issues/4537
         return {route_type: {} for route_type in RouteTypes}  # type: ignore
-
-    def frozen(self) -> bool:
-        return self._frozen
-
-    async def freeze(self) -> None:
-        self._frozen = True
 
     def __getitem__(self, key):
         return self._state[key]
