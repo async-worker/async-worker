@@ -6,8 +6,62 @@ from asyncworker.conf import settings
 from asyncworker.easyqueue.queue import JsonQueue
 
 
+class ConnectionsMapping(Mapping[str, "Connection"]):
+    """
+    A mapping (Connection.name->Connection) of all available connections that
+    also keeps a counter for each connection type
+    """
+
+    def __getitem__(self, k: str) -> "Connection":
+        return self._data[k]
+
+    def __len__(self) -> int:
+        return len(self._data)
+
+    def __iter__(self):
+        return iter(self._data)
+
+    def __init__(self) -> None:
+        self._data: Dict[str, "Connection"] = {}
+        self.counter: Dict[Type["Connection"], int] = defaultdict(int)
+
+    def __setitem__(self, key: str, value: "Connection") -> None:
+        self._data[key] = value
+        self.counter[value.__class__] += 1
+
+    def __delitem__(self, key: str) -> None:
+        value = self[key]
+        del self._data[key]
+        self.counter[value.__class__] -= 1
+
+
+CONNECTIONS = ConnectionsMapping()
+
+
 @dataclass
-class SSEConnection:
+class Connection:
+    """
+    Common ancestral for all Connection classes that auto generates a
+    connection name and is responsible for keeping track of new connections on
+    the ConnectionsMapping
+    """
+
+    def __post_init__(self):
+        if self.name is None:
+            self.name = self._generate_name()
+        CONNECTIONS[self.name] = self
+
+    def __del__(self):
+        del CONNECTIONS[self.name]
+
+    @classmethod
+    def _generate_name(cls) -> str:
+        n = CONNECTIONS.counter[cls] + 1
+        return f"{cls.__name__}-{n}"
+
+
+@dataclass
+class SSEConnection(Connection):
     url: str
     user: Optional[str] = None
     password: Optional[str] = None
@@ -19,7 +73,7 @@ Message = Union[List, Dict]
 
 
 @dataclass
-class AMQPConnection(Mapping):
+class AMQPConnection(Mapping, Connection):
     hostname: str
     username: str
     password: str
@@ -29,6 +83,7 @@ class AMQPConnection(Mapping):
     name: Optional[str] = None
 
     def __post_init__(self) -> None:
+        super(AMQPConnection, self).__post_init__()
         self.__connections: Dict[str, JsonQueue] = {}
 
     def __len__(self) -> int:
