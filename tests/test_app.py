@@ -63,7 +63,7 @@ class AppTests(asynctest.TestCase):
     ):
         await self.app.startup()
 
-        self.assertTrue(self.app.frozen())
+        self.assertTrue(self.app.frozen)
         # _on_startup.send.assert_awaited_once_with(self.app)
 
     async def test_route_raises_an_error_is_type_isnt_a_valid_RouteType(self):

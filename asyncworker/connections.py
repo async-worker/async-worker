@@ -18,9 +18,10 @@ from asyncworker.exceptions import InvalidConnection
 from asyncworker.routes import RouteTypes
 from asyncworker.conf import settings
 from asyncworker.easyqueue.queue import JsonQueue
+from asyncworker.signals.base import Freezable
 
 
-class ConnectionsMapping(Mapping[str, "Connection"]):
+class ConnectionsMapping(Mapping[str, "Connection"], Freezable):
     """
     A mapping (Connection.name->Connection) of all available connections that
     also keeps a counter for each connection type
@@ -36,10 +37,17 @@ class ConnectionsMapping(Mapping[str, "Connection"]):
         return iter(self._data)
 
     def __init__(self) -> None:
+        Freezable.__init__(self)
         self._data: Dict[str, "Connection"] = {}
         self.counter: Counter[Type["Connection"]] = collections.Counter()
 
     def __setitem__(self, key: str, value: "Connection") -> None:
+        if self.frozen:
+            raise RuntimeError(
+                "You shouldn't change the state of ConnectionsMapping "
+                "after App startup"
+            )
+
         if key in self:
             raise InvalidConnection(
                 f"Invalid connection: `{value}`. "
@@ -49,6 +57,11 @@ class ConnectionsMapping(Mapping[str, "Connection"]):
         self.counter[value.__class__] += 1
 
     def __delitem__(self, key: str) -> None:
+        if self.frozen:
+            raise RuntimeError(
+                "You shouldn't change the state of ConnectionsMapping "
+                "after App startup"
+            )
         del self._data[key]
 
     def add(self, connections: Iterable["Connection"]) -> None:

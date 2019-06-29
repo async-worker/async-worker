@@ -47,6 +47,10 @@ class App(MutableMapping, Freezable):
                 "You shouldn't change the state of a started application"
             )
 
+    async def freeze(self):
+        await self.connections.freeze()
+        await super(App, self).freeze()
+
     def get_connection(self, name: str) -> Connection:
         try:
             return self.connections[name]
