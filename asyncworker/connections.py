@@ -1,6 +1,20 @@
-from collections import defaultdict
+import abc
+import collections
 from dataclasses import dataclass
-from typing import Optional, Union, List, Dict, Iterator, Any, Type, Mapping
+from typing import (
+    Optional,
+    Union,
+    List,
+    Dict,
+    Iterator,
+    Any,
+    Type,
+    Mapping,
+    Iterable,
+    Counter,
+)
+
+from asyncworker.exceptions import InvalidConnection
 from asyncworker.routes import RouteTypes
 from asyncworker.conf import settings
 from asyncworker.easyqueue.queue import JsonQueue
@@ -23,40 +37,52 @@ class ConnectionsMapping(Mapping[str, "Connection"]):
 
     def __init__(self) -> None:
         self._data: Dict[str, "Connection"] = {}
-        self.counter: Dict[Type["Connection"], int] = defaultdict(int)
+        self.counter: Counter[Type["Connection"]] = collections.Counter()
 
     def __setitem__(self, key: str, value: "Connection") -> None:
+        if key in self:
+            raise InvalidConnection(
+                f"Invalid connection: `{value}`. "
+                f"The name `{key}` already exists in {self.__class__.__name__}"
+            )
         self._data[key] = value
         self.counter[value.__class__] += 1
 
     def __delitem__(self, key: str) -> None:
-        value = self[key]
         del self._data[key]
-        self.counter[value.__class__] -= 1
+
+    def add(self, connections: Iterable["Connection"]) -> None:
+        for conn in connections:
+            self[conn.name] = conn
+
+    def with_type(self, route_type: RouteTypes) -> List["Connection"]:
+        # todo: manter uma segunda estrutura de dados ou aceitar O(n) sempre que chamado?
+        return [conn for conn in self.values() if conn.route_type == route_type]
 
 
-CONNECTIONS = ConnectionsMapping()
+_TYPE_COUNTER: Counter[Type["Connection"]] = collections.Counter()
 
 
-@dataclass
-class Connection:
+class Connection(metaclass=abc.ABCMeta):
     """
     Common ancestral for all Connection classes that auto generates a
     connection name and is responsible for keeping track of new connections on
     the ConnectionsMapping
     """
 
+    @property
+    @abc.abstractmethod
+    def route_type(self):
+        raise NotImplementedError
+
     def __post_init__(self):
         if self.name is None:
             self.name = self._generate_name()
-        CONNECTIONS[self.name] = self
-
-    def __del__(self):
-        del CONNECTIONS[self.name]
+        _TYPE_COUNTER[self.__class__] += 1
 
     @classmethod
     def _generate_name(cls) -> str:
-        n = CONNECTIONS.counter[cls] + 1
+        n = _TYPE_COUNTER[cls] + 1
         return f"{cls.__name__}-{n}"
 
 

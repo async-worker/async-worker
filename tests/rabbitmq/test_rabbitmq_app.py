@@ -199,9 +199,7 @@ class RabbitMQAppTest(asynctest.TestCase):
     async def test_app_receives_queue_connection(self):
         app = App(connections=[self.connection])
 
-        self.assertEqual(
-            app[RouteTypes.AMQP_RABBITMQ]["connections"], [self.connection]
-        )
+        self.assertCountEqual(app.connections.values(), [self.connection])
 
     async def test_instantiate_one_consumer_per_handler_one_handler_registered(
         self

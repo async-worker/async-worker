@@ -5,12 +5,14 @@ from asynctest import Mock, CoroutineMock, patch, call
 from signal import Signals
 
 from asyncworker.app import App
+from asyncworker.connections import AMQPConnection
+from asyncworker.exceptions import InvalidConnection
 from asyncworker.options import RouteTypes, DefaultValues, Options
 from asyncworker.routes import AMQPRoute
 from asyncworker.task_runners import ScheduledTaskRunner
 
 
-class BaseAppTests(asynctest.TestCase):
+class AppTests(asynctest.TestCase):
     async def setUp(self):
         class MyApp(App):
             handlers = (
@@ -177,3 +179,45 @@ class BaseAppTests(asynctest.TestCase):
             Runner.assert_called_once_with(
                 seconds=seconds, task=coro, app=self.app, max_concurrency=666
             )
+
+
+class AppConnectionsTests(asynctest.TestCase):
+    def setUp(self):
+        super(AppConnectionsTests, self).setUp()
+        self.connections = [
+            AMQPConnection(
+                name="conn1",
+                hostname="localhost",
+                username="guest",
+                password="guest",
+            ),
+            AMQPConnection(
+                name="conn2",
+                hostname="localhost",
+                username="guest",
+                password="guest",
+            ),
+            AMQPConnection(
+                hostname="localhost", username="guest", password="guest"
+            ),
+        ]
+
+    async def test_connections_gets_registered_into_a_connection_mapping(self):
+        app = App(connections=self.connections)
+        self.assertEqual(app.connections, {c.name: c for c in self.connections})
+
+    async def test_get_connection_returns_the_proper_connection(self):
+        app = App(connections=self.connections)
+
+        self.assertEqual(
+            app.get_connection(name=self.connections[2].name),
+            self.connections[2],
+        )
+
+    async def test_get_connection_raises_an_error_if_theres_no_connection_registered_for_name(
+        self
+    ):
+        app = App(connections=self.connections)
+
+        with self.assertRaises(InvalidConnection):
+            app.get_connection(name="Unregistered connection name")
