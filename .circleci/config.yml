@@ -17,11 +17,16 @@ commands:
     description: "Roda todos os testes do projeto (unitários e integração)"
     steps:
       - run: "pipenv run test"
-  coverage:
-    description: "Upload coverage data"
+  typehint-cov:
+    description: "Upload de coverage de typehint"
     steps:
-      - run: "pipenv run codecov"
-
+      - run:
+          name: "Typehint coverage report"
+          command: |
+            mkdir -p .mypy/xml/cov
+            pipenv run lint --cobertura-xml-report .mypy/xml/cov
+            pipenv run codecov --flags typehint --file .mypy/xml/cov/cobertura.xml
+            rm -rf .mypy/
 
 jobs:
   test:
@@ -39,11 +44,14 @@ jobs:
       - run:
           name: Install asyncworker dev-mode
           command: pipenv run pip install -e .
-      - fmt-check
-      - isort-check
+      #- fmt-check
+      #- isort-check
       - lint
+      - typehint-cov
       - all-tests
-      - coverage
+      - run:
+          when: on_success
+          command: pipenv run codecov --flags unittest
 
 workflows:
   version: 2
