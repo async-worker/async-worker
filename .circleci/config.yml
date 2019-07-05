@@ -29,7 +29,7 @@ commands:
             rm -rf .mypy/
 
 jobs:
-  test:
+  py36: &template
     docker:
       - image: circleci/python:3.6
       - image: rabbitmq:3.7-alpine
@@ -53,8 +53,15 @@ jobs:
           when: on_success
           command: pipenv run codecov --flags unittest
 
+  py37:
+    <<: *template
+    docker:
+      - image: circleci/python:3.7
+      - image: rabbitmq:3.7-alpine
+
 workflows:
   version: 2
-  test:
+  required-checks:
     jobs:
-      - test
+      - py36
+      - py37
