@@ -31,8 +31,10 @@ test = "py.test -sv --cov=asyncworker --cov-report term-missing -v"
 itest = "py.test -sv --cov=asyncworker --cov-report term-missing -v itests/"
 all-tests = "py.test -sv --cov=asyncworker --cov-report term-missing -v tests/ itests/"
 lint = "mypy asyncworker --ignore-missing-imports"
-format = "black --py36 -v --line-length 80 ."
-format-check = "black --py36 -v --line-length 80 --check ."
+fmt = "black --py36 -v --line-length 80 ."
+fmt-check = "black --py36 -v --line-length 80 --check ."
+isort-fmt = "isort --apply --recursive --line-width 80 --use-parentheses --no-inline-sort --multi-line 3 --trailing-comma ."
+isort-check = "isort --check-only --recursive --line-width 80 --use-parentheses --no-inline-sort --multi-line 3 --trailing-comma ."
 
 [pipenv]
 allow_prereleases = true
