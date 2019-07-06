@@ -1,0 +1,61 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2019, B2W Digital
+# This file is distributed under the same license as the Asyncworker
+# package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2019.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: Asyncworker \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2019-07-05 21:39-0300\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.7.0\n"
+
+#: ../../src/asyncworker/asyncworker.sse.rst:2
+msgid "asyncworker.sse package"
+msgstr ""
+
+#: ../../src/asyncworker/asyncworker.sse.rst:5
+msgid "Submodules"
+msgstr ""
+
+#: ../../src/asyncworker/asyncworker.sse.rst:8
+msgid "asyncworker.sse.app module"
+msgstr ""
+
+#: asyncworker.sse.app.SSEApplication:1 of
+msgid "Base: :class:`asyncworker.base.BaseApp`"
+msgstr ""
+
+#: ../../src/asyncworker/asyncworker.sse.rst:16
+msgid "asyncworker.sse.consumer module"
+msgstr ""
+
+#: asyncworker.sse.consumer.SSEConsumer:1 asyncworker.sse.message.SSEMessage:1
+#: of
+msgid "Base: :class:`object`"
+msgstr ""
+
+#: asyncworker.sse.consumer.State:1 of
+msgid "Base: :class:`enum.Enum`"
+msgstr ""
+
+#: asyncworker.sse.consumer.State:1 of
+msgid "An enumeration."
+msgstr ""
+
+#: ../../src/asyncworker/asyncworker.sse.rst:24
+msgid "asyncworker.sse.message module"
+msgstr ""
+
+#: ../../src/asyncworker/asyncworker.sse.rst:33
+msgid "Module contents"
+msgstr ""
+
