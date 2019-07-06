@@ -1,0 +1,195 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>asyncworker.sse package &#8212; Asyncworker  documentation</title>
+    <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../_static/language_data.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+   
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="asyncworker-sse-package">
+<h1>asyncworker.sse package<a class="headerlink" href="#asyncworker-sse-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-asyncworker.sse.app">
+<span id="asyncworker-sse-app-module"></span><h2>asyncworker.sse.app module<a class="headerlink" href="#module-asyncworker.sse.app" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="asyncworker.sse.app.SSEApplication">
+<em class="property">class </em><code class="sig-prename descclassname">asyncworker.sse.app.</code><code class="sig-name descname">SSEApplication</code><span class="sig-paren">(</span><em class="sig-param">url: str</em>, <em class="sig-param">logger</em>, <em class="sig-param">user: str = None</em>, <em class="sig-param">password: str = None</em>, <em class="sig-param">headers: Dict[str</em>, <em class="sig-param">str] = {'Accept': 'text/event-stream'}</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/asyncworker/sse/app.html#SSEApplication"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#asyncworker.sse.app.SSEApplication" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="asyncworker.html#asyncworker.base.BaseApp" title="asyncworker.base.BaseApp"><code class="xref py py-class docutils literal notranslate"><span class="pre">asyncworker.base.BaseApp</span></code></a></p>
+<dl class="attribute">
+<dt id="asyncworker.sse.app.SSEApplication.handlers">
+<code class="sig-name descname">handlers</code><em class="property"> = (&lt;asyncworker.signals.handlers.sse.SSE object&gt;,)</em><a class="headerlink" href="#asyncworker.sse.app.SSEApplication.handlers" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-asyncworker.sse.consumer">
+<span id="asyncworker-sse-consumer-module"></span><h2>asyncworker.sse.consumer module<a class="headerlink" href="#module-asyncworker.sse.consumer" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="asyncworker.sse.consumer.SSEConsumer">
+<em class="property">class </em><code class="sig-prename descclassname">asyncworker.sse.consumer.</code><code class="sig-name descname">SSEConsumer</code><span class="sig-paren">(</span><em class="sig-param">route_info: Dict</em>, <em class="sig-param">url: str</em>, <em class="sig-param">username: str = None</em>, <em class="sig-param">password: str = None</em>, <em class="sig-param">bucket_class: Type[asyncworker.bucket.Bucket] = &lt;class 'asyncworker.bucket.Bucket'&gt;</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/asyncworker/sse/consumer.html#SSEConsumer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#asyncworker.sse.consumer.SSEConsumer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="attribute">
+<dt id="asyncworker.sse.consumer.SSEConsumer.interval">
+<code class="sig-name descname">interval</code><em class="property"> = 10</em><a class="headerlink" href="#asyncworker.sse.consumer.SSEConsumer.interval" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="asyncworker.sse.consumer.SSEConsumer.keep_runnig">
+<code class="sig-name descname">keep_runnig</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/asyncworker/sse/consumer.html#SSEConsumer.keep_runnig"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#asyncworker.sse.consumer.SSEConsumer.keep_runnig" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="asyncworker.sse.consumer.SSEConsumer.on_connection">
+<em class="property">async </em><code class="sig-name descname">on_connection</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/asyncworker/sse/consumer.html#SSEConsumer.on_connection"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#asyncworker.sse.consumer.SSEConsumer.on_connection" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="asyncworker.sse.consumer.SSEConsumer.on_connection_error">
+<em class="property">async </em><code class="sig-name descname">on_connection_error</code><span class="sig-paren">(</span><em class="sig-param">exception</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/asyncworker/sse/consumer.html#SSEConsumer.on_connection_error"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#asyncworker.sse.consumer.SSEConsumer.on_connection_error" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="asyncworker.sse.consumer.SSEConsumer.on_event">
+<em class="property">async </em><code class="sig-name descname">on_event</code><span class="sig-paren">(</span><em class="sig-param">event_name: bytes</em>, <em class="sig-param">event_raw_body</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/asyncworker/sse/consumer.html#SSEConsumer.on_event"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#asyncworker.sse.consumer.SSEConsumer.on_event" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="asyncworker.sse.consumer.SSEConsumer.on_exception">
+<em class="property">async </em><code class="sig-name descname">on_exception</code><span class="sig-paren">(</span><em class="sig-param">exception</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/asyncworker/sse/consumer.html#SSEConsumer.on_exception"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#asyncworker.sse.consumer.SSEConsumer.on_exception" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="asyncworker.sse.consumer.SSEConsumer.start">
+<em class="property">async </em><code class="sig-name descname">start</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/asyncworker/sse/consumer.html#SSEConsumer.start"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#asyncworker.sse.consumer.SSEConsumer.start" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="asyncworker.sse.consumer.State">
+<em class="property">class </em><code class="sig-prename descclassname">asyncworker.sse.consumer.</code><code class="sig-name descname">State</code><a class="reference internal" href="../../_modules/asyncworker/sse/consumer.html#State"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#asyncworker.sse.consumer.State" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">enum.Enum</span></code></p>
+<p>An enumeration.</p>
+<dl class="attribute">
+<dt id="asyncworker.sse.consumer.State.EVENT_DATA_FOUND">
+<code class="sig-name descname">EVENT_DATA_FOUND</code><em class="property"> = 3</em><a class="headerlink" href="#asyncworker.sse.consumer.State.EVENT_DATA_FOUND" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="asyncworker.sse.consumer.State.EVENT_NAME_FOUND">
+<code class="sig-name descname">EVENT_NAME_FOUND</code><em class="property"> = 2</em><a class="headerlink" href="#asyncworker.sse.consumer.State.EVENT_NAME_FOUND" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="asyncworker.sse.consumer.State.WAIT_FOR_DATA">
+<code class="sig-name descname">WAIT_FOR_DATA</code><em class="property"> = 1</em><a class="headerlink" href="#asyncworker.sse.consumer.State.WAIT_FOR_DATA" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-asyncworker.sse.message">
+<span id="asyncworker-sse-message-module"></span><h2>asyncworker.sse.message module<a class="headerlink" href="#module-asyncworker.sse.message" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="asyncworker.sse.message.SSEMessage">
+<em class="property">class </em><code class="sig-prename descclassname">asyncworker.sse.message.</code><code class="sig-name descname">SSEMessage</code><span class="sig-paren">(</span><em class="sig-param">event_name: str, event_body: Union[Dict, List]</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/asyncworker/sse/message.html#SSEMessage"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#asyncworker.sse.message.SSEMessage" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-asyncworker.sse">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-asyncworker.sse" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../../index.html">Asyncworker</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../index.html">Documentation overview</a><ul>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2019, B2W Digital.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 2.1.2</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="../../_sources/src/asyncworker/asyncworker.sse.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

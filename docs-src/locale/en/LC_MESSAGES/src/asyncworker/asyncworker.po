@@ -1,0 +1,270 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2019, B2W Digital
+# This file is distributed under the same license as the Asyncworker
+# package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2019.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: Asyncworker \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2019-07-05 21:39-0300\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.7.0\n"
+
+#: ../../src/asyncworker/asyncworker.rst:2
+msgid "asyncworker package"
+msgstr ""
+
+#: ../../src/asyncworker/asyncworker.rst:5
+msgid "Subpackages"
+msgstr ""
+
+#: ../../src/asyncworker/asyncworker.rst:15
+msgid "Submodules"
+msgstr ""
+
+#: ../../src/asyncworker/asyncworker.rst:18
+msgid "asyncworker.base module"
+msgstr ""
+
+#: asyncworker.base.BaseApp:1 of
+msgid ""
+"Base: :class:`collections.abc.MutableMapping`, "
+":class:`asyncworker.signals.base.Freezable`"
+msgstr ""
+
+#: asyncworker.base.BaseApp.run_every:1 of
+msgid "Registers a coroutine to be called with a given interval"
+msgstr ""
+
+#: asyncworker.base.BaseApp.run_on_shutdown:1 of
+msgid "Registers a coroutine to be awaited for during app shutdown"
+msgstr ""
+
+#: asyncworker.base.BaseApp.run_on_startup:1 of
+msgid "Registers a coroutine to be awaited for during app startup"
+msgstr ""
+
+#: asyncworker.base.BaseApp.shutdown:1 of
+msgid "Schedules an on_startup signal"
+msgstr ""
+
+#: asyncworker.base.BaseApp.shutdown:3 of
+msgid "Is called automatically when the application receives a SIGINT or SIGTERM"
+msgstr ""
+
+#: asyncworker.base.BaseApp.startup:1 of
+msgid "Causes on_startup signal"
+msgstr ""
+
+#: asyncworker.base.BaseApp.startup:3 of
+msgid "Should be called in the event loop along with the request handler."
+msgstr ""
+
+#: ../../src/asyncworker/asyncworker.rst:26
+msgid "asyncworker.bucket module"
+msgstr ""
+
+#: asyncworker.bucket.Bucket:1 of
+msgid "Base: :class:`typing.Generic`"
+msgstr ""
+
+#: asyncworker.bucket.BucketFullException:1 of
+msgid "Base: :class:`Exception`"
+msgstr ""
+
+#: ../../src/asyncworker/asyncworker.rst:34
+msgid "asyncworker.conf module"
+msgstr ""
+
+#: asyncworker.conf.Settings:1 of
+msgid "Base: :class:`pydantic.env_settings.BaseSettings`"
+msgstr ""
+
+#: asyncworker.conf.Settings.Config:1 asyncworker.options.DefaultValues:1
+#: asyncworker.task_runners.ScheduledTaskRunner:1 asyncworker.utils.Timeit:1 of
+msgid "Base: :class:`object`"
+msgstr ""
+
+#: ../../src/asyncworker/asyncworker.rst:42
+msgid "asyncworker.consumer module"
+msgstr ""
+
+#: asyncworker.consumer.Consumer:1 of
+msgid "Base: :class:`asyncworker.easyqueue.queue.QueueConsumerDelegate`"
+msgstr ""
+
+#: asyncworker.consumer.Consumer.on_before_start_consumption:1 of
+msgid ""
+"Coroutine called before queue consumption starts. May be overwritten to "
+"implement further custom initialization."
+msgstr ""
+
+#: asyncworker.consumer.Consumer.on_before_start_consumption
+#: asyncworker.consumer.Consumer.on_message_handle_error
+#: asyncworker.consumer.Consumer.on_queue_error of
+msgid "Parâmetros"
+msgstr ""
+
+#: asyncworker.consumer.Consumer.on_before_start_consumption:4 of
+msgid "Queue name that will be consumed"
+msgstr ""
+
+#: asyncworker.consumer.Consumer.on_before_start_consumption:6 of
+msgid "AsynQueue instanced"
+msgstr ""
+
+#: asyncworker.consumer.Consumer.on_connection_error:1 of
+msgid "Called when the connection fails"
+msgstr ""
+
+#: asyncworker.consumer.Consumer.on_consumption_start:1 of
+msgid "Coroutine called once consumption started."
+msgstr ""
+
+#: asyncworker.consumer.Consumer.on_message_handle_error:1 of
+msgid ""
+"Callback called when an uncaught exception was raised during message "
+"handling stage."
+msgstr ""
+
+#: asyncworker.consumer.Consumer.on_message_handle_error:4 of
+msgid "The exception that triggered"
+msgstr ""
+
+#: asyncworker.consumer.Consumer.on_message_handle_error:5 of
+msgid "arguments used to call the coroutine that handled"
+msgstr ""
+
+#: asyncworker.consumer.Consumer.on_message_handle_error:6 of
+msgid "the message :return:"
+msgstr ""
+
+#: asyncworker.consumer.Consumer.on_queue_error:1 of
+msgid ""
+"Callback called every time that an error occurred during the validation "
+"or deserialization stage."
+msgstr ""
+
+#: asyncworker.consumer.Consumer.on_queue_error:4 of
+msgid "unparsed, raw message content"
+msgstr ""
+
+#: asyncworker.consumer.Consumer.on_queue_error:6 of
+msgid "delivery_tag of the consumed message"
+msgstr ""
+
+#: asyncworker.consumer.Consumer.on_queue_error:8 of
+msgid "THe error that caused the callback to be called"
+msgstr ""
+
+#: asyncworker.consumer.Consumer.on_queue_message:1 of
+msgid ""
+"Callback called every time that a new, valid and deserialized message is "
+"ready to be handled."
+msgstr ""
+
+#: ../../src/asyncworker/asyncworker.rst:50
+msgid "asyncworker.options module"
+msgstr ""
+
+#: asyncworker.options.Actions:1 asyncworker.options.Events:1
+#: asyncworker.options.Options:1 asyncworker.options.RouteTypes:1 of
+msgid "Base: :class:`asyncworker.options.AutoNameEnum`"
+msgstr ""
+
+#: asyncworker.options.Actions:1 asyncworker.options.AutoNameEnum:1
+#: asyncworker.options.Events:1 asyncworker.options.Options:1
+#: asyncworker.options.RouteTypes:1 of
+msgid "An enumeration."
+msgstr ""
+
+#: asyncworker.options.AutoNameEnum:1 of
+msgid "Base: :class:`str`, :class:`enum.Enum`"
+msgstr ""
+
+#: ../../src/asyncworker/asyncworker.rst:58
+msgid "asyncworker.routes module"
+msgstr ""
+
+#: asyncworker.routes.AMQPRoute:1 asyncworker.routes.HTTPRoute:1
+#: asyncworker.routes.SSERoute:1 of
+msgid "Base: :class:`asyncworker.routes.Route`"
+msgstr ""
+
+#: asyncworker.routes.Model:1 of
+msgid "Base: :class:`pydantic.main.BaseModel`, :class:`abc.ABC`"
+msgstr ""
+
+#: asyncworker.routes.Model:1 of
+msgid "An abstract pydantic BaseModel that also behaves like a Mapping"
+msgstr ""
+
+#: asyncworker.routes.Route:1 of
+msgid "Base: :class:`asyncworker.routes.Model`, :class:`abc.ABC`"
+msgstr ""
+
+#: asyncworker.routes.Route:1 of
+msgid "An abstract Model that acts like a route factory"
+msgstr ""
+
+#: asyncworker.routes.RoutesRegistry:1 of
+msgid "Base: :class:`collections.UserDict`"
+msgstr ""
+
+#: ../../src/asyncworker/asyncworker.rst:66
+msgid "asyncworker.task\\_runners module"
+msgstr ""
+
+#: ../../src/asyncworker/asyncworker.rst:74
+msgid "asyncworker.time module"
+msgstr ""
+
+#: asyncworker.time.ClockTicker:1 of
+msgid "Base: :class:`collections.abc.AsyncIterator`"
+msgstr ""
+
+#: asyncworker.time.ClockTicker:1 of
+msgid ""
+"T - A clock tick F - Something that happens inside an iteration (\"x\" = "
+"running \"-\" = waiting) I - A clock iteration"
+msgstr ""
+
+#: asyncworker.time.ClockTicker:5 of
+msgid "E.g:"
+msgstr ""
+
+#: asyncworker.time.ClockTicker:9 of
+msgid "async for tick in Clock(seconds=2):"
+msgstr ""
+
+#: asyncworker.time.ClockTicker:8 of
+msgid "await asyncio.sleep(3)"
+msgstr ""
+
+#: asyncworker.time.ClockTicker:11 of
+msgid ""
+"T: 15------17------19------21------23------25------27------29------ F: "
+"xxxxxxxxxxxxx---xxxxxxxxxxxxx---xxxxxxxxxxxxx---xxxxxxxxxxxxx--- I: x"
+"---------------x---------------x---------------x---------------"
+msgstr ""
+
+#: ../../src/asyncworker/asyncworker.rst:82
+msgid "asyncworker.utils module"
+msgstr ""
+
+#: ../../src/asyncworker/asyncworker.rst:91
+msgid "Module contents"
+msgstr ""
+
+#: asyncworker.App:1 of
+msgid "Base: :class:`asyncworker.base.BaseApp`"
+msgstr ""
+
