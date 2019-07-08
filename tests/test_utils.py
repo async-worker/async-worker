@@ -3,8 +3,9 @@ from unittest.mock import patch, Mock
 
 import asynctest as asynctest
 from freezegun import freeze_time
-from tests.utils import typed_any
+
 from asyncworker.utils import Timeit
+from tests.utils import typed_any
 
 
 class TimeitTests(asynctest.TestCase):

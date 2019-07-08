@@ -1,6 +1,5 @@
-from asyncworker.options import Actions
-
 from asyncworker.easyqueue.message import AMQPMessage
+from asyncworker.options import Actions
 
 
 class RabbitMQMessage:

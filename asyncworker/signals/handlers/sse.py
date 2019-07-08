@@ -1,7 +1,7 @@
 from urllib.parse import urljoin
 
-from asyncworker.signals.handlers.base import SignalHandler
 from asyncworker.options import RouteTypes
+from asyncworker.signals.handlers.base import SignalHandler
 from asyncworker.sse.consumer import SSEConsumer
 
 

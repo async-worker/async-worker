@@ -1,9 +1,10 @@
 import asyncio
 from typing import Callable, Coroutine, Set, TYPE_CHECKING
 
+from asyncworker.time import ClockTicker
+
 if TYPE_CHECKING:
     from asyncworker.base import BaseApp  # pragma: nocover
-from asyncworker.time import ClockTicker
 
 
 class ScheduledTaskRunner:

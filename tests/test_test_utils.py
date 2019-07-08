@@ -4,6 +4,7 @@ import os
 from aiohttp import web
 from aiohttp.test_utils import TestClient
 from asynctest import TestCase, mock
+
 from asyncworker import App, RouteTypes
 from asyncworker.testing import http_client, HttpClientContext
 

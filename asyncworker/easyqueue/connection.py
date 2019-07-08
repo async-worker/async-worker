@@ -5,7 +5,6 @@ import aioamqp
 from aioamqp import AmqpProtocol
 from aioamqp.channel import Channel
 
-
 OnErrorCallback = Union[
     None, Callable[[Exception], None], Callable[[Exception], Coroutine]
 ]
