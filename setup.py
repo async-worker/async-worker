@@ -7,7 +7,7 @@ here = path.abspath(path.dirname(__file__))
 
 setup(
     name="async-worker",
-    version="0.9.0-rc2",
+    version="0.10.0",
     description="Microframework para escrever consumers para RabbitMQ",
     long_description="Microframework para escrever consumers para RabbitMQ",
     url="https://github.com/B2W-BIT/async-worker",
