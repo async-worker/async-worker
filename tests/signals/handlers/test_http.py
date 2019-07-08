@@ -1,17 +1,16 @@
-from random import randint
-import os
-
 import asyncio
+import os
+from random import randint
+
 import asynctest
-from asynctest import mock
 from aiohttp import web
 from aiohttp.test_utils import TestClient, TestServer
-from asynctest import CoroutineMock, Mock, patch
+from asynctest import mock, CoroutineMock, Mock, patch
 
 from asyncworker import App
 from asyncworker.conf import settings, Settings
-from asyncworker.signals.handlers.http import HTTPServer
 from asyncworker.routes import RouteTypes, RoutesRegistry
+from asyncworker.signals.handlers.http import HTTPServer
 
 
 class HTTPServerTests(asynctest.TestCase):

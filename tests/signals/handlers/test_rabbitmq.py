@@ -2,10 +2,10 @@ import asynctest
 from asynctest import CoroutineMock, Mock, call
 
 from asyncworker import App
-from asyncworker.rabbitmq.connection import AMQPConnection
-from asyncworker.signals.handlers.rabbitmq import RabbitMQ
-from asyncworker.routes import RoutesRegistry
 from asyncworker.options import RouteTypes
+from asyncworker.rabbitmq.connection import AMQPConnection
+from asyncworker.routes import RoutesRegistry
+from asyncworker.signals.handlers.rabbitmq import RabbitMQ
 
 
 class AMQPTests(asynctest.TestCase):

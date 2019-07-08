@@ -1,8 +1,8 @@
-from asynctest import TestCase, skip
 import asyncio
 
-from asyncworker import App, RouteTypes
+from asynctest import TestCase, skip
 
+from asyncworker import App, RouteTypes
 
 consume_callback_shoud_not_be_called = False
 handler_with_requeue_called = 0

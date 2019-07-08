@@ -4,6 +4,7 @@ from typing import Tuple
 
 from aiohttp import web
 from aiohttp.test_utils import TestClient, TestServer
+
 from asyncworker import App
 
 

@@ -1,9 +1,9 @@
 import unittest
-
-import asynctest
 from urllib.parse import urljoin
 
-from asyncworker.sse.app import SSEApplication
+import asynctest
+from asynctest.mock import CoroutineMock
+
 from asyncworker.options import (
     Options,
     DefaultValues,
@@ -11,8 +11,7 @@ from asyncworker.options import (
     Actions,
     RouteTypes,
 )
-
-from asynctest.mock import CoroutineMock
+from asyncworker.sse.app import SSEApplication
 
 
 class AppTest(asynctest.TestCase):

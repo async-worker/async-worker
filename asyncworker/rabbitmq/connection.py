@@ -1,10 +1,8 @@
 from collections import Mapping
 from typing import Dict, List, Union, Iterator, Any
 
-from asyncworker.easyqueue.queue import JsonQueue
-
 from asyncworker.conf import settings
-
+from asyncworker.easyqueue.queue import JsonQueue
 
 Message = Union[List, Dict]
 
