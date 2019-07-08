@@ -1,0 +1,166 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>asyncworker.rabbitmq package &#8212; Asyncworker  documentation</title>
+    <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../_static/language_data.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+   
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="asyncworker-rabbitmq-package">
+<h1>asyncworker.rabbitmq package<a class="headerlink" href="#asyncworker-rabbitmq-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-asyncworker.rabbitmq.connection">
+<span id="asyncworker-rabbitmq-connection-module"></span><h2>asyncworker.rabbitmq.connection module<a class="headerlink" href="#module-asyncworker.rabbitmq.connection" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="asyncworker.rabbitmq.connection.AMQPConnection">
+<em class="property">class </em><code class="sig-prename descclassname">asyncworker.rabbitmq.connection.</code><code class="sig-name descname">AMQPConnection</code><span class="sig-paren">(</span><em class="sig-param">hostname: str</em>, <em class="sig-param">username: str</em>, <em class="sig-param">password: str</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/asyncworker/rabbitmq/connection.html#AMQPConnection"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#asyncworker.rabbitmq.connection.AMQPConnection" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">collections.abc.Mapping</span></code></p>
+<dl class="method">
+<dt id="asyncworker.rabbitmq.connection.AMQPConnection.put">
+<em class="property">async </em><code class="sig-name descname">put</code><span class="sig-paren">(</span><em class="sig-param">routing_key: str</em>, <em class="sig-param">data: Any = None</em>, <em class="sig-param">serialized_data: Union[str</em>, <em class="sig-param">bytes] = None</em>, <em class="sig-param">exchange: str = ''</em>, <em class="sig-param">vhost: str = '/'</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/asyncworker/rabbitmq/connection.html#AMQPConnection.put"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#asyncworker.rabbitmq.connection.AMQPConnection.put" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="asyncworker.rabbitmq.connection.AMQPConnection.register">
+<code class="sig-name descname">register</code><span class="sig-paren">(</span><em class="sig-param">queue: asyncworker.easyqueue.queue.JsonQueue</em><span class="sig-paren">)</span> &#x2192; None<a class="reference internal" href="../../_modules/asyncworker/rabbitmq/connection.html#AMQPConnection.register"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#asyncworker.rabbitmq.connection.AMQPConnection.register" title="Permalink to this definition">¶</a></dt>
+<dd><p>Register a virtual subclass of an ABC.</p>
+<p>Returns the subclass, to allow usage as a class decorator.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-asyncworker.rabbitmq.message">
+<span id="asyncworker-rabbitmq-message-module"></span><h2>asyncworker.rabbitmq.message module<a class="headerlink" href="#module-asyncworker.rabbitmq.message" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="asyncworker.rabbitmq.message.RabbitMQMessage">
+<em class="property">class </em><code class="sig-prename descclassname">asyncworker.rabbitmq.message.</code><code class="sig-name descname">RabbitMQMessage</code><span class="sig-paren">(</span><em class="sig-param">delivery_tag: int</em>, <em class="sig-param">amqp_message: asyncworker.easyqueue.message.AMQPMessage</em>, <em class="sig-param">on_success: asyncworker.options.Actions = &lt;Actions.ACK: 'ack'&gt;</em>, <em class="sig-param">on_exception: asyncworker.options.Actions = &lt;Actions.REQUEUE: 'requeue'&gt;</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/asyncworker/rabbitmq/message.html#RabbitMQMessage"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#asyncworker.rabbitmq.message.RabbitMQMessage" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="method">
+<dt id="asyncworker.rabbitmq.message.RabbitMQMessage.accept">
+<code class="sig-name descname">accept</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/asyncworker/rabbitmq/message.html#RabbitMQMessage.accept"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#asyncworker.rabbitmq.message.RabbitMQMessage.accept" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="asyncworker.rabbitmq.message.RabbitMQMessage.body">
+<em class="property">property </em><code class="sig-name descname">body</code><a class="headerlink" href="#asyncworker.rabbitmq.message.RabbitMQMessage.body" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="asyncworker.rabbitmq.message.RabbitMQMessage.process_exception">
+<em class="property">async </em><code class="sig-name descname">process_exception</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/asyncworker/rabbitmq/message.html#RabbitMQMessage.process_exception"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#asyncworker.rabbitmq.message.RabbitMQMessage.process_exception" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="asyncworker.rabbitmq.message.RabbitMQMessage.process_success">
+<em class="property">async </em><code class="sig-name descname">process_success</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/asyncworker/rabbitmq/message.html#RabbitMQMessage.process_success"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#asyncworker.rabbitmq.message.RabbitMQMessage.process_success" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="asyncworker.rabbitmq.message.RabbitMQMessage.reject">
+<code class="sig-name descname">reject</code><span class="sig-paren">(</span><em class="sig-param">requeue=True</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/asyncworker/rabbitmq/message.html#RabbitMQMessage.reject"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#asyncworker.rabbitmq.message.RabbitMQMessage.reject" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="asyncworker.rabbitmq.message.RabbitMQMessage.serialized_data">
+<em class="property">property </em><code class="sig-name descname">serialized_data</code><a class="headerlink" href="#asyncworker.rabbitmq.message.RabbitMQMessage.serialized_data" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-asyncworker.rabbitmq">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-asyncworker.rabbitmq" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../../index.html">Asyncworker</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../index.html">Documentation overview</a><ul>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2019, B2W Digital.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 2.1.2</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="../../_sources/src/asyncworker/asyncworker.rabbitmq.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

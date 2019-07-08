@@ -1,6 +1,7 @@
 
 [![Build Status](https://travis-ci.org/B2W-BIT/async-worker.svg?branch=master)](https://travis-ci.org/B2W-BIT/async-worker)
-[![codecov](https://codecov.io/gh/B2W-BIT/async-worker/branch/master/graph/badge.svg)](https://codecov.io/gh/B2W-BIT/async-worker)
+[![codecov](https://codecov.io/gh/B2W-BIT/async-worker/branch/master/graph/badge.svg?flag=unittest)](https://codecov.io/gh/B2W-BIT/async-worker)
+[![codecov](https://codecov.io/gh/B2W-BIT/async-worker/branch/master/graph/badge.svg?flag=typehint)](https://codecov.io/gh/B2W-BIT/async-worker)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/ambv/black)
 [![PyPI version](https://badge.fury.io/py/async-worker.svg)](https://badge.fury.io/py/async-worker)
 
