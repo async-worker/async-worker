@@ -118,13 +118,13 @@
 
 <dl class="method">
 <dt id="asyncworker.base.BaseApp.run_on_shutdown">
-<code class="sig-name descname">run_on_shutdown</code><span class="sig-paren">(</span><em class="sig-param">coro: Callable[[BaseApp], Coroutine]</em><span class="sig-paren">)</span> &#x2192; None<a class="reference internal" href="../../_modules/asyncworker/base.html#BaseApp.run_on_shutdown"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#asyncworker.base.BaseApp.run_on_shutdown" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">run_on_shutdown</code><span class="sig-paren">(</span><em class="sig-param">coro: Callable[BaseApp, Coroutine]</em><span class="sig-paren">)</span> &#x2192; None<a class="reference internal" href="../../_modules/asyncworker/base.html#BaseApp.run_on_shutdown"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#asyncworker.base.BaseApp.run_on_shutdown" title="Permalink to this definition">¶</a></dt>
 <dd><p>Registers a coroutine to be awaited for during app shutdown</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="asyncworker.base.BaseApp.run_on_startup">
-<code class="sig-name descname">run_on_startup</code><span class="sig-paren">(</span><em class="sig-param">coro: Callable[[BaseApp], Coroutine]</em><span class="sig-paren">)</span> &#x2192; None<a class="reference internal" href="../../_modules/asyncworker/base.html#BaseApp.run_on_startup"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#asyncworker.base.BaseApp.run_on_startup" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">run_on_startup</code><span class="sig-paren">(</span><em class="sig-param">coro: Callable[BaseApp, Coroutine]</em><span class="sig-paren">)</span> &#x2192; None<a class="reference internal" href="../../_modules/asyncworker/base.html#BaseApp.run_on_startup"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#asyncworker.base.BaseApp.run_on_startup" title="Permalink to this definition">¶</a></dt>
 <dd><p>Registers a coroutine to be awaited for during app startup</p>
 </dd></dl>
 
@@ -510,7 +510,7 @@ is ready to be handled.</p>
 
 <dl class="method">
 <dt id="asyncworker.routes.RoutesRegistry.route_for">
-<code class="sig-name descname">route_for</code><span class="sig-paren">(</span><em class="sig-param">handler: Callable[[], Coroutine]</em><span class="sig-paren">)</span> &#x2192; asyncworker.routes.Route<a class="reference internal" href="../../_modules/asyncworker/routes.html#RoutesRegistry.route_for"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#asyncworker.routes.RoutesRegistry.route_for" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">route_for</code><span class="sig-paren">(</span><em class="sig-param">handler: Callable[Coroutine]</em><span class="sig-paren">)</span> &#x2192; asyncworker.routes.Route<a class="reference internal" href="../../_modules/asyncworker/routes.html#RoutesRegistry.route_for"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#asyncworker.routes.RoutesRegistry.route_for" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
@@ -536,7 +536,7 @@ is ready to be handled.</p>
 <span id="asyncworker-task-runners-module"></span><h2>asyncworker.task_runners module<a class="headerlink" href="#module-asyncworker.task_runners" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="asyncworker.task_runners.ScheduledTaskRunner">
-<em class="property">class </em><code class="sig-prename descclassname">asyncworker.task_runners.</code><code class="sig-name descname">ScheduledTaskRunner</code><span class="sig-paren">(</span><em class="sig-param">seconds: int, task: Callable[[BaseApp], Coroutine], app: BaseApp, max_concurrency: int</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/asyncworker/task_runners.html#ScheduledTaskRunner"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#asyncworker.task_runners.ScheduledTaskRunner" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">asyncworker.task_runners.</code><code class="sig-name descname">ScheduledTaskRunner</code><span class="sig-paren">(</span><em class="sig-param">seconds: int, task: Callable[BaseApp, Coroutine], app: BaseApp, max_concurrency: int</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/asyncworker/task_runners.html#ScheduledTaskRunner"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#asyncworker.task_runners.ScheduledTaskRunner" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <dl class="method">
 <dt id="asyncworker.task_runners.ScheduledTaskRunner.can_dispatch_task">
@@ -585,7 +585,7 @@ I: x—————x—————x—————x—————</p>
 <span id="asyncworker-utils-module"></span><h2>asyncworker.utils module<a class="headerlink" href="#module-asyncworker.utils" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="asyncworker.utils.Timeit">
-<em class="property">class </em><code class="sig-prename descclassname">asyncworker.utils.</code><code class="sig-name descname">Timeit</code><span class="sig-paren">(</span><em class="sig-param">name: str, callback: Callable[[...], Coroutine] = None</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/asyncworker/utils.html#Timeit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#asyncworker.utils.Timeit" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">asyncworker.utils.</code><code class="sig-name descname">Timeit</code><span class="sig-paren">(</span><em class="sig-param">name: str</em>, <em class="sig-param">callback: Callable[...</em>, <em class="sig-param">Coroutine] = None</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/asyncworker/utils.html#Timeit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#asyncworker.utils.Timeit" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <dl class="attribute">
 <dt id="asyncworker.utils.Timeit.TRANSACTIONS_KEY">
@@ -633,6 +633,11 @@ I: x—————x—————x—————x—————</p>
 
 
 <h3>Navigation</h3>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../intro.html">Introdução</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../userguide/index.html">Guia de uso</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../changelog/index.html">Changelog</a></li>
+</ul>
 
 <div class="relations">
 <h3>Related Topics</h3>
