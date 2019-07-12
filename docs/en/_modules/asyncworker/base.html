@@ -32,15 +32,15 @@
             
   <h1>Source code for asyncworker.base</h1><div class="highlight"><pre>
 <span></span><span class="kn">import</span> <span class="nn">asyncio</span>
-<span class="kn">from</span> <span class="nn">signal</span> <span class="k">import</span> <span class="n">Signals</span>
 <span class="kn">from</span> <span class="nn">collections</span> <span class="k">import</span> <span class="n">MutableMapping</span>
+<span class="kn">from</span> <span class="nn">signal</span> <span class="k">import</span> <span class="n">Signals</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="k">import</span> <span class="n">Iterable</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Coroutine</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Optional</span>
 
 <span class="kn">from</span> <span class="nn">asyncworker.conf</span> <span class="k">import</span> <span class="n">logger</span>
-<span class="kn">from</span> <span class="nn">asyncworker.signals.handlers.base</span> <span class="k">import</span> <span class="n">SignalHandler</span>
-<span class="kn">from</span> <span class="nn">asyncworker.routes</span> <span class="k">import</span> <span class="n">RoutesRegistry</span>
 <span class="kn">from</span> <span class="nn">asyncworker.options</span> <span class="k">import</span> <span class="n">RouteTypes</span><span class="p">,</span> <span class="n">Options</span><span class="p">,</span> <span class="n">DefaultValues</span>
+<span class="kn">from</span> <span class="nn">asyncworker.routes</span> <span class="k">import</span> <span class="n">RoutesRegistry</span>
 <span class="kn">from</span> <span class="nn">asyncworker.signals.base</span> <span class="k">import</span> <span class="n">Signal</span><span class="p">,</span> <span class="n">Freezable</span>
+<span class="kn">from</span> <span class="nn">asyncworker.signals.handlers.base</span> <span class="k">import</span> <span class="n">SignalHandler</span>
 <span class="kn">from</span> <span class="nn">asyncworker.task_runners</span> <span class="k">import</span> <span class="n">ScheduledTaskRunner</span>
 <span class="kn">from</span> <span class="nn">asyncworker.utils</span> <span class="k">import</span> <span class="n">entrypoint</span>
 
