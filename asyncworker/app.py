@@ -4,8 +4,7 @@ from collections import MutableMapping
 from typing import Iterable, Callable, Coroutine, Dict, Any, Optional
 
 from asyncworker.conf import logger
-from asyncworker.connections import BaseConnection
-from asyncworker.exceptions import InvalidRoute
+from asyncworker.exceptions import InvalidRoute, InvalidConnection
 from asyncworker.signals.handlers.http import HTTPServer
 from asyncworker.signals.handlers.rabbitmq import RabbitMQ
 from asyncworker.routes import RoutesRegistry, Route
@@ -14,24 +13,23 @@ from asyncworker.signals.base import Signal, Freezable
 from asyncworker.signals.handlers.sse import SSE
 from asyncworker.task_runners import ScheduledTaskRunner
 from asyncworker.utils import entrypoint
+from asyncworker.connections import ConnectionsMapping, Connection
 
 
 class App(MutableMapping, Freezable):
     handlers = (RabbitMQ(), HTTPServer(), SSE())
     shutdown_os_signals = (Signals.SIGINT, Signals.SIGTERM)
 
-    def __init__(
-        self, connections: Optional[Iterable[BaseConnection]] = None
-    ) -> None:
-        if connections is None:
-            connections = []
+    def __init__(self, connections: Optional[Iterable[Connection]] = None) -> None:
+        Freezable.__init__(self)
         self.loop = asyncio.get_event_loop()
         self.routes_registry = RoutesRegistry()
         self.default_route_options: dict = {}
 
         self._state: Dict[Any, Any] = self._get_initial_state()
-        self._frozen = False
-        self._add_connections(connections)
+        self.connections = ConnectionsMapping()
+        if connections:
+            self.connections.add(connections)
 
         self._on_startup: Signal = Signal(self)
         self._on_shutdown: Signal = Signal(self)
@@ -44,26 +42,27 @@ class App(MutableMapping, Freezable):
             self.loop.add_signal_handler(signal, self.shutdown)
 
     def _check_frozen(self):
-        if self.frozen():
+        if self.frozen:
             raise RuntimeError(
-                "You shouldnt change the state of started " "application"
+                "You shouldn't change the state of a started application"
             )
+
+    async def freeze(self):
+        await self.connections.freeze()
+        await super(App, self).freeze()
+
+    def get_connection(self, name: str) -> Connection:
+        try:
+            return self.connections[name]
+        except KeyError as e:
+            raise InvalidConnection(
+                f"There's no Connection with name `{name}` registered "
+                f"in `App.connections`"
+            ) from e
 
     def _get_initial_state(self) -> Dict[str, Dict]:
         # fixme: typeignore reason - https://github.com/python/mypy/issues/4537
         return {route_type: {} for route_type in RouteTypes}  # type: ignore
-
-    def _add_connections(self, connections):
-        for route_type in RouteTypes:
-            self[route_type]["connections"] = []
-        for connection in connections:
-            self[connection.route_type]["connections"].append(connection)
-
-    def frozen(self) -> bool:
-        return self._frozen
-
-    async def freeze(self) -> None:
-        self._frozen = True
 
     def __getitem__(self, key):
         return self._state[key]
@@ -175,7 +174,7 @@ class App(MutableMapping, Freezable):
 
     def get_connection_for_route(self, route_info: Route):
         route_connection = route_info.options.get("connection")
-        connections = self[route_info.type]["connections"]
+        connections = self.connections.with_type(route_info.type)
         if route_connection is not None:
             connection = route_connection
         elif len(connections) > 1:

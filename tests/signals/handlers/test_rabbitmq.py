@@ -4,7 +4,7 @@ from asynctest import CoroutineMock, Mock, call, patch, ANY
 from asyncworker import App
 from asyncworker.consumer import Consumer
 from asyncworker.exceptions import InvalidRoute
-from asyncworker.rabbitmq.connection import AMQPConnection
+from asyncworker.connections import AMQPConnection
 from asyncworker.signals.handlers.rabbitmq import RabbitMQ
 from asyncworker.routes import RoutesRegistry
 from asyncworker.options import RouteTypes
@@ -95,9 +95,7 @@ class AMQPTests(asynctest.TestCase):
         app.routes_registry = self.routes_registry
         await self.signal_handler.startup(app)
 
-        self.assertIsInstance(
-            app[RouteTypes.AMQP_RABBITMQ]["connections"][0], AMQPConnection
-        )
+        self.assertIn(conn, app.connections)
         register.assert_has_calls(
             [
                 call(consumer.queue)

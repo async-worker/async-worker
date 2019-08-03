@@ -1,9 +1,9 @@
 import asynctest
 from asynctest import Mock
+from asyncworker.easyqueue.queue import JsonQueue
 
 from asyncworker.conf import settings
-from asyncworker.easyqueue.queue import JsonQueue
-from asyncworker.rabbitmq.connection import AMQPConnection
+from asyncworker.connections import AMQPConnection
 
 
 class AMQPConnectionTests(asynctest.TestCase):
@@ -100,8 +100,7 @@ class AMQPConnectionTests(asynctest.TestCase):
         connection_a = asynctest.Mock(virtual_host="a", spec=JsonQueue)
 
         with asynctest.patch(
-            "asyncworker.rabbitmq.connection.JsonQueue",
-            return_value=connection_a,
+            "asyncworker.connections.JsonQueue", return_value=connection_a
         ):
             await self.rabbitmq_connection.put(
                 data=self.body,

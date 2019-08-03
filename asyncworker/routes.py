@@ -19,7 +19,7 @@ from pydantic import BaseModel, validator
 
 from asyncworker.conf import settings
 from asyncworker.options import DefaultValues, RouteTypes, Actions
-from asyncworker.rabbitmq.connection import AMQPConnection
+from asyncworker.connections import AMQPConnection
 
 RouteHandler = Callable[[], Coroutine]
 
