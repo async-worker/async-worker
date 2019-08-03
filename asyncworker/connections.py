@@ -14,6 +14,8 @@ from typing import (
     Counter,
 )
 
+from pydantic import BaseModel, validator
+
 from asyncworker.exceptions import InvalidConnection
 from asyncworker.routes import RouteTypes
 from asyncworker.conf import settings
@@ -48,6 +50,9 @@ class ConnectionsMapping(Mapping[str, "Connection"], Freezable):
                 "after App startup"
             )
 
+        if key is None:
+            key = id(value)
+
         if key in self:
             raise InvalidConnection(
                 f"Invalid connection: `{value}`. "
@@ -76,30 +81,14 @@ class ConnectionsMapping(Mapping[str, "Connection"], Freezable):
 _TYPE_COUNTER: Counter[Type["Connection"]] = collections.Counter()
 
 
-class Connection(metaclass=abc.ABCMeta):
+class Connection(BaseModel, abc.ABC):
     """
     Common ancestral for all Connection classes that auto generates a
     connection name and is responsible for keeping track of new connections on
     the ConnectionsMapping
     """
 
-    @property
-    @abc.abstractmethod
-    def route_type(self):
-        raise NotImplementedError
 
-    def __post_init__(self):
-        if self.name is None:
-            self.name = self._generate_name()
-        _TYPE_COUNTER[self.__class__] += 1
-
-    @classmethod
-    def _generate_name(cls) -> str:
-        n = _TYPE_COUNTER[cls] + 1
-        return f"{cls.__name__}-{n}"
-
-
-@dataclass
 class SSEConnection(Connection):
     url: str
     user: Optional[str] = None
@@ -111,7 +100,6 @@ class SSEConnection(Connection):
 Message = Union[List, Dict]
 
 
-@dataclass
 class AMQPConnection(Mapping, Connection):
     hostname: str
     username: str
@@ -120,16 +108,20 @@ class AMQPConnection(Mapping, Connection):
     prefetch: int = settings.AMQP_DEFAULT_PREFETCH_COUNT
     heartbeat: int = settings.AMQP_DEFAULT_HEARTBEAT
     name: Optional[str] = None
+    connections: Dict[str, JsonQueue] = {}
 
-    def __post_init__(self) -> None:
-        super(AMQPConnection, self).__post_init__()
-        self.__connections: Dict[str, JsonQueue] = {}
+    class Config:
+        arbitrary_types_allowed = True
+
+    @validator("connections", pre=True, always=True, check_fields=False)
+    def set_connections(cls, v):
+        return v or {}
 
     def __len__(self) -> int:
-        return len(self.__connections)
+        return len(self.connections)
 
     def __iter__(self) -> Iterator[str]:
-        return iter(self.__connections)
+        return iter(self.connections)
 
     def __getitem__(self, key: str) -> JsonQueue:
         """
@@ -139,7 +131,7 @@ class AMQPConnection(Mapping, Connection):
         :return: An instance of the connection
         """
         try:
-            return self.__connections[key]
+            return self.connections[key]
         except KeyError:
             conn: JsonQueue = JsonQueue(
                 host=self.hostname,
@@ -147,11 +139,11 @@ class AMQPConnection(Mapping, Connection):
                 password=self.password,
                 virtual_host=key,
             )
-            self.__connections[key] = conn
+            self.connections[key] = conn
             return conn
 
     def register(self, queue: JsonQueue) -> None:
-        self.__connections[queue.virtual_host] = queue
+        self.connections[queue.virtual_host] = queue
 
     async def put(
         self,
