@@ -4,6 +4,7 @@ from collections import MutableMapping
 from typing import Iterable, Callable, Coroutine, Dict, Any, Optional
 
 from asyncworker.conf import logger
+from asyncworker.connections import BaseConnection
 from asyncworker.exceptions import InvalidRoute
 from asyncworker.signals.handlers.http import HTTPServer
 from asyncworker.signals.handlers.rabbitmq import RabbitMQ
@@ -19,7 +20,9 @@ class App(MutableMapping, Freezable):
     handlers = (RabbitMQ(), HTTPServer(), SSE())
     shutdown_os_signals = (Signals.SIGINT, Signals.SIGTERM)
 
-    def __init__(self, connections: Optional[Iterable] = None) -> None:
+    def __init__(
+        self, connections: Optional[Iterable[BaseConnection]] = None
+    ) -> None:
         if connections is None:
             connections = []
         self.loop = asyncio.get_event_loop()

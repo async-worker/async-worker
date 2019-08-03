@@ -1,7 +1,9 @@
 from collections import Mapping
-from dataclasses import dataclass
 from typing import Dict, List, Union, Iterator, Any, Optional
 
+from pydantic import validator
+
+from asyncworker.connections import BaseConnection
 from asyncworker.options import RouteTypes
 from asyncworker.easyqueue.queue import JsonQueue
 
@@ -11,8 +13,7 @@ from asyncworker.conf import settings
 Message = Union[List, Dict]
 
 
-@dataclass
-class AMQPConnection(Mapping):
+class AMQPConnection(Mapping, BaseConnection):
     hostname: str
     username: str
     password: str
@@ -20,15 +21,21 @@ class AMQPConnection(Mapping):
     prefetch: int = settings.AMQP_DEFAULT_PREFETCH_COUNT
     heartbeat: int = settings.AMQP_DEFAULT_HEARTBEAT
     name: Optional[str] = None
+    connections: Dict[str, JsonQueue] = {}
 
-    def __post_init__(self) -> None:
-        self.__connections: Dict[str, JsonQueue] = {}
+    class Config:
+        arbitrary_types_allowed = True
+
+    # def __post_init__(self) -> None:
+    @validator("connections", pre=True, always=True, check_fields=False)
+    def set_connections(cls, v):
+        return v or {}
 
     def __len__(self) -> int:
-        return len(self.__connections)
+        return len(self.connections)
 
     def __iter__(self) -> Iterator[str]:
-        return iter(self.__connections)
+        return iter(self.connections)
 
     def __getitem__(self, key: str) -> JsonQueue:
         """
@@ -38,7 +45,7 @@ class AMQPConnection(Mapping):
         :return: An instance of the connection
         """
         try:
-            return self.__connections[key]
+            return self.connections[key]
         except KeyError:
             conn: JsonQueue = JsonQueue(
                 host=self.hostname,
@@ -46,11 +53,11 @@ class AMQPConnection(Mapping):
                 password=self.password,
                 virtual_host=key,
             )
-            self.__connections[key] = conn
+            self.connections[key] = conn
             return conn
 
     def register(self, queue: JsonQueue) -> None:
-        self.__connections[queue.virtual_host] = queue
+        self.connections[queue.virtual_host] = queue
 
     async def put(
         self,

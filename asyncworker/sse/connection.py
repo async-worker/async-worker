@@ -1,11 +1,10 @@
-from dataclasses import dataclass
 from typing import Optional
 
+from asyncworker.connections import BaseConnection
 from asyncworker.routes import RouteTypes
 
 
-@dataclass
-class SSEConnection:
+class SSEConnection(BaseConnection):
     url: str
     user: Optional[str] = None
     password: Optional[str] = None

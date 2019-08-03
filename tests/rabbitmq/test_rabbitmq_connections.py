@@ -8,9 +8,9 @@ from asyncworker.rabbitmq.connection import AMQPConnection
 
 class AMQPConnectionTests(asynctest.TestCase):
     async def setUp(self):
-        self.username = Mock()
-        self.password = Mock()
-        self.hostname = Mock()
+        self.username = "admin"
+        self.password = "123456"
+        self.hostname = "127.0.0.1"
         self.rabbitmq_connection = AMQPConnection(
             hostname=self.hostname,
             username=self.username,
