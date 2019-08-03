@@ -1,4 +1,3 @@
-import asyncio
 import os
 
 from aiohttp import web
@@ -11,7 +10,7 @@ from asyncworker.testing import http_client, HttpClientContext
 
 class HttpClientTestCaseDecoratorTest(TestCase):
     async def setUp(self):
-        self.app = App("", "", "", 1)
+        self.app = App()
 
     async def test_client_is_passed_to_test(self):
         @http_client(self.app)
@@ -70,7 +69,7 @@ class HttpClientTestCaseDecoratorTest(TestCase):
 
 class HttpClientContextManagerTest(TestCase):
     async def setUp(self):
-        self.app = App("", "", "", 1)
+        self.app = App()
 
     async def test_client_can_perform_requests(self):
         @self.app.route(["/"], type=RouteTypes.HTTP, methods=["GET"])
