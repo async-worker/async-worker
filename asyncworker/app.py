@@ -20,7 +20,7 @@ class App(MutableMapping, Freezable):
     handlers = (RabbitMQ(), HTTPServer(), SSE())
     shutdown_os_signals = (Signals.SIGINT, Signals.SIGTERM)
 
-    def __init__(self, connections: Optional[Iterable] = None) -> None:
+    def __init__(self, connections: Optional[Iterable[Connection]] = None) -> None:
         Freezable.__init__(self)
         self.loop = asyncio.get_event_loop()
         self.routes_registry = RoutesRegistry()

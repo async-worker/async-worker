@@ -1,18 +1,19 @@
 import json
 import logging
+from unittest.mock import patch, call, ANY
 
 import aioamqp
 import asynctest
 from aioamqp.channel import Channel
 from asynctest.mock import CoroutineMock, Mock
-from unittest.mock import patch, call, ANY
+
+from asyncworker.easyqueue.message import AMQPMessage
 from asyncworker.easyqueue.queue import (
     _ensure_connected,
     _ConsumptionHandler,
     JsonQueue,
     QueueConsumerDelegate,
 )
-from asyncworker.easyqueue.message import AMQPMessage
 
 
 class AsyncBaseTestCase:

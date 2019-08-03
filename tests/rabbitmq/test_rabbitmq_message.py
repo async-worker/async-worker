@@ -4,8 +4,8 @@ import asynctest
 from asynctest.mock import CoroutineMock, Mock
 
 from asyncworker.easyqueue.message import AMQPMessage
-from asyncworker.rabbitmq import RabbitMQMessage
 from asyncworker.options import Actions
+from asyncworker.rabbitmq import RabbitMQMessage
 
 
 class RabbitMQMessageTest(asynctest.TestCase):

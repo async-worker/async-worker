@@ -1,8 +1,8 @@
 import asyncio
+from signal import Signals
 
 import asynctest
 from asynctest import Mock, CoroutineMock, patch, call
-from signal import Signals
 
 from asyncworker.app import App
 from asyncworker.connections import AMQPConnection

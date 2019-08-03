@@ -1,8 +1,11 @@
 from enum import Enum, auto
+from typing import List
 
 
 class AutoNameEnum(str, Enum):
-    def _generate_next_value_(name, start, count, last_values):
+    def _generate_next_value_(
+        name: str, start: int, count: int, last_values: List[str]
+    ) -> str:
         return name.lower()
 
 

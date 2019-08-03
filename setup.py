@@ -1,14 +1,15 @@
 # Always prefer setuptools over distutils
-from setuptools import setup, find_packages
 from os import path
+
+from setuptools import setup, find_packages
 
 here = path.abspath(path.dirname(__file__))
 
 setup(
     name="async-worker",
-    version="0.9.0-rc2",
-    description="Microframework para escrever consumers para RabbitMQ",
-    long_description="Microframework para escrever consumers para RabbitMQ",
+    version="0.10.1",
+    description="Microframework para escrever workers assíncronos em Python",
+    long_description="Microframework para escrever workers assíncronos em Python",
     url="https://github.com/B2W-BIT/async-worker",
     # Author details
     author="Dalton Barreto",

@@ -1,7 +1,8 @@
 from aiohttp import web
-from asyncworker.signals.handlers.base import SignalHandler
-from asyncworker.options import RouteTypes
+
 from asyncworker.conf import settings
+from asyncworker.options import RouteTypes
+from asyncworker.signals.handlers.base import SignalHandler
 
 
 class HTTPServer(SignalHandler):

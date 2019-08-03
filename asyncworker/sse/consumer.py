@@ -1,17 +1,16 @@
-from typing import Type, List, Dict
-from enum import Enum, auto
-from aiohttp.client import ClientTimeout, ClientSession, ClientResponse
-import aiohttp
 import asyncio
-import traceback
 import json
+import traceback
+from enum import Enum, auto
+from typing import Type, List, Dict
 from urllib.parse import urljoin
 
-from asyncworker.sse.message import SSEMessage
-
+import aiohttp
+from aiohttp.client import ClientTimeout, ClientSession, ClientResponse
 
 from asyncworker import conf
 from asyncworker.bucket import Bucket
+from asyncworker.sse.message import SSEMessage
 
 
 class State(Enum):
