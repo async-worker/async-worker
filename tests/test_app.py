@@ -204,14 +204,14 @@ class AppConnectionsTests(asynctest.TestCase):
 
     async def test_connections_gets_registered_into_a_connection_mapping(self):
         app = App(connections=self.connections)
-        self.assertEqual(app.connections, {c.name: c for c in self.connections})
+        self.assertCountEqual(app.connections.values(), self.connections)
 
     async def test_get_connection_returns_the_proper_connection(self):
         app = App(connections=self.connections)
 
         self.assertEqual(
-            app.get_connection(name=self.connections[2].name),
-            self.connections[2],
+            app.get_connection(name=self.connections[0].name),
+            self.connections[0],
         )
 
     async def test_get_connection_raises_an_error_if_theres_no_connection_registered_for_name(

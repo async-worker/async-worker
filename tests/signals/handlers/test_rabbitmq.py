@@ -95,7 +95,7 @@ class AMQPTests(asynctest.TestCase):
         app.routes_registry = self.routes_registry
         await self.signal_handler.startup(app)
 
-        self.assertIn(conn.name, app.connections)
+        self.assertIn(conn, app.connections)
         register.assert_has_calls(
             [
                 call(consumer.queue)

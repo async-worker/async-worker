@@ -43,6 +43,11 @@ class ConnectionsMapping(Mapping[str, "Connection"], Freezable):
         self._data: Dict[str, "Connection"] = {}
         self.counter: Counter[Type["Connection"]] = collections.Counter()
 
+    def __contains__(self, item):
+        if isinstance(item, Connection):
+            return item in self.values()
+        return super(ConnectionsMapping, self).__contains__(item)
+
     def __setitem__(self, key: str, value: "Connection") -> None:
         if self.frozen:
             raise RuntimeError(
