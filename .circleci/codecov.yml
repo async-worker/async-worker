@@ -1,0 +1,18 @@
+codecov:
+  notify:
+    require_ci_to_pass: no
+
+coverage:
+  status:
+    project:
+      default: off
+      unittest:
+        flags: unittest
+      typehint:
+        flags: typehint
+    patch:
+      default: off
+      unittest:
+        flags: unittest
+      typehint:
+        flags: typehint

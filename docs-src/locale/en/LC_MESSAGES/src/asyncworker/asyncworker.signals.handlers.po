@@ -1,0 +1,58 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2019, B2W Digital
+# This file is distributed under the same license as the Asyncworker
+# package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2019.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: Asyncworker \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2019-07-05 21:39-0300\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.7.0\n"
+
+#: ../../src/asyncworker/asyncworker.signals.handlers.rst:2
+msgid "asyncworker.signals.handlers package"
+msgstr ""
+
+#: ../../src/asyncworker/asyncworker.signals.handlers.rst:5
+msgid "Submodules"
+msgstr ""
+
+#: ../../src/asyncworker/asyncworker.signals.handlers.rst:8
+msgid "asyncworker.signals.handlers.base module"
+msgstr ""
+
+#: asyncworker.signals.handlers.base.SignalHandler:1 of
+msgid "Base: :class:`object`"
+msgstr ""
+
+#: ../../src/asyncworker/asyncworker.signals.handlers.rst:16
+msgid "asyncworker.signals.handlers.http module"
+msgstr ""
+
+#: asyncworker.signals.handlers.http.HTTPServer:1
+#: asyncworker.signals.handlers.rabbitmq.RabbitMQ:1
+#: asyncworker.signals.handlers.sse.SSE:1 of
+msgid "Base: :class:`asyncworker.signals.handlers.base.SignalHandler`"
+msgstr ""
+
+#: ../../src/asyncworker/asyncworker.signals.handlers.rst:24
+msgid "asyncworker.signals.handlers.rabbitmq module"
+msgstr ""
+
+#: ../../src/asyncworker/asyncworker.signals.handlers.rst:32
+msgid "asyncworker.signals.handlers.sse module"
+msgstr ""
+
+#: ../../src/asyncworker/asyncworker.signals.handlers.rst:41
+msgid "Module contents"
+msgstr ""
+
