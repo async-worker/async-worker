@@ -1,13 +1,13 @@
 import asyncio
-from signal import Signals
 from collections import MutableMapping
+from signal import Signals
 from typing import Iterable, Tuple, Callable, Coroutine, Dict, Optional
 
 from asyncworker.conf import logger
-from asyncworker.signals.handlers.base import SignalHandler
-from asyncworker.routes import RoutesRegistry
 from asyncworker.options import RouteTypes, Options, DefaultValues
+from asyncworker.routes import RoutesRegistry
 from asyncworker.signals.base import Signal, Freezable
+from asyncworker.signals.handlers.base import SignalHandler
 from asyncworker.task_runners import ScheduledTaskRunner
 from asyncworker.utils import entrypoint
 
@@ -110,6 +110,7 @@ class BaseApp(MutableMapping, Freezable):
                 "default_options": self.default_route_options,
                 **kwargs,
             }
+
             return f
 
         return wrapper
