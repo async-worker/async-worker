@@ -1,6 +1,5 @@
 import asyncio
 import os
-from functools import wraps
 from random import randint
 
 import asynctest
@@ -266,7 +265,6 @@ class HTTPServerTests(asynctest.TestCase):
 
     async def test_resolves_handler_parameters_when_receiving_request(self):
         def my_decorator(handler):
-            @wraps(handler)
             async def _wrapper(request: web.Request):
                 return await call_http_handler(request, handler)
 

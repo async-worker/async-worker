@@ -1,14 +1,15 @@
 # Always prefer setuptools over distutils
-from setuptools import setup, find_packages
 from os import path
+
+from setuptools import setup, find_packages
 
 here = path.abspath(path.dirname(__file__))
 
 setup(
     name="async-worker",
-    version="0.9.0-rc2",
-    description="Microframework para escrever consumers para RabbitMQ",
-    long_description="Microframework para escrever consumers para RabbitMQ",
+    version="0.10.1",
+    description="Microframework para escrever workers assíncronos em Python",
+    long_description="Microframework para escrever workers assíncronos em Python",
     url="https://github.com/B2W-BIT/async-worker",
     # Author details
     author="Dalton Barreto",
@@ -22,7 +23,7 @@ setup(
     install_requires=[
         "aioamqp==0.12.0",
         "aiologger>=0.4.0-rc1",
-        "pydantic==0.14",
+        "pydantic>=0.14",
         "cached-property==1.5.1",
         "aiohttp==3.4.4",
     ],

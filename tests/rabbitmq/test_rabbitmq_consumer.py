@@ -64,7 +64,7 @@ class ConsumerTest(asynctest.TestCase):
             queue_name="queue_name",
             serialized_data=Mock(),
         )
-        return AMQPMessage(**{**default_kwargs, **kwargs})
+        return Mock(spec=AMQPMessage, **{**default_kwargs, **kwargs})
 
     def tearDown(self):
         mock.patch.stopall()
@@ -174,9 +174,7 @@ class ConsumerTest(asynctest.TestCase):
 
         with self.assertRaises(Exception):
             await consumer.on_queue_message(msg=self.mock_message)
-        self.queue_mock.reject.assert_awaited_with(
-            self.mock_message, requeue=True
-        )
+        self.mock_message.reject.assert_awaited_once_with(requeue=True)
 
     async def test_on_exception_reject_message(self):
         @self.app.route(
@@ -192,9 +190,7 @@ class ConsumerTest(asynctest.TestCase):
 
         with self.assertRaises(Exception):
             await consumer.on_queue_message(msg=self.mock_message)
-        self.queue_mock.reject.assert_awaited_with(
-            self.mock_message, requeue=False
-        )
+        self.mock_message.reject.assert_awaited_once_with(requeue=False)
 
     async def test_on_exception_ack_message(self):
         @self.app.route(
@@ -210,7 +206,7 @@ class ConsumerTest(asynctest.TestCase):
         with self.assertRaises(Exception):
             await consumer.on_queue_message(msg=self.mock_message)
 
-        self.queue_mock.ack.assert_awaited_with(self.mock_message)
+        self.mock_message.ack.assert_awaited_once()
 
     async def test_on_success_ack(self):
         @self.app.route(
@@ -225,7 +221,7 @@ class ConsumerTest(asynctest.TestCase):
         consumer = Consumer(route, *self.connection_parameters)
 
         await consumer.on_queue_message(msg=self.mock_message)
-        self.queue_mock.ack.assert_awaited_with(self.mock_message)
+        self.mock_message.ack.assert_awaited_once()
 
     async def test_on_success_reject(self):
         @self.app.route(
@@ -240,9 +236,7 @@ class ConsumerTest(asynctest.TestCase):
         consumer = Consumer(route, *self.connection_parameters)
 
         await consumer.on_queue_message(msg=self.mock_message)
-        self.queue_mock.reject.assert_awaited_with(
-            self.mock_message, requeue=False
-        )
+        self.mock_message.reject.assert_awaited_once_with(requeue=False)
 
     async def test_on_success_requeue(self):
         @self.app.route(
@@ -257,9 +251,7 @@ class ConsumerTest(asynctest.TestCase):
         consumer = Consumer(route, *self.connection_parameters)
 
         await consumer.on_queue_message(msg=self.mock_message)
-        self.queue_mock.reject.assert_awaited_with(
-            self.mock_message, requeue=True
-        )
+        self.mock_message.reject.assert_awaited_once_with(requeue=True)
 
     async def test_on_queue_message_auto_ack_on_success(self):
         """
@@ -271,8 +263,8 @@ class ConsumerTest(asynctest.TestCase):
         result = await consumer.on_queue_message(msg=self.mock_message)
 
         self.assertEqual((42, self.mock_message.deserialized_data), result)
-        self.queue_mock.ack.assert_awaited_once_with(self.mock_message)
-        self.queue_mock.reject.assert_not_awaited()
+        self.mock_message.ack.assert_awaited_once_with()
+        self.mock_message.reject.assert_not_awaited()
 
     async def test_on_exception_default_action_bulk_messages(self):
         """
@@ -293,24 +285,18 @@ class ConsumerTest(asynctest.TestCase):
             await consumer.on_queue_message(msg=msgs[0])
             await consumer.on_queue_message(msg=msgs[1])
 
-        self.queue_mock.reject.assert_has_awaits(
-            [
-                mock.call(msgs[0], requeue=True),
-                mock.call(msgs[1], requeue=True),
-            ],
-            any_order=True,
-        )
-        self.queue_mock.ack.assert_not_awaited()
+        msgs[0].reject.assert_awaited_once_with(requeue=True)
+        msgs[1].reject.assert_awaited_once_with(requeue=True)
+
+        msgs[0].ack.assert_not_awaited()
+        msgs[1].ack.assert_not_awaited()
 
     async def test_on_queue_message_precondition_failed_on_ack(self):
         consumer = Consumer(self.one_route_fixture, *self.connection_parameters)
-        queue_mock = CoroutineMock(
-            ack=CoroutineMock(side_effect=AioamqpException)
-        )
+        self.mock_message.ack.side_effect = AioamqpException
+
         with self.assertRaises(AioamqpException):
-            await consumer.on_queue_message(
-                msg=self._make_msg(queue=queue_mock)
-            )
+            await consumer.on_queue_message(msg=self.mock_message)
 
     async def test_on_queue_message_bulk_size_one(self):
         class MyBucket(Bucket):
@@ -330,8 +316,8 @@ class ConsumerTest(asynctest.TestCase):
         await consumer.on_queue_message(msg=msg)
         handler_mock.assert_awaited_once_with(consumer.bucket._items)
 
-        self.queue_mock.ack.assert_awaited_once_with(msg)
-        self.assertEqual(0, self.queue_mock.reject.call_count)
+        msg.ack.assert_awaited_once()
+        msg.reject.assert_not_awaited()
 
     async def test_on_queue_message_bulk_size_bigger_that_one(self):
         """
@@ -363,11 +349,11 @@ class ConsumerTest(asynctest.TestCase):
         await consumer.on_queue_message(msg=msgs[1])
         handler_mock.assert_awaited_once_with(consumer.bucket._items)
 
-        self.queue_mock.ack.assert_has_awaits(
-            [mock.call(msgs[0]), mock.call(msgs[1])], any_order=True
-        )
+        msgs[0].ack.assert_awaited_once()
+        msgs[1].ack.assert_awaited_once()
 
-        self.queue_mock.reject.assert_not_awaited()
+        msgs[0].reject.assert_not_awaited()
+        msgs[1].reject.assert_not_awaited()
 
     async def test_on_queue_message_bulk_mixed_ack_and_reject(self):
         async def handler(messages):
@@ -389,17 +375,12 @@ class ConsumerTest(asynctest.TestCase):
         await consumer.on_queue_message(self._make_msg(delivery_tag=13))
         await consumer.on_queue_message(self._make_msg(delivery_tag=14))
 
-        self.queue_mock.ack.assert_has_awaits(
-            [mock.call(msgs[0]), mock.call(msgs[3]), mock.call(msgs[4])],
-            any_order=True,
-        )
-        self.queue_mock.reject.assert_has_awaits(
-            [
-                mock.call(msgs[1], requeue=True),
-                mock.call(msgs[2], requeue=True),
-            ],
-            any_order=True,
-        )
+        msgs[0].ack.assert_awaited_once()
+        msgs[3].ack.assert_awaited_once()
+        msgs[4].ack.assert_awaited_once()
+
+        msgs[1].reject.assert_awaited_once_with(requeue=True)
+        msgs[2].reject.assert_awaited_once_with(requeue=True)
 
     async def test_on_queue_message_bulk_mixed_ack_and_reject_on_success_reject(
         self
@@ -420,16 +401,11 @@ class ConsumerTest(asynctest.TestCase):
         for msg in msgs:
             await consumer.on_queue_message(msg)
 
-        self.queue_mock.reject.assert_has_awaits(
-            [
-                mock.call(msgs[0], requeue=False),
-                mock.call(msgs[1], requeue=True),
-                mock.call(msgs[2], requeue=True),
-                mock.call(msgs[3], requeue=False),
-                mock.call(msgs[4], requeue=False),
-            ],
-            any_order=True,
-        )
+        msgs[0].reject.assert_awaited_once_with(requeue=False)
+        msgs[1].reject.assert_awaited_once_with(requeue=True)
+        msgs[2].reject.assert_awaited_once_with(requeue=True)
+        msgs[3].reject.assert_awaited_once_with(requeue=False)
+        msgs[4].reject.assert_awaited_once_with(requeue=False)
 
     async def test_bulk_flushes_on_timeout_even_with_bucket_not_full(self):
         class MyBucket(Bucket):
@@ -448,7 +424,6 @@ class ConsumerTest(asynctest.TestCase):
             *self.connection_parameters,
             bucket_class=MyBucket,
         )
-        queue_mock = CoroutineMock(ack=CoroutineMock())
 
         msgs = [
             self._make_msg(delivery_tag=10),
@@ -460,16 +435,17 @@ class ConsumerTest(asynctest.TestCase):
         await consumer.on_queue_message(msgs[1])
         handler_mock.assert_not_awaited()
 
-        self.loop.create_task(consumer._flush_clocked(queue_mock))
+        self.loop.create_task(consumer._flush_clocked())
         # Realizando sleep para devolver o loop para o clock
         await asyncio.sleep(0.1)
 
         handler_mock.assert_awaited_once_with(items)
 
-        queue_mock.ack.assert_has_awaits(
-            [mock.call(msgs[0]), mock.call(msgs[1])], any_order=True
-        )
-        queue_mock.reject.assert_not_called()
+        msgs[0].ack.assert_awaited_once()
+        msgs[1].ack.assert_awaited_once()
+
+        msgs[0].reject.assert_not_awaited()
+        msgs[1].reject.assert_not_awaited()
 
     async def test_do_not_flush_if_bucket_is_already_empty_when_timeout_expires(
         self
@@ -490,9 +466,8 @@ class ConsumerTest(asynctest.TestCase):
             *self.connection_parameters,
             bucket_class=MyBucket,
         )
-        queue_mock = CoroutineMock(ack=CoroutineMock())
 
-        self.loop.create_task(consumer._flush_clocked(queue_mock))
+        self.loop.create_task(consumer._flush_clocked())
         # Realizando sleep para devolver o loop para o clock
         await asyncio.sleep(0.1)
         self.assertEqual(0, handler_mock.await_count)
@@ -516,9 +491,8 @@ class ConsumerTest(asynctest.TestCase):
             *self.connection_parameters,
             bucket_class=MyBucket,
         )
-        queue_mock = mock.Mock(reject=CoroutineMock())
         await consumer.on_queue_message(self._make_msg())
-        self.loop.create_task(consumer._flush_clocked(queue_mock))
+        self.loop.create_task(consumer._flush_clocked())
         self.assertEqual(0, consumer.clock.current_iteration)
 
         # Realizando sleep para devolver o loop para o clock

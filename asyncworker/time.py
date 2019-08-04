@@ -1,5 +1,5 @@
-import time
 import asyncio
+import time
 from collections.abc import AsyncIterator
 from typing import Optional, Union
 

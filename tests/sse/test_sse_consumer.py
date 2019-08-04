@@ -1,14 +1,14 @@
-from asynctest import TestCase
-from asynctest.mock import CoroutineMock
-import asynctest
-import aiohttp
 from urllib.parse import urljoin
 
+import aiohttp
+import asynctest
 from aioresponses import aioresponses
+from asynctest import TestCase
+from asynctest.mock import CoroutineMock
 
-from asyncworker.sse.consumer import SSEConsumer
-from asyncworker.bucket import Bucket
 from asyncworker import conf
+from asyncworker.bucket import Bucket
+from asyncworker.sse.consumer import SSEConsumer
 from tests.utils import get_fixture
 
 

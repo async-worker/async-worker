@@ -1,7 +1,7 @@
 import logging
 
-from pydantic import BaseSettings
 from aiologger.loggers.json import JsonLogger
+from pydantic import BaseSettings
 
 
 class Settings(BaseSettings):

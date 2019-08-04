@@ -1,8 +1,8 @@
 import asynctest
 from asynctest import Mock
-from asyncworker.easyqueue.queue import JsonQueue
 
 from asyncworker.conf import settings
+from asyncworker.easyqueue.queue import JsonQueue
 from asyncworker.rabbitmq.connection import AMQPConnection
 
 
