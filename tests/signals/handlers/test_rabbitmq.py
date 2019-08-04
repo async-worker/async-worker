@@ -3,7 +3,7 @@ from asynctest import CoroutineMock, Mock, call, patch, ANY
 
 from asyncworker import App
 from asyncworker.consumer import Consumer
-from asyncworker.exceptions import InvalidRoute
+from asyncworker.exceptions import InvalidRoute, InvalidConnection
 from asyncworker.connections import AMQPConnection
 from asyncworker.signals.handlers.rabbitmq import RabbitMQ
 from asyncworker.routes import RoutesRegistry
@@ -38,10 +38,7 @@ class AMQPTests(asynctest.TestCase):
         self, Consumer
     ):
         connection = AMQPConnection(
-            hostname="127.0.0.1",
-            username="guest",
-            password="guest",
-            prefetch=1024,
+            hostname="127.0.0.1", username="guest", password="guest", prefetch=1024
         )
         app = App(connections=[connection])
         app.routes_registry = self.routes_registry
@@ -79,17 +76,12 @@ class AMQPTests(asynctest.TestCase):
             [Consumer.return_value, Consumer.return_value],
         )
 
-    @asynctest.patch(
-        "asyncworker.signals.handlers.rabbitmq.AMQPConnection.register"
-    )
+    @asynctest.patch("asyncworker.signals.handlers.rabbitmq.AMQPConnection.register")
     async def test_startup_registers_one_connection_per_vhost_into_app_state(
         self, register
     ):
         conn = AMQPConnection(
-            hostname="127.0.0.1",
-            username="guest",
-            password="guest",
-            prefetch=1024,
+            hostname="127.0.0.1", username="guest", password="guest", prefetch=1024
         )
         app = App(connections=[conn])
         app.routes_registry = self.routes_registry
@@ -107,16 +99,10 @@ class AMQPTests(asynctest.TestCase):
         self
     ):
         conn1 = AMQPConnection(
-            hostname="127.0.0.1",
-            username="guest",
-            password="guest",
-            prefetch=1024,
+            hostname="127.0.0.1", username="guest", password="guest", prefetch=1024
         )
         conn2 = AMQPConnection(
-            hostname="127.0.0.1",
-            username="guest",
-            password="guest",
-            prefetch=1024,
+            hostname="127.0.0.1", username="guest", password="guest", prefetch=1024
         )
         app = App(connections=[conn1, conn2])
 
@@ -139,12 +125,9 @@ class AMQPTests(asynctest.TestCase):
         with self.assertRaises(InvalidRoute):
             await self.signal_handler.startup(app)
 
-    async def test_it_uses_the_route_provided_by_the_route_if_one_exists(self):
+    async def test_it_uses_the_connection_provided_by_the_route_if_one_exists(self):
         conn = AMQPConnection(
-            hostname="127.0.0.1",
-            username="guest",
-            password="guest",
-            prefetch=1024,
+            hostname="127.0.0.1", username="guest", password="guest", prefetch=1024
         )
         app = App(connections=[])
 
@@ -157,9 +140,7 @@ class AMQPTests(asynctest.TestCase):
             pass
 
         MockedConsumer = Mock(return_value=Mock(spec=Consumer, queue=Mock()))
-        with patch(
-            "asyncworker.signals.handlers.rabbitmq.Consumer", MockedConsumer
-        ):
+        with patch("asyncworker.signals.handlers.rabbitmq.Consumer", MockedConsumer):
             await self.signal_handler.startup(app)
 
         MockedConsumer.assert_called_once_with(
@@ -169,3 +150,21 @@ class AMQPTests(asynctest.TestCase):
             password=conn.password,
             prefetch_count=conn.prefetch,
         )
+
+    async def test_it_uses_the_connection_name_provided_by_the_route_if_one_exists(
+        self
+    ):
+        app = App(connections=[])
+
+        @app.route(
+            routes=["a_queue_name"],
+            type=RouteTypes.AMQP_RABBITMQ,
+            options={"connection": "XablauConnection"},
+        )
+        async def mock_handler(*args, **kwargs):
+            pass
+
+        MockedConsumer = Mock(return_value=Mock(spec=Consumer, queue=Mock()))
+        with patch("asyncworker.signals.handlers.rabbitmq.Consumer", MockedConsumer):
+            with self.assertRaises(InvalidConnection):
+                await self.signal_handler.startup(app)

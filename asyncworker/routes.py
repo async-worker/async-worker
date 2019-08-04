@@ -1,16 +1,6 @@
 import abc
 from collections import UserDict
-from typing import (
-    Callable,
-    Coroutine,
-    Dict,
-    List,
-    Any,
-    Union,
-    Iterable,
-    Type,
-    Optional,
-)
+from typing import Callable, Coroutine, Dict, List, Any, Union, Iterable, Type, Optional
 
 from aiohttp.hdrs import METH_ALL
 from aiohttp.web_routedef import RouteDef
@@ -18,6 +8,7 @@ from cached_property import cached_property
 from pydantic import BaseModel, validator
 
 from asyncworker.conf import settings
+from asyncworker.exceptions import InvalidConnection, InvalidRoute
 from asyncworker.options import DefaultValues, RouteTypes, Actions
 from asyncworker.connections import AMQPConnection
 
@@ -106,10 +97,7 @@ class HTTPRoute(Route):
             for method in self.methods:
                 kwargs = {"allow_head": False} if method == "GET" else {}
                 yield RouteDef(
-                    method=method,
-                    path=route,
-                    handler=self.handler,
-                    kwargs=kwargs,
+                    method=method, path=route, handler=self.handler, kwargs=kwargs
                 )
 
 
@@ -118,10 +106,19 @@ class _AMQPRouteOptions(_RouteOptions):
     bulk_flush_interval: int = DefaultValues.BULK_FLUSH_INTERVAL
     on_success: Actions = DefaultValues.ON_SUCCESS
     on_exception: Actions = DefaultValues.ON_EXCEPTION
-    connection: Optional[AMQPConnection]
+    connection: Optional[Union[AMQPConnection, str]]
 
     class Config:
         arbitrary_types_allowed = True
+
+    @validator("connection", pre=True, whole=True)
+    def validate_connection(cls, v):
+        if not isinstance(v, (str, AMQPConnection)):
+            raise InvalidRoute(
+                f"Expected `Route.connection` to be either `str` or "
+                f"`Connection`. Got `{type(v)}` instead."
+            )
+        return v
 
 
 class AMQPRoute(Route):

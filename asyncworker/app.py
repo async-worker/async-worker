@@ -106,11 +106,7 @@ class App(MutableMapping, Freezable):
         return asyncio.ensure_future(self._on_shutdown.send(self))
 
     def route(
-        self,
-        routes: Iterable[str],
-        type: RouteTypes,
-        options: dict = None,
-        **kwargs,
+        self, routes: Iterable[str], type: RouteTypes, options: dict = None, **kwargs
     ):
         if options is None:
             options = {}
@@ -157,10 +153,7 @@ class App(MutableMapping, Freezable):
 
         def wrapper(task: Callable[..., Coroutine]):
             runner = ScheduledTaskRunner(
-                seconds=seconds,
-                task=task,
-                app=self,
-                max_concurrency=max_concurrency,
+                seconds=seconds, task=task, app=self, max_concurrency=max_concurrency
             )
             self._on_startup.append(runner.start)
             self._on_shutdown.append(runner.stop)
@@ -172,11 +165,20 @@ class App(MutableMapping, Freezable):
 
         return wrapper
 
-    def get_connection_for_route(self, route_info: Route):
+    def get_connection_for_route(self, route_info: Route) -> Connection:
         route_connection = route_info.options.get("connection")
         connections = self.connections.with_type(route_info.type)
         if route_connection is not None:
-            connection = route_connection
+            if isinstance(route_connection, Connection):
+                return route_connection
+            elif isinstance(route_connection, str):
+                return self.get_connection(name=route_connection)
+            else:
+                # pragma: nocover
+                raise InvalidRoute(
+                    f"Expected `Route.connection` to be either `str` or "
+                    f"`Connection`. Got `{type(route_connection)}` instead."
+                )
         elif len(connections) > 1:
             raise InvalidRoute(
                 f"Invalid route definition for App. You are trying to "
@@ -186,11 +188,10 @@ class App(MutableMapping, Freezable):
             )
         else:
             try:
-                connection = connections[0]
+                return connections[0]
             except IndexError as e:
                 raise InvalidRoute(
                     f"Invalid route definition for App. You are trying to "
                     f"define a {route_info.type} without an "
                     f"Connection registered on App"
                 ) from e
-        return connection
