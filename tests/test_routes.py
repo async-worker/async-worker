@@ -87,7 +87,11 @@ class RoutesRegistryTests(unittest.TestCase):
 class HTTPRoutesTests(unittest.TestCase):
     def test_it_raise_an_error_for_invalid_methods(self):
         with self.assertRaises(ValueError):
-            HTTPRoute(methods=["POST", "Xablau"], handler=CoroutineMock(), routes=["/"])
+            HTTPRoute(
+                methods=["POST", "Xablau"],
+                handler=CoroutineMock(),
+                routes=["/"],
+            )
 
     def test_valid_http_methods(self):
         route = HTTPRoute(

@@ -20,7 +20,9 @@ class App(MutableMapping, Freezable):
     handlers = (RabbitMQ(), HTTPServer(), SSE())
     shutdown_os_signals = (Signals.SIGINT, Signals.SIGTERM)
 
-    def __init__(self, connections: Optional[Iterable[Connection]] = None) -> None:
+    def __init__(
+        self, connections: Optional[Iterable[Connection]] = None
+    ) -> None:
         Freezable.__init__(self)
         self.loop = asyncio.get_event_loop()
         self.routes_registry = RoutesRegistry()
@@ -106,7 +108,11 @@ class App(MutableMapping, Freezable):
         return asyncio.ensure_future(self._on_shutdown.send(self))
 
     def route(
-        self, routes: Iterable[str], type: RouteTypes, options: dict = None, **kwargs
+        self,
+        routes: Iterable[str],
+        type: RouteTypes,
+        options: dict = None,
+        **kwargs,
     ):
         if options is None:
             options = {}
@@ -153,7 +159,10 @@ class App(MutableMapping, Freezable):
 
         def wrapper(task: Callable[..., Coroutine]):
             runner = ScheduledTaskRunner(
-                seconds=seconds, task=task, app=self, max_concurrency=max_concurrency
+                seconds=seconds,
+                task=task,
+                app=self,
+                max_concurrency=max_concurrency,
             )
             self._on_startup.append(runner.start)
             self._on_shutdown.append(runner.stop)

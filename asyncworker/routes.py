@@ -1,6 +1,16 @@
 import abc
 from collections import UserDict
-from typing import Callable, Coroutine, Dict, List, Any, Union, Iterable, Type, Optional
+from typing import (
+    Callable,
+    Coroutine,
+    Dict,
+    List,
+    Any,
+    Union,
+    Iterable,
+    Type,
+    Optional,
+)
 
 from aiohttp.hdrs import METH_ALL
 from aiohttp.web_routedef import RouteDef
@@ -97,7 +107,10 @@ class HTTPRoute(Route):
             for method in self.methods:
                 kwargs = {"allow_head": False} if method == "GET" else {}
                 yield RouteDef(
-                    method=method, path=route, handler=self.handler, kwargs=kwargs
+                    method=method,
+                    path=route,
+                    handler=self.handler,
+                    kwargs=kwargs,
                 )
 
 

@@ -15,7 +15,9 @@ from asyncworker.task_runners import ScheduledTaskRunner
 class AppTests(asynctest.TestCase):
     async def setUp(self):
         class MyApp(App):
-            handlers = (Mock(startup=CoroutineMock(), shutdown=CoroutineMock()),)
+            handlers = (
+                Mock(startup=CoroutineMock(), shutdown=CoroutineMock()),
+            )
 
         self.appCls = MyApp
         self.app = MyApp(connections=[])
@@ -56,7 +58,9 @@ class AppTests(asynctest.TestCase):
         state = dict(**self.app)
         self.assertDictContainsSubset({"pet": "dog", "name": "Xablau"}, state)
 
-    async def test_startup_freezes_applications_and_sends_the_on_startup_signal(self):
+    async def test_startup_freezes_applications_and_sends_the_on_startup_signal(
+        self
+    ):
         await self.app.startup()
 
         self.assertTrue(self.app.frozen)
@@ -69,12 +73,16 @@ class AppTests(asynctest.TestCase):
     async def test_route_registers_a_route_to_routes_registry(self):
         handler = CoroutineMock()
 
-        self.app.route(["route"], type=RouteTypes.AMQP_RABBITMQ, dog="Xablau")(handler)
+        self.app.route(["route"], type=RouteTypes.AMQP_RABBITMQ, dog="Xablau")(
+            handler
+        )
 
         self.assertEqual(len(self.app.routes_registry), 1)
         self.assertIsInstance(self.app.routes_registry[handler], AMQPRoute)
 
-    async def test_run_on_startup_registers_a_coroutine_to_be_executed_on_startup(self):
+    async def test_run_on_startup_registers_a_coroutine_to_be_executed_on_startup(
+        self
+    ):
         coro = CoroutineMock()
 
         self.app.run_on_startup(coro)
@@ -108,7 +116,9 @@ class AppTests(asynctest.TestCase):
         coro.assert_awaited_once_with(self.app)
 
     async def test_shutdown_is_registered_as_a_signal_handler(self):
-        with patch.object(self.loop, "add_signal_handler") as add_signal_handler:
+        with patch.object(
+            self.loop, "add_signal_handler"
+        ) as add_signal_handler:
             app = self.appCls()
             add_signal_handler.assert_has_calls(
                 [
@@ -153,16 +163,18 @@ class AppTests(asynctest.TestCase):
             self.assertIn(Runner.return_value.stop, self.app._on_shutdown)
             self.assertIn(Runner.return_value, self.app["task_runners"])
 
-    async def test_run_every_max_concurrency_can_be_overwritten_with_options(self):
+    async def test_run_every_max_concurrency_can_be_overwritten_with_options(
+        self
+    ):
         with patch(
             "asyncworker.app.ScheduledTaskRunner", spec=ScheduledTaskRunner
         ) as Runner:
             seconds = 10
             coro = Mock(start=CoroutineMock(), stop=CoroutineMock())
 
-            self.app.run_every(seconds=seconds, options={Options.MAX_CONCURRENCY: 666})(
-                coro
-            )
+            self.app.run_every(
+                seconds=seconds, options={Options.MAX_CONCURRENCY: 666}
+            )(coro)
 
             Runner.assert_called_once_with(
                 seconds=seconds, task=coro, app=self.app, max_concurrency=666
@@ -174,12 +186,20 @@ class AppConnectionsTests(asynctest.TestCase):
         super(AppConnectionsTests, self).setUp()
         self.connections = [
             AMQPConnection(
-                name="conn1", hostname="localhost", username="guest", password="guest"
+                name="conn1",
+                hostname="localhost",
+                username="guest",
+                password="guest",
             ),
             AMQPConnection(
-                name="conn2", hostname="localhost", username="guest", password="guest"
+                name="conn2",
+                hostname="localhost",
+                username="guest",
+                password="guest",
             ),
-            AMQPConnection(hostname="localhost", username="guest", password="guest"),
+            AMQPConnection(
+                hostname="localhost", username="guest", password="guest"
+            ),
         ]
 
     def test_connections_gets_registered_into_a_connection_mapping(self):
@@ -190,7 +210,8 @@ class AppConnectionsTests(asynctest.TestCase):
         app = App(connections=self.connections)
 
         self.assertEqual(
-            app.get_connection(name=self.connections[0].name), self.connections[0]
+            app.get_connection(name=self.connections[0].name),
+            self.connections[0],
         )
 
     def test_get_connection_raises_an_error_if_theres_no_connection_registered_for_name(

@@ -1,6 +1,16 @@
 import abc
 import collections
-from typing import Optional, Union, List, Dict, Any, Type, Mapping, Iterable, Counter
+from typing import (
+    Optional,
+    Union,
+    List,
+    Dict,
+    Any,
+    Type,
+    Mapping,
+    Iterable,
+    Counter,
+)
 
 from pydantic import BaseModel, validator
 
