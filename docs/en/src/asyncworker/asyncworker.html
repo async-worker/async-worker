@@ -36,6 +36,10 @@
 <h2>Subpackages<a class="headerlink" href="#subpackages" title="Permalink to this headline">¶</a></h2>
 <div class="toctree-wrapper compound">
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="asyncworker.connections.html">asyncworker.connections package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="asyncworker.connections.html#module-asyncworker.connections">Module contents</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="asyncworker.easyqueue.html">asyncworker.easyqueue package</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="asyncworker.easyqueue.html#submodules">Submodules</a></li>
 <li class="toctree-l2"><a class="reference internal" href="asyncworker.easyqueue.html#module-asyncworker.easyqueue.connection">asyncworker.easyqueue.connection module</a></li>
@@ -45,9 +49,12 @@
 <li class="toctree-l2"><a class="reference internal" href="asyncworker.easyqueue.html#module-asyncworker.easyqueue">Module contents</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="asyncworker.exceptions.html">asyncworker.exceptions package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="asyncworker.exceptions.html#module-asyncworker.exceptions">Module contents</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="asyncworker.rabbitmq.html">asyncworker.rabbitmq package</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="asyncworker.rabbitmq.html#submodules">Submodules</a></li>
-<li class="toctree-l2"><a class="reference internal" href="asyncworker.rabbitmq.html#module-asyncworker.rabbitmq.connection">asyncworker.rabbitmq.connection module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="asyncworker.rabbitmq.html#module-asyncworker.rabbitmq.message">asyncworker.rabbitmq.message module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="asyncworker.rabbitmq.html#module-asyncworker.rabbitmq">Module contents</a></li>
 </ul>
@@ -72,10 +79,13 @@
 </li>
 <li class="toctree-l1"><a class="reference internal" href="asyncworker.sse.html">asyncworker.sse package</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="asyncworker.sse.html#submodules">Submodules</a></li>
-<li class="toctree-l2"><a class="reference internal" href="asyncworker.sse.html#module-asyncworker.sse.app">asyncworker.sse.app module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="asyncworker.sse.html#module-asyncworker.sse.consumer">asyncworker.sse.consumer module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="asyncworker.sse.html#module-asyncworker.sse.message">asyncworker.sse.message module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="asyncworker.sse.html#module-asyncworker.sse">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="asyncworker.testing.html">asyncworker.testing package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="asyncworker.testing.html#module-asyncworker.testing">Module contents</a></li>
 </ul>
 </li>
 </ul>
@@ -84,66 +94,76 @@
 <div class="section" id="submodules">
 <h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
 </div>
-<div class="section" id="module-asyncworker.base">
-<span id="asyncworker-base-module"></span><h2>asyncworker.base module<a class="headerlink" href="#module-asyncworker.base" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="module-asyncworker.app">
+<span id="asyncworker-app-module"></span><h2>asyncworker.app module<a class="headerlink" href="#module-asyncworker.app" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
-<dt id="asyncworker.base.BaseApp">
-<em class="property">class </em><code class="sig-prename descclassname">asyncworker.base.</code><code class="sig-name descname">BaseApp</code><a class="reference internal" href="../../_modules/asyncworker/base.html#BaseApp"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#asyncworker.base.BaseApp" title="Permalink to this definition">¶</a></dt>
+<dt id="asyncworker.app.App">
+<em class="property">class </em><code class="sig-prename descclassname">asyncworker.app.</code><code class="sig-name descname">App</code><span class="sig-paren">(</span><em class="sig-param">connections: Optional[Iterable[asyncworker.connections.Connection]] = None</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/asyncworker/app.html#App"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#asyncworker.app.App" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">collections.abc.MutableMapping</span></code>, <a class="reference internal" href="asyncworker.signals.html#asyncworker.signals.base.Freezable" title="asyncworker.signals.base.Freezable"><code class="xref py py-class docutils literal notranslate"><span class="pre">asyncworker.signals.base.Freezable</span></code></a></p>
 <dl class="method">
-<dt id="asyncworker.base.BaseApp.freeze">
-<em class="property">async </em><code class="sig-name descname">freeze</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; None<a class="reference internal" href="../../_modules/asyncworker/base.html#BaseApp.freeze"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#asyncworker.base.BaseApp.freeze" title="Permalink to this definition">¶</a></dt>
+<dt id="asyncworker.app.App.freeze">
+<em class="property">async </em><code class="sig-name descname">freeze</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/asyncworker/app.html#App.freeze"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#asyncworker.app.App.freeze" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
-<dt id="asyncworker.base.BaseApp.frozen">
-<code class="sig-name descname">frozen</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; bool<a class="reference internal" href="../../_modules/asyncworker/base.html#BaseApp.frozen"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#asyncworker.base.BaseApp.frozen" title="Permalink to this definition">¶</a></dt>
+<dt id="asyncworker.app.App.get_connection">
+<code class="sig-name descname">get_connection</code><span class="sig-paren">(</span><em class="sig-param">name: str</em><span class="sig-paren">)</span> &#x2192; asyncworker.connections.Connection<a class="reference internal" href="../../_modules/asyncworker/app.html#App.get_connection"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#asyncworker.app.App.get_connection" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
-<dt id="asyncworker.base.BaseApp.route">
-<code class="sig-name descname">route</code><span class="sig-paren">(</span><em class="sig-param">routes: Iterable[str], type: asyncworker.options.RouteTypes, options: dict = None, **kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/asyncworker/base.html#BaseApp.route"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#asyncworker.base.BaseApp.route" title="Permalink to this definition">¶</a></dt>
+<dt id="asyncworker.app.App.get_connection_for_route">
+<code class="sig-name descname">get_connection_for_route</code><span class="sig-paren">(</span><em class="sig-param">route_info: asyncworker.routes.Route</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/asyncworker/app.html#App.get_connection_for_route"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#asyncworker.app.App.get_connection_for_route" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="asyncworker.app.App.handlers">
+<code class="sig-name descname">handlers</code><em class="property"> = (&lt;asyncworker.signals.handlers.rabbitmq.RabbitMQ object&gt;, &lt;asyncworker.signals.handlers.http.HTTPServer object&gt;, &lt;asyncworker.signals.handlers.sse.SSE object&gt;)</em><a class="headerlink" href="#asyncworker.app.App.handlers" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
-<dt id="asyncworker.base.BaseApp.run">
-<code class="sig-name descname">run</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/asyncworker/base.html#BaseApp.run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#asyncworker.base.BaseApp.run" title="Permalink to this definition">¶</a></dt>
+<dt id="asyncworker.app.App.route">
+<code class="sig-name descname">route</code><span class="sig-paren">(</span><em class="sig-param">routes: Iterable[str], type: asyncworker.options.RouteTypes, options: dict = None, **kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/asyncworker/app.html#App.route"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#asyncworker.app.App.route" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
-<dt id="asyncworker.base.BaseApp.run_every">
-<code class="sig-name descname">run_every</code><span class="sig-paren">(</span><em class="sig-param">seconds: int</em>, <em class="sig-param">options: Dict = None</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/asyncworker/base.html#BaseApp.run_every"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#asyncworker.base.BaseApp.run_every" title="Permalink to this definition">¶</a></dt>
+<dt id="asyncworker.app.App.run">
+<code class="sig-name descname">run</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/asyncworker/app.html#App.run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#asyncworker.app.App.run" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="asyncworker.app.App.run_every">
+<code class="sig-name descname">run_every</code><span class="sig-paren">(</span><em class="sig-param">seconds: int</em>, <em class="sig-param">options: Dict = None</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/asyncworker/app.html#App.run_every"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#asyncworker.app.App.run_every" title="Permalink to this definition">¶</a></dt>
 <dd><p>Registers a coroutine to be called with a given interval</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="asyncworker.base.BaseApp.run_on_shutdown">
-<code class="sig-name descname">run_on_shutdown</code><span class="sig-paren">(</span><em class="sig-param">coro: Callable[BaseApp, Coroutine]</em><span class="sig-paren">)</span> &#x2192; None<a class="reference internal" href="../../_modules/asyncworker/base.html#BaseApp.run_on_shutdown"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#asyncworker.base.BaseApp.run_on_shutdown" title="Permalink to this definition">¶</a></dt>
+<dt id="asyncworker.app.App.run_on_shutdown">
+<code class="sig-name descname">run_on_shutdown</code><span class="sig-paren">(</span><em class="sig-param">coro: Callable[[App], Coroutine]</em><span class="sig-paren">)</span> &#x2192; None<a class="reference internal" href="../../_modules/asyncworker/app.html#App.run_on_shutdown"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#asyncworker.app.App.run_on_shutdown" title="Permalink to this definition">¶</a></dt>
 <dd><p>Registers a coroutine to be awaited for during app shutdown</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="asyncworker.base.BaseApp.run_on_startup">
-<code class="sig-name descname">run_on_startup</code><span class="sig-paren">(</span><em class="sig-param">coro: Callable[BaseApp, Coroutine]</em><span class="sig-paren">)</span> &#x2192; None<a class="reference internal" href="../../_modules/asyncworker/base.html#BaseApp.run_on_startup"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#asyncworker.base.BaseApp.run_on_startup" title="Permalink to this definition">¶</a></dt>
+<dt id="asyncworker.app.App.run_on_startup">
+<code class="sig-name descname">run_on_startup</code><span class="sig-paren">(</span><em class="sig-param">coro: Callable[[App], Coroutine]</em><span class="sig-paren">)</span> &#x2192; None<a class="reference internal" href="../../_modules/asyncworker/app.html#App.run_on_startup"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#asyncworker.app.App.run_on_startup" title="Permalink to this definition">¶</a></dt>
 <dd><p>Registers a coroutine to be awaited for during app startup</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="asyncworker.base.BaseApp.shutdown">
-<code class="sig-name descname">shutdown</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; _asyncio.Future<a class="reference internal" href="../../_modules/asyncworker/base.html#BaseApp.shutdown"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#asyncworker.base.BaseApp.shutdown" title="Permalink to this definition">¶</a></dt>
+<dt id="asyncworker.app.App.shutdown">
+<code class="sig-name descname">shutdown</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; _asyncio.Future<a class="reference internal" href="../../_modules/asyncworker/app.html#App.shutdown"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#asyncworker.app.App.shutdown" title="Permalink to this definition">¶</a></dt>
 <dd><p>Schedules an on_startup signal</p>
 <p>Is called automatically when the application receives
 a SIGINT or SIGTERM</p>
 </dd></dl>
 
 <dl class="attribute">
-<dt id="asyncworker.base.BaseApp.shutdown_os_signals">
-<code class="sig-name descname">shutdown_os_signals</code><em class="property"> = (&lt;Signals.SIGINT: 2&gt;, &lt;Signals.SIGTERM: 15&gt;)</em><a class="headerlink" href="#asyncworker.base.BaseApp.shutdown_os_signals" title="Permalink to this definition">¶</a></dt>
+<dt id="asyncworker.app.App.shutdown_os_signals">
+<code class="sig-name descname">shutdown_os_signals</code><em class="property"> = (&lt;Signals.SIGINT: 2&gt;, &lt;Signals.SIGTERM: 15&gt;)</em><a class="headerlink" href="#asyncworker.app.App.shutdown_os_signals" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
-<dt id="asyncworker.base.BaseApp.startup">
-<em class="property">async </em><code class="sig-name descname">startup</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/asyncworker/base.html#BaseApp.startup"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#asyncworker.base.BaseApp.startup" title="Permalink to this definition">¶</a></dt>
+<dt id="asyncworker.app.App.startup">
+<em class="property">async </em><code class="sig-name descname">startup</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/asyncworker/app.html#App.startup"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#asyncworker.app.App.startup" title="Permalink to this definition">¶</a></dt>
 <dd><p>Causes on_startup signal</p>
 <p>Should be called in the event loop along with the request handler.</p>
 </dd></dl>
@@ -195,7 +215,7 @@ a SIGINT or SIGTERM</p>
 <span id="asyncworker-conf-module"></span><h2>asyncworker.conf module<a class="headerlink" href="#module-asyncworker.conf" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="asyncworker.conf.Settings">
-<em class="property">class </em><code class="sig-prename descclassname">asyncworker.conf.</code><code class="sig-name descname">Settings</code><a class="reference internal" href="../../_modules/asyncworker/conf.html#Settings"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#asyncworker.conf.Settings" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">asyncworker.conf.</code><code class="sig-name descname">Settings</code><span class="sig-paren">(</span><em class="sig-param">**values</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/asyncworker/conf.html#Settings"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#asyncworker.conf.Settings" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">pydantic.env_settings.BaseSettings</span></code></p>
 <dl class="class">
 <dt id="asyncworker.conf.Settings.Config">
@@ -213,6 +233,76 @@ a SIGINT or SIGTERM</p>
 
 </dd></dl>
 
+</dd></dl>
+
+</div>
+<div class="section" id="module-asyncworker.connections">
+<span id="asyncworker-connections-module"></span><h2>asyncworker.connections module<a class="headerlink" href="#module-asyncworker.connections" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="asyncworker.connections.AMQPConnection">
+<em class="property">class </em><code class="sig-prename descclassname">asyncworker.connections.</code><code class="sig-name descname">AMQPConnection</code><span class="sig-paren">(</span><em class="sig-param">**data</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/asyncworker/connections.html#AMQPConnection"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#asyncworker.connections.AMQPConnection" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">collections.abc.Mapping</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">typing.Generic</span></code>, <a class="reference internal" href="#asyncworker.connections.Connection" title="asyncworker.connections.Connection"><code class="xref py py-class docutils literal notranslate"><span class="pre">asyncworker.connections.Connection</span></code></a></p>
+<dl class="class">
+<dt id="asyncworker.connections.AMQPConnection.Config">
+<em class="property">class </em><code class="sig-name descname">Config</code><a class="reference internal" href="../../_modules/asyncworker/connections.html#AMQPConnection.Config"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#asyncworker.connections.AMQPConnection.Config" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="attribute">
+<dt id="asyncworker.connections.AMQPConnection.Config.arbitrary_types_allowed">
+<code class="sig-name descname">arbitrary_types_allowed</code><em class="property"> = True</em><a class="headerlink" href="#asyncworker.connections.AMQPConnection.Config.arbitrary_types_allowed" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="method">
+<dt id="asyncworker.connections.AMQPConnection.put">
+<em class="property">async </em><code class="sig-name descname">put</code><span class="sig-paren">(</span><em class="sig-param">routing_key: str</em>, <em class="sig-param">data: Any = None</em>, <em class="sig-param">serialized_data: Union[str</em>, <em class="sig-param">bytes] = None</em>, <em class="sig-param">exchange: str = ''</em>, <em class="sig-param">vhost: str = '/'</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/asyncworker/connections.html#AMQPConnection.put"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#asyncworker.connections.AMQPConnection.put" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="asyncworker.connections.AMQPConnection.register">
+<code class="sig-name descname">register</code><span class="sig-paren">(</span><em class="sig-param">queue: asyncworker.easyqueue.queue.JsonQueue</em><span class="sig-paren">)</span> &#x2192; None<a class="reference internal" href="../../_modules/asyncworker/connections.html#AMQPConnection.register"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#asyncworker.connections.AMQPConnection.register" title="Permalink to this definition">¶</a></dt>
+<dd><p>Register a virtual subclass of an ABC.</p>
+<p>Returns the subclass, to allow usage as a class decorator.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="asyncworker.connections.AMQPConnection.set_connections">
+<em class="property">classmethod </em><code class="sig-name descname">set_connections</code><span class="sig-paren">(</span><em class="sig-param">v</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/asyncworker/connections.html#AMQPConnection.set_connections"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#asyncworker.connections.AMQPConnection.set_connections" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="asyncworker.connections.Connection">
+<em class="property">class </em><code class="sig-prename descclassname">asyncworker.connections.</code><code class="sig-name descname">Connection</code><span class="sig-paren">(</span><em class="sig-param">**data</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/asyncworker/connections.html#Connection"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#asyncworker.connections.Connection" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">pydantic.main.BaseModel</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">abc.ABC</span></code></p>
+<p>Common ancestral for all Connection classes that auto generates a
+connection name and is responsible for keeping track of new connections on
+the ConnectionsMapping</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="asyncworker.connections.ConnectionsMapping">
+<em class="property">class </em><code class="sig-prename descclassname">asyncworker.connections.</code><code class="sig-name descname">ConnectionsMapping</code><a class="reference internal" href="../../_modules/asyncworker/connections.html#ConnectionsMapping"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#asyncworker.connections.ConnectionsMapping" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">collections.abc.Mapping</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">typing.Generic</span></code>, <a class="reference internal" href="asyncworker.signals.html#asyncworker.signals.base.Freezable" title="asyncworker.signals.base.Freezable"><code class="xref py py-class docutils literal notranslate"><span class="pre">asyncworker.signals.base.Freezable</span></code></a></p>
+<p>A mapping (Connection.name-&gt;Connection) of all available connections that
+also keeps a counter for each connection type</p>
+<dl class="method">
+<dt id="asyncworker.connections.ConnectionsMapping.add">
+<code class="sig-name descname">add</code><span class="sig-paren">(</span><em class="sig-param">connections: Iterable[Connection]</em><span class="sig-paren">)</span> &#x2192; None<a class="reference internal" href="../../_modules/asyncworker/connections.html#ConnectionsMapping.add"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#asyncworker.connections.ConnectionsMapping.add" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="asyncworker.connections.ConnectionsMapping.with_type">
+<code class="sig-name descname">with_type</code><span class="sig-paren">(</span><em class="sig-param">route_type: asyncworker.options.RouteTypes</em><span class="sig-paren">)</span> &#x2192; List[asyncworker.connections.Connection]<a class="reference internal" href="../../_modules/asyncworker/connections.html#ConnectionsMapping.with_type"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#asyncworker.connections.ConnectionsMapping.with_type" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="asyncworker.connections.SSEConnection">
+<em class="property">class </em><code class="sig-prename descclassname">asyncworker.connections.</code><code class="sig-name descname">SSEConnection</code><span class="sig-paren">(</span><em class="sig-param">**data</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/asyncworker/connections.html#SSEConnection"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#asyncworker.connections.SSEConnection" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#asyncworker.connections.Connection" title="asyncworker.connections.Connection"><code class="xref py py-class docutils literal notranslate"><span class="pre">asyncworker.connections.Connection</span></code></a></p>
 </dd></dl>
 
 </div>
@@ -272,8 +362,7 @@ handling stage.</p>
 </ul>
 </dd>
 </dl>
-<p>the message
-:return:</p>
+<p>the message</p>
 </dd></dl>
 
 <dl class="method">
@@ -309,6 +398,23 @@ is ready to be handled.</p>
 <em class="property">async </em><code class="sig-name descname">start</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/asyncworker/consumer.html#Consumer.start"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#asyncworker.consumer.Consumer.start" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
+</dd></dl>
+
+</div>
+<div class="section" id="module-asyncworker.exceptions">
+<span id="asyncworker-exceptions-module"></span><h2>asyncworker.exceptions module<a class="headerlink" href="#module-asyncworker.exceptions" title="Permalink to this headline">¶</a></h2>
+<dl class="exception">
+<dt id="asyncworker.exceptions.InvalidConnection">
+<em class="property">exception </em><code class="sig-prename descclassname">asyncworker.exceptions.</code><code class="sig-name descname">InvalidConnection</code><a class="reference internal" href="../../_modules/asyncworker/exceptions.html#InvalidConnection"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#asyncworker.exceptions.InvalidConnection" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">ValueError</span></code></p>
+<p>Defines an invalid connection definition condition.</p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="asyncworker.exceptions.InvalidRoute">
+<em class="property">exception </em><code class="sig-prename descclassname">asyncworker.exceptions.</code><code class="sig-name descname">InvalidRoute</code><a class="reference internal" href="../../_modules/asyncworker/exceptions.html#InvalidRoute"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#asyncworker.exceptions.InvalidRoute" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">ValueError</span></code></p>
+<p>Defines an invalid route definition condition.</p>
 </dd></dl>
 
 </div>
@@ -440,13 +546,13 @@ is ready to be handled.</p>
 <span id="asyncworker-routes-module"></span><h2>asyncworker.routes module<a class="headerlink" href="#module-asyncworker.routes" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="asyncworker.routes.AMQPRoute">
-<em class="property">class </em><code class="sig-prename descclassname">asyncworker.routes.</code><code class="sig-name descname">AMQPRoute</code><a class="reference internal" href="../../_modules/asyncworker/routes.html#AMQPRoute"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#asyncworker.routes.AMQPRoute" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">asyncworker.routes.</code><code class="sig-name descname">AMQPRoute</code><span class="sig-paren">(</span><em class="sig-param">**data</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/asyncworker/routes.html#AMQPRoute"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#asyncworker.routes.AMQPRoute" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#asyncworker.routes.Route" title="asyncworker.routes.Route"><code class="xref py py-class docutils literal notranslate"><span class="pre">asyncworker.routes.Route</span></code></a></p>
 </dd></dl>
 
 <dl class="class">
 <dt id="asyncworker.routes.HTTPRoute">
-<em class="property">class </em><code class="sig-prename descclassname">asyncworker.routes.</code><code class="sig-name descname">HTTPRoute</code><a class="reference internal" href="../../_modules/asyncworker/routes.html#HTTPRoute"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#asyncworker.routes.HTTPRoute" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">asyncworker.routes.</code><code class="sig-name descname">HTTPRoute</code><span class="sig-paren">(</span><em class="sig-param">**data</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/asyncworker/routes.html#HTTPRoute"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#asyncworker.routes.HTTPRoute" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#asyncworker.routes.Route" title="asyncworker.routes.Route"><code class="xref py py-class docutils literal notranslate"><span class="pre">asyncworker.routes.Route</span></code></a></p>
 <dl class="method">
 <dt id="asyncworker.routes.HTTPRoute.aiohttp_routes">
@@ -462,7 +568,7 @@ is ready to be handled.</p>
 
 <dl class="class">
 <dt id="asyncworker.routes.Model">
-<em class="property">class </em><code class="sig-prename descclassname">asyncworker.routes.</code><code class="sig-name descname">Model</code><a class="reference internal" href="../../_modules/asyncworker/routes.html#Model"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#asyncworker.routes.Model" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">asyncworker.routes.</code><code class="sig-name descname">Model</code><span class="sig-paren">(</span><em class="sig-param">**data</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/asyncworker/routes.html#Model"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#asyncworker.routes.Model" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">pydantic.main.BaseModel</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">abc.ABC</span></code></p>
 <p>An abstract pydantic BaseModel that also behaves like a Mapping</p>
 <dl class="method">
@@ -479,7 +585,7 @@ is ready to be handled.</p>
 
 <dl class="class">
 <dt id="asyncworker.routes.Route">
-<em class="property">class </em><code class="sig-prename descclassname">asyncworker.routes.</code><code class="sig-name descname">Route</code><a class="reference internal" href="../../_modules/asyncworker/routes.html#Route"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#asyncworker.routes.Route" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">asyncworker.routes.</code><code class="sig-name descname">Route</code><span class="sig-paren">(</span><em class="sig-param">**data</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/asyncworker/routes.html#Route"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#asyncworker.routes.Route" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#asyncworker.routes.Model" title="asyncworker.routes.Model"><code class="xref py py-class docutils literal notranslate"><span class="pre">asyncworker.routes.Model</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">abc.ABC</span></code></p>
 <p>An abstract Model that acts like a route factory</p>
 <dl class="method">
@@ -510,7 +616,7 @@ is ready to be handled.</p>
 
 <dl class="method">
 <dt id="asyncworker.routes.RoutesRegistry.route_for">
-<code class="sig-name descname">route_for</code><span class="sig-paren">(</span><em class="sig-param">handler: Callable[Coroutine]</em><span class="sig-paren">)</span> &#x2192; asyncworker.routes.Route<a class="reference internal" href="../../_modules/asyncworker/routes.html#RoutesRegistry.route_for"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#asyncworker.routes.RoutesRegistry.route_for" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">route_for</code><span class="sig-paren">(</span><em class="sig-param">handler: Callable[[], Coroutine]</em><span class="sig-paren">)</span> &#x2192; asyncworker.routes.Route<a class="reference internal" href="../../_modules/asyncworker/routes.html#RoutesRegistry.route_for"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#asyncworker.routes.RoutesRegistry.route_for" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
@@ -522,7 +628,7 @@ is ready to be handled.</p>
 
 <dl class="class">
 <dt id="asyncworker.routes.SSERoute">
-<em class="property">class </em><code class="sig-prename descclassname">asyncworker.routes.</code><code class="sig-name descname">SSERoute</code><a class="reference internal" href="../../_modules/asyncworker/routes.html#SSERoute"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#asyncworker.routes.SSERoute" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">asyncworker.routes.</code><code class="sig-name descname">SSERoute</code><span class="sig-paren">(</span><em class="sig-param">**data</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/asyncworker/routes.html#SSERoute"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#asyncworker.routes.SSERoute" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#asyncworker.routes.Route" title="asyncworker.routes.Route"><code class="xref py py-class docutils literal notranslate"><span class="pre">asyncworker.routes.Route</span></code></a></p>
 <dl class="method">
 <dt id="asyncworker.routes.SSERoute.add_default_headers">
@@ -536,7 +642,7 @@ is ready to be handled.</p>
 <span id="asyncworker-task-runners-module"></span><h2>asyncworker.task_runners module<a class="headerlink" href="#module-asyncworker.task_runners" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="asyncworker.task_runners.ScheduledTaskRunner">
-<em class="property">class </em><code class="sig-prename descclassname">asyncworker.task_runners.</code><code class="sig-name descname">ScheduledTaskRunner</code><span class="sig-paren">(</span><em class="sig-param">seconds: int, task: Callable[BaseApp, Coroutine], app: BaseApp, max_concurrency: int</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/asyncworker/task_runners.html#ScheduledTaskRunner"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#asyncworker.task_runners.ScheduledTaskRunner" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">asyncworker.task_runners.</code><code class="sig-name descname">ScheduledTaskRunner</code><span class="sig-paren">(</span><em class="sig-param">seconds: int, task: Callable[[App], Coroutine], app: App, max_concurrency: int</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/asyncworker/task_runners.html#ScheduledTaskRunner"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#asyncworker.task_runners.ScheduledTaskRunner" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <dl class="method">
 <dt id="asyncworker.task_runners.ScheduledTaskRunner.can_dispatch_task">
@@ -545,15 +651,29 @@ is ready to be handled.</p>
 
 <dl class="method">
 <dt id="asyncworker.task_runners.ScheduledTaskRunner.start">
-<em class="property">async </em><code class="sig-name descname">start</code><span class="sig-paren">(</span><em class="sig-param">app: BaseApp</em><span class="sig-paren">)</span> &#x2192; _asyncio.Future<a class="reference internal" href="../../_modules/asyncworker/task_runners.html#ScheduledTaskRunner.start"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#asyncworker.task_runners.ScheduledTaskRunner.start" title="Permalink to this definition">¶</a></dt>
+<em class="property">async </em><code class="sig-name descname">start</code><span class="sig-paren">(</span><em class="sig-param">app: App</em><span class="sig-paren">)</span> &#x2192; _asyncio.Future<a class="reference internal" href="../../_modules/asyncworker/task_runners.html#ScheduledTaskRunner.start"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#asyncworker.task_runners.ScheduledTaskRunner.start" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="asyncworker.task_runners.ScheduledTaskRunner.stop">
-<em class="property">async </em><code class="sig-name descname">stop</code><span class="sig-paren">(</span><em class="sig-param">app: BaseApp</em><span class="sig-paren">)</span> &#x2192; None<a class="reference internal" href="../../_modules/asyncworker/task_runners.html#ScheduledTaskRunner.stop"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#asyncworker.task_runners.ScheduledTaskRunner.stop" title="Permalink to this definition">¶</a></dt>
+<em class="property">async </em><code class="sig-name descname">stop</code><span class="sig-paren">(</span><em class="sig-param">app: App</em><span class="sig-paren">)</span> &#x2192; None<a class="reference internal" href="../../_modules/asyncworker/task_runners.html#ScheduledTaskRunner.stop"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#asyncworker.task_runners.ScheduledTaskRunner.stop" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
+
+</div>
+<div class="section" id="module-asyncworker.testing">
+<span id="asyncworker-testing-module"></span><h2>asyncworker.testing module<a class="headerlink" href="#module-asyncworker.testing" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="asyncworker.testing.HttpClientContext">
+<em class="property">class </em><code class="sig-prename descclassname">asyncworker.testing.</code><code class="sig-name descname">HttpClientContext</code><span class="sig-paren">(</span><em class="sig-param">app: asyncworker.app.App</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/asyncworker/testing.html#HttpClientContext"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#asyncworker.testing.HttpClientContext" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+</dd></dl>
+
+<dl class="function">
+<dt id="asyncworker.testing.http_client">
+<code class="sig-prename descclassname">asyncworker.testing.</code><code class="sig-name descname">http_client</code><span class="sig-paren">(</span><em class="sig-param">app: asyncworker.app.App</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/asyncworker/testing.html#http_client"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#asyncworker.testing.http_client" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
 </div>
 <div class="section" id="module-asyncworker.time">
@@ -585,7 +705,7 @@ I: x—————x—————x—————x—————</p>
 <span id="asyncworker-utils-module"></span><h2>asyncworker.utils module<a class="headerlink" href="#module-asyncworker.utils" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="asyncworker.utils.Timeit">
-<em class="property">class </em><code class="sig-prename descclassname">asyncworker.utils.</code><code class="sig-name descname">Timeit</code><span class="sig-paren">(</span><em class="sig-param">name: str</em>, <em class="sig-param">callback: Callable[...</em>, <em class="sig-param">Coroutine] = None</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/asyncworker/utils.html#Timeit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#asyncworker.utils.Timeit" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">asyncworker.utils.</code><code class="sig-name descname">Timeit</code><span class="sig-paren">(</span><em class="sig-param">name: str, callback: Callable[[...], Coroutine] = None</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/asyncworker/utils.html#Timeit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#asyncworker.utils.Timeit" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <dl class="attribute">
 <dt id="asyncworker.utils.Timeit.TRANSACTIONS_KEY">
@@ -602,17 +722,6 @@ I: x—————x—————x—————x—————</p>
 </div>
 <div class="section" id="module-asyncworker">
 <span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-asyncworker" title="Permalink to this headline">¶</a></h2>
-<dl class="class">
-<dt id="asyncworker.App">
-<em class="property">class </em><code class="sig-prename descclassname">asyncworker.</code><code class="sig-name descname">App</code><span class="sig-paren">(</span><em class="sig-param">host</em>, <em class="sig-param">user</em>, <em class="sig-param">password</em>, <em class="sig-param">prefetch_count</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/asyncworker.html#App"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#asyncworker.App" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#asyncworker.base.BaseApp" title="asyncworker.base.BaseApp"><code class="xref py py-class docutils literal notranslate"><span class="pre">asyncworker.base.BaseApp</span></code></a></p>
-<dl class="attribute">
-<dt id="asyncworker.App.handlers">
-<code class="sig-name descname">handlers</code><em class="property"> = (&lt;asyncworker.signals.handlers.rabbitmq.RabbitMQ object&gt;, &lt;asyncworker.signals.handlers.http.HTTPServer object&gt;)</em><a class="headerlink" href="#asyncworker.App.handlers" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
 </div>
 </div>
 

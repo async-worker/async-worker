@@ -35,27 +35,6 @@
 <div class="section" id="submodules">
 <h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
 </div>
-<div class="section" id="module-asyncworker.rabbitmq.connection">
-<span id="asyncworker-rabbitmq-connection-module"></span><h2>asyncworker.rabbitmq.connection module<a class="headerlink" href="#module-asyncworker.rabbitmq.connection" title="Permalink to this headline">¶</a></h2>
-<dl class="class">
-<dt id="asyncworker.rabbitmq.connection.AMQPConnection">
-<em class="property">class </em><code class="sig-prename descclassname">asyncworker.rabbitmq.connection.</code><code class="sig-name descname">AMQPConnection</code><span class="sig-paren">(</span><em class="sig-param">hostname: str</em>, <em class="sig-param">username: str</em>, <em class="sig-param">password: str</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/asyncworker/rabbitmq/connection.html#AMQPConnection"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#asyncworker.rabbitmq.connection.AMQPConnection" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">collections.abc.Mapping</span></code></p>
-<dl class="method">
-<dt id="asyncworker.rabbitmq.connection.AMQPConnection.put">
-<em class="property">async </em><code class="sig-name descname">put</code><span class="sig-paren">(</span><em class="sig-param">routing_key: str</em>, <em class="sig-param">data: Any = None</em>, <em class="sig-param">serialized_data: Union[str</em>, <em class="sig-param">bytes] = None</em>, <em class="sig-param">exchange: str = ''</em>, <em class="sig-param">vhost: str = '/'</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/asyncworker/rabbitmq/connection.html#AMQPConnection.put"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#asyncworker.rabbitmq.connection.AMQPConnection.put" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="asyncworker.rabbitmq.connection.AMQPConnection.register">
-<code class="sig-name descname">register</code><span class="sig-paren">(</span><em class="sig-param">queue: asyncworker.easyqueue.queue.JsonQueue</em><span class="sig-paren">)</span> &#x2192; None<a class="reference internal" href="../../_modules/asyncworker/rabbitmq/connection.html#AMQPConnection.register"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#asyncworker.rabbitmq.connection.AMQPConnection.register" title="Permalink to this definition">¶</a></dt>
-<dd><p>Register a virtual subclass of an ABC.</p>
-<p>Returns the subclass, to allow usage as a class decorator.</p>
-</dd></dl>
-
-</dd></dl>
-
-</div>
 <div class="section" id="module-asyncworker.rabbitmq.message">
 <span id="asyncworker-rabbitmq-message-module"></span><h2>asyncworker.rabbitmq.message module<a class="headerlink" href="#module-asyncworker.rabbitmq.message" title="Permalink to this headline">¶</a></h2>
 <dl class="class">

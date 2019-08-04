@@ -4,14 +4,6 @@ asyncworker.sse package
 Submodules
 ----------
 
-asyncworker.sse.app module
---------------------------
-
-.. automodule:: asyncworker.sse.app
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
 asyncworker.sse.consumer module
 -------------------------------
 

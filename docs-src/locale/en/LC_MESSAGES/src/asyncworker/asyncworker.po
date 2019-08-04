@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Asyncworker \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-07-05 21:39-0300\n"
+"POT-Creation-Date: 2019-08-04 11:46-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -26,49 +26,49 @@ msgstr ""
 msgid "Subpackages"
 msgstr ""
 
-#: ../../src/asyncworker/asyncworker.rst:15
+#: ../../src/asyncworker/asyncworker.rst:18
 msgid "Submodules"
 msgstr ""
 
-#: ../../src/asyncworker/asyncworker.rst:18
-msgid "asyncworker.base module"
+#: ../../src/asyncworker/asyncworker.rst:21
+msgid "asyncworker.app module"
 msgstr ""
 
-#: asyncworker.base.BaseApp:1 of
+#: asyncworker.app.App:1 of
 msgid ""
 "Base: :class:`collections.abc.MutableMapping`, "
 ":class:`asyncworker.signals.base.Freezable`"
 msgstr ""
 
-#: asyncworker.base.BaseApp.run_every:1 of
+#: asyncworker.app.App.run_every:1 of
 msgid "Registers a coroutine to be called with a given interval"
 msgstr ""
 
-#: asyncworker.base.BaseApp.run_on_shutdown:1 of
+#: asyncworker.app.App.run_on_shutdown:1 of
 msgid "Registers a coroutine to be awaited for during app shutdown"
 msgstr ""
 
-#: asyncworker.base.BaseApp.run_on_startup:1 of
+#: asyncworker.app.App.run_on_startup:1 of
 msgid "Registers a coroutine to be awaited for during app startup"
 msgstr ""
 
-#: asyncworker.base.BaseApp.shutdown:1 of
+#: asyncworker.app.App.shutdown:1 of
 msgid "Schedules an on_startup signal"
 msgstr ""
 
-#: asyncworker.base.BaseApp.shutdown:3 of
+#: asyncworker.app.App.shutdown:3 of
 msgid "Is called automatically when the application receives a SIGINT or SIGTERM"
 msgstr ""
 
-#: asyncworker.base.BaseApp.startup:1 of
+#: asyncworker.app.App.startup:1 of
 msgid "Causes on_startup signal"
 msgstr ""
 
-#: asyncworker.base.BaseApp.startup:3 of
+#: asyncworker.app.App.startup:3 of
 msgid "Should be called in the event loop along with the request handler."
 msgstr ""
 
-#: ../../src/asyncworker/asyncworker.rst:26
+#: ../../src/asyncworker/asyncworker.rst:29
 msgid "asyncworker.bucket module"
 msgstr ""
 
@@ -80,7 +80,7 @@ msgstr ""
 msgid "Base: :class:`Exception`"
 msgstr ""
 
-#: ../../src/asyncworker/asyncworker.rst:34
+#: ../../src/asyncworker/asyncworker.rst:37
 msgid "asyncworker.conf module"
 msgstr ""
 
@@ -88,12 +88,60 @@ msgstr ""
 msgid "Base: :class:`pydantic.env_settings.BaseSettings`"
 msgstr ""
 
-#: asyncworker.conf.Settings.Config:1 asyncworker.options.DefaultValues:1
-#: asyncworker.task_runners.ScheduledTaskRunner:1 asyncworker.utils.Timeit:1 of
+#: asyncworker.conf.Settings.Config:1
+#: asyncworker.connections.AMQPConnection.Config:1
+#: asyncworker.options.DefaultValues:1
+#: asyncworker.task_runners.ScheduledTaskRunner:1
+#: asyncworker.testing.HttpClientContext:1 asyncworker.utils.Timeit:1 of
 msgid "Base: :class:`object`"
 msgstr ""
 
-#: ../../src/asyncworker/asyncworker.rst:42
+#: ../../src/asyncworker/asyncworker.rst:45
+msgid "asyncworker.connections module"
+msgstr ""
+
+#: asyncworker.connections.AMQPConnection:1 of
+msgid ""
+"Base: :class:`collections.abc.Mapping`, :class:`typing.Generic`, "
+":class:`asyncworker.connections.Connection`"
+msgstr ""
+
+#: asyncworker.connections.AMQPConnection.register:1 of
+msgid "Register a virtual subclass of an ABC."
+msgstr ""
+
+#: asyncworker.connections.AMQPConnection.register:3 of
+msgid "Returns the subclass, to allow usage as a class decorator."
+msgstr ""
+
+#: asyncworker.connections.Connection:1 asyncworker.routes.Model:1 of
+msgid "Base: :class:`pydantic.main.BaseModel`, :class:`abc.ABC`"
+msgstr ""
+
+#: asyncworker.connections.Connection:1 of
+msgid ""
+"Common ancestral for all Connection classes that auto generates a "
+"connection name and is responsible for keeping track of new connections "
+"on the ConnectionsMapping"
+msgstr ""
+
+#: asyncworker.connections.ConnectionsMapping:1 of
+msgid ""
+"Base: :class:`collections.abc.Mapping`, :class:`typing.Generic`, "
+":class:`asyncworker.signals.base.Freezable`"
+msgstr ""
+
+#: asyncworker.connections.ConnectionsMapping:1 of
+msgid ""
+"A mapping (Connection.name->Connection) of all available connections that"
+" also keeps a counter for each connection type"
+msgstr ""
+
+#: asyncworker.connections.SSEConnection:1 of
+msgid "Base: :class:`asyncworker.connections.Connection`"
+msgstr ""
+
+#: ../../src/asyncworker/asyncworker.rst:53
 msgid "asyncworker.consumer module"
 msgstr ""
 
@@ -144,7 +192,7 @@ msgid "arguments used to call the coroutine that handled"
 msgstr ""
 
 #: asyncworker.consumer.Consumer.on_message_handle_error:6 of
-msgid "the message :return:"
+msgid "the message"
 msgstr ""
 
 #: asyncworker.consumer.Consumer.on_queue_error:1 of
@@ -171,7 +219,24 @@ msgid ""
 "ready to be handled."
 msgstr ""
 
-#: ../../src/asyncworker/asyncworker.rst:50
+#: ../../src/asyncworker/asyncworker.rst:61
+msgid "asyncworker.exceptions module"
+msgstr ""
+
+#: asyncworker.exceptions.InvalidConnection:1
+#: asyncworker.exceptions.InvalidRoute:1 of
+msgid "Base: :class:`ValueError`"
+msgstr ""
+
+#: asyncworker.exceptions.InvalidConnection:1 of
+msgid "Defines an invalid connection definition condition."
+msgstr ""
+
+#: asyncworker.exceptions.InvalidRoute:1 of
+msgid "Defines an invalid route definition condition."
+msgstr ""
+
+#: ../../src/asyncworker/asyncworker.rst:70
 msgid "asyncworker.options module"
 msgstr ""
 
@@ -190,17 +255,13 @@ msgstr ""
 msgid "Base: :class:`str`, :class:`enum.Enum`"
 msgstr ""
 
-#: ../../src/asyncworker/asyncworker.rst:58
+#: ../../src/asyncworker/asyncworker.rst:78
 msgid "asyncworker.routes module"
 msgstr ""
 
 #: asyncworker.routes.AMQPRoute:1 asyncworker.routes.HTTPRoute:1
 #: asyncworker.routes.SSERoute:1 of
 msgid "Base: :class:`asyncworker.routes.Route`"
-msgstr ""
-
-#: asyncworker.routes.Model:1 of
-msgid "Base: :class:`pydantic.main.BaseModel`, :class:`abc.ABC`"
 msgstr ""
 
 #: asyncworker.routes.Model:1 of
@@ -219,11 +280,15 @@ msgstr ""
 msgid "Base: :class:`collections.UserDict`"
 msgstr ""
 
-#: ../../src/asyncworker/asyncworker.rst:66
+#: ../../src/asyncworker/asyncworker.rst:86
 msgid "asyncworker.task\\_runners module"
 msgstr ""
 
-#: ../../src/asyncworker/asyncworker.rst:74
+#: ../../src/asyncworker/asyncworker.rst:94
+msgid "asyncworker.testing module"
+msgstr ""
+
+#: ../../src/asyncworker/asyncworker.rst:103
 msgid "asyncworker.time module"
 msgstr ""
 
@@ -256,15 +321,48 @@ msgid ""
 "---------------x---------------x---------------x---------------"
 msgstr ""
 
-#: ../../src/asyncworker/asyncworker.rst:82
+#: ../../src/asyncworker/asyncworker.rst:111
 msgid "asyncworker.utils module"
 msgstr ""
 
-#: ../../src/asyncworker/asyncworker.rst:91
+#: ../../src/asyncworker/asyncworker.rst:120
 msgid "Module contents"
 msgstr ""
 
-#: asyncworker.App:1 of
-msgid "Base: :class:`asyncworker.base.BaseApp`"
-msgstr ""
+#~ msgid ""
+#~ "Base: :class:`collections.abc.MutableMapping`, "
+#~ ":class:`asyncworker.signals.base.Freezable`"
+#~ msgstr ""
+
+#~ msgid "Registers a coroutine to be called with a given interval"
+#~ msgstr ""
+
+#~ msgid "Registers a coroutine to be awaited for during app shutdown"
+#~ msgstr ""
+
+#~ msgid "Registers a coroutine to be awaited for during app startup"
+#~ msgstr ""
+
+#~ msgid "Schedules an on_startup signal"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Is called automatically when the "
+#~ "application receives a SIGINT or SIGTERM"
+#~ msgstr ""
+
+#~ msgid "Causes on_startup signal"
+#~ msgstr ""
+
+#~ msgid "Should be called in the event loop along with the request handler."
+#~ msgstr ""
+
+#~ msgid "Base: :class:`asyncworker.base.BaseApp`"
+#~ msgstr ""
+
+#~ msgid "asyncworker.base module"
+#~ msgstr ""
+
+#~ msgid "the message :return:"
+#~ msgstr ""
 
