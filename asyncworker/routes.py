@@ -111,15 +111,6 @@ class _AMQPRouteOptions(_RouteOptions):
     class Config:
         arbitrary_types_allowed = True
 
-    @validator("connection", pre=True, whole=True)
-    def validate_connection(cls, v):
-        if not isinstance(v, (str, AMQPConnection)):
-            raise InvalidRoute(
-                f"Expected `Route.connection` to be either `str` or "
-                f"`Connection`. Got `{type(v)}` instead."
-            )
-        return v
-
 
 class AMQPRoute(Route):
     type: RouteTypes = RouteTypes.AMQP_RABBITMQ
