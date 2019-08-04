@@ -17,11 +17,8 @@ O projeto tem como objetivo ser um framework para escrever workers assíncronos 
    :titlesonly:
 
    intro.rst
-   devguide/index.rst
    userguide/index.rst
    changelog/index.rst
-
-
 
 
 Indices and tables
