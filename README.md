@@ -12,8 +12,8 @@
 Ser um microframework (inspirado no flask) para facilitar a escrita de workers assíncronos.
 Atualmente o projeto suporta as seguintes backends:
 
-* [RabbitMQ](https://www.rabbitmq.com/): Somente leitura de mensagens. A implementação de publicação de mensagens será feita no #9;
-* [Server Side Events](https://en.wikipedia.org/wiki/Server-sent_events): Possibilidade de eventos de um endpoint que emite implementa Server Side Events.
+* [RabbitMQ](https://www.rabbitmq.com/): Consumo e produção de mensagens AMQP;
+* [Server Side Events](https://en.wikipedia.org/wiki/Server-sent_events): Possibilidade de eventos de um endpoint que implementa Server Side Events.
 * [HTTP](https://pt.wikipedia.org/wiki/Hypertext_Transfer_Protocol): Possibilidade de receber dados via requisições HTTP
 
 
