@@ -165,7 +165,7 @@ class App(MutableMapping, Freezable):
 
         return wrapper
 
-    def get_connection_for_route(self, route_info: Route) -> Connection:
+    def get_connection_for_route(self, route_info: Route):
         route_connection = route_info.options.get("connection")
         connections = self.connections.with_type(route_info.type)
         if route_connection is not None:

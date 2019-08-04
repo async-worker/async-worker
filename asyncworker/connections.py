@@ -1,18 +1,6 @@
 import abc
 import collections
-from dataclasses import dataclass
-from typing import (
-    Optional,
-    Union,
-    List,
-    Dict,
-    Iterator,
-    Any,
-    Type,
-    Mapping,
-    Iterable,
-    Counter,
-)
+from typing import Optional, Union, List, Dict, Any, Type, Mapping, Iterable, Counter
 
 from pydantic import BaseModel, validator
 
@@ -76,7 +64,7 @@ class ConnectionsMapping(Mapping[str, "Connection"], Freezable):
 
     def add(self, connections: Iterable["Connection"]) -> None:
         for conn in connections:
-            self[conn.name] = conn
+            self[conn.name] = conn  # type: ignore
 
     def with_type(self, route_type: RouteTypes) -> List["Connection"]:
         # todo: manter uma segunda estrutura de dados ou aceitar O(n) sempre que chamado?
@@ -92,6 +80,9 @@ class Connection(BaseModel, abc.ABC):
     connection name and is responsible for keeping track of new connections on
     the ConnectionsMapping
     """
+
+    route_type: RouteTypes
+    name: Optional[str] = None
 
 
 class SSEConnection(Connection):
@@ -125,7 +116,7 @@ class AMQPConnection(Mapping, Connection):
     def __len__(self) -> int:
         return len(self.connections)
 
-    def __iter__(self) -> Iterator[str]:
+    def __iter__(self):
         return iter(self.connections)
 
     def __getitem__(self, key: str) -> JsonQueue:
