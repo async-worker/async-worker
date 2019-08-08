@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Tuple
 
 from asynctest import TestCase
 
@@ -119,6 +119,17 @@ class ArgResolverTest(TestCase):
 
         resolver = ArgResolver(registry)
         self.assertEqual(([42, 42], "value"), await resolver.wrap(my_coro))
+
+    async def test_resolves_coro_with_return_annotation(self):
+        async def my_coro(arg0: int, value: str) -> Tuple[int, str]:
+            return arg0, value
+
+        registry = TypesRegistry()
+        registry.set(42)
+        registry.set("value")
+
+        resolver = ArgResolver(registry)
+        self.assertEqual((42, "value"), await resolver.wrap(my_coro))
 
     async def test_raise_argument_error_if_coro_has_no_type_annotation(self):
         async def my_coro(arg0):
