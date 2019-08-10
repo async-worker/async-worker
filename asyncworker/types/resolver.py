@@ -43,6 +43,7 @@ class ArgResolver:
         unresolved_params = []
         coro_arguments = inspect.signature(coro_ref).parameters
         type_annotations = typing.get_type_hints(coro_ref)
+        type_annotations.pop("return", None)
 
         if coro_arguments:
             if not type_annotations:
