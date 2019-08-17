@@ -18,9 +18,9 @@ from cached_property import cached_property
 from pydantic import BaseModel, validator
 
 from asyncworker.conf import settings
+from asyncworker.connections import AMQPConnection
 from asyncworker.exceptions import InvalidConnection, InvalidRoute
 from asyncworker.options import DefaultValues, RouteTypes, Actions
-from asyncworker.connections import AMQPConnection
 
 RouteHandler = Callable[[], Coroutine]
 

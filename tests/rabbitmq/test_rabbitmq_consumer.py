@@ -7,11 +7,11 @@ from asynctest import CoroutineMock, Mock, mock
 
 from asyncworker import App, conf
 from asyncworker.bucket import Bucket
+from asyncworker.connections import AMQPConnection
 from asyncworker.consumer import Consumer
 from asyncworker.easyqueue.message import AMQPMessage
 from asyncworker.easyqueue.queue import JsonQueue
 from asyncworker.options import Actions, Events, RouteTypes
-from asyncworker.connections import AMQPConnection
 
 
 async def _handler(message):

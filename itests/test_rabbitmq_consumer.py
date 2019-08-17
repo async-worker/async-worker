@@ -1,5 +1,6 @@
-from asynctest import TestCase
 import asyncio
+
+from asynctest import TestCase
 
 from asyncworker import App, RouteTypes
 from asyncworker.connections import AMQPConnection

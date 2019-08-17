@@ -2,6 +2,7 @@ import asynctest
 
 from asyncworker import App
 from asyncworker.conf import settings
+from asyncworker.connections import AMQPConnection
 from asyncworker.options import (
     Options,
     DefaultValues,
@@ -9,7 +10,6 @@ from asyncworker.options import (
     Actions,
     RouteTypes,
 )
-from asyncworker.connections import AMQPConnection
 from asyncworker.routes import AMQPRoute
 
 

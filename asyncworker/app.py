@@ -1,19 +1,19 @@
 import asyncio
-from signal import Signals
 from collections import MutableMapping
+from signal import Signals
 from typing import Iterable, Callable, Coroutine, Dict, Any, Optional
 
 from asyncworker.conf import logger
+from asyncworker.connections import ConnectionsMapping, Connection
 from asyncworker.exceptions import InvalidRoute, InvalidConnection
+from asyncworker.options import RouteTypes, Options, DefaultValues
+from asyncworker.routes import RoutesRegistry, Route
+from asyncworker.signals.base import Signal, Freezable
 from asyncworker.signals.handlers.http import HTTPServer
 from asyncworker.signals.handlers.rabbitmq import RabbitMQ
-from asyncworker.routes import RoutesRegistry, Route
-from asyncworker.options import RouteTypes, Options, DefaultValues
-from asyncworker.signals.base import Signal, Freezable
 from asyncworker.signals.handlers.sse import SSE
 from asyncworker.task_runners import ScheduledTaskRunner
 from asyncworker.utils import entrypoint
-from asyncworker.connections import ConnectionsMapping, Connection
 
 
 class App(MutableMapping, Freezable):

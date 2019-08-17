@@ -1,10 +1,10 @@
 import unittest
-
-import asynctest
 from urllib.parse import urljoin
 
+import asynctest
+
 from asyncworker import App
-from asyncworker.routes import SSERoute
+from asyncworker.connections import SSEConnection
 from asyncworker.options import (
     Options,
     DefaultValues,
@@ -12,8 +12,7 @@ from asyncworker.options import (
     Actions,
     RouteTypes,
 )
-
-from asyncworker.connections import SSEConnection
+from asyncworker.routes import SSERoute
 
 
 class AppTest(asynctest.TestCase):

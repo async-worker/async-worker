@@ -14,10 +14,10 @@ from typing import (
 
 from pydantic import BaseModel, validator
 
-from asyncworker.exceptions import InvalidConnection
-from asyncworker.routes import RouteTypes
 from asyncworker.conf import settings
 from asyncworker.easyqueue.queue import JsonQueue
+from asyncworker.exceptions import InvalidConnection
+from asyncworker.routes import RouteTypes
 from asyncworker.signals.base import Freezable
 
 

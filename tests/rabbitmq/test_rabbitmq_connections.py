@@ -1,9 +1,9 @@
 import asynctest
 from asynctest import Mock
-from asyncworker.easyqueue.queue import JsonQueue
 
 from asyncworker.conf import settings
 from asyncworker.connections import AMQPConnection
+from asyncworker.easyqueue.queue import JsonQueue
 
 
 class AMQPConnectionTests(asynctest.TestCase):
