@@ -11,7 +11,6 @@ from typing import (
     Type,
     Optional,
 )
-from typing import Callable, Coroutine, Dict, List, Any, Union, Iterable, Type
 
 from aiohttp import web
 from aiohttp.hdrs import METH_ALL
@@ -21,7 +20,6 @@ from pydantic import BaseModel, validator
 
 from asyncworker.conf import settings
 from asyncworker.connections import AMQPConnection
-from asyncworker.exceptions import InvalidConnection, InvalidRoute
 from asyncworker.options import DefaultValues, RouteTypes, Actions
 from asyncworker.types.registry import TypesRegistry
 from asyncworker.types.resolver import ArgResolver, MissingTypeAnnotationError
