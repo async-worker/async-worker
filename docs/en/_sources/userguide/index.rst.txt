@@ -6,3 +6,4 @@ Guia de uso
 
    quickstart.rst
    backends.rst
+   handlers/index.rst

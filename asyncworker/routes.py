@@ -11,7 +11,9 @@ from typing import (
     Type,
     Optional,
 )
+from typing import Callable, Coroutine, Dict, List, Any, Union, Iterable, Type
 
+from aiohttp import web
 from aiohttp.hdrs import METH_ALL
 from aiohttp.web_routedef import RouteDef
 from cached_property import cached_property
@@ -21,8 +23,10 @@ from asyncworker.conf import settings
 from asyncworker.connections import AMQPConnection
 from asyncworker.exceptions import InvalidConnection, InvalidRoute
 from asyncworker.options import DefaultValues, RouteTypes, Actions
+from asyncworker.types.registry import TypesRegistry
+from asyncworker.types.resolver import ArgResolver, MissingTypeAnnotationError
 
-RouteHandler = Callable[[], Coroutine]
+RouteHandler = Callable[..., Coroutine]
 
 
 class Model(BaseModel, abc.ABC):
@@ -153,6 +157,24 @@ class SSERoute(Route):
         return v
 
 
+async def call_http_handler(request: web.Request, handler: RouteHandler):
+    arg_resolver = ArgResolver(registry=request["types_registry"])
+    try:
+        return await arg_resolver.wrap(handler)
+    except MissingTypeAnnotationError:
+        return await handler(request)
+
+
+def http_handler_wrapper(handler):
+    async def _insert_types_registry(request: web.Request):
+        registry = TypesRegistry()
+        request["types_registry"] = registry
+        registry.set(request)
+        return await call_http_handler(request, handler)
+
+    return _insert_types_registry
+
+
 class RoutesRegistry(UserDict):
     def _get_routes_for_type(self, route_type: Type) -> Iterable:
         return tuple((r for r in self.values() if isinstance(r, route_type)))
@@ -170,10 +192,15 @@ class RoutesRegistry(UserDict):
         return self._get_routes_for_type(SSERoute)
 
     def __setitem__(self, key: RouteHandler, value: Union[Dict, Route]):
+
         if not isinstance(value, Route):
             route = Route.factory({"handler": key, **value})
         else:
             route = value
+
+        if route.type == RouteTypes.HTTP:
+            route.handler = http_handler_wrapper(key)
+
         super(RoutesRegistry, self).__setitem__(key, route)
 
     def add_route(self, route: Route) -> None:

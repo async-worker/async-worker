@@ -130,6 +130,7 @@ class App(MutableMapping, Freezable):
                 "default_options": self.default_route_options,
                 **kwargs,
             }
+
             return f
 
         return wrapper
