@@ -1,5 +1,6 @@
 import abc
 import collections
+from collections import KeysView, ValuesView
 from typing import (
     Optional,
     Union,
@@ -10,6 +11,7 @@ from typing import (
     Mapping,
     Iterable,
     Counter,
+    ItemsView,
 )
 
 from pydantic import BaseModel, validator
@@ -106,7 +108,7 @@ class SSEConnection(Connection):
 Message = Union[List, Dict]
 
 
-class AMQPConnection(Mapping, Connection):
+class AMQPConnection(Connection):
     hostname: str
     username: str
     password: str
@@ -147,6 +149,15 @@ class AMQPConnection(Mapping, Connection):
             )
             self.connections[key] = conn
             return conn
+
+    def keys(self):
+        return KeysView(self)
+
+    def items(self):
+        return ItemsView(self)
+
+    def values(self):
+        return ValuesView(self)
 
     def register(self, queue: JsonQueue) -> None:
         self.connections[queue.virtual_host] = queue
