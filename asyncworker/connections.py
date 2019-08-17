@@ -21,13 +21,24 @@ from asyncworker.easyqueue.queue import JsonQueue
 from asyncworker.signals.base import Freezable
 
 
-class ConnectionsMapping(Mapping[str, "Connection"], Freezable):
+class Connection(BaseModel, abc.ABC):
+    """
+    Common ancestral for all Connection classes that auto generates a
+    connection name and is responsible for keeping track of new connections on
+    the ConnectionsMapping
+    """
+
+    route_type: RouteTypes
+    name: Optional[str] = None
+
+
+class ConnectionsMapping(Mapping[str, Connection], Freezable):
     """
     A mapping (Connection.name->Connection) of all available connections that
     also keeps a counter for each connection type
     """
 
-    def __getitem__(self, k: str) -> "Connection":
+    def __getitem__(self, k: str) -> Connection:
         return self._data[k]
 
     def __len__(self) -> int:
@@ -38,15 +49,15 @@ class ConnectionsMapping(Mapping[str, "Connection"], Freezable):
 
     def __init__(self) -> None:
         Freezable.__init__(self)
-        self._data: Dict[str, "Connection"] = {}
-        self.counter: Counter[Type["Connection"]] = collections.Counter()
+        self._data: Dict[str, Connection] = {}
+        self.counter: Counter[Type[Connection]] = collections.Counter()
 
     def __contains__(self, item):
         if isinstance(item, Connection):
             return item in self.values()
         return super(ConnectionsMapping, self).__contains__(item)
 
-    def __setitem__(self, key: str, value: "Connection") -> None:
+    def __setitem__(self, key: str, value: Connection) -> None:
         if self.frozen:
             raise RuntimeError(
                 "You shouldn't change the state of ConnectionsMapping "
@@ -72,7 +83,7 @@ class ConnectionsMapping(Mapping[str, "Connection"], Freezable):
             )
         del self._data[key]
 
-    def add(self, connections: Iterable["Connection"]) -> None:
+    def add(self, connections: Iterable[Connection]) -> None:
         for conn in connections:
             self[conn.name] = conn  # type: ignore
 
@@ -81,18 +92,7 @@ class ConnectionsMapping(Mapping[str, "Connection"], Freezable):
         return [conn for conn in self.values() if conn.route_type == route_type]
 
 
-_TYPE_COUNTER: Counter[Type["Connection"]] = collections.Counter()
-
-
-class Connection(BaseModel, abc.ABC):
-    """
-    Common ancestral for all Connection classes that auto generates a
-    connection name and is responsible for keeping track of new connections on
-    the ConnectionsMapping
-    """
-
-    route_type: RouteTypes
-    name: Optional[str] = None
+_TYPE_COUNTER: Counter[Type[Connection]] = collections.Counter()
 
 
 class SSEConnection(Connection):
