@@ -34,7 +34,7 @@ class Model(BaseModel, abc.ABC):
 
     def __getitem__(self, item):
         try:
-            return self.__getattr__(item)
+            return getattr(self, item)
         except AttributeError as e:
             raise KeyError from e
 
