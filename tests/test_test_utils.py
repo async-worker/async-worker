@@ -50,21 +50,19 @@ class HttpClientTestCaseDecoratorTest(TestCase):
         async def index(request):
             return web.json_response({"OK": True})
 
-        with mock.patch.dict(os.environ, TEST_ASYNCWORKER_HTTP_PORT="9999"):
+        @http_client(self.app)
+        async def my_method(http_client):
+            raise Exception("BOOM")
 
-            @http_client(self.app)
-            async def my_method(http_client):
-                raise Exception("BOOM")
+        with self.assertRaises(Exception):
+            await my_method()
 
-            with self.assertRaises(Exception):
-                await my_method()
+        @http_client(self.app)
+        async def other_method(http_client):
+            resp = await http_client.get("/")
+            return await resp.json()
 
-            @http_client(self.app)
-            async def other_method(http_client):
-                resp = await http_client.get("/")
-                return await resp.json()
-
-            self.assertEqual({"OK": True}, await other_method())
+        self.assertEqual({"OK": True}, await other_method())
 
 
 class HttpClientContextManagerTest(TestCase):
