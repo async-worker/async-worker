@@ -41,7 +41,7 @@ class Model(BaseModel, abc.ABC):
     def __setitem__(self, key, value):
         try:
             return self.__setattr__(key, value)
-        except AttributeError as e:
+        except (AttributeError, ValueError) as e:
             raise KeyError from e
 
     def __eq__(self, other):
