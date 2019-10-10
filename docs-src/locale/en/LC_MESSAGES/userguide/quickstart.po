@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Asyncworker \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-07-05 21:56-0300\n"
+"POT-Creation-Date: 2019-10-09 09:15-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -26,10 +26,67 @@ msgstr ""
 msgid "Um exemplo rápido para mostrar a ideia geral do asynworker."
 msgstr ""
 
-#: ../../userguide/quickstart.rst:15
+#: ../../userguide/quickstart.rst:18
 msgid ""
 "Esse código é possível ser rodado na linha de comando e é capaz de "
 "atendar a uma requisição HTTP assim:"
+msgstr ""
+
+#: ../../userguide/quickstart.rst:26
+msgid "Consumindo de uma fila no RabbitMQ"
+msgstr ""
+
+#: ../../userguide/quickstart.rst:44
+msgid ""
+"Nesse exemplo, o handler ``drain_handler()`` recebe mensagens de ambas as"
+" filas: ``asgard/counts`` e ``asgard/counts/errors``."
+msgstr ""
+
+#: ../../userguide/quickstart.rst:47
+msgid ""
+"Se o handler lançar alguma exception, a mensagem é automaticamente "
+"devolvida para a fila (reject com requeue=True); Se o handler rodar sem "
+"erros, a mensagem é automaticamente confirmada (ack)."
+msgstr ""
+
+#: ../../userguide/quickstart.rst:53
+msgid "Lendo dados de um endpoint Server Side Events"
+msgstr ""
+
+#: ../../userguide/quickstart.rst:80
+msgid ""
+"Nesse exemplo, o handler ``_on_event()`` recebe os eventos enviados pelo "
+"servidor. O objeto ``events`` é sempre uma lista, mesmo quando estamos "
+"usando ``BULK_SIZE=1`` (Falaremos sobre isso mais a frente)"
+msgstr ""
+
+#: ../../userguide/quickstart.rst:86
+msgid "Recebendo dados através de requisições HTTP"
+msgstr ""
+
+#: ../../userguide/quickstart.rst:99
+msgid ""
+"Nesse exemplo, declaramos um handler ``index``, que receberá uma "
+"instância de ``aiohttp.web.Request`` para cada acesso as rotas ``GET /`` "
+"e ``GET /hello``."
+msgstr ""
+
+#: ../../userguide/quickstart.rst:105
+msgid "Rodando seu worker"
+msgstr ""
+
+#: ../../userguide/quickstart.rst:107
+msgid ""
+"Ambos os exemplos precisam de um ``main()`` para poderem rodar. Um "
+"exemplo de ``main`` seria o seguinte, assumindo que o objeto ``app`` está"
+" no módulo ``myworker``:"
+msgstr ""
+
+#: ../../userguide/quickstart.rst:118
+msgid ""
+"Nesse ponto sua app já estará rodando e caso você seja desconectado, um "
+"loop ficará tentanto reconectar. A cada erro de conexão um log de "
+"exception é gerado."
 msgstr ""
 
 #~ msgid ""

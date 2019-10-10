@@ -1,0 +1,190 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>asyncworker.connections package &#8212; Asyncworker  documentation</title>
+    <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../_static/language_data.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+   
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="asyncworker-connections-package">
+<h1>asyncworker.connections package<a class="headerlink" href="#asyncworker-connections-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="module-asyncworker.connections">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-asyncworker.connections" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="asyncworker.connections.AMQPConnection">
+<em class="property">class </em><code class="sig-prename descclassname">asyncworker.connections.</code><code class="sig-name descname">AMQPConnection</code><a class="reference internal" href="../../_modules/asyncworker/connections.html#AMQPConnection"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#asyncworker.connections.AMQPConnection" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#asyncworker.connections.Connection" title="asyncworker.connections.Connection"><code class="xref py py-class docutils literal notranslate"><span class="pre">asyncworker.connections.Connection</span></code></a></p>
+<dl class="class">
+<dt id="asyncworker.connections.AMQPConnection.Config">
+<em class="property">class </em><code class="sig-name descname">Config</code><a class="reference internal" href="../../_modules/asyncworker/connections.html#AMQPConnection.Config"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#asyncworker.connections.AMQPConnection.Config" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="attribute">
+<dt id="asyncworker.connections.AMQPConnection.Config.arbitrary_types_allowed">
+<code class="sig-name descname">arbitrary_types_allowed</code><em class="property"> = True</em><a class="headerlink" href="#asyncworker.connections.AMQPConnection.Config.arbitrary_types_allowed" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="method">
+<dt id="asyncworker.connections.AMQPConnection.items">
+<code class="sig-name descname">items</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/asyncworker/connections.html#AMQPConnection.items"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#asyncworker.connections.AMQPConnection.items" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="asyncworker.connections.AMQPConnection.keys">
+<code class="sig-name descname">keys</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/asyncworker/connections.html#AMQPConnection.keys"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#asyncworker.connections.AMQPConnection.keys" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="asyncworker.connections.AMQPConnection.put">
+<em class="property">async </em><code class="sig-name descname">put</code><span class="sig-paren">(</span><em class="sig-param">routing_key: str</em>, <em class="sig-param">data: Any = None</em>, <em class="sig-param">serialized_data: Union[str</em>, <em class="sig-param">bytes] = None</em>, <em class="sig-param">exchange: str = ''</em>, <em class="sig-param">vhost: str = '/'</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/asyncworker/connections.html#AMQPConnection.put"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#asyncworker.connections.AMQPConnection.put" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="asyncworker.connections.AMQPConnection.register">
+<code class="sig-name descname">register</code><span class="sig-paren">(</span><em class="sig-param">queue: asyncworker.easyqueue.queue.JsonQueue</em><span class="sig-paren">)</span> &#x2192; None<a class="reference internal" href="../../_modules/asyncworker/connections.html#AMQPConnection.register"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#asyncworker.connections.AMQPConnection.register" title="Permalink to this definition">¶</a></dt>
+<dd><p>Register a virtual subclass of an ABC.</p>
+<p>Returns the subclass, to allow usage as a class decorator.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="asyncworker.connections.AMQPConnection.set_connections">
+<em class="property">classmethod </em><code class="sig-name descname">set_connections</code><span class="sig-paren">(</span><em class="sig-param">v</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/asyncworker/connections.html#AMQPConnection.set_connections"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#asyncworker.connections.AMQPConnection.set_connections" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="asyncworker.connections.AMQPConnection.values">
+<code class="sig-name descname">values</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/asyncworker/connections.html#AMQPConnection.values"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#asyncworker.connections.AMQPConnection.values" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="asyncworker.connections.Connection">
+<em class="property">class </em><code class="sig-prename descclassname">asyncworker.connections.</code><code class="sig-name descname">Connection</code><a class="reference internal" href="../../_modules/asyncworker/connections.html#Connection"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#asyncworker.connections.Connection" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">pydantic.main.BaseModel</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">abc.ABC</span></code></p>
+<p>Common ancestral for all Connection classes that auto generates a
+connection name and is responsible for keeping track of new connections on
+the ConnectionsMapping</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="asyncworker.connections.ConnectionsMapping">
+<em class="property">class </em><code class="sig-prename descclassname">asyncworker.connections.</code><code class="sig-name descname">ConnectionsMapping</code><a class="reference internal" href="../../_modules/asyncworker/connections.html#ConnectionsMapping"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#asyncworker.connections.ConnectionsMapping" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">collections.abc.Mapping</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">typing.Generic</span></code>, <a class="reference internal" href="asyncworker.signals.html#asyncworker.signals.base.Freezable" title="asyncworker.signals.base.Freezable"><code class="xref py py-class docutils literal notranslate"><span class="pre">asyncworker.signals.base.Freezable</span></code></a></p>
+<p>A mapping (Connection.name-&gt;Connection) of all available connections that
+also keeps a counter for each connection type</p>
+<dl class="method">
+<dt id="asyncworker.connections.ConnectionsMapping.add">
+<code class="sig-name descname">add</code><span class="sig-paren">(</span><em class="sig-param">connections: Iterable[asyncworker.connections.Connection]</em><span class="sig-paren">)</span> &#x2192; None<a class="reference internal" href="../../_modules/asyncworker/connections.html#ConnectionsMapping.add"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#asyncworker.connections.ConnectionsMapping.add" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="asyncworker.connections.ConnectionsMapping.with_type">
+<code class="sig-name descname">with_type</code><span class="sig-paren">(</span><em class="sig-param">route_type: asyncworker.options.RouteTypes</em><span class="sig-paren">)</span> &#x2192; List[asyncworker.connections.Connection]<a class="reference internal" href="../../_modules/asyncworker/connections.html#ConnectionsMapping.with_type"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#asyncworker.connections.ConnectionsMapping.with_type" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="asyncworker.connections.SSEConnection">
+<em class="property">class </em><code class="sig-prename descclassname">asyncworker.connections.</code><code class="sig-name descname">SSEConnection</code><a class="reference internal" href="../../_modules/asyncworker/connections.html#SSEConnection"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#asyncworker.connections.SSEConnection" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#asyncworker.connections.Connection" title="asyncworker.connections.Connection"><code class="xref py py-class docutils literal notranslate"><span class="pre">asyncworker.connections.Connection</span></code></a></p>
+</dd></dl>
+
+</div>
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../../index.html">Asyncworker</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../intro.html">Introdução</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../userguide/index.html">Guia de uso</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../changelog/index.html">Changelog</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../index.html">Documentation overview</a><ul>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2019, B2W Digital.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 2.1.2</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="../../_sources/src/asyncworker/asyncworker.connections.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

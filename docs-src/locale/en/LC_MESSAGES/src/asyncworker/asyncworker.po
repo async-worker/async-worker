@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Asyncworker \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-08-04 11:46-0300\n"
+"POT-Creation-Date: 2019-10-09 09:15-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -100,10 +100,9 @@ msgstr ""
 msgid "asyncworker.connections module"
 msgstr ""
 
-#: asyncworker.connections.AMQPConnection:1 of
-msgid ""
-"Base: :class:`collections.abc.Mapping`, :class:`typing.Generic`, "
-":class:`asyncworker.connections.Connection`"
+#: asyncworker.connections.AMQPConnection:1
+#: asyncworker.connections.SSEConnection:1 of
+msgid "Base: :class:`asyncworker.connections.Connection`"
 msgstr ""
 
 #: asyncworker.connections.AMQPConnection.register:1 of
@@ -135,10 +134,6 @@ msgstr ""
 msgid ""
 "A mapping (Connection.name->Connection) of all available connections that"
 " also keeps a counter for each connection type"
-msgstr ""
-
-#: asyncworker.connections.SSEConnection:1 of
-msgid "Base: :class:`asyncworker.connections.Connection`"
 msgstr ""
 
 #: ../../src/asyncworker/asyncworker.rst:53
@@ -364,5 +359,11 @@ msgstr ""
 #~ msgstr ""
 
 #~ msgid "the message :return:"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Base: :class:`collections.abc.Mapping`, "
+#~ ":class:`typing.Generic`, "
+#~ ":class:`asyncworker.connections.Connection`"
 #~ msgstr ""
 

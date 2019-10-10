@@ -33,10 +33,10 @@
   <h1>Source code for asyncworker.signals.handlers.rabbitmq</h1><div class="highlight"><pre>
 <span></span><span class="kn">from</span> <span class="nn">typing</span> <span class="k">import</span> <span class="n">TYPE_CHECKING</span>
 
-<span class="kn">from</span> <span class="nn">asyncworker.consumer</span> <span class="k">import</span> <span class="n">Consumer</span>
-<span class="kn">from</span> <span class="nn">asyncworker.signals.handlers.base</span> <span class="k">import</span> <span class="n">SignalHandler</span>
 <span class="kn">from</span> <span class="nn">asyncworker.connections</span> <span class="k">import</span> <span class="n">AMQPConnection</span>
+<span class="kn">from</span> <span class="nn">asyncworker.consumer</span> <span class="k">import</span> <span class="n">Consumer</span>
 <span class="kn">from</span> <span class="nn">asyncworker.options</span> <span class="k">import</span> <span class="n">RouteTypes</span>
+<span class="kn">from</span> <span class="nn">asyncworker.signals.handlers.base</span> <span class="k">import</span> <span class="n">SignalHandler</span>
 
 <span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>  <span class="c1"># pragma: no cover</span>
     <span class="kn">from</span> <span class="nn">asyncworker.app</span> <span class="k">import</span> <span class="n">App</span>  <span class="c1"># noqa: F401</span>
@@ -87,6 +87,8 @@
 <ul>
   <li><a href="../../../../index.html">Documentation overview</a><ul>
   <li><a href="../../../index.html">Module code</a><ul>
+  <li><a href="../../../asyncworker.html">asyncworker</a><ul>
+  </ul></li>
   </ul></li>
   </ul></li>
 </ul>
