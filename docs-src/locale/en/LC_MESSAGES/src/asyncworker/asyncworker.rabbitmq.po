@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Asyncworker \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-07-05 21:39-0300\n"
+"POT-Creation-Date: 2019-08-04 11:38-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -27,22 +27,6 @@ msgid "Submodules"
 msgstr ""
 
 #: ../../src/asyncworker/asyncworker.rabbitmq.rst:8
-msgid "asyncworker.rabbitmq.connection module"
-msgstr ""
-
-#: asyncworker.rabbitmq.connection.AMQPConnection:1 of
-msgid "Base: :class:`collections.abc.Mapping`"
-msgstr ""
-
-#: asyncworker.rabbitmq.connection.AMQPConnection.register:1 of
-msgid "Register a virtual subclass of an ABC."
-msgstr ""
-
-#: asyncworker.rabbitmq.connection.AMQPConnection.register:3 of
-msgid "Returns the subclass, to allow usage as a class decorator."
-msgstr ""
-
-#: ../../src/asyncworker/asyncworker.rabbitmq.rst:16
 msgid "asyncworker.rabbitmq.message module"
 msgstr ""
 
@@ -50,7 +34,19 @@ msgstr ""
 msgid "Base: :class:`object`"
 msgstr ""
 
-#: ../../src/asyncworker/asyncworker.rabbitmq.rst:25
+#: ../../src/asyncworker/asyncworker.rabbitmq.rst:17
 msgid "Module contents"
 msgstr ""
+
+#~ msgid "Base: :class:`collections.abc.Mapping`"
+#~ msgstr ""
+
+#~ msgid "Register a virtual subclass of an ABC."
+#~ msgstr ""
+
+#~ msgid "Returns the subclass, to allow usage as a class decorator."
+#~ msgstr ""
+
+#~ msgid "asyncworker.rabbitmq.connection module"
+#~ msgstr ""
 

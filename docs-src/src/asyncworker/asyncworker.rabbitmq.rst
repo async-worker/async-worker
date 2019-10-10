@@ -4,14 +4,6 @@ asyncworker.rabbitmq package
 Submodules
 ----------
 
-asyncworker.rabbitmq.connection module
---------------------------------------
-
-.. automodule:: asyncworker.rabbitmq.connection
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
 asyncworker.rabbitmq.message module
 -----------------------------------
 

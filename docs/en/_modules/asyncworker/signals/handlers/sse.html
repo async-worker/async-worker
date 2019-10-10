@@ -33,21 +33,23 @@
   <h1>Source code for asyncworker.signals.handlers.sse</h1><div class="highlight"><pre>
 <span></span><span class="kn">from</span> <span class="nn">urllib.parse</span> <span class="k">import</span> <span class="n">urljoin</span>
 
-<span class="kn">from</span> <span class="nn">asyncworker.options</span> <span class="k">import</span> <span class="n">RouteTypes</span>
 <span class="kn">from</span> <span class="nn">asyncworker.signals.handlers.base</span> <span class="k">import</span> <span class="n">SignalHandler</span>
+<span class="kn">from</span> <span class="nn">asyncworker.options</span> <span class="k">import</span> <span class="n">RouteTypes</span>
+<span class="kn">from</span> <span class="nn">asyncworker.connections</span> <span class="k">import</span> <span class="n">SSEConnection</span>
 <span class="kn">from</span> <span class="nn">asyncworker.sse.consumer</span> <span class="k">import</span> <span class="n">SSEConsumer</span>
 
 
 <div class="viewcode-block" id="SSE"><a class="viewcode-back" href="../../../../src/asyncworker/asyncworker.signals.handlers.html#asyncworker.signals.handlers.sse.SSE">[docs]</a><span class="k">class</span> <span class="nc">SSE</span><span class="p">(</span><span class="n">SignalHandler</span><span class="p">):</span>
 <div class="viewcode-block" id="SSE.startup"><a class="viewcode-back" href="../../../../src/asyncworker/asyncworker.signals.handlers.html#asyncworker.signals.handlers.sse.SSE.startup">[docs]</a>    <span class="k">async</span> <span class="k">def</span> <span class="nf">startup</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">app</span><span class="p">):</span>  <span class="c1"># type: ignore</span>
-        <span class="n">app</span><span class="p">[</span><span class="n">RouteTypes</span><span class="o">.</span><span class="n">SSE</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;consumers&quot;</span><span class="p">:</span> <span class="p">[]}</span>
+        <span class="n">app</span><span class="p">[</span><span class="n">RouteTypes</span><span class="o">.</span><span class="n">SSE</span><span class="p">][</span><span class="s2">&quot;consumers&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">route_info</span> <span class="ow">in</span> <span class="n">app</span><span class="o">.</span><span class="n">routes_registry</span><span class="o">.</span><span class="n">sse_routes</span><span class="p">:</span>
+            <span class="n">conn</span><span class="p">:</span> <span class="n">SSEConnection</span> <span class="o">=</span> <span class="n">app</span><span class="o">.</span><span class="n">get_connection_for_route</span><span class="p">(</span><span class="n">route_info</span><span class="p">)</span>
             <span class="k">for</span> <span class="n">route</span> <span class="ow">in</span> <span class="n">route_info</span><span class="p">[</span><span class="s2">&quot;routes&quot;</span><span class="p">]:</span>
                 <span class="n">consumer</span> <span class="o">=</span> <span class="n">SSEConsumer</span><span class="p">(</span>
                     <span class="n">route_info</span><span class="o">=</span><span class="n">route_info</span><span class="p">,</span>
-                    <span class="n">url</span><span class="o">=</span><span class="n">urljoin</span><span class="p">(</span><span class="n">app</span><span class="o">.</span><span class="n">url</span><span class="p">,</span> <span class="n">route</span><span class="p">),</span>
-                    <span class="n">username</span><span class="o">=</span><span class="n">app</span><span class="o">.</span><span class="n">user</span><span class="p">,</span>
-                    <span class="n">password</span><span class="o">=</span><span class="n">app</span><span class="o">.</span><span class="n">password</span><span class="p">,</span>
+                    <span class="n">url</span><span class="o">=</span><span class="n">urljoin</span><span class="p">(</span><span class="n">conn</span><span class="o">.</span><span class="n">url</span><span class="p">,</span> <span class="n">route</span><span class="p">),</span>
+                    <span class="n">username</span><span class="o">=</span><span class="n">conn</span><span class="o">.</span><span class="n">user</span><span class="p">,</span>
+                    <span class="n">password</span><span class="o">=</span><span class="n">conn</span><span class="o">.</span><span class="n">password</span><span class="p">,</span>
                 <span class="p">)</span>
                 <span class="n">app</span><span class="p">[</span><span class="n">RouteTypes</span><span class="o">.</span><span class="n">SSE</span><span class="p">][</span><span class="s2">&quot;consumers&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">consumer</span><span class="p">)</span>
                 <span class="n">app</span><span class="o">.</span><span class="n">loop</span><span class="o">.</span><span class="n">create_task</span><span class="p">(</span><span class="n">consumer</span><span class="o">.</span><span class="n">start</span><span class="p">())</span></div></div>
@@ -80,8 +82,6 @@
 <ul>
   <li><a href="../../../../index.html">Documentation overview</a><ul>
   <li><a href="../../../index.html">Module code</a><ul>
-  <li><a href="../../../asyncworker.html">asyncworker</a><ul>
-  </ul></li>
   </ul></li>
   </ul></li>
 </ul>

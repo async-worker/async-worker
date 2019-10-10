@@ -1,6 +1,7 @@
 import asynctest
 from asynctest import CoroutineMock, Mock, call, MagicMock
 
+from asyncworker.connections import SSEConnection
 from asyncworker.options import RouteTypes
 from asyncworker.routes import RoutesRegistry
 from asyncworker.signals.handlers.sse import SSE
@@ -41,11 +42,11 @@ class AMQPTests(asynctest.TestCase):
     async def test_startup_initializes_and_starts_one_consumer_per_route(
         self, Consumer
     ):
+        conn = SSEConnection(url="https://www.sieve.com.br/cultura/")
         app = asynctest.MagicMock(
-            url="https://www.sieve.com.br/cultura/",
             routes_registry=self.routes_registry,
             loop=Mock(create_task=CoroutineMock()),
-            prefetch_count=1,
+            get_connection_for_route=Mock(return_value=conn),
         )
         await self.signal_handler.startup(app)
 
@@ -54,20 +55,20 @@ class AMQPTests(asynctest.TestCase):
                 call(
                     route_info=self.routes_registry.sse_routes[0],
                     url="https://www.sieve.com.br/cultura/Xablau",
-                    username=app.user,
-                    password=app.password,
+                    username=conn.user,
+                    password=conn.password,
                 ),
                 call(
                     route_info=self.routes_registry.sse_routes[1],
                     url="https://www.sieve.com.br/cultura/Xena",
-                    username=app.user,
-                    password=app.password,
+                    username=conn.user,
+                    password=conn.password,
                 ),
                 call(
                     route_info=self.routes_registry.sse_routes[1],
                     url="https://www.sieve.com.br/cultura/sse",
-                    username=app.user,
-                    password=app.password,
+                    username=conn.user,
+                    password=conn.password,
                 ),
             ],
             any_order=True,

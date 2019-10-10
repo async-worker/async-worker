@@ -4,11 +4,15 @@ from collections import UserList
 
 
 class Freezable(metaclass=abc.ABCMeta):
+    def __init__(self):
+        self._frozen = False
+
+    @property
     def frozen(self) -> bool:
-        raise NotImplementedError
+        return self._frozen
 
     async def freeze(self):
-        raise NotImplementedError
+        self._frozen = True
 
 
 class Signal(UserList, asyncio.Event):

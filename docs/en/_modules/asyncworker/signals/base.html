@@ -37,11 +37,15 @@
 
 
 <div class="viewcode-block" id="Freezable"><a class="viewcode-back" href="../../../src/asyncworker/asyncworker.signals.html#asyncworker.signals.base.Freezable">[docs]</a><span class="k">class</span> <span class="nc">Freezable</span><span class="p">(</span><span class="n">metaclass</span><span class="o">=</span><span class="n">abc</span><span class="o">.</span><span class="n">ABCMeta</span><span class="p">):</span>
-<div class="viewcode-block" id="Freezable.frozen"><a class="viewcode-back" href="../../../src/asyncworker/asyncworker.signals.html#asyncworker.signals.base.Freezable.frozen">[docs]</a>    <span class="k">def</span> <span class="nf">frozen</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_frozen</span> <span class="o">=</span> <span class="kc">False</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">frozen</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_frozen</span>
 
 <div class="viewcode-block" id="Freezable.freeze"><a class="viewcode-back" href="../../../src/asyncworker/asyncworker.signals.html#asyncworker.signals.base.Freezable.freeze">[docs]</a>    <span class="k">async</span> <span class="k">def</span> <span class="nf">freeze</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">raise</span> <span class="ne">NotImplementedError</span></div></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_frozen</span> <span class="o">=</span> <span class="kc">True</span></div></div>
 
 
 <div class="viewcode-block" id="Signal"><a class="viewcode-back" href="../../../src/asyncworker/asyncworker.signals.html#asyncworker.signals.base.Signal">[docs]</a><span class="k">class</span> <span class="nc">Signal</span><span class="p">(</span><span class="n">UserList</span><span class="p">,</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">Event</span><span class="p">):</span>
@@ -107,8 +111,6 @@
 <ul>
   <li><a href="../../../index.html">Documentation overview</a><ul>
   <li><a href="../../index.html">Module code</a><ul>
-  <li><a href="../../asyncworker.html">asyncworker</a><ul>
-  </ul></li>
   </ul></li>
   </ul></li>
 </ul>

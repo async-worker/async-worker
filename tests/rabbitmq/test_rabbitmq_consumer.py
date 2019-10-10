@@ -7,6 +7,7 @@ from asynctest import CoroutineMock, Mock, mock
 
 from asyncworker import App, conf
 from asyncworker.bucket import Bucket
+from asyncworker.connections import AMQPConnection
 from asyncworker.consumer import Consumer
 from asyncworker.easyqueue.message import AMQPMessage
 from asyncworker.easyqueue.queue import JsonQueue
@@ -39,14 +40,13 @@ class ConsumerTest(asynctest.TestCase):
                 Events.ON_EXCEPTION: Actions.REQUEUE,
             },
         }
-        self.app = App(
-            **{
-                "host": "127.0.0.1",
-                "user": "guest",
-                "password": "guest",
-                "prefetch_count": 1024,
-            }
+        self.connection = AMQPConnection(
+            hostname="127.0.0.1",
+            username="guest",
+            password="guest",
+            prefetch=1024,
         )
+        self.app = App(connections=[self.connection])
         self.mock_message = self._make_msg()
         mock.patch.object(
             conf, "settings", mock.Mock(FLUSH_TIMEOUT=0.1)

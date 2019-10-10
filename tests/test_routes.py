@@ -3,7 +3,8 @@ import unittest
 from asynctest import CoroutineMock
 
 from asyncworker import RouteTypes
-from asyncworker.routes import RoutesRegistry, HTTPRoute
+from asyncworker.exceptions import InvalidRoute
+from asyncworker.routes import RoutesRegistry, HTTPRoute, AMQPRoute
 
 
 class RoutesRegistryTests(unittest.TestCase):
@@ -109,3 +110,13 @@ class HTTPRoutesTests(unittest.TestCase):
             routes=["/"],
         )
         self.assertIsInstance(route, HTTPRoute)
+
+
+class AMQPRouteTests(unittest.TestCase):
+    def test_it_raises_an_error_if_route_connection_is_invalid(self):
+        with self.assertRaises(ValueError):
+            AMQPRoute(
+                routes=["Xablau", "Xena"],
+                handler=lambda *args, **kwargs: 42,
+                options={"connection": (..., ..., ...)},
+            )

@@ -12,8 +12,8 @@
 Ser um microframework (inspirado no flask) para facilitar a escrita de workers assíncronos.
 Atualmente o projeto suporta as seguintes backends:
 
-* [RabbitMQ](https://www.rabbitmq.com/): Somente leitura de mensagens. A implementação de publicação de mensagens será feita no #9;
-* [Server Side Events](https://en.wikipedia.org/wiki/Server-sent_events): Possibilidade de eventos de um endpoint que emite implementa Server Side Events.
+* [RabbitMQ](https://www.rabbitmq.com/): Consumo e produção de mensagens AMQP;
+* [Server Side Events](https://en.wikipedia.org/wiki/Server-sent_events): Possibilidade de eventos de um endpoint que implementa Server Side Events.
 * [HTTP](https://pt.wikipedia.org/wiki/Hypertext_Transfer_Protocol): Possibilidade de receber dados via requisições HTTP
 
 
@@ -36,14 +36,17 @@ Por causa dessa incompatibilidade com múltiplos loops para escrever testes voc�
 ```python
 
 from asyncworker import App, RouteTypes
+from asyncworker.connections import AMQPConnection 
 
-app = App(host="127.0.0.1", user="guest", password="guest", prefetch_count=256)
+
+amqp_conn = AMQPConnection(host="127.0.0.1", user="guest", password="guest", prefetch_count=256)
+app = App(connections=[amqp_conn])
 
 @app.route(["asgard/counts", "asgard/counts/errors"],
            type=RouteTypes.AMQP_RABBITMQ,
            vhost="fluentd")
 async def drain_handler(message):
-    logger.info(message)
+    print(message)
 
 ```
 
@@ -55,12 +58,12 @@ Se o handler rodar sem erros, a mensagem é automaticamente confirmada (ack).
 ### Worker lendo dados de um endpoint Server Side Events
 
 ```python
-from asyncworker import RouteTypes
-from asyncworker.sse.app import SSEApplication
-import logging
+from asyncworker import App, RouteTypes, Options
+from asyncworker.connections import SSEConnection
 
 
-app = SSEApplication(url="http://172.18.0.31:8080/", logger=logging.getLogger())
+sse_conn = SSEConnection(url="http://172.18.0.31:8080/")
+app = App(connections=[sse_conn])
 
 @app.route(["/v2/events"], type=RouteTypes.SSE, options={Options.BULK_SIZE: 2})
 async def _on_event(events):
@@ -250,9 +253,11 @@ e com o async-worker você também consegue utilizar esse protocolo nos seus han
 ```python
 from aiohttp import web
 from asyncworker import App, RouteTypes
+from asyncworker.connections import AMQPConnection 
 
 
-app = App(host="localhost", user="guest", password="guest", prefetch_count=1024)
+amqp_conn = AMQPConnection(host="localhost", user="guest", password="guest", prefetch_count=1024)
+app = App(connections=[amqp_conn])
 
 
 @app.route(routes=['/', '/hello'], methods=['GET'], type=RouteTypes.HTTP)

@@ -1,16 +1,14 @@
-import asyncio
-import os
 from random import randint
 
 import asynctest
 from aiohttp import web
-from aiohttp.test_utils import TestClient, TestServer
 from asynctest import mock, CoroutineMock, Mock, patch
 
 from asyncworker import App
 from asyncworker.conf import settings, Settings
 from asyncworker.routes import call_http_handler, RouteTypes, RoutesRegistry
 from asyncworker.signals.handlers.http import HTTPServer
+from asyncworker.testing import HttpClientContext
 from asyncworker.types.registry import TypesRegistry
 
 
@@ -35,7 +33,7 @@ class HTTPServerTests(asynctest.TestCase):
                 },
             }
         )
-        self.app = App("localhost", "guest", "guest", 1)
+        self.app = App(connections=[])
 
     @asynctest.patch("asyncworker.signals.handlers.http.web.TCPSite.start")
     async def test_startup_initializes_an_web_application(self, start):
@@ -93,7 +91,7 @@ class HTTPServerTests(asynctest.TestCase):
     ):
         self.app.routes_registry = self.routes_registry
 
-        self.assertEqual(self.app, {})
+        self.assertNotIn("runner", self.app[RouteTypes.HTTP])
 
         await self.signal_handler.shutdown(self.app)
 
@@ -108,21 +106,15 @@ class HTTPServerTests(asynctest.TestCase):
         async def index(r):
             return web.json_response({"OK": True})
 
-        with mock.patch.dict(os.environ, ASYNCWORKER_HTTP_PORT="9999"):
+        async with HttpClientContext(self.app) as client:
             settings_mock = Settings()
             with mock.patch(
                 "asyncworker.signals.handlers.http.settings", settings_mock
             ):
-                await self.signal_handler.startup(self.app)
-                async with TestClient(
-                    TestServer(self.app[RouteTypes.HTTP]["app"]),
-                    loop=asyncio.get_event_loop(),
-                ) as client:
-                    resp = await client.get("/")
-                    self.assertEqual(resp.status, 200)
-                    data = await resp.json()
-                    self.assertDictEqual({"OK": True}, data)
-                await self.signal_handler.shutdown(self.app)
+                resp = await client.get("/")
+                self.assertEqual(resp.status, 200)
+                data = await resp.json()
+                self.assertDictEqual({"OK": True}, data)
 
     async def test_can_call_handler_without_annotation(self):
         """
@@ -134,19 +126,13 @@ class HTTPServerTests(asynctest.TestCase):
         async def handler(request):
             return web.json_response({})
 
-        with mock.patch.dict(os.environ, ASYNCWORKER_HTTP_PORT="9999"):
+        async with HttpClientContext(self.app) as client:
             settings_mock = Settings()
             with mock.patch(
                 "asyncworker.signals.handlers.http.settings", settings_mock
             ):
-                await self.signal_handler.startup(self.app)
-                async with TestClient(
-                    TestServer(self.app[RouteTypes.HTTP]["app"]),
-                    loop=asyncio.get_event_loop(),
-                ) as client:
-                    resp = await client.get("/")
-                    self.assertEqual(200, resp.status)
-                await self.signal_handler.shutdown(self.app)
+                resp = await client.get("/")
+                self.assertEqual(200, resp.status)
 
     async def test_add_registry_to_all_requests(self):
         @self.app.route(["/"], type=RouteTypes.HTTP, methods=["GET"])
@@ -156,19 +142,13 @@ class HTTPServerTests(asynctest.TestCase):
             assert isinstance(registry, TypesRegistry)
             return web.json_response({})
 
-        with mock.patch.dict(os.environ, ASYNCWORKER_HTTP_PORT="9999"):
+        async with HttpClientContext(self.app) as client:
             settings_mock = Settings()
             with mock.patch(
                 "asyncworker.signals.handlers.http.settings", settings_mock
             ):
-                await self.signal_handler.startup(self.app)
-                async with TestClient(
-                    TestServer(self.app[RouteTypes.HTTP]["app"]),
-                    loop=asyncio.get_event_loop(),
-                ) as client:
-                    resp = await client.get("/")
-                    self.assertEqual(200, resp.status)
-                await self.signal_handler.shutdown(self.app)
+                resp = await client.get("/")
+                self.assertEqual(200, resp.status)
 
     async def test_resolves_handler_parameters(self):
         expected_user_name = "Some User Name"
@@ -189,21 +169,15 @@ class HTTPServerTests(asynctest.TestCase):
         async def handler(user: User):
             return web.json_response({"name": user.name})
 
-        with mock.patch.dict(os.environ, ASYNCWORKER_HTTP_PORT="9999"):
+        async with HttpClientContext(self.app) as client:
             settings_mock = Settings()
             with mock.patch(
                 "asyncworker.signals.handlers.http.settings", settings_mock
             ):
-                await self.signal_handler.startup(self.app)
-                async with TestClient(
-                    TestServer(self.app[RouteTypes.HTTP]["app"]),
-                    loop=asyncio.get_event_loop(),
-                ) as client:
-                    resp = await client.get("/")
-                    self.assertEqual(200, resp.status)
-                    resp_data = await resp.json()
-                    self.assertEqual({"name": expected_user_name}, resp_data)
-                await self.signal_handler.shutdown(self.app)
+                resp = await client.get("/")
+                self.assertEqual(200, resp.status)
+                resp_data = await resp.json()
+                self.assertEqual({"name": expected_user_name}, resp_data)
 
     async def test_multiple_decorators_using_call_handler(self):
         expected_user_name = "Some User Name"
@@ -241,27 +215,21 @@ class HTTPServerTests(asynctest.TestCase):
                 {"account": account.name, "user": user.name}
             )
 
-        with mock.patch.dict(os.environ, ASYNCWORKER_HTTP_PORT="9999"):
+        async with HttpClientContext(self.app) as client:
             settings_mock = Settings()
             with mock.patch(
                 "asyncworker.signals.handlers.http.settings", settings_mock
             ):
-                await self.signal_handler.startup(self.app)
-                async with TestClient(
-                    TestServer(self.app[RouteTypes.HTTP]["app"]),
-                    loop=asyncio.get_event_loop(),
-                ) as client:
-                    resp = await client.get("/")
-                    self.assertEqual(200, resp.status)
-                    resp_data = await resp.json()
-                    self.assertEqual(
-                        {
-                            "user": expected_user_name,
-                            "account": expected_account_name,
-                        },
-                        resp_data,
-                    )
-                await self.signal_handler.shutdown(self.app)
+                resp = await client.get("/")
+                self.assertEqual(200, resp.status)
+                resp_data = await resp.json()
+                self.assertEqual(
+                    {
+                        "user": expected_user_name,
+                        "account": expected_account_name,
+                    },
+                    resp_data,
+                )
 
     async def test_resolves_handler_parameters_when_receiving_request(self):
         def my_decorator(handler):
@@ -275,39 +243,27 @@ class HTTPServerTests(asynctest.TestCase):
         async def handler(request: web.Request):
             return web.json_response({"num": request.query["num"]})
 
-        with mock.patch.dict(os.environ, ASYNCWORKER_HTTP_PORT="9999"):
+        async with HttpClientContext(self.app) as client:
             settings_mock = Settings()
             with mock.patch(
                 "asyncworker.signals.handlers.http.settings", settings_mock
             ):
-                await self.signal_handler.startup(self.app)
-                async with TestClient(
-                    TestServer(self.app[RouteTypes.HTTP]["app"]),
-                    loop=asyncio.get_event_loop(),
-                ) as client:
-                    resp = await client.get("/", params={"num": 42})
-                    self.assertEqual(200, resp.status)
-                    resp_data = await resp.json()
-                    self.assertEqual({"num": "42"}, resp_data)
-                await self.signal_handler.shutdown(self.app)
+                resp = await client.get("/", params={"num": 42})
+                self.assertEqual(200, resp.status)
+                resp_data = await resp.json()
+                self.assertEqual({"num": "42"}, resp_data)
 
     async def test_ignores_return_annotation_when_resolving_parameters(self):
         @self.app.route(["/"], type=RouteTypes.HTTP, methods=["GET"])
         async def handler(request: web.Request) -> web.Response:
             return web.json_response({"num": request.query["num"]})
 
-        with mock.patch.dict(os.environ, ASYNCWORKER_HTTP_PORT="9999"):
+        async with HttpClientContext(self.app) as client:
             settings_mock = Settings()
             with mock.patch(
                 "asyncworker.signals.handlers.http.settings", settings_mock
             ):
-                await self.signal_handler.startup(self.app)
-                async with TestClient(
-                    TestServer(self.app[RouteTypes.HTTP]["app"]),
-                    loop=asyncio.get_event_loop(),
-                ) as client:
-                    resp = await client.get("/", params={"num": 42})
-                    self.assertEqual(200, resp.status)
-                    resp_data = await resp.json()
-                    self.assertEqual({"num": "42"}, resp_data)
-                await self.signal_handler.shutdown(self.app)
+                resp = await client.get("/", params={"num": 42})
+                self.assertEqual(200, resp.status)
+                resp_data = await resp.json()
+                self.assertEqual({"num": "42"}, resp_data)

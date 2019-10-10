@@ -1,16 +1,19 @@
+from collections import ValuesView
+from typing import ItemsView
+
 import asynctest
 from asynctest import Mock
 
 from asyncworker.conf import settings
+from asyncworker.connections import AMQPConnection
 from asyncworker.easyqueue.queue import JsonQueue
-from asyncworker.rabbitmq.connection import AMQPConnection
 
 
 class AMQPConnectionTests(asynctest.TestCase):
     async def setUp(self):
-        self.username = Mock()
-        self.password = Mock()
-        self.hostname = Mock()
+        self.username = "admin"
+        self.password = "123456"
+        self.hostname = "127.0.0.1"
         self.rabbitmq_connection = AMQPConnection(
             hostname=self.hostname,
             username=self.username,
@@ -100,8 +103,7 @@ class AMQPConnectionTests(asynctest.TestCase):
         connection_a = asynctest.Mock(virtual_host="a", spec=JsonQueue)
 
         with asynctest.patch(
-            "asyncworker.rabbitmq.connection.JsonQueue",
-            return_value=connection_a,
+            "asyncworker.connections.JsonQueue", return_value=connection_a
         ):
             await self.rabbitmq_connection.put(
                 data=self.body,
@@ -116,3 +118,31 @@ class AMQPConnectionTests(asynctest.TestCase):
                 exchange=self.exchange,
                 serialized_data=None,
             )
+
+    async def test_initialize_with_connections(self):
+        connection_a = asynctest.Mock(
+            virtual_host=settings.AMQP_DEFAULT_VHOST, spec=JsonQueue
+        )
+        connection_b = asynctest.Mock(virtual_host="b", spec=JsonQueue)
+        conn = AMQPConnection(
+            hostname="localhost",
+            username="guest",
+            password="pwd",
+            connections={"a": connection_a, "b": connection_b},
+        )
+        self.assertEqual(
+            {"a": connection_a, "b": connection_b}, conn.connections
+        )
+
+    async def test_items(self):
+        conn = AMQPConnection(
+            hostname="localhost", username="guest", password="pwd"
+        )
+        self.assertEqual(ItemsView(conn), conn.items())
+
+    async def test_values(self):
+        self.maxDiff = None
+        conn = AMQPConnection(
+            hostname="localhost", username="guest", password="pwd"
+        )
+        self.assertEqual(str(ValuesView(conn)), str(conn.values()))

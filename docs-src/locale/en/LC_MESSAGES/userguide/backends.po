@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Asyncworker \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-07-05 21:50-0300\n"
+"POT-Creation-Date: 2019-08-04 12:11-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -22,10 +22,121 @@ msgstr ""
 msgid "Backends"
 msgstr ""
 
-#: ../../userguide/backends.rst:4
+#: ../../userguide/backends.rst:7
 msgid ""
 "O asyncworker suporte alguns backends diferentes. Por backend entende-se "
 "a origem do estímulo que será processado pelo seu worker, ou mais "
 "específicamente, por um handler do seu worker."
 msgstr ""
+
+#: ../../userguide/backends.rst:11
+msgid "Atualmente o projeto suporta as seguintes backends:"
+msgstr ""
+
+#: ../../userguide/backends.rst:13
+msgid "`RabbitMQ`_: Consumo de mensagens AMQP;"
+msgstr ""
+
+#: ../../userguide/backends.rst:14
+msgid ""
+"`Server Side Events`_: Possibilidade de eventos de um endpoint que "
+"implementa Server Side Events;"
+msgstr ""
+
+#: ../../userguide/backends.rst:15
+msgid "`HTTP`_: Possibilidade de receber dados via requisições HTTP"
+msgstr ""
+
+#: ../../userguide/backends.rst:23
+msgid "Consumindo de uma fila no RabbitMQ"
+msgstr ""
+
+#: ../../userguide/backends.rst:41
+msgid ""
+"Nesse exemplo, o handler ``drain_handler()`` recebe mensagens de ambas as"
+" filas: ``asgard/counts`` e ``asgard/counts/errors``."
+msgstr ""
+
+#: ../../userguide/backends.rst:44
+msgid ""
+"Se o handler lançar alguma exception, a mensagem é automaticamente "
+"devolvida para a fila (reject com requeue=True); Se o handler rodar sem "
+"erros, a mensagem é automaticamente confirmada (ack)."
+msgstr ""
+
+#: ../../userguide/backends.rst:50
+msgid "Lendo dados de um endpoint Server Side Events"
+msgstr ""
+
+#: ../../userguide/backends.rst:77
+msgid ""
+"Nesse exemplo, o handler ``_on_event()`` recebe os eventos enviados pelo "
+"servidor. O objeto ``events`` é sempre uma lista, mesmo quando estamos "
+"usando ``BULK_SIZE=1`` (Falaremos sobre isso mais a frente)"
+msgstr ""
+
+#: ../../userguide/backends.rst:83
+msgid "Recebendo dados através de requisições HTTP"
+msgstr ""
+
+#: ../../userguide/backends.rst:96
+msgid ""
+"Nesse exemplo, declaramos um handler ``index``, que receberá uma "
+"instância de ``aiohttp.web.Request`` para cada acesso as rotas ``GET /`` "
+"e ``GET /hello``."
+msgstr ""
+
+#: ../../userguide/backends.rst:102
+msgid "Rodando seu worker"
+msgstr ""
+
+#: ../../userguide/backends.rst:104
+msgid ""
+"Ambos os exemplos precisam de um ``main()`` para poderem rodar. Um "
+"exemplo de ``main`` seria o seguinte, assumindo que o objeto ``app`` está"
+" no módulo ``myworker``:"
+msgstr ""
+
+#: ../../userguide/backends.rst:115
+msgid ""
+"Nesse ponto sua app já estará rodando e caso você seja desconectado, um "
+"loop ficará tentanto reconectar. A cada erro de conexão um log de "
+"exception é gerado."
+msgstr ""
+
+#~ msgid ""
+#~ "`RabbitMQ`_: Somente leitura de mensagens. "
+#~ "A implementação de publicação de "
+#~ "mensagens será feita no #9;"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "`Server Side Events`_: Possibilidade de "
+#~ "eventos de um endpoint que emite "
+#~ "implementa Server Side Events."
+#~ msgstr ""
+
+#~ msgid "`HTTP`_: Possibilidade de receber dados via requisições HTTP"
+#~ msgstr ""
+
+#~ msgid "Worker lendo dados de um RabbitMQ"
+#~ msgstr ""
+
+#~ msgid "Worker lendo dados de um endpoint Server Side Events"
+#~ msgstr ""
+
+#~ msgid "Worker lendo dados de requisições HTTP"
+#~ msgstr ""
+
+#~ msgid "`Server Side Events`_: Possibilidade de eventos de um endpoint que"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "implementa Server Side Events; -  "
+#~ "`HTTP`_: Possibilidade de receber dados "
+#~ "via requisições HTTP"
+#~ msgstr ""
+
+#~ msgid "Rodando esses códigos"
+#~ msgstr ""
 

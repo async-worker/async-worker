@@ -5,19 +5,22 @@ Subpackages
 -----------
 
 .. toctree::
-
+   asyncworker.app
+   asyncworker.connections
    asyncworker.easyqueue
+   asyncworker.exceptions
    asyncworker.rabbitmq
    asyncworker.signals
    asyncworker.sse
+   asyncworker.testing
 
 Submodules
 ----------
 
-asyncworker.base module
------------------------
+asyncworker.app module
+----------------------
 
-.. automodule:: asyncworker.base
+.. automodule:: asyncworker.app
    :members:
    :undoc-members:
    :show-inheritance:
@@ -38,6 +41,14 @@ asyncworker.conf module
    :undoc-members:
    :show-inheritance:
 
+asyncworker.connections module
+------------------------------
+
+.. automodule:: asyncworker.connections
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 asyncworker.consumer module
 ---------------------------
 
@@ -45,6 +56,15 @@ asyncworker.consumer module
    :members:
    :undoc-members:
    :show-inheritance:
+
+asyncworker.exceptions module
+-----------------------------
+
+.. automodule:: asyncworker.exceptions
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 
 asyncworker.options module
 --------------------------
@@ -69,6 +89,15 @@ asyncworker.task\_runners module
    :members:
    :undoc-members:
    :show-inheritance:
+
+asyncworker.testing module
+---------------------------
+
+.. automodule:: asyncworker.testing
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 
 asyncworker.time module
 -----------------------

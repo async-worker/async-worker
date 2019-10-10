@@ -1,6 +1,16 @@
 import abc
 from collections import UserDict
-from typing import Callable, Coroutine, Dict, List, Any, Union, Iterable, Type
+from typing import (
+    Callable,
+    Coroutine,
+    Dict,
+    List,
+    Any,
+    Union,
+    Iterable,
+    Type,
+    Optional,
+)
 
 from aiohttp import web
 from aiohttp.hdrs import METH_ALL
@@ -9,6 +19,7 @@ from cached_property import cached_property
 from pydantic import BaseModel, validator
 
 from asyncworker.conf import settings
+from asyncworker.connections import AMQPConnection
 from asyncworker.options import DefaultValues, RouteTypes, Actions
 from asyncworker.types.registry import TypesRegistry
 from asyncworker.types.resolver import ArgResolver, MissingTypeAnnotationError
@@ -23,8 +34,14 @@ class Model(BaseModel, abc.ABC):
 
     def __getitem__(self, item):
         try:
-            return self.__getattr__(item)
+            return getattr(self, item)
         except AttributeError as e:
+            raise KeyError from e
+
+    def __setitem__(self, key, value):
+        try:
+            return self.__setattr__(key, value)
+        except (AttributeError, ValueError) as e:
             raise KeyError from e
 
     def __eq__(self, other):
@@ -45,6 +62,10 @@ class Model(BaseModel, abc.ABC):
             return default
 
 
+class _RouteOptions(Model):
+    pass
+
+
 class Route(Model, abc.ABC):
     """
     An abstract Model that acts like a route factory
@@ -53,7 +74,7 @@ class Route(Model, abc.ABC):
     type: RouteTypes
     handler: Any
     routes: List[str]
-    default_options: dict = {}
+    options: _RouteOptions = _RouteOptions()
 
     @staticmethod
     def factory(data: Dict) -> "Route":
@@ -74,6 +95,7 @@ class Route(Model, abc.ABC):
 class HTTPRoute(Route):
     type: RouteTypes = RouteTypes.HTTP
     methods: List[str]
+    options: _RouteOptions = _RouteOptions()
 
     @validator("methods")
     def validate_method(cls, v: str):
@@ -94,11 +116,15 @@ class HTTPRoute(Route):
                 )
 
 
-class _AMQPRouteOptions(Model):
+class _AMQPRouteOptions(_RouteOptions):
     bulk_size: int = DefaultValues.BULK_SIZE
     bulk_flush_interval: int = DefaultValues.BULK_FLUSH_INTERVAL
     on_success: Actions = DefaultValues.ON_SUCCESS
     on_exception: Actions = DefaultValues.ON_EXCEPTION
+    connection: Optional[Union[AMQPConnection, str]]
+
+    class Config:
+        arbitrary_types_allowed = True
 
 
 class AMQPRoute(Route):
@@ -107,7 +133,7 @@ class AMQPRoute(Route):
     options: _AMQPRouteOptions
 
 
-class _SSERouteOptions(Model):
+class _SSERouteOptions(_RouteOptions):
     bulk_size: int = DefaultValues.BULK_SIZE
     bulk_flush_interval: int = DefaultValues.BULK_FLUSH_INTERVAL
     headers: Dict[str, str] = {}

@@ -47,7 +47,7 @@ jobs:
       - fmt-check
       - isort-check
       - lint
-      - typehint-cov
+      #- typehint-cov
       - all-tests
       - run:
           when: on_success

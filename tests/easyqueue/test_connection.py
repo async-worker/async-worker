@@ -1,7 +1,7 @@
 import asyncio
 
 import asynctest
-from asynctest import Mock, CoroutineMock, call, ANY
+from asynctest import Mock, CoroutineMock, call, ANY, mock
 
 from asyncworker.easyqueue.connection import AMQPConnection
 from tests.easyqueue.base import AsyncBaseTestCase
@@ -66,3 +66,16 @@ class AMQPConnectionTests(AsyncBaseTestCase, asynctest.TestCase):
 
         self.assertTrue(self._protocol.close.called)
         self.assertTrue(self._transport.close.called)
+
+    async def test_is_does_not_close_if_already_closed(self):
+
+        with mock.patch.object(
+            self.connection, "_protocol", CoroutineMock(close=CoroutineMock())
+        ) as _protocol, mock.patch.object(
+            self.connection, "_transport"
+        ) as _transport:
+
+            await self.connection.close()
+
+            self.assertEqual(0, _protocol.close.await_count)
+            self.assertEqual(0, _transport.close.call_count)

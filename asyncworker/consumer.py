@@ -157,7 +157,6 @@ class Consumer(QueueConsumerDelegate):
         :param handler_error: The exception that triggered
         :param kwargs: arguments used to call the coroutine that handled
         the message
-        :return:
         """
         await self._log_exception(handler_error)
 

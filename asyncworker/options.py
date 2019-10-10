@@ -1,9 +1,9 @@
 from enum import Enum, auto
-from typing import List
+from typing import List, Any
 
 
 class AutoNameEnum(str, Enum):
-    def _generate_next_value_(
+    def _generate_next_value_(  # type: ignore
         name: str, start: int, count: int, last_values: List[str]
     ) -> str:
         return name.lower()
