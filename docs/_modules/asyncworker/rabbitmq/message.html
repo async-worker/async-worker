@@ -32,12 +32,12 @@
           <div class="body" role="main">
             
   <h1>Código fonte para asyncworker.rabbitmq.message</h1><div class="highlight"><pre>
-<span></span><span class="kn">from</span> <span class="nn">asyncworker.easyqueue.message</span> <span class="k">import</span> <span class="n">AMQPMessage</span>
-<span class="kn">from</span> <span class="nn">asyncworker.options</span> <span class="k">import</span> <span class="n">Actions</span>
+<span></span><span class="kn">from</span> <span class="nn">asyncworker.easyqueue.message</span> <span class="kn">import</span> <span class="n">AMQPMessage</span>
+<span class="kn">from</span> <span class="nn">asyncworker.options</span> <span class="kn">import</span> <span class="n">Actions</span>
 
 
 <div class="viewcode-block" id="RabbitMQMessage"><a class="viewcode-back" href="../../../src/asyncworker/asyncworker.rabbitmq.html#asyncworker.rabbitmq.message.RabbitMQMessage">[documentos]</a><span class="k">class</span> <span class="nc">RabbitMQMessage</span><span class="p">:</span>
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">delivery_tag</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
         <span class="n">amqp_message</span><span class="p">:</span> <span class="n">AMQPMessage</span><span class="p">,</span>

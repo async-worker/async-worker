@@ -31,10 +31,10 @@
           <div class="body" role="main">
             
   <h1>Source code for asyncworker.sse.app</h1><div class="highlight"><pre>
-<span></span><span class="kn">from</span> <span class="nn">typing</span> <span class="k">import</span> <span class="n">Dict</span>
+<span></span><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Dict</span>
 
-<span class="kn">from</span> <span class="nn">asyncworker</span> <span class="k">import</span> <span class="n">BaseApp</span>
-<span class="kn">from</span> <span class="nn">asyncworker.signals.handlers.sse</span> <span class="k">import</span> <span class="n">SSE</span>
+<span class="kn">from</span> <span class="nn">asyncworker</span> <span class="kn">import</span> <span class="n">BaseApp</span>
+<span class="kn">from</span> <span class="nn">asyncworker.signals.handlers.sse</span> <span class="kn">import</span> <span class="n">SSE</span>
 
 <span class="n">SSE_DEFAULT_HEADERS</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;Accept&quot;</span><span class="p">:</span> <span class="s2">&quot;text/event-stream&quot;</span><span class="p">}</span>
 
@@ -42,7 +42,7 @@
 <div class="viewcode-block" id="SSEApplication"><a class="viewcode-back" href="../../../src/asyncworker/asyncworker.sse.html#asyncworker.sse.app.SSEApplication">[docs]</a><span class="k">class</span> <span class="nc">SSEApplication</span><span class="p">(</span><span class="n">BaseApp</span><span class="p">):</span>
     <span class="n">handlers</span> <span class="o">=</span> <span class="p">(</span><span class="n">SSE</span><span class="p">(),)</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">url</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
         <span class="n">logger</span><span class="p">,</span>
