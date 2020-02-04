@@ -42,8 +42,8 @@
 
 <span class="n">app</span> <span class="o">=</span> <span class="n">App</span><span class="p">()</span>
 
-<span class="nd">@app.route</span><span class="p">([</span><span class="s2">&quot;/&quot;</span><span class="p">],</span> <span class="nb">type</span><span class="o">=</span><span class="n">RouteTypes</span><span class="o">.</span><span class="n">HTTP</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;GET&quot;</span><span class="p">])</span>
-<span class="n">async</span> <span class="k">def</span> <span class="nf">handler</span><span class="p">(</span><span class="n">req</span><span class="p">:</span> <span class="n">web</span><span class="o">.</span><span class="n">Request</span><span class="p">):</span>
+<span class="nd">@app</span><span class="o">.</span><span class="n">route</span><span class="p">([</span><span class="s2">&quot;/&quot;</span><span class="p">],</span> <span class="nb">type</span><span class="o">=</span><span class="n">RouteTypes</span><span class="o">.</span><span class="n">HTTP</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;GET&quot;</span><span class="p">])</span>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">handler</span><span class="p">(</span><span class="n">req</span><span class="p">:</span> <span class="n">web</span><span class="o">.</span><span class="n">Request</span><span class="p">):</span>
   <span class="k">return</span> <span class="n">web</span><span class="o">.</span><span class="n">json_response</span><span class="p">({})</span>
 </pre></div>
 </div>
@@ -60,11 +60,11 @@
 <span class="n">amqp_conn</span> <span class="o">=</span> <span class="n">AMQPConnection</span><span class="p">(</span><span class="n">host</span><span class="o">=</span><span class="s2">&quot;127.0.0.1&quot;</span><span class="p">,</span> <span class="n">user</span><span class="o">=</span><span class="s2">&quot;guest&quot;</span><span class="p">,</span> <span class="n">password</span><span class="o">=</span><span class="s2">&quot;guest&quot;</span><span class="p">,</span> <span class="n">prefetch_count</span><span class="o">=</span><span class="mi">256</span><span class="p">)</span>
 <span class="n">app</span> <span class="o">=</span> <span class="n">App</span><span class="p">(</span><span class="n">connections</span><span class="o">=</span><span class="p">[</span><span class="n">amqp_conn</span><span class="p">])</span>
 
-<span class="nd">@app.route</span><span class="p">([</span><span class="s2">&quot;asgard/counts&quot;</span><span class="p">,</span> <span class="s2">&quot;asgard/counts/errors&quot;</span><span class="p">],</span>
+<span class="nd">@app</span><span class="o">.</span><span class="n">route</span><span class="p">([</span><span class="s2">&quot;asgard/counts&quot;</span><span class="p">,</span> <span class="s2">&quot;asgard/counts/errors&quot;</span><span class="p">],</span>
            <span class="nb">type</span><span class="o">=</span><span class="n">RouteTypes</span><span class="o">.</span><span class="n">AMQP_RABBITMQ</span><span class="p">,</span>
            <span class="n">vhost</span><span class="o">=</span><span class="s2">&quot;fluentd&quot;</span><span class="p">)</span>
-<span class="n">async</span> <span class="k">def</span> <span class="nf">drain_handler</span><span class="p">(</span><span class="n">message</span><span class="p">):</span>
-    <span class="k">print</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">drain_handler</span><span class="p">(</span><span class="n">message</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>Nesse exemplo, o handler <code class="docutils literal notranslate"><span class="pre">drain_handler()</span></code> recebe mensagens de ambas
@@ -83,10 +83,10 @@ erros, a mensagem é automaticamente confirmada (ack).</p>
 <span class="n">sse_conn</span> <span class="o">=</span> <span class="n">SSEConnection</span><span class="p">(</span><span class="n">url</span><span class="o">=</span><span class="s2">&quot;http://172.18.0.31:8080/&quot;</span><span class="p">)</span>
 <span class="n">app</span> <span class="o">=</span> <span class="n">App</span><span class="p">(</span><span class="n">connections</span><span class="o">=</span><span class="p">[</span><span class="n">sse_conn</span><span class="p">])</span>
 
-<span class="nd">@app.route</span><span class="p">([</span><span class="s2">&quot;/v2/events&quot;</span><span class="p">],</span> <span class="nb">type</span><span class="o">=</span><span class="n">RouteTypes</span><span class="o">.</span><span class="n">SSE</span><span class="p">,</span> <span class="n">options</span><span class="o">=</span><span class="p">{</span><span class="n">Options</span><span class="o">.</span><span class="n">BULK_SIZE</span><span class="p">:</span> <span class="mi">2</span><span class="p">})</span>
-<span class="n">async</span> <span class="k">def</span> <span class="nf">_on_event</span><span class="p">(</span><span class="n">events</span><span class="p">):</span>
+<span class="nd">@app</span><span class="o">.</span><span class="n">route</span><span class="p">([</span><span class="s2">&quot;/v2/events&quot;</span><span class="p">],</span> <span class="nb">type</span><span class="o">=</span><span class="n">RouteTypes</span><span class="o">.</span><span class="n">SSE</span><span class="p">,</span> <span class="n">options</span><span class="o">=</span><span class="p">{</span><span class="n">Options</span><span class="o">.</span><span class="n">BULK_SIZE</span><span class="p">:</span> <span class="mi">2</span><span class="p">})</span>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">_on_event</span><span class="p">(</span><span class="n">events</span><span class="p">):</span>
     <span class="n">event_names</span> <span class="o">=</span> <span class="p">[</span><span class="n">e</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="n">events</span><span class="p">]</span>
-    <span class="k">print</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;Events received: {len(events)} {event_names}&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Events received: {len(events)} </span><span class="si">{event_names}</span><span class="s2">&quot;</span><span class="p">)</span>
     <span class="k">for</span> <span class="n">event</span> <span class="ow">in</span> <span class="n">events</span><span class="p">:</span>
         <span class="n">data</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
         <span class="k">if</span> <span class="n">event</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s1">&#39;deployment_info&#39;</span><span class="p">:</span>
@@ -94,9 +94,9 @@ erros, a mensagem é automaticamente confirmada (ack).</p>
         <span class="k">if</span> <span class="n">event</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s1">&#39;deployment_success&#39;</span><span class="p">:</span>
             <span class="n">data</span> <span class="o">=</span> <span class="n">event</span><span class="o">.</span><span class="n">body</span><span class="p">[</span><span class="s1">&#39;id&#39;</span><span class="p">]</span>
         <span class="k">if</span> <span class="n">event</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s1">&#39;status_update_event&#39;</span><span class="p">:</span>
-            <span class="n">data</span> <span class="o">=</span> <span class="n">f</span><span class="s2">&quot;app={event.body[&#39;appId&#39;]}, task={event.body[&#39;taskId&#39;]} ({event.body[&#39;taskStatus&#39;]})&quot;</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;app=</span><span class="si">{event.body[&#39;appId&#39;]}</span><span class="s2">, task=</span><span class="si">{event.body[&#39;taskId&#39;]}</span><span class="s2"> (</span><span class="si">{event.body[&#39;taskStatus&#39;]}</span><span class="s2">)&quot;</span>
 
-        <span class="k">print</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;Event Received: {event.name} {data}&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Event Received: </span><span class="si">{event.name}</span><span class="s2"> </span><span class="si">{data}</span><span class="s2">&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>Nesse exemplo, o handler <code class="docutils literal notranslate"><span class="pre">_on_event()</span></code> recebe os eventos enviados pelo
@@ -110,8 +110,8 @@ usando <code class="docutils literal notranslate"><span class="pre">BULK_SIZE=1<
 
 <span class="c1"># ...</span>
 
-<span class="nd">@app.route</span><span class="p">(</span><span class="n">routes</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;/&#39;</span><span class="p">,</span> <span class="s1">&#39;/hello&#39;</span><span class="p">],</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;GET&#39;</span><span class="p">],</span> <span class="nb">type</span><span class="o">=</span><span class="n">RouteTypes</span><span class="o">.</span><span class="n">HTTP</span><span class="p">)</span>
-<span class="n">async</span> <span class="k">def</span> <span class="nf">index</span><span class="p">(</span><span class="n">request</span><span class="p">:</span> <span class="n">web</span><span class="o">.</span><span class="n">Request</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">web</span><span class="o">.</span><span class="n">Response</span><span class="p">:</span>
+<span class="nd">@app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="n">routes</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;/&#39;</span><span class="p">,</span> <span class="s1">&#39;/hello&#39;</span><span class="p">],</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;GET&#39;</span><span class="p">],</span> <span class="nb">type</span><span class="o">=</span><span class="n">RouteTypes</span><span class="o">.</span><span class="n">HTTP</span><span class="p">)</span>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">index</span><span class="p">(</span><span class="n">request</span><span class="p">:</span> <span class="n">web</span><span class="o">.</span><span class="n">Request</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">web</span><span class="o">.</span><span class="n">Response</span><span class="p">:</span>
     <span class="k">return</span> <span class="n">web</span><span class="o">.</span><span class="n">Response</span><span class="p">(</span><span class="n">body</span><span class="o">=</span><span class="s2">&quot;Hello world&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
