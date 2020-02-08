@@ -5,29 +5,19 @@
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/ambv/black)
 [![PyPI version](https://badge.fury.io/py/async-worker.svg)](https://badge.fury.io/py/async-worker)
 
-# Async Worker
 
-## Propósito
+# O projeto
 
-Ser um microframework (inspirado no flask) para facilitar a escrita de workers assíncronos.
-Atualmente o projeto suporta as seguintes backends:
+O projeto tem como objetivo ser um framework para escrever workers assíncronos em python. Por worker entende-se qualquer aplicação que rode por tempo indeterminado e que receba estímulos de várias origens diferentes. Essas orignes podem ser:
 
-* [RabbitMQ](https://www.rabbitmq.com/): Consumo e produção de mensagens AMQP;
-* [Server Side Events](https://en.wikipedia.org/wiki/Server-sent_events): Possibilidade de eventos de um endpoint que implementa Server Side Events.
-* [HTTP](https://pt.wikipedia.org/wiki/Hypertext_Transfer_Protocol): Possibilidade de receber dados via requisições HTTP
+ - Uma mensagem em um broker, como RabbitMQ;
+ - Um evento vindo se um servidor HTTP, como server side events;
+ - Um evento recorrente gerado em um intervalo fixo de tempo;
+ - Uma requisição HTTP
+ - ...
 
+ Documentação: https://b2wdigital.github.io/async-worker/
 
-# Incompatibilidades
-
-Atualmente, pelo fato o asyncworker usar o [aiologger](https://github.com/b2wdigital/aiologger), ele é incompatível com apps que usam **múltiplos** loops de evento. Ou seja, se sua app cria um novo loop e substitui o loop anterior isso causará um problema com os logs gerados pelo asyncworker (via aiologger).
-
-No geral, as aplicações assíncronas usam apenas um loop de evento durante todo o seu ciclo de vida. Isso significa que a não se que você esteja escrevendo um código com um comportamento muito específico (que dependa da renovação do loop de eventos) você não terá maiores problemas em usar o asyncworker.
-
-Essa incompatibilidade do aiologger está sendo tratada na issue [#35](https://github.com/b2wdigital/aiologger/issues/35).
-
-## Escrevendo testes
-
-Por causa dessa incompatibilidade com múltiplos loops para escrever testes você precisa ter certeza que seu test runner não está criando novos loops para cada um dos casos de teste sendo rodados. Por padrão o [asynctest](https://github.com/Martiusweb/asynctest) faz isso. No caso do asyntest, basta adicionar um atributo `use_default_loop = True` (doc [aqui](https://asynctest.readthedocs.io/en/latest/asynctest.case.html#asynctest.TestCase.use_default_loop)) em sua classe de teste.
 
 ## Exemplos
 

@@ -17,7 +17,9 @@ O projeto tem como objetivo ser um framework para escrever workers assíncronos 
    :titlesonly:
 
    intro.rst
+   incompat.rst
    userguide/index.rst
+   devguide/index.rst
    changelog/index.rst
 
 
