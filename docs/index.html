@@ -34,7 +34,7 @@
             
   <div class="section" id="bem-vindos-a-documentacao-oficial-do-projeto-asyncworker">
 <h1>Bem vindos à documentação oficial do projeto Asyncworker<a class="headerlink" href="#bem-vindos-a-documentacao-oficial-do-projeto-asyncworker" title="Link permanente para este título">¶</a></h1>
-<p>O projeto tem como objetivo ser um framework para escrever workers assíncronos em python. Por worker entende-se qualquer aplicação que rode por tempo indeterminado e que receba estímulos de várias origens diferentes. Essas orignes podem ser:</p>
+<p>O projeto tem como objetivo ser um framework para escrever workers assíncronos em python. Por worker entende-se qualquer aplicação que rode por tempo indeterminado e que receba estímulos de várias origens diferentes. Essas origens podem ser:</p>
 <blockquote>
 <div><ul class="simple">
 <li><p>Uma mensagem em um broker, como RabbitMQ;</p></li>
@@ -43,18 +43,39 @@
 <li><p>Uma requisição HTTP</p></li>
 <li><p>…</p></li>
 </ul>
-<p>Abaixo você econtra a documentação do projeto.</p>
+<blockquote>
+<div><p>O projeto está no Github: <a class="reference external" href="https://github.com/b2wdigital/async-worker">https://github.com/b2wdigital/async-worker</a></p>
+</div></blockquote>
+<p>Abaixo você econtra mais detalhes sobre como tudo isso funciona.</p>
 </div></blockquote>
 <div class="toctree-wrapper compound">
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="intro.html">Introdução</a></li>
-<li class="toctree-l1"><a class="reference internal" href="userguide/index.html">Guia de uso</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="userguide/quickstart.html">Início rápido</a></li>
-<li class="toctree-l2"><a class="reference internal" href="userguide/backends.html">Backends</a></li>
-<li class="toctree-l2"><a class="reference internal" href="userguide/handlers/index.html">Handlers</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="userguide/handlers/http.html">HTTP</a></li>
+<li class="toctree-l1"><a class="reference internal" href="incompat.html">Incompatibilidades</a><ul class="simple">
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="userguide/index.html">Guia de uso</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="userguide/quickstart.html">Início rápido</a></li>
+<li class="toctree-l2"><a class="reference internal" href="userguide/asyncworker-app/index.html">Asyncworker App</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="userguide/asyncworker-app/intro.html">Sobre a classe principal App</a></li>
+<li class="toctree-l3"><a class="reference internal" href="userguide/asyncworker-app/storage.html">Compartilhamento de dados e inicializações assíncronas</a></li>
+<li class="toctree-l3"><a class="reference internal" href="userguide/asyncworker-app/hooks.html">Hooks de startup e shudtdown</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="userguide/handlers/index.html">Tipos de Handlers</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="userguide/handlers/http.html">HTTP</a></li>
+<li class="toctree-l3"><a class="reference internal" href="userguide/handlers/rabbitmq.html">RabbitMQ</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="userguide/utils/index.html">Utilitários</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="userguide/utils/timeit.html">Timeit</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="userguide/updates/index.html">Atualizando sua App Asyncworker</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="devguide/index.html">Guia de desenvolvimento</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="devguide/tests.html">Escrevendo Testes Unitários</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="changelog/index.html">Changelog</a><ul>
@@ -96,7 +117,9 @@
 <h3>Navegação</h3>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="intro.html">Introdução</a></li>
+<li class="toctree-l1"><a class="reference internal" href="incompat.html">Incompatibilidades</a></li>
 <li class="toctree-l1"><a class="reference internal" href="userguide/index.html">Guia de uso</a></li>
+<li class="toctree-l1"><a class="reference internal" href="devguide/index.html">Guia de desenvolvimento</a></li>
 <li class="toctree-l1"><a class="reference internal" href="changelog/index.html">Changelog</a></li>
 </ul>
 

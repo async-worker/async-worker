@@ -15,8 +15,8 @@
     <script type="text/javascript" src="../../_static/translations.js"></script>
     <link rel="index" title="Índice" href="../../genindex.html" />
     <link rel="search" title="Buscar" href="../../search.html" />
-    <link rel="next" title="Changelog" href="../../changelog/index.html" />
-    <link rel="prev" title="Handlers" href="index.html" />
+    <link rel="next" title="RabbitMQ" href="rabbitmq.html" />
+    <link rel="prev" title="Tipos de Handlers" href="index.html" />
    
   <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
   
@@ -35,6 +35,9 @@
             
   <div class="section" id="http">
 <h1>HTTP<a class="headerlink" href="#http" title="Link permanente para este título">¶</a></h1>
+<div class="versionadded">
+<p><span class="versionmodified added">Novo na versão 0.6.0.</span></p>
+</div>
 <p>Aqui mostraremos como escrever um handler que é estimulado através de requisições HTTP.</p>
 <p>Um handler é simplesmete uma corotina que recebe um request (<code class="docutils literal notranslate"><span class="pre">aiohttp.web.Request</span></code>) e retorna uma response (<code class="docutils literal notranslate"><span class="pre">aiohttp.web.Response</span></code>). Essa corotina passa a ser um handler “asyncworker” quando é decorada com <code class="docutils literal notranslate"><span class="pre">&#64;app.route()</span></code>, onde <code class="docutils literal notranslate"><span class="pre">app</span></code> é uma instância de <code class="docutils literal notranslate"><span class="pre">asyncworker.App</span></code>.</p>
 <p>Vejamos um handler bem simples que apenas retorna <code class="docutils literal notranslate"><span class="pre">HTTP</span> <span class="pre">200</span> <span class="pre">OK</span></code>.</p>
@@ -44,8 +47,23 @@
 </pre></div>
 </div>
 <p>Como recebemos um request do aiohttp, podemos fazer o que for preciso para extrair dele as informações que precisarmos. Para mais detalhes, veja a doc do aiohttp: <a class="reference external" href="https://docs.aiohttp.org/en/stable/web.html">https://docs.aiohttp.org/en/stable/web.html</a></p>
-<div class="section" id="aplicando-decorators-customizados-a-um-handler">
-<h2>Aplicando decorators customizados a um handler<a class="headerlink" href="#aplicando-decorators-customizados-a-um-handler" title="Link permanente para este título">¶</a></h2>
+<div class="section" id="parametrizacao-do-decorator-route-para-handlers-http">
+<h2>Parametrização do decorator route() para handlers HTTP<a class="headerlink" href="#parametrizacao-do-decorator-route-para-handlers-http" title="Link permanente para este título">¶</a></h2>
+<p>Para um handler HTTP deveremos passar os seguintes parametros para o decorator <code class="docutils literal notranslate"><span class="pre">route()</span></code>:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Lista de paths que devem estar na Request HTTP para que esse handler seja chamado;</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">type=RouteTypes.HTTP</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">methods</span></code> sendo uma lista de métodos HTTP permitidos para esse handler</p></li>
+</ul>
+</div></blockquote>
+</div>
+<div class="section" id="envs-para-escolher-a-porta-e-o-ip-onde-o-server-http-estara-escutando">
+<h2>ENVs para escolher a porta e o IP onde o server http estará escutando<a class="headerlink" href="#envs-para-escolher-a-porta-e-o-ip-onde-o-server-http-estara-escutando" title="Link permanente para este título">¶</a></h2>
+<p>Por padrão, fazemos o binding em <code class="docutils literal notranslate"><span class="pre">127.0.0.1</span></code>, porta <code class="docutils literal notranslate"><span class="pre">8080</span></code>, mas isso pode ser alterado com as envvars <code class="docutils literal notranslate"><span class="pre">ASYNCWORKER_HTTP_HOST</span></code> e <code class="docutils literal notranslate"><span class="pre">ASYNCWORKER_HTTP_PORT</span></code>, respectivamente.</p>
+</div>
+<div class="section" id="aplicando-decorators-customizados-a-um-handler-http">
+<h2>Aplicando decorators customizados a um handler HTTP<a class="headerlink" href="#aplicando-decorators-customizados-a-um-handler-http" title="Link permanente para este título">¶</a></h2>
 <p>É possível escrever seus próprios decorators e aplicá-los a seus handlers, junto com o decorator <code class="docutils literal notranslate"><span class="pre">&#64;app.route</span></code>. No entando temos algumas regras:</p>
 <ul class="simple">
 <li><p>O decorator <code class="docutils literal notranslate"><span class="pre">&#64;app.route()</span></code> deve estar sempre no topo da lista de decorators de um handler;</p></li>
@@ -74,7 +92,10 @@
 </div>
 <div class="section" id="handlers-que-recebem-mais-do-que-apenas-request">
 <h2>Handlers que recebem mais do que apenas Request<a class="headerlink" href="#handlers-que-recebem-mais-do-que-apenas-request" title="Link permanente para este título">¶</a></h2>
-<p>O asyncworker (<code class="docutils literal notranslate"><span class="pre">0.10.1+</span></code>) permite que um handler receba quaisquer prametros. Para isso a assinatura do handler deve conter typehints em todos os parametros. Isso faz com que o asyncowker consiga fazer a resolução desses prametros e consiga chamar o handler corretamente.</p>
+<div class="versionadded">
+<p><span class="versionmodified added">Novo na versão 0.11.0.</span></p>
+</div>
+<p>O asyncworker permite que um handler receba quaisquer prametros. Para isso a assinatura do handler deve conter typehints em todos os parametros. Isso faz com que o asyncowker consiga fazer a resolução desses prametros e consiga chamar o handler corretamente.</p>
 <p>Todas as instancias de <code class="docutils literal notranslate"><span class="pre">aiohttp.web.Request</span></code> recebem um atributo chamado <code class="docutils literal notranslate"><span class="pre">types_registry</span></code> que é do tipo <a class="reference internal" href="../../src/asyncworker/asyncworker.types.html#asyncworker.types.registry.TypesRegistry" title="asyncworker.types.registry.TypesRegistry"><code class="xref py py-class docutils literal notranslate"><span class="pre">asyncworker.types.registry.TypesRegistry</span></code></a>. Para que um parametro possa ser passado a um handler ele deve ser adicionado a esse registry do request.</p>
 <p>Um exemplo de como popular esse registry é através de um decorator aplicado diretamente ao um handler. Vejamos um exemplo:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">aiohttp</span> <span class="kn">import</span> <span class="n">web</span>
@@ -123,15 +144,18 @@
 <h3>Navegação</h3>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../../intro.html">Introdução</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../incompat.html">Incompatibilidades</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../index.html">Guia de uso</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="../quickstart.html">Início rápido</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../backends.html">Backends</a></li>
-<li class="toctree-l2 current"><a class="reference internal" href="index.html">Handlers</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../asyncworker-app.html">Sobre a classe principal App</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="index.html">Tipos de Handlers</a><ul class="current">
 <li class="toctree-l3 current"><a class="current reference internal" href="#">HTTP</a></li>
+<li class="toctree-l3"><a class="reference internal" href="rabbitmq.html">RabbitMQ</a></li>
 </ul>
 </li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="../../devguide/index.html">Guia de desenvolvimento</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../changelog/index.html">Changelog</a></li>
 </ul>
 
@@ -140,9 +164,9 @@
 <ul>
   <li><a href="../../index.html">Documentation overview</a><ul>
   <li><a href="../index.html">Guia de uso</a><ul>
-  <li><a href="index.html">Handlers</a><ul>
-      <li>Previous: <a href="index.html" title="capítulo anterior">Handlers</a></li>
-      <li>Next: <a href="../../changelog/index.html" title="próximo capítulo">Changelog</a></li>
+  <li><a href="index.html">Tipos de Handlers</a><ul>
+      <li>Previous: <a href="index.html" title="capítulo anterior">Tipos de Handlers</a></li>
+      <li>Next: <a href="rabbitmq.html" title="próximo capítulo">RabbitMQ</a></li>
   </ul></li>
   </ul></li>
   </ul></li>

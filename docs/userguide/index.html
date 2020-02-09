@@ -16,7 +16,7 @@
     <link rel="index" title="Índice" href="../genindex.html" />
     <link rel="search" title="Buscar" href="../search.html" />
     <link rel="next" title="Início rápido" href="quickstart.html" />
-    <link rel="prev" title="Introdução" href="../intro.html" />
+    <link rel="prev" title="Incompatibilidades" href="../incompat.html" />
    
   <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
   
@@ -44,13 +44,51 @@
 <li class="toctree-l2"><a class="reference internal" href="quickstart.html#rodando-seu-worker">Rodando seu worker</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="backends.html">Backends</a></li>
-<li class="toctree-l1"><a class="reference internal" href="handlers/index.html">Handlers</a><ul>
+<li class="toctree-l1"><a class="reference internal" href="asyncworker-app/index.html">Asyncworker App</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="asyncworker-app/intro.html">Sobre a classe principal App</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="asyncworker-app/intro.html#criando-uma-nova-app">Criando uma nova App</a></li>
+<li class="toctree-l3"><a class="reference internal" href="asyncworker-app/intro.html#definindo-handlers-em-sua-app-asyncworker">Definindo handlers em sua App Asyncworker</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="asyncworker-app/storage.html">Compartilhamento de dados e inicializações assíncronas</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="asyncworker-app/storage.html#armazenando-na-app">Armazenando na App</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="asyncworker-app/hooks.html">Hooks de startup e shudtdown</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="asyncworker-app/hooks.html#app-run-on-startup">&#64;app.run_on_startup</a></li>
+<li class="toctree-l3"><a class="reference internal" href="asyncworker-app/hooks.html#app-run-on-shutdown">&#64;app.run_on_shutdown</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="handlers/index.html">Tipos de Handlers</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="handlers/http.html">HTTP</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="handlers/http.html#aplicando-decorators-customizados-a-um-handler">Aplicando decorators customizados a um handler</a></li>
+<li class="toctree-l3"><a class="reference internal" href="handlers/http.html#parametrizacao-do-decorator-route-para-handlers-http">Parametrização do decorator route() para handlers HTTP</a></li>
+<li class="toctree-l3"><a class="reference internal" href="handlers/http.html#envs-para-escolher-a-porta-e-o-ip-onde-o-server-http-estara-escutando">ENVs para escolher a porta e o IP onde o server http estará escutando</a></li>
+<li class="toctree-l3"><a class="reference internal" href="handlers/http.html#aplicando-decorators-customizados-a-um-handler-http">Aplicando decorators customizados a um handler HTTP</a></li>
 <li class="toctree-l3"><a class="reference internal" href="handlers/http.html#handlers-que-recebem-mais-do-que-apenas-request">Handlers que recebem mais do que apenas Request</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="handlers/rabbitmq.html">RabbitMQ</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="handlers/rabbitmq.html#parametros-adicionais-para-o-decorator-route">Parametros adicionais para o decorator route()</a></li>
+<li class="toctree-l3"><a class="reference internal" href="handlers/rabbitmq.html#escolhendo-individualmente-qual-acao-sera-dada-a-cada-mensgem-recebida">Escolhendo, individualmente, qual ação será dada a cada mensgem recebida</a></li>
+<li class="toctree-l3"><a class="reference internal" href="handlers/rabbitmq.html#sobre-amqpconnection">Sobre AMQPConnection</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="utils/index.html">Utilitários</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="utils/timeit.html">Timeit (0.3.0+)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="utils/timeit.html#gerenciador-de-contexto">Gerenciador de contexto</a></li>
+<li class="toctree-l3"><a class="reference internal" href="utils/timeit.html#decorator">Decorator</a></li>
+<li class="toctree-l3"><a class="reference internal" href="utils/timeit.html#multiplas-transacoes">Múltiplas transações</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="updates/index.html">Atualizando sua App Asyncworker</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="updates/index.html#x-0-6-0">0.5.x -&gt; 0.6.0</a></li>
+<li class="toctree-l2"><a class="reference internal" href="updates/index.html#x-0-2-0">0.1.x -&gt; 0.2.0</a></li>
 </ul>
 </li>
 </ul>
@@ -76,12 +114,16 @@
 <h3>Navegação</h3>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../intro.html">Introdução</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../incompat.html">Incompatibilidades</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Guia de uso</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="quickstart.html">Início rápido</a></li>
-<li class="toctree-l2"><a class="reference internal" href="backends.html">Backends</a></li>
-<li class="toctree-l2"><a class="reference internal" href="handlers/index.html">Handlers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="asyncworker-app/index.html">Asyncworker App</a></li>
+<li class="toctree-l2"><a class="reference internal" href="handlers/index.html">Tipos de Handlers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="utils/index.html">Utilitários</a></li>
+<li class="toctree-l2"><a class="reference internal" href="updates/index.html">Atualizando sua App Asyncworker</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="../devguide/index.html">Guia de desenvolvimento</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../changelog/index.html">Changelog</a></li>
 </ul>
 
@@ -89,7 +131,7 @@
 <h3>Related Topics</h3>
 <ul>
   <li><a href="../index.html">Documentation overview</a><ul>
-      <li>Previous: <a href="../intro.html" title="capítulo anterior">Introdução</a></li>
+      <li>Previous: <a href="../incompat.html" title="capítulo anterior">Incompatibilidades</a></li>
       <li>Next: <a href="quickstart.html" title="próximo capítulo">Início rápido</a></li>
   </ul></li>
 </ul>
