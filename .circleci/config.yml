@@ -71,3 +71,4 @@ workflows:
     jobs:
       - py36
       - py37
+      - py38
