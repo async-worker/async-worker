@@ -154,14 +154,25 @@ class AsyncQueueConnectionTests(AsyncBaseTestCase, asynctest.TestCase):
         }
         exchange = Mock()
         routing_key = Mock()
+        properties = Mock()
+        mandatory = Mock()
+        immediate = Mock()
         await self.queue.put(
-            data=message, exchange=exchange, routing_key=routing_key
+            data=message,
+            exchange=exchange,
+            routing_key=routing_key,
+            properties=properties,
+            mandatory=mandatory,
+            immediate=immediate
         )
 
         expected = call(
             payload=json.dumps(message).encode(),
             routing_key=routing_key,
             exchange_name=exchange,
+            properties=properties,
+            mandatory=mandatory,
+            immediate=immediate
         )
         self.assertEqual(
             [expected], self.queue.connection.channel.publish.call_args_list
@@ -177,16 +188,25 @@ class AsyncQueueConnectionTests(AsyncBaseTestCase, asynctest.TestCase):
         }
         exchange = Mock()
         routing_key = Mock()
+        properties = Mock()
+        mandatory = Mock()
+        immediate = Mock()
         await self.queue.put(
             serialized_data=json.dumps(message),
             exchange=exchange,
             routing_key=routing_key,
+            properties=properties,
+            mandatory=mandatory,
+            immediate=immediate
         )
 
         expected = call(
             payload=json.dumps(message).encode(),
             routing_key=routing_key,
             exchange_name=exchange,
+            properties=properties,
+            mandatory=mandatory,
+            immediate=immediate
         )
         self.assertEqual(
             [expected], self.queue.connection.channel.publish.call_args_list
@@ -202,18 +222,27 @@ class AsyncQueueConnectionTests(AsyncBaseTestCase, asynctest.TestCase):
         }
         exchange = Mock()
         routing_key = Mock()
+        properties = Mock()
+        mandatory = Mock()
+        immediate = Mock()
         with self.assertRaises(ValueError):
             await self.queue.put(
                 serialized_data=json.dumps(message),
                 data=message,
                 exchange=exchange,
                 routing_key=routing_key,
+                properties=properties,
+                mandatory=mandatory,
+                immediate=immediate
             )
 
         expected = call(
             payload=json.dumps(message).encode(),
             routing_key=routing_key,
             exchange_name=exchange,
+            properties=properties,
+            mandatory=mandatory,
+            immediate=immediate
         )
         self.queue.connection.channel.publish.assert_not_called()
 
@@ -221,14 +250,25 @@ class AsyncQueueConnectionTests(AsyncBaseTestCase, asynctest.TestCase):
         payload = json.dumps({"dog": "Xablau"})
         exchange = Mock()
         routing_key = Mock()
+        properties = Mock()
+        mandatory = Mock()
+        immediate = Mock()
         await self.queue.put(
-            serialized_data=payload, exchange=exchange, routing_key=routing_key
+            serialized_data=payload,
+            exchange=exchange,
+            routing_key=routing_key,
+            properties=properties,
+            mandatory=mandatory,
+            immediate=immediate
         )
 
         self.queue.connection.channel.publish.assert_awaited_once_with(
             payload=payload.encode(),
             routing_key=routing_key,
             exchange_name=exchange,
+            properties=properties,
+            mandatory=mandatory,
+            immediate=immediate
         )
 
     async def test_it_doesnt_encodes_payload_into_bytes_if_payload_is_already_bytes(
@@ -237,13 +277,25 @@ class AsyncQueueConnectionTests(AsyncBaseTestCase, asynctest.TestCase):
         payload = json.dumps({"dog": "Xablau"}).encode()
         exchange = Mock()
         routing_key = Mock()
-
+        properties = Mock()
+        mandatory = Mock()
+        immediate = Mock()
         await self.queue.put(
-            serialized_data=payload, exchange=exchange, routing_key=routing_key
+            serialized_data=payload,
+            exchange=exchange,
+            routing_key=routing_key,
+            properties=properties,
+            mandatory=mandatory,
+            immediate=immediate
         )
 
         self.queue.connection.channel.publish.assert_awaited_once_with(
-            payload=payload, routing_key=routing_key, exchange_name=exchange
+            payload=payload,
+            routing_key=routing_key,
+            exchange_name=exchange,
+            properties=properties,
+            mandatory=mandatory,
+            immediate=immediate
         )
 
     async def test_connect_gets_awaited_if_put_is_called_before_connect(self):
@@ -269,6 +321,7 @@ class AsyncQueueConnectionTests(AsyncBaseTestCase, asynctest.TestCase):
 
         exchange = Mock()
         routing_key = Mock()
+
         with self.assertRaises(TypeError):
             await self.queue.put(
                 message, exchange=exchange, routing_key=routing_key
