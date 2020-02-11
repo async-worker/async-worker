@@ -163,7 +163,7 @@ class AsyncQueueConnectionTests(AsyncBaseTestCase, asynctest.TestCase):
             routing_key=routing_key,
             properties=properties,
             mandatory=mandatory,
-            immediate=immediate
+            immediate=immediate,
         )
 
         expected = call(
@@ -172,7 +172,7 @@ class AsyncQueueConnectionTests(AsyncBaseTestCase, asynctest.TestCase):
             exchange_name=exchange,
             properties=properties,
             mandatory=mandatory,
-            immediate=immediate
+            immediate=immediate,
         )
         self.assertEqual(
             [expected], self.queue.connection.channel.publish.call_args_list
@@ -197,7 +197,7 @@ class AsyncQueueConnectionTests(AsyncBaseTestCase, asynctest.TestCase):
             routing_key=routing_key,
             properties=properties,
             mandatory=mandatory,
-            immediate=immediate
+            immediate=immediate,
         )
 
         expected = call(
@@ -206,7 +206,7 @@ class AsyncQueueConnectionTests(AsyncBaseTestCase, asynctest.TestCase):
             exchange_name=exchange,
             properties=properties,
             mandatory=mandatory,
-            immediate=immediate
+            immediate=immediate,
         )
         self.assertEqual(
             [expected], self.queue.connection.channel.publish.call_args_list
@@ -233,7 +233,7 @@ class AsyncQueueConnectionTests(AsyncBaseTestCase, asynctest.TestCase):
                 routing_key=routing_key,
                 properties=properties,
                 mandatory=mandatory,
-                immediate=immediate
+                immediate=immediate,
             )
 
         expected = call(
@@ -242,7 +242,7 @@ class AsyncQueueConnectionTests(AsyncBaseTestCase, asynctest.TestCase):
             exchange_name=exchange,
             properties=properties,
             mandatory=mandatory,
-            immediate=immediate
+            immediate=immediate,
         )
         self.queue.connection.channel.publish.assert_not_called()
 
@@ -259,7 +259,7 @@ class AsyncQueueConnectionTests(AsyncBaseTestCase, asynctest.TestCase):
             routing_key=routing_key,
             properties=properties,
             mandatory=mandatory,
-            immediate=immediate
+            immediate=immediate,
         )
 
         self.queue.connection.channel.publish.assert_awaited_once_with(
@@ -268,7 +268,7 @@ class AsyncQueueConnectionTests(AsyncBaseTestCase, asynctest.TestCase):
             exchange_name=exchange,
             properties=properties,
             mandatory=mandatory,
-            immediate=immediate
+            immediate=immediate,
         )
 
     async def test_it_doesnt_encodes_payload_into_bytes_if_payload_is_already_bytes(
@@ -286,7 +286,7 @@ class AsyncQueueConnectionTests(AsyncBaseTestCase, asynctest.TestCase):
             routing_key=routing_key,
             properties=properties,
             mandatory=mandatory,
-            immediate=immediate
+            immediate=immediate,
         )
 
         self.queue.connection.channel.publish.assert_awaited_once_with(
@@ -295,7 +295,7 @@ class AsyncQueueConnectionTests(AsyncBaseTestCase, asynctest.TestCase):
             exchange_name=exchange,
             properties=properties,
             mandatory=mandatory,
-            immediate=immediate
+            immediate=immediate,
         )
 
     async def test_connect_gets_awaited_if_put_is_called_before_connect(self):

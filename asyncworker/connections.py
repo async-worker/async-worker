@@ -171,7 +171,7 @@ class AMQPConnection(Connection):
         vhost: str = settings.AMQP_DEFAULT_VHOST,
         properties: dict = None,
         mandatory: bool = False,
-        immediate: bool = False
+        immediate: bool = False,
     ):
         conn = self[vhost]
         return await conn.put(
@@ -181,5 +181,5 @@ class AMQPConnection(Connection):
             exchange=exchange,
             properties=properties,
             mandatory=mandatory,
-            immediate=immediate
+            immediate=immediate,
         )
