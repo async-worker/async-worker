@@ -230,6 +230,9 @@ class JsonQueue(BaseQueue, Generic[T]):
         data: Any = None,
         serialized_data: Union[str, bytes] = "",
         exchange: str = "",
+        properties: dict = None,
+        mandatory: bool = False,
+        immediate: bool = False,
     ):
         """
         :param data: A serializable data that should be serialized before
@@ -251,6 +254,9 @@ class JsonQueue(BaseQueue, Generic[T]):
             payload=serialized_data,
             exchange_name=exchange,
             routing_key=routing_key,
+            properties=properties,
+            mandatory=mandatory,
+            immediate=immediate,
         )
 
     @_ensure_connected
