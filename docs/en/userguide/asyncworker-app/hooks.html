@@ -47,9 +47,9 @@ de um loop de eventos rodando. Para esses cenários, usamos o evento de
 
 <span class="c1"># ...</span>
 
-<span class="nd">@app</span><span class="o">.</span><span class="n">run_on_startup</span>
-<span class="k">async</span> <span class="k">def</span> <span class="nf">init_redis</span><span class="p">(</span><span class="n">app</span><span class="p">):</span>
-    <span class="n">app</span><span class="p">[</span><span class="s1">&#39;redis&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="k">await</span> <span class="n">aioredis</span><span class="o">.</span><span class="n">create_pool</span><span class="p">(</span><span class="s1">&#39;redis://localhost&#39;</span><span class="p">)</span>
+<span class="nd">@app.run_on_startup</span>
+<span class="n">async</span> <span class="k">def</span> <span class="nf">init_redis</span><span class="p">(</span><span class="n">app</span><span class="p">):</span>
+    <span class="n">app</span><span class="p">[</span><span class="s1">&#39;redis&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">await</span> <span class="n">aioredis</span><span class="o">.</span><span class="n">create_pool</span><span class="p">(</span><span class="s1">&#39;redis://localhost&#39;</span><span class="p">)</span>
 
 
 <span class="n">app</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
@@ -64,10 +64,10 @@ o processo de finalização de conexões abertas. Como no exemplo anterior
 abrimos uma conexão com o <a class="reference external" href="https://redis.io">Redis</a>, utilizando a biblioteca
 <a class="reference external" href="https://github.com/aio-libs/aioredis">aioredis</a>, precisamos fechar as conexões
 criadas:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@app</span><span class="o">.</span><span class="n">run_on_shutdown</span>
-<span class="k">async</span> <span class="k">def</span> <span class="nf">init_redis</span><span class="p">(</span><span class="n">app</span><span class="p">):</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@app.run_on_shutdown</span>
+<span class="n">async</span> <span class="k">def</span> <span class="nf">init_redis</span><span class="p">(</span><span class="n">app</span><span class="p">):</span>
     <span class="n">app</span><span class="p">[</span><span class="s1">&#39;redis&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
-    <span class="k">await</span> <span class="n">app</span><span class="p">[</span><span class="s1">&#39;redis&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">wait_closed</span><span class="p">()</span>
+    <span class="n">await</span> <span class="n">app</span><span class="p">[</span><span class="s1">&#39;redis&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">wait_closed</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
@@ -102,6 +102,7 @@ criadas:</p>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../handlers/index.html">Tipos de Handlers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../utils/index.html">Utilitários</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../updates/index.html">Atualizando sua App Asyncworker</a></li>
 </ul>
 </li>
