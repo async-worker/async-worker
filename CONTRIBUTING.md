@@ -11,13 +11,13 @@ Please note we have a code of conduct, please follow it in all your interactions
 
 ### Install
 
-```bash
+```shell
 pipenv install --pre --ignore-pipfile --dev
 ```
 
 ### Tests
 
-```bash
+```shell
 pipenv run all-tests
 ```
 
@@ -62,7 +62,7 @@ Before you submit your pull request consider the following guidelines:
 * Create your patch, **including appropriate test cases**.
 * Follow our [Code Style](https://www.pylint.org/) with Flake8 and [PEP8](https://www.python.org/dev/peps/pep-0008/).
 * Check lint
-    ```
+    ```shell
     pipenv run fmt-check
     ```
 
@@ -70,7 +70,7 @@ If you have issues, then run all lints and check consistency.
 
 * Run lints.
 
-    ```
+    ```shell
     pipenv run fmt
     pipenv isort-fmt
     pipenv run lint
