@@ -12,7 +12,7 @@ Please note we have a code of conduct, please follow it in all your interactions
 ### Install
 
 ```bash
-pipenv run pip install -e .
+pipenv install --pre --ignore-pipfile --dev
 ```
 
 ### Tests
@@ -61,10 +61,20 @@ Before you submit your pull request consider the following guidelines:
 
 * Create your patch, **including appropriate test cases**.
 * Follow our [Code Style](https://www.pylint.org/) with Flake8 and [PEP8](https://www.python.org/dev/peps/pep-0008/).
-* Run lint.
+* Check lint
+    ```
+    pipenv run fmt-check
+    ```
+
+If you have issues, then run all lints and check consistency.
+
+* Run lints.
 
     ```
+    pipenv run fmt
+    pipenv isort-fmt
     pipenv run lint
+
     ```
 * Run the full test suite, including `pipenv run all-tests`,
   and ensure that all tests pass.
@@ -90,7 +100,7 @@ Before you submit your pull request consider the following guidelines:
 * In GitHub, send a pull request to `master`.
 * If we suggest changes then:
   * Make the required updates.
-  * Re-run the test suite to ensure tests are still passing.
+  * Re-run the test suite and lints to ensure tests are still passing and code looks good.
   * Rebase your branch and force push to your GitHub repository (this will update your Pull Request):
 
     ```shell
