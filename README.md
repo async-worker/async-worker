@@ -28,18 +28,20 @@ Abaixo estão alguns exemplos bem simples que dão uma ideia do projeto e de com
 ```python
 from aiohttp import web
 
+from asyncworker import App, RouteTypes
 
 app = App()
 
+
 @app.route(["/", "/other"], type=RouteTypes.HTTP, methods=["GET"])
 async def handler(req: web.Request):
-  return web.json_response({})
+    return web.json_response({})
 
 
 app.run()
 ```
 
-Esse handler recebe reqisições HTTP (`GET`) nos seguintes endereços (por padrão): `http://127.0.0.1:8080` e `http://127.0.0.1:8080/other`
+Esse handler recebe reqisições HTTP (`GET`) nos seguintes endereços (por padrão): `http://127.0.0.1:8080/` e `http://127.0.0.1:8080/other`
 
 ## Handler RabbitMQ
 
