@@ -21,7 +21,7 @@ setup(
     ],
     packages=find_packages(exclude=["contrib", "docs", "tests*"]),
     install_requires=[
-        "aioamqp==0.12.0",
+        "aioamqp==0.14.0",
         "aiologger>=0.4.0-rc1",
         "pydantic==0.30",
         "cached-property==1.5.1",
