@@ -1,0 +1,589 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2019, B2W Digital
+# This file is distributed under the same license as the Asyncworker
+# package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2020.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: Asyncworker \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2020-02-09 17:50-0300\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.8.0\n"
+
+#: ../../userguide/handlers/rabbitmq.rst:2
+msgid "RabbitMQ"
+msgstr ""
+
+#: ../../userguide/handlers/rabbitmq.rst:4
+msgid ""
+"Aqui você verá como escrever um handler que recebe mensagens de um broker"
+" RabbitMQ"
+msgstr ""
+
+#: ../../userguide/handlers/rabbitmq.rst:7
+msgid ""
+"Todo handler desse tipo recebe o mesmo parametro, que é uma lista de "
+"objetos :py:class:`asyncworker.rabbitmq.message.RabbitMQMessage`."
+msgstr ""
+
+#: ../../userguide/handlers/rabbitmq.rst:10
+msgid ""
+"Isso significa que a assinatura dos seus handlers são fixas, ou seja, "
+"todos eles possuem essa assinatura:"
+msgstr ""
+
+#: ../../userguide/handlers/rabbitmq.rst:21
+msgid ""
+"Como no caso de handlers RabitMQ é preciso ter uma conexão prévia com o "
+"servidor d e filas, precisamos criar uma instância de "
+":py:class:`asyncworker.connections.AMQPConnection`. Essa instância deve "
+"ser passada no momento da criação de sua :ref:`Asyncworker App "
+"<asyncworker-app>`."
+msgstr ""
+
+#: ../../userguide/handlers/rabbitmq.rst:23
+msgid ""
+"Essa instância de conexão pode também ser usada dentro do handler, caso "
+"necessário."
+msgstr ""
+
+#: ../../userguide/handlers/rabbitmq.rst:26
+msgid ""
+"Um exemplo disso é quando precisamos de um handler que lê mensagens de um"
+" fila e publica em outra. Esse exemplo pode ser escrito assim:"
+msgstr ""
+
+#: ../../userguide/handlers/rabbitmq.rst:56
+msgid ""
+"se a fila de destino estiver um outro virtual host, basta pegar uma nova "
+"conexão com esse virtual host acessando o atributo (dict like) com o nome"
+" do virtual host desejado, no objeto da conexão, assim:"
+msgstr ""
+
+#: ../../userguide/handlers/rabbitmq.rst:70
+msgid "Parametros adicionais para o decorator route()"
+msgstr ""
+
+#: ../../userguide/handlers/rabbitmq.rst:72
+msgid ""
+"Para um handler RabbitMQ o decortor ``route()`` pode receber alguns "
+"parametros adicionais."
+msgstr ""
+
+#: ../../userguide/handlers/rabbitmq.rst:74
+msgid "Lista de filas de onde esse handler receberá mensagens"
+msgstr ""
+
+#: ../../userguide/handlers/rabbitmq.rst:75
+msgid "``type=RouteTypes.AMQP_RABBITMQ``"
+msgstr ""
+
+#: ../../userguide/handlers/rabbitmq.rst:76
+msgid ""
+"``vhost``: Indica em qual vhost as filas estatão definidas. Se não "
+"passarmos nada será usado ``vhost=\"/\"``"
+msgstr ""
+
+#: ../../userguide/handlers/rabbitmq.rst:77
+msgid ""
+"``options`` pode ser um dicionário compatível com o modelo "
+"`asyncworker.routes._AMQPRouteOptions <https://github.com/b2wdigital"
+"/async-"
+"worker/blob/691549d296f7dc2f8dfc0c58452ccd1f88375847/asyncworker/routes.py#L119-L124>`_."
+msgstr ""
+
+#: ../../userguide/handlers/rabbitmq.rst:80
+msgid "Exemplo de valores para o campo options"
+msgstr ""
+
+#: ../../userguide/handlers/rabbitmq.rst:82
+msgid "o dicionário ``options`` pode ter as seguintes chaves:"
+msgstr ""
+
+#: ../../userguide/handlers/rabbitmq.rst:84
+msgid ""
+":py:attr:`Options.BULK_SIZE <asyncworker.options.Options.BULK_SIZE>`: "
+"Esse valor é um inteiro e diz qual será o tamanho máximo da lista que o "
+"handler vai receber, a cada vez que for chamado."
+msgstr ""
+
+#: ../../userguide/handlers/rabbitmq.rst:85
+msgid ""
+":py:attr:`Options.BULK_FLUSH_INTERVAL "
+"<asyncworker.options.Options.BULK_FLUSH_INTERVAL>`: Inteiro e diz o tempo"
+" máximo que o bulk de mensagens poderá ficar com tamanho menor do que "
+"``bulk_size``. Exemplo: Se seu handler tem um bulk_size de 4096 mensagens"
+" mas você recebe apenas 100 msg/min na fila em alguns momentos seu "
+"handler será chamado recebendo uma lista de mensagens **menor** do que "
+"4096."
+msgstr ""
+
+#: ../../userguide/handlers/rabbitmq.rst:86
+msgid ""
+":py:attr:`Events.ON_SUCCESS <asyncworker.options.Events.ON_SUCCESS>`: Diz"
+" qual será a ação tomada pelo asyncworker quando uma chamada a um handler"
+" for concluída com sucesso, ou seja, o handler não lançar nenhuma "
+"exception. O Valor padrão é :py:attr:`Actions.ACK "
+"<asyncworker.options.Actions.ACK>`"
+msgstr ""
+
+#: ../../userguide/handlers/rabbitmq.rst:87
+msgid ""
+":py:attr:`Events.ON_EXCEPTION <asyncworker.options.Events.ON_EXCEPTION>`:"
+" Diz qual será a ação padrão quando a chamada a um handler lançar uma "
+"excação não tratada. O valor padrão é :py:attr:`Actions.REQUEUE "
+"<asyncworker.options.Actions.REQUEUE>`"
+msgstr ""
+
+#: ../../userguide/handlers/rabbitmq.rst:90
+msgid "Exemplo de um código que usa essas opções:"
+msgstr ""
+
+#: ../../userguide/handlers/rabbitmq.rst:111
+msgid "Uma nota sobre bulk_size e prefetch"
+msgstr ""
+
+#: ../../userguide/handlers/rabbitmq.rst:113
+msgid ""
+"O valor do ``BULK_SIZE`` sempre é escolhido com a fórmula: "
+"``min(BULK_SIZE, PREFRETCH)``. Isso para evitar que o código fique em um "
+"deadlock, onde ao mesmo tempo que ele aguarda o bulk encher para poder "
+"pegar mais mensagens da fila, ele está aguardando o bulk esvaziar para "
+"pegar mais mensagens da fila."
+msgstr ""
+
+#: ../../userguide/handlers/rabbitmq.rst:117
+msgid "Flush timeout"
+msgstr ""
+
+#: ../../userguide/handlers/rabbitmq.rst:119
+msgid ""
+"Com o flush timeout a ``app`` não necessita ficar presa esperando o "
+"bucket encher para conseguir processar as mensagens. Após o tempo do "
+"``FLUSH_TIMEOUT`` (que são :py:attr:`DefaultValues.BULK_FLUSH_INTERVAL "
+"<asyncworker.options.DefaultValues.BULK_FLUSH_INTERVAL>` segundos por "
+"default) a ``app`` irá enviar todas as mensagens que já possui para o "
+"``_handler``. Por exemplo, se tivermos um ``handler`` que possui:"
+msgstr ""
+
+#: ../../userguide/handlers/rabbitmq.rst:123
+msgid "Um ``BULK_SIZE`` de 1.000"
+msgstr ""
+
+#: ../../userguide/handlers/rabbitmq.rst:124
+msgid "As mensagens para esse handles são publicadas diariamente"
+msgstr ""
+
+#: ../../userguide/handlers/rabbitmq.rst:125
+msgid "E o bucket desse handler ficou com 500 mensagens"
+msgstr ""
+
+#: ../../userguide/handlers/rabbitmq.rst:127
+msgid ""
+"Nesse caso a ``app`` irá esperar o timeout do flush para liberar essas "
+"mensagens para o ``handler``."
+msgstr ""
+
+#: ../../userguide/handlers/rabbitmq.rst:129
+msgid ""
+"Caso queria alterar o tempo default do timeout do flush basta definir env"
+" ``ASYNCWORKER_FLUSH_TIMEOUT`` com um número que representará os segundos"
+" em que a app irá esperar para realizar o flush"
+msgstr ""
+
+#: ../../userguide/handlers/rabbitmq.rst:134
+msgid "Exemplo de um código mais completo"
+msgstr ""
+
+#: ../../userguide/handlers/rabbitmq.rst:161
+msgid ""
+"Nesse exemplo, o handler ``drain_handler()`` recebe mensagens de ambas as"
+" filas: ``asgard/counts`` e ``asgard/counts/errors``."
+msgstr ""
+
+#: ../../userguide/handlers/rabbitmq.rst:163
+msgid ""
+"Se o handler lançar alguma exception, a mensagem é automaticamente "
+"devolvida para a fila (reject com requeue=True); Se o handler rodar sem "
+"erros, a mensagem é automaticamente confirmada (ack)."
+msgstr ""
+
+#: ../../userguide/handlers/rabbitmq.rst:169
+msgid "Escolhendo, individualmente, qual ação será dada a cada mensgem recebida"
+msgstr ""
+
+#: ../../userguide/handlers/rabbitmq.rst:171
+msgid ""
+"Existem situações onde você precisa que algumas as mensagens recebidas "
+"pelo handler teham tratamentos **diferentes** das outras mensagens. Ou "
+"seja, nem sempre você quer que todas recebam ``ack`` ou ``requeue``."
+msgstr ""
+
+#: ../../userguide/handlers/rabbitmq.rst:173
+msgid ""
+"Para isso o objeto recebido por um handler (:py:class:`RabbitMQMessage "
+"<asyncworker.rabbitmq.message.RabbitMQMessage>`) possui alguns métodos:"
+msgstr ""
+
+#: asyncworker.rabbitmq.message.RabbitMQMessage.accept:1 of
+msgid ""
+"Marca essa mensagem para ser confirmada (``ACK``) ao fim da execução do "
+"handler."
+msgstr ""
+
+#: asyncworker.rabbitmq.message.RabbitMQMessage.reject:1 of
+msgid ""
+"Marca essa mensagem para ser rejeitada. O parametro ``requeue`` indica se"
+" a mensagem será recolocada na fila original (``requeue=True``) ou será "
+"descartada (``requeue=False``)."
+msgstr ""
+
+#: ../../userguide/handlers/rabbitmq.rst:180
+msgid ""
+"Opcionalmente, caso seja necessário rejeitar uma mensagem e ao mesmo "
+"tempo **não** devolver essa mensagem pra fila, podemos chamar "
+"``message.reject(requeue=False)``. O valor default do ``requeue`` é "
+"``True``."
+msgstr ""
+
+#: ../../userguide/handlers/rabbitmq.rst:185
+msgid "Sobre AMQPConnection"
+msgstr ""
+
+#: ../../userguide/handlers/rabbitmq.rst:187
+msgid ""
+"Esse objeto é o ponto de comunicação principal com um broker RabbitMQ. "
+"Aqui temos um método ``put`` onde podemos enviar novas mensagens ao "
+"broker."
+msgstr ""
+
+#: ../../userguide/handlers/rabbitmq.rst:189
+msgid ""
+"Essa classe é um modelo pydantic e pode receber alguns parametros no "
+"construtor. Esses parametros estão na declaração dessa classe. "
+":py:class:`asyncworker.connections.AMQPConnection`."
+msgstr ""
+
+#~ msgid ""
+#~ "Todo handler desse tipo recebe o "
+#~ "mesmo parametro, que é uma lista "
+#~ "de objetos "
+#~ ":py:ref:`asyncworker.rabbitmq.message.RabbitMQMessage`."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Nesse exemplo, o handler `drain_handler()` "
+#~ "recebe mensagens de ambas as filas: "
+#~ "`asgard/counts` e `asgard/counts/errors`."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Como no caso de handlers RabitMQ é"
+#~ " preciso ter uma conexão prévia com"
+#~ " o servidor d e filas, precisamos "
+#~ "criar uma instância de "
+#~ ":py:class:`asyncworker.connections.AMQPConnection`."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Essa instância de conexão pode também"
+#~ " ser usada dentro do handler, caso"
+#~ " necessário. Mais sobre o que a "
+#~ "classe AMQPConnection aqui."
+#~ msgstr ""
+
+#~ msgid "Detalhes"
+#~ msgstr ""
+
+#~ msgid "Essa classe recebe os seguintes parametros, no construtor:"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Essa instância de conexão pode também"
+#~ " ser usada dentro do handler, caso"
+#~ " necessário. Mais sobre o que a "
+#~ "classe :py:class:`asyncworker.connections.AMQPConnection`."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "``options`` pode ser um dicionário "
+#~ "compatível com o modelo "
+#~ ":py:class:`asyncworker.routes._AMQPRouteOptions`."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "``options`` pode ser um dicionário "
+#~ "compatível com o modelo "
+#~ ":py:class:`asyncworker.routes.AMQPRoute`."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "bulk_size: Esse valor é um inteiro "
+#~ "e diz qual será o tamanho máximo"
+#~ " da lista que o handler vai "
+#~ "receber, a cada vez que for "
+#~ "chamado."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "bulk_flush_interval: Inteiro e diz o "
+#~ "tempo máximo que o bulk de "
+#~ "mensagens poderá ficar com tamanho menor"
+#~ " do que ``bulk_size``. Exemplo: Se "
+#~ "seu handler tem um bulk_size de "
+#~ "4096 mensagens mas você recebe apenas"
+#~ " 100 msg/min na fila em alguns "
+#~ "momentos seu handler será chamado "
+#~ "recebendo uma lista de mensagens "
+#~ "**menor** do que 4096."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "``bulk_size``: Esse valor é um inteiro"
+#~ " e diz qual será o tamanho "
+#~ "máximo da lista que o handler vai"
+#~ " receber, a cada vez que for "
+#~ "chamado."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "``bulk_flush_interval``: Inteiro e diz o "
+#~ "tempo máximo que o bulk de "
+#~ "mensagens poderá ficar com tamanho menor"
+#~ " do que ``bulk_size``. Exemplo: Se "
+#~ "seu handler tem um bulk_size de "
+#~ "4096 mensagens mas você recebe apenas"
+#~ " 100 msg/min na fila em alguns "
+#~ "momentos seu handler será chamado "
+#~ "recebendo uma lista de mensagens "
+#~ "**menor** do que 4096."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "``asyncworker.options.Events.ON_SUCCESS``: Diz qual "
+#~ "será a ação tomada pelo asyncworker "
+#~ "quando uma chamada a um handler "
+#~ "for concluída com sucesso, ou seja, "
+#~ "o handler não lançar nenhuma exception."
+#~ " O Valor padrão é :py:ref:`Actions.ACK "
+#~ "<asyncworker.options.Actions.ACK>`"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "``asyncworker.options.Events.ON_SUCCESS``: Diz qual "
+#~ "será a ação tomada pelo asyncworker "
+#~ "quando uma chamada a um handler "
+#~ "for concluída com sucesso, ou seja, "
+#~ "o handler não lançar nenhuma exception."
+#~ " O Valor padrão é "
+#~ ":py:attr:`asyncworker.options.Actions.ACK`"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "``asyncworker.options.Events.ON_SUCCESS``: Diz qual "
+#~ "será a ação tomada pelo asyncworker "
+#~ "quando uma chamada a um handler "
+#~ "for concluída com sucesso, ou seja, "
+#~ "o handler não lançar nenhuma exception."
+#~ " O Valor padrão é :py:attr:`<ACK> "
+#~ "asyncworker.options.Actions.ACK`"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "``asyncworker.options.Events.ON_SUCCESS``: Diz qual "
+#~ "será a ação tomada pelo asyncworker "
+#~ "quando uma chamada a um handler "
+#~ "for concluída com sucesso, ou seja, "
+#~ "o handler não lançar nenhuma exception."
+#~ " O Valor padrão é :py:attr:`ACK "
+#~ "<asyncworker.options.Actions.ACK>`"
+#~ msgstr ""
+
+#~ msgid "``asyncworker.options.Events.ON_EXCPTION``:"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "``asyncworker.options.Options.BULK_SIZE``: Esse valor "
+#~ "é um inteiro e diz qual será "
+#~ "o tamanho máximo da lista que o"
+#~ " handler vai receber, a cada vez "
+#~ "que for chamado."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "``asyncworker.options.Options.BULK_FLUSH_INTERVAL``: Inteiro "
+#~ "e diz o tempo máximo que o "
+#~ "bulk de mensagens poderá ficar com "
+#~ "tamanho menor do que ``bulk_size``. "
+#~ "Exemplo: Se seu handler tem um "
+#~ "bulk_size de 4096 mensagens mas você "
+#~ "recebe apenas 100 msg/min na fila "
+#~ "em alguns momentos seu handler será "
+#~ "chamado recebendo uma lista de mensagens"
+#~ " **menor** do que 4096."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "``asyncworker.options.Events.ON_SUCCESS``: Diz qual "
+#~ "será a ação tomada pelo asyncworker "
+#~ "quando uma chamada a um handler "
+#~ "for concluída com sucesso, ou seja, "
+#~ "o handler não lançar nenhuma exception."
+#~ " O Valor padrão é :py:attr:`Actions.ACK "
+#~ "<asyncworker.options.Actions.ACK>`"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "``asyncworker.options.Events.ON_EXCPTION``: Diz qual "
+#~ "será a ação padrão quando a "
+#~ "chamada a um handler lançar uma "
+#~ "excação não tratada. O valor padrão "
+#~ "é :py:attr:`Actions.REQUEUE "
+#~ "<asyncworker.options.Actions.REQUEUE>`"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "py:attr:`Events.ON_SUCCESS "
+#~ "<asyncworker.options.Events.ON_SUCCESS>`: Diz qual "
+#~ "será a ação tomada pelo asyncworker "
+#~ "quando uma chamada a um handler "
+#~ "for concluída com sucesso, ou seja, "
+#~ "o handler não lançar nenhuma exception."
+#~ " O Valor padrão é :py:attr:`Actions.ACK "
+#~ "<asyncworker.options.Actions.ACK>`"
+#~ msgstr ""
+
+#~ msgid "from"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "o async-worker permite que você "
+#~ "receba seus dados em lotes de "
+#~ "tamanho definido por você. A forma "
+#~ "de escolher esse lote é atrávez da"
+#~ " opção :py:ref:`asyncworker.options.Options.BULK_SIZE`. "
+#~ "Essa opção é passada para cada um"
+#~ " dos handlers, individualmente. O default"
+#~ " é `BULK_SIZE=1`."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Assumindo que nossa ``app`` já está "
+#~ "criada. O decorator ``@app.route()`` recebe"
+#~ " um kwarg chamado ``options`` onde "
+#~ "podemos passar o ``BULK_SIZE``, assim:"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "O valor do BULK_SIZE sempre é "
+#~ "escolhido com a fórmula: `min(BULK_SIZE, "
+#~ "PREFRETCH)`. Isso para evitar que o "
+#~ "código fique em um deadlock, onde "
+#~ "ao mesmo tempo que ele aguarda o"
+#~ " bulk encher para poder pegar mais"
+#~ " mensagens da fila, ele está "
+#~ "aguardando o bulk esvaziar para pegar"
+#~ " mais mensagens da fila."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Nesse exemplo, o ``_handler`` só será"
+#~ " chamado quando o async-worker tiver,"
+#~ " **já nas mãos**, 1000 itens. Os "
+#~ "1000 itens serão passados de uma "
+#~ "única vez para o handler, em uma"
+#~ " lista."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Com o flush timeout a `app` não"
+#~ " necessita ficar presa esperando o "
+#~ "bucket encher para conseguir processar "
+#~ "as mensagens. Após o tempo do "
+#~ "`FLUSH_TIMEOUT`, que são 60 segundos por"
+#~ " default, a `app` irá enviar todas"
+#~ " as mensagens que já possui para "
+#~ "o `_handler`. Por exemplo, se tivermos"
+#~ " um `handler` que possui"
+#~ msgstr ""
+
+#~ msgid "Um `BULK_SIZE` de 1.000"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Com o flush timeout a ``app`` não"
+#~ " necessita ficar presa esperando o "
+#~ "bucket encher para conseguir processar "
+#~ "as mensagens. Após o tempo do "
+#~ "``FLUSH_TIMEOUT``, que são 60 segundos "
+#~ "por default, a ``app`` irá enviar "
+#~ "todas as mensagens que já possui "
+#~ "para o ``_handler``. Por exemplo, se "
+#~ "tivermos um ``handler`` que possui"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Nesse caso a `app` irá esperar o"
+#~ " timeout do flush para liberar essas"
+#~ " mensagens para o `handler`."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Caso queria alterar o tempo default "
+#~ "do timeout do flush basta definir "
+#~ "env `ASYNCWORKER_FLUSH_TIMEOUT` com um número"
+#~ " que representara os segundos em que"
+#~ " a app irá esperar para realizar "
+#~ "o flush"
+#~ msgstr ""
+
+#~ msgid "Vejamos agora em mais detalhes o que significa cada parte desse código."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Para isso o objeto recebido por um"
+#~ " handler "
+#~ "(:py:class:`asyncworker.rabbitmq.message.RabbitMQMessage`) "
+#~ "possui alguns métodos:"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Com o flush timeout a ``app`` não"
+#~ " necessita ficar presa esperando o "
+#~ "bucket encher para conseguir processar "
+#~ "as mensagens. Após o tempo do "
+#~ "``FLUSH_TIMEOUT`` (que são "
+#~ ":py:attr:`DefaultValues.BULK_FLUSH_INTERVAL "
+#~ "<asyncworker.options.DefaultValues.BULK_FLUSH_INTERVAL>` "
+#~ "segundos por default) a ``app`` irá "
+#~ "enviar todas as mensagens que já "
+#~ "possui para o ``_handler``. Por exemplo,"
+#~ " se tivermos um ``handler`` que "
+#~ "possui"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Opcionalmente, caso seja necessário rejeitar"
+#~ " uma mensagem e ao mesmo tempo "
+#~ "**não** devolver essa mensagem pra fila,"
+#~ " podemos chamar `message.reject(requeue=False)`. "
+#~ "O valor default do `requeue` é "
+#~ "`True`."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "se a fila de destino estiver um"
+#~ " outro virtual host, basta pegar uma"
+#~ " nova conexão com esse virtual host"
+#~ " acessando o atributo ``/`` da "
+#~ "conexão, assim:"
+#~ msgstr ""
+

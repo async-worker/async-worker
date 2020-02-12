@@ -74,6 +74,9 @@ class AMQPConnectionTests(asynctest.TestCase):
             routing_key=self.routing_key,
             exchange=self.exchange,
             serialized_data=self.body,
+            immediate=False,
+            mandatory=False,
+            properties=None,
         )
 
     async def test_put_uses_the_default_vhost_if_none_is_provided(self):
@@ -95,6 +98,9 @@ class AMQPConnectionTests(asynctest.TestCase):
             routing_key=self.routing_key,
             exchange=self.exchange,
             serialized_data=None,
+            immediate=False,
+            mandatory=False,
+            properties=None,
         )
 
     async def test_put_initializes_a_new_connection_if_a_connection_wasnt_initialized_for_a_given_vhost(
@@ -117,6 +123,9 @@ class AMQPConnectionTests(asynctest.TestCase):
                 routing_key=self.routing_key,
                 exchange=self.exchange,
                 serialized_data=None,
+                immediate=False,
+                mandatory=False,
+                properties=None,
             )
 
     async def test_initialize_with_connections(self):

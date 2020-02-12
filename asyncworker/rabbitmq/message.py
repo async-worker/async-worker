@@ -25,9 +25,15 @@ class RabbitMQMessage:
         return self._amqp_message.serialized_data
 
     def reject(self, requeue=True):
+        """
+        Marca essa mensagem para ser rejeitada. O parametro ``requeue`` indica se a mensagem será recolocada na fila original (``requeue=True``) ou será descartada (``requeue=False``).
+        """
         self._final_action = Actions.REQUEUE if requeue else Actions.REJECT
 
     def accept(self):
+        """
+        Marca essa mensagem para ser confirmada (``ACK``) ao fim da execução do handler.
+        """
         self._final_action = Actions.ACK
 
     async def _process_action(self, action: Actions):

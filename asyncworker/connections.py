@@ -169,6 +169,9 @@ class AMQPConnection(Connection):
         serialized_data: Union[str, bytes] = None,
         exchange: str = "",
         vhost: str = settings.AMQP_DEFAULT_VHOST,
+        properties: dict = None,
+        mandatory: bool = False,
+        immediate: bool = False,
     ):
         conn = self[vhost]
         return await conn.put(
@@ -176,4 +179,7 @@ class AMQPConnection(Connection):
             data=data,
             serialized_data=serialized_data,
             exchange=exchange,
+            properties=properties,
+            mandatory=mandatory,
+            immediate=immediate,
         )

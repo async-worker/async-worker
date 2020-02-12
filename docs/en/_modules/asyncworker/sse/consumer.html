@@ -34,16 +34,16 @@
 <span></span><span class="kn">import</span> <span class="nn">asyncio</span>
 <span class="kn">import</span> <span class="nn">json</span>
 <span class="kn">import</span> <span class="nn">traceback</span>
-<span class="kn">from</span> <span class="nn">enum</span> <span class="kn">import</span> <span class="n">Enum</span><span class="p">,</span> <span class="n">auto</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Type</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Dict</span>
-<span class="kn">from</span> <span class="nn">urllib.parse</span> <span class="kn">import</span> <span class="n">urljoin</span>
+<span class="kn">from</span> <span class="nn">enum</span> <span class="k">import</span> <span class="n">Enum</span><span class="p">,</span> <span class="n">auto</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="k">import</span> <span class="n">Type</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Dict</span>
+<span class="kn">from</span> <span class="nn">urllib.parse</span> <span class="k">import</span> <span class="n">urljoin</span>
 
 <span class="kn">import</span> <span class="nn">aiohttp</span>
-<span class="kn">from</span> <span class="nn">aiohttp.client</span> <span class="kn">import</span> <span class="n">ClientTimeout</span><span class="p">,</span> <span class="n">ClientSession</span><span class="p">,</span> <span class="n">ClientResponse</span>
+<span class="kn">from</span> <span class="nn">aiohttp.client</span> <span class="k">import</span> <span class="n">ClientTimeout</span><span class="p">,</span> <span class="n">ClientSession</span><span class="p">,</span> <span class="n">ClientResponse</span>
 
-<span class="kn">from</span> <span class="nn">asyncworker</span> <span class="kn">import</span> <span class="n">conf</span>
-<span class="kn">from</span> <span class="nn">asyncworker.bucket</span> <span class="kn">import</span> <span class="n">Bucket</span>
-<span class="kn">from</span> <span class="nn">asyncworker.sse.message</span> <span class="kn">import</span> <span class="n">SSEMessage</span>
+<span class="kn">from</span> <span class="nn">asyncworker</span> <span class="k">import</span> <span class="n">conf</span>
+<span class="kn">from</span> <span class="nn">asyncworker.bucket</span> <span class="k">import</span> <span class="n">Bucket</span>
+<span class="kn">from</span> <span class="nn">asyncworker.sse.message</span> <span class="k">import</span> <span class="n">SSEMessage</span>
 
 
 <div class="viewcode-block" id="State"><a class="viewcode-back" href="../../../src/asyncworker/asyncworker.sse.html#asyncworker.sse.consumer.State">[docs]</a><span class="k">class</span> <span class="nc">State</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
@@ -64,7 +64,7 @@
 <div class="viewcode-block" id="SSEConsumer"><a class="viewcode-back" href="../../../src/asyncworker/asyncworker.sse.html#asyncworker.sse.consumer.SSEConsumer">[docs]</a><span class="k">class</span> <span class="nc">SSEConsumer</span><span class="p">:</span>
     <span class="n">interval</span> <span class="o">=</span> <span class="mi">10</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">route_info</span><span class="p">:</span> <span class="n">Dict</span><span class="p">,</span>
         <span class="n">url</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
@@ -186,7 +186,9 @@
 <h3>Navigation</h3>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../intro.html">Introdução</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../incompat.html">Incompatibilidades</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../userguide/index.html">Guia de uso</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../devguide/index.html">Guia de desenvolvimento</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../changelog/index.html">Changelog</a></li>
 </ul>
 

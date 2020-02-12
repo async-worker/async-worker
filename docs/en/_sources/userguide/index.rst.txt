@@ -5,5 +5,7 @@ Guia de uso
    :maxdepth: 3
 
    quickstart.rst
-   backends.rst
+   asyncworker-app/index.rst
    handlers/index.rst
+   utils/index.rst
+   updates/index.rst

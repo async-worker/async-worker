@@ -1,6 +1,7 @@
 HTTP
 ====
 
+.. versionadded:: 0.6.0
 
 Aqui mostraremos como escrever um handler que é estimulado através de requisições HTTP.
 
@@ -19,8 +20,25 @@ Vejamos um handler bem simples que apenas retorna ``HTTP 200 OK``.
 Como recebemos um request do aiohttp, podemos fazer o que for preciso para extrair dele as informações que precisarmos. Para mais detalhes, veja a doc do aiohttp: https://docs.aiohttp.org/en/stable/web.html
 
 
-Aplicando decorators customizados a um handler
-----------------------------------------------
+Parametrização do decorator route() para handlers HTTP
+------------------------------------------------------
+
+Para um handler HTTP deveremos passar os seguintes parametros para o decorator ``route()``:
+
+  - Lista de paths que devem estar na Request HTTP para que esse handler seja chamado;
+  - ``type=RouteTypes.HTTP``
+  - ``methods`` sendo uma lista de métodos HTTP permitidos para esse handler
+
+ENVs para escolher a porta e o IP onde o server http estará escutando
+-----------------------------------------------------------------------
+
+
+Por padrão, fazemos o binding em ``127.0.0.1``, porta ``8080``, mas isso pode ser alterado com as envvars ``ASYNCWORKER_HTTP_HOST`` e ``ASYNCWORKER_HTTP_PORT``, respectivamente.
+
+
+
+Aplicando decorators customizados a um handler HTTP
+----------------------------------------------------
 
 É possível escrever seus próprios decorators e aplicá-los a seus handlers, junto com o decorator ``@app.route``. No entando temos algumas regras:
 
@@ -59,7 +77,9 @@ Esse decorator poderia ser aplicado a um handler assim:
 Handlers que recebem mais do que apenas Request
 -----------------------------------------------
 
-O asyncworker (``0.10.1+``) permite que um handler receba quaisquer prametros. Para isso a assinatura do handler deve conter typehints em todos os parametros. Isso faz com que o asyncowker consiga fazer a resolução desses prametros e consiga chamar o handler corretamente.
+.. versionadded:: 0.11.0
+
+O asyncworker permite que um handler receba quaisquer prametros. Para isso a assinatura do handler deve conter typehints em todos os parametros. Isso faz com que o asyncowker consiga fazer a resolução desses prametros e consiga chamar o handler corretamente.
 
 Todas as instancias de ``aiohttp.web.Request`` recebem um atributo chamado ``types_registry`` que é do tipo :py:class:`asyncworker.types.registry.TypesRegistry`. Para que um parametro possa ser passado a um handler ele deve ser adicionado a esse registry do request.
 

@@ -1,0 +1,4 @@
+RabbitMQ
+========
+
+O Handler Rabbit pode ser configurad da seguinte forma:

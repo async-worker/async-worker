@@ -44,7 +44,8 @@
 <dl class="method">
 <dt id="asyncworker.rabbitmq.message.RabbitMQMessage.accept">
 <code class="sig-name descname">accept</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/asyncworker/rabbitmq/message.html#RabbitMQMessage.accept"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#asyncworker.rabbitmq.message.RabbitMQMessage.accept" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Marca essa mensagem para ser confirmada (<code class="docutils literal notranslate"><span class="pre">ACK</span></code>) ao fim da execução do handler.</p>
+</dd></dl>
 
 <dl class="method">
 <dt id="asyncworker.rabbitmq.message.RabbitMQMessage.body">
@@ -64,7 +65,8 @@
 <dl class="method">
 <dt id="asyncworker.rabbitmq.message.RabbitMQMessage.reject">
 <code class="sig-name descname">reject</code><span class="sig-paren">(</span><em class="sig-param">requeue=True</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/asyncworker/rabbitmq/message.html#RabbitMQMessage.reject"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#asyncworker.rabbitmq.message.RabbitMQMessage.reject" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Marca essa mensagem para ser rejeitada. O parametro <code class="docutils literal notranslate"><span class="pre">requeue</span></code> indica se a mensagem será recolocada na fila original (<code class="docutils literal notranslate"><span class="pre">requeue=True</span></code>) ou será descartada (<code class="docutils literal notranslate"><span class="pre">requeue=False</span></code>).</p>
+</dd></dl>
 
 <dl class="method">
 <dt id="asyncworker.rabbitmq.message.RabbitMQMessage.serialized_data">
@@ -98,7 +100,9 @@
 <h3>Navigation</h3>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../intro.html">Introdução</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../incompat.html">Incompatibilidades</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../userguide/index.html">Guia de uso</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../devguide/index.html">Guia de desenvolvimento</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../changelog/index.html">Changelog</a></li>
 </ul>
 

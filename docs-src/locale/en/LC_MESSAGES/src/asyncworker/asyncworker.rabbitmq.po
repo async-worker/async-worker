@@ -9,14 +9,14 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Asyncworker \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-08-04 11:38-0300\n"
+"POT-Creation-Date: 2020-02-09 17:33-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.7.0\n"
+"Generated-By: Babel 2.8.0\n"
 
 #: ../../src/asyncworker/asyncworker.rabbitmq.rst:2
 msgid "asyncworker.rabbitmq package"
@@ -32,6 +32,19 @@ msgstr ""
 
 #: asyncworker.rabbitmq.message.RabbitMQMessage:1 of
 msgid "Base: :class:`object`"
+msgstr ""
+
+#: asyncworker.rabbitmq.message.RabbitMQMessage.accept:1 of
+msgid ""
+"Marca essa mensagem para ser confirmada (``ACK``) ao fim da execução do "
+"handler."
+msgstr ""
+
+#: asyncworker.rabbitmq.message.RabbitMQMessage.reject:1 of
+msgid ""
+"Marca essa mensagem para ser rejeitada. O parametro ``requeue`` indica se"
+" a mensagem será recolocada na fila original (``requeue=True``) ou será "
+"descartada (``requeue=False``)."
 msgstr ""
 
 #: ../../src/asyncworker/asyncworker.rabbitmq.rst:17

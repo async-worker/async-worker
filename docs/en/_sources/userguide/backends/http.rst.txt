@@ -1,0 +1,8 @@
+HTTP
+====
+
+
+O backend HTTP pode ser configurado da seguinte forma:
+
+ - Usando ENV Vars
+ - Usando o dcorator ``.route()``, que está na ``App``.

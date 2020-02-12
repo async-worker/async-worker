@@ -32,15 +32,15 @@
           <div class="body" role="main">
             
   <h1>Código fonte para asyncworker.signals.handlers.rabbitmq</h1><div class="highlight"><pre>
-<span></span><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">TYPE_CHECKING</span>
+<span></span><span class="kn">from</span> <span class="nn">typing</span> <span class="k">import</span> <span class="n">TYPE_CHECKING</span>
 
-<span class="kn">from</span> <span class="nn">asyncworker.connections</span> <span class="kn">import</span> <span class="n">AMQPConnection</span>
-<span class="kn">from</span> <span class="nn">asyncworker.consumer</span> <span class="kn">import</span> <span class="n">Consumer</span>
-<span class="kn">from</span> <span class="nn">asyncworker.options</span> <span class="kn">import</span> <span class="n">RouteTypes</span>
-<span class="kn">from</span> <span class="nn">asyncworker.signals.handlers.base</span> <span class="kn">import</span> <span class="n">SignalHandler</span>
+<span class="kn">from</span> <span class="nn">asyncworker.connections</span> <span class="k">import</span> <span class="n">AMQPConnection</span>
+<span class="kn">from</span> <span class="nn">asyncworker.consumer</span> <span class="k">import</span> <span class="n">Consumer</span>
+<span class="kn">from</span> <span class="nn">asyncworker.options</span> <span class="k">import</span> <span class="n">RouteTypes</span>
+<span class="kn">from</span> <span class="nn">asyncworker.signals.handlers.base</span> <span class="k">import</span> <span class="n">SignalHandler</span>
 
 <span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>  <span class="c1"># pragma: no cover</span>
-    <span class="kn">from</span> <span class="nn">asyncworker.app</span> <span class="kn">import</span> <span class="n">App</span>  <span class="c1"># noqa: F401</span>
+    <span class="kn">from</span> <span class="nn">asyncworker.app</span> <span class="k">import</span> <span class="n">App</span>  <span class="c1"># noqa: F401</span>
 
 
 <div class="viewcode-block" id="RabbitMQ"><a class="viewcode-back" href="../../../../src/asyncworker/asyncworker.signals.handlers.html#asyncworker.signals.handlers.rabbitmq.RabbitMQ">[documentos]</a><span class="k">class</span> <span class="nc">RabbitMQ</span><span class="p">(</span><span class="n">SignalHandler</span><span class="p">):</span>
@@ -79,7 +79,9 @@
 <h3>Navegação</h3>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../intro.html">Introdução</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../incompat.html">Incompatibilidades</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../userguide/index.html">Guia de uso</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../devguide/index.html">Guia de desenvolvimento</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../changelog/index.html">Changelog</a></li>
 </ul>
 
