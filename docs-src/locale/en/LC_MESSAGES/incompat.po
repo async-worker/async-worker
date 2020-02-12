@@ -1,0 +1,89 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2019, B2W Digital
+# This file is distributed under the same license as the Asyncworker
+# package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2020.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: Asyncworker \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2020-02-08 11:54-0300\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.8.0\n"
+
+#: ../../incompat.rst:2
+msgid "Incompatibilidades"
+msgstr ""
+
+#: ../../incompat.rst:8
+msgid ""
+"Atualmente, pelo fato o asyncworker usar o `aiologger "
+"<https://github.com/b2wdigital/aiologger>`_, ele é incompatível com apps "
+"que usam **múltiplos** loops de evento. Ou seja, se sua app cria um novo "
+"loop e substitui o loop anterior isso causará um problema com os logs "
+"gerados pelo asyncworker (via aiologger)."
+msgstr ""
+
+#: ../../incompat.rst:10
+msgid ""
+"No geral, as aplicações assíncronas usam apenas um loop de evento durante"
+" todo o seu ciclo de vida. Isso significa que a não se que você esteja "
+"escrevendo um código com um comportamento muito específico (que dependa "
+"da renovação do loop de eventos) você não terá maiores problemas em usar "
+"o asyncworker."
+msgstr ""
+
+#: ../../incompat.rst:12
+msgid ""
+"Essa incompatibilidade do aiologger está sendo tratada na issue `#35 "
+"<https://github.com/b2wdigital/aiologger/issues/35>`_. O projeto tem como"
+" objetivo ser um framework para escrever workers assíncronos em python. "
+"Por worker entende-se qualquer aplicação que rode por tempo indeterminado"
+" e que receba estímulos de várias origens diferentes. Essas orignes podem"
+" ser:"
+msgstr ""
+
+#~ msgid ""
+#~ "Atualmente, pelo fato o asyncworker usar"
+#~ " o [aiologger](https://github.com/b2wdigital/aiologger), "
+#~ "ele é incompatível com apps que "
+#~ "usam **múltiplos** loops de evento. Ou"
+#~ " seja, se sua app cria um novo"
+#~ " loop e substitui o loop anterior "
+#~ "isso causará um problema com os "
+#~ "logs gerados pelo asyncworker (via "
+#~ "aiologger)."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Atualmente, pelo fato o asyncworker usar"
+#~ " o aiologger `<la> "
+#~ "https://github.com/b2wdigital/aiologger`_, ele é "
+#~ "incompatível com apps que usam "
+#~ "**múltiplos** loops de evento. Ou seja,"
+#~ " se sua app cria um novo loop"
+#~ " e substitui o loop anterior isso "
+#~ "causará um problema com os logs "
+#~ "gerados pelo asyncworker (via aiologger)."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Essa incompatibilidade do aiologger está "
+#~ "sendo tratada na issue "
+#~ "[#35](https://github.com/b2wdigital/aiologger/issues/35). O "
+#~ "projeto tem como objetivo ser um "
+#~ "framework para escrever workers assíncronos"
+#~ " em python. Por worker entende-se "
+#~ "qualquer aplicação que rode por tempo"
+#~ " indeterminado e que receba estímulos "
+#~ "de várias origens diferentes. Essas "
+#~ "orignes podem ser:"
+#~ msgstr ""
+

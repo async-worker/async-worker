@@ -1,0 +1,140 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Sobre a classe principal App &#8212; Asyncworker  documentation</title>
+    <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/language_data.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Tipos de Handlers" href="handlers/index.html" />
+    <link rel="prev" title="Início rápido" href="quickstart.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="sobre-a-classe-principal-app">
+<span id="asyncworker-app"></span><h1>Sobre a classe principal App<a class="headerlink" href="#sobre-a-classe-principal-app" title="Permalink to this headline">¶</a></h1>
+<p>Todo código do asyncworker começa com uma instância de <a class="reference internal" href="../src/asyncworker/asyncworker.html#asyncworker.app.App" title="asyncworker.app.App"><code class="xref py py-class docutils literal notranslate"><span class="pre">asyncworker.app.App</span></code></a>. Esse é o objeto onde declaramos as “rotas” da sua aplicação e é também onde chamamos o método <code class="docutils literal notranslate"><span class="pre">run()</span></code>, que é quem efetivamente dá boot em nossa aplicação.</p>
+<div class="section" id="criando-uma-nova-app">
+<h2>Criando uma nova App<a class="headerlink" href="#criando-uma-nova-app" title="Permalink to this headline">¶</a></h2>
+<p>O objeto App recebe em seu construtor uma lista de conexões. As conexões são a forma de dizer ao asyncowker como falar com as origens dos estímulos. São esses estímulos que farão com que seus handler sejam executados.</p>
+<p>As conexões possíveis estão mo módulo <a class="reference internal" href="../src/asyncworker/asyncworker.html#module-asyncworker.connections" title="asyncworker.connections"><code class="xref py py-mod docutils literal notranslate"><span class="pre">asyncworker.connections</span></code></a>.</p>
+<p>As instâncias dessas conexões podem ser usadas dentro do handlers, se necessário.</p>
+</div>
+<div class="section" id="definindo-handlers-em-sua-app-asyncworker">
+<h2>Definindo handlers em sua App Asyncworker<a class="headerlink" href="#definindo-handlers-em-sua-app-asyncworker" title="Permalink to this headline">¶</a></h2>
+<p>Nesse objeto temos um método especial chamado <code class="docutils literal notranslate"><span class="pre">route()</span></code>. Esse método é o ponto central para registrar seus handlers. Esse mesmo método registra handlers de todos os tipos, por isso recebe um parametro para saber qual origem de estímulos fará esse handler ser chamado.</p>
+<p>Os tipos estão definidos no Enum <a class="reference internal" href="../src/asyncworker/asyncworker.html#asyncworker.options.RouteTypes" title="asyncworker.options.RouteTypes"><code class="xref py py-class docutils literal notranslate"><span class="pre">asyncworker.options.RouteTypes</span></code></a>.</p>
+<p>Esse método tem a seguinte assinatura:</p>
+<dl class="method">
+<dt>
+<code class="sig-prename descclassname">App.</code><code class="sig-name descname">route</code><span class="sig-paren">(</span><em class="sig-param">routes: Iterable[str], type: asyncworker.options.RouteTypes, options: dict = None, **kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/asyncworker/app.html#App.route"><span class="viewcode-link">[source]</span></a></dt>
+<dd></dd></dl>
+
+<p>O primeiro parâmetro tem múltiplos significados, dependento do tipo de handler que você está registrando.</p>
+<p>Por exmeplo, para um handler HTTP essa lista é lista de paths do Request HTTP que farão esse handler ser chamado. Se for um handlar RabbitMQ essa lista representa a lista de filas que esse handler estará “conectado”, ou seja, a cada mensagem depositada em quaisquer uma dessas filas, esse handler será chamado.</p>
+<p>Um outro parametro obrigatório é o parametro <code class="docutils literal notranslate"><span class="pre">type</span></code>. Ele, necessariamente, deve ser uma das opções do Enum <a class="reference internal" href="../src/asyncworker/asyncworker.html#asyncworker.options.RouteTypes" title="asyncworker.options.RouteTypes"><code class="xref py py-class docutils literal notranslate"><span class="pre">asyncworker.options.RouteTypes</span></code></a>.</p>
+<p>Esse método deve ser usado como um decorator em funções que serão registradas como handlers da sua App.</p>
+</div>
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../index.html">Asyncworker</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../intro.html">Introdução</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../incompat.html">Incompatibilidades</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Guia de uso</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="quickstart.html">Início rápido</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Sobre a classe principal App</a></li>
+<li class="toctree-l2"><a class="reference internal" href="handlers/index.html">Tipos de Handlers</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../devguide/index.html">Guia de desenvolvimento</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../changelog/index.html">Changelog</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../index.html">Documentation overview</a><ul>
+  <li><a href="index.html">Guia de uso</a><ul>
+      <li>Previous: <a href="quickstart.html" title="previous chapter">Início rápido</a></li>
+      <li>Next: <a href="handlers/index.html" title="next chapter">Tipos de Handlers</a></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2019, B2W Digital.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 2.1.2</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="../_sources/userguide/asyncworker-app.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>
