@@ -202,6 +202,9 @@
         <span class="n">serialized_data</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">bytes</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">exchange</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
         <span class="n">vhost</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">settings</span><span class="o">.</span><span class="n">AMQP_DEFAULT_VHOST</span><span class="p">,</span>
+        <span class="n">properties</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">mandatory</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">immediate</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="p">):</span>
         <span class="n">conn</span> <span class="o">=</span> <span class="bp">self</span><span class="p">[</span><span class="n">vhost</span><span class="p">]</span>
         <span class="k">return</span> <span class="k">await</span> <span class="n">conn</span><span class="o">.</span><span class="n">put</span><span class="p">(</span>
@@ -209,6 +212,9 @@
             <span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">,</span>
             <span class="n">serialized_data</span><span class="o">=</span><span class="n">serialized_data</span><span class="p">,</span>
             <span class="n">exchange</span><span class="o">=</span><span class="n">exchange</span><span class="p">,</span>
+            <span class="n">properties</span><span class="o">=</span><span class="n">properties</span><span class="p">,</span>
+            <span class="n">mandatory</span><span class="o">=</span><span class="n">mandatory</span><span class="p">,</span>
+            <span class="n">immediate</span><span class="o">=</span><span class="n">immediate</span><span class="p">,</span>
         <span class="p">)</span></div></div>
 </pre></div>
 
