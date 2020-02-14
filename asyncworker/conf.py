@@ -3,6 +3,8 @@ import logging
 from aiologger.loggers.json import JsonLogger
 from pydantic import BaseSettings
 
+from asyncworker.options import DefaultValues
+
 
 class Settings(BaseSettings):
     LOGLEVEL: str = "ERROR"
@@ -14,7 +16,7 @@ class Settings(BaseSettings):
     HTTP_HOST: str = "127.0.0.1"
     HTTP_PORT: int = 8080
 
-    FLUSH_TIMEOUT: int = 60
+    FLUSH_TIMEOUT: int = DefaultValues.BULK_FLUSH_INTERVAL
 
     class Config:
         allow_mutation = False

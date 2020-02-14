@@ -126,7 +126,10 @@ Por exemplo, se tivermos um ``handler`` que possui:
 
 Nesse caso a ``app`` irá esperar o timeout do flush para liberar essas mensagens para o ``handler``.
 
-Caso queria alterar o tempo default do timeout do flush basta definir env ``ASYNCWORKER_FLUSH_TIMEOUT`` com um número que representará os segundos em que a app irá esperar para realizar o flush
+Caso queira alterar o tempo default do timeout do flush basta definir env ``ASYNCWORKER_FLUSH_TIMEOUT`` com um número que representará os segundos em que a app irá esperar para realizar o flush.
+
+Também é possível alterar o tempo do timeout do flush definindo o campo ``Options.BULK_FLUSH_INTERVAL`` do dicionário ``options`` passado como parâmetro na criação da rota.
+O valor passado para o dicionário ``options`` tem precedência sobre a variável de ambiente ``ASYNCWORKER_FLUSH_TIMEOUT``.
 
 
 

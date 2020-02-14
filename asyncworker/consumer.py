@@ -7,7 +7,7 @@ from aioamqp.exceptions import AioamqpException
 from asyncworker import conf
 from asyncworker.easyqueue.message import AMQPMessage
 from asyncworker.easyqueue.queue import JsonQueue, QueueConsumerDelegate
-from asyncworker.options import Events
+from asyncworker.options import Events, Options
 from asyncworker.routes import AMQPRoute
 from asyncworker.time import ClockTicker
 
@@ -44,7 +44,11 @@ class Consumer(QueueConsumerDelegate):
             delegate=self,
             prefetch_count=prefetch_count,
         )
-        self.clock = ClockTicker(seconds=conf.settings.FLUSH_TIMEOUT)
+        self.clock = ClockTicker(
+            seconds=self._route_options.get(
+                Options.BULK_FLUSH_INTERVAL, conf.settings.FLUSH_TIMEOUT
+            )
+        )
         self.clock_task = None
 
     @property

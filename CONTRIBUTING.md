@@ -72,7 +72,7 @@ If you have issues, then run all lints and check consistency.
 
     ```shell
     pipenv run fmt
-    pipenv isort-fmt
+    pipenv run isort-fmt
     pipenv run lint
 
     ```

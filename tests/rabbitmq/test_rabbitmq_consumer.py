@@ -35,7 +35,7 @@ class ConsumerTest(asynctest.TestCase):
             "vhost": "/",
             "options": {
                 "bulk_size": 1,
-                "bulk_flush_interval": 60,
+                "bulk_flush_interval": 1,
                 Events.ON_SUCCESS: Actions.ACK,
                 Events.ON_EXCEPTION: Actions.REQUEUE,
             },
@@ -485,6 +485,7 @@ class ConsumerTest(asynctest.TestCase):
 
         self.one_route_fixture["handler"] = handler
         self.one_route_fixture["options"]["bulk_size"] = 3
+        self.one_route_fixture["options"]["bulk_flush_interval"] = 0.1
 
         consumer = Consumer(
             self.one_route_fixture,
