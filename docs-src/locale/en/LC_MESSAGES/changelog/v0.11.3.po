@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Asyncworker \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-02-14 15:12-0300\n"
+"POT-Creation-Date: 2020-02-14 15:22-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -38,7 +38,31 @@ msgid ""
 "bulk_flush_interval from route options"
 msgstr ""
 
+#: ../../changelog/v0.11.3.rst:10
+msgid ""
+"`PR 150 <https://github.com/B2W-BIT/async-worker/pull/150>`_ "
+"Feature/sphinx docs structure"
+msgstr ""
+
+#: ../../changelog/v0.11.3.rst:11
+msgid ""
+"`PR 152 <https://github.com/B2W-BIT/async-worker/pull/152>`_ Updating "
+"aioamqp for Python 3.8 compatibility"
+msgstr ""
+
 #: ../../changelog/v0.11.3.rst:12
+msgid ""
+"`PR 153 <https://github.com/B2W-BIT/async-worker/pull/153>`_ Adding code "
+"of conduct and contributing"
+msgstr ""
+
+#: ../../changelog/v0.11.3.rst:13
+msgid ""
+"`PR 154 <https://github.com/B2W-BIT/async-worker/pull/154>`_ Enabling new"
+" parameters from aioamqp"
+msgstr ""
+
+#: ../../changelog/v0.11.3.rst:16
 msgid ""
 "Raw Commits: `0.11.3 <https://github.com/B2W-BIT/async-"
 "worker/compare/0.11.2...0.11.3>`_"
