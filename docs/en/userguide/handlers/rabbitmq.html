@@ -140,7 +140,9 @@ Por exemplo, se tivermos um <code class="docutils literal notranslate"><span cla
 </ul>
 </div></blockquote>
 <p>Nesse caso a <code class="docutils literal notranslate"><span class="pre">app</span></code> irá esperar o timeout do flush para liberar essas mensagens para o <code class="docutils literal notranslate"><span class="pre">handler</span></code>.</p>
-<p>Caso queria alterar o tempo default do timeout do flush basta definir env <code class="docutils literal notranslate"><span class="pre">ASYNCWORKER_FLUSH_TIMEOUT</span></code> com um número que representará os segundos em que a app irá esperar para realizar o flush</p>
+<p>Caso queira alterar o tempo default do timeout do flush basta definir env <code class="docutils literal notranslate"><span class="pre">ASYNCWORKER_FLUSH_TIMEOUT</span></code> com um número que representará os segundos em que a app irá esperar para realizar o flush.</p>
+<p>Também é possível alterar o tempo do timeout do flush definindo o campo <code class="docutils literal notranslate"><span class="pre">Options.BULK_FLUSH_INTERVAL</span></code> do dicionário <code class="docutils literal notranslate"><span class="pre">options</span></code> passado como parâmetro na criação da rota.
+O valor passado para o dicionário <code class="docutils literal notranslate"><span class="pre">options</span></code> tem precedência sobre a variável de ambiente <code class="docutils literal notranslate"><span class="pre">ASYNCWORKER_FLUSH_TIMEOUT</span></code>.</p>
 </div>
 <div class="section" id="exemplo-de-um-codigo-mais-completo">
 <h3>Exemplo de um código mais completo<a class="headerlink" href="#exemplo-de-um-codigo-mais-completo" title="Permalink to this headline">¶</a></h3>

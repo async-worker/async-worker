@@ -41,7 +41,7 @@
 <span class="kn">from</span> <span class="nn">asyncworker</span> <span class="k">import</span> <span class="n">conf</span>
 <span class="kn">from</span> <span class="nn">asyncworker.easyqueue.message</span> <span class="k">import</span> <span class="n">AMQPMessage</span>
 <span class="kn">from</span> <span class="nn">asyncworker.easyqueue.queue</span> <span class="k">import</span> <span class="n">JsonQueue</span><span class="p">,</span> <span class="n">QueueConsumerDelegate</span>
-<span class="kn">from</span> <span class="nn">asyncworker.options</span> <span class="k">import</span> <span class="n">Events</span>
+<span class="kn">from</span> <span class="nn">asyncworker.options</span> <span class="k">import</span> <span class="n">Events</span><span class="p">,</span> <span class="n">Options</span>
 <span class="kn">from</span> <span class="nn">asyncworker.routes</span> <span class="k">import</span> <span class="n">AMQPRoute</span>
 <span class="kn">from</span> <span class="nn">asyncworker.time</span> <span class="k">import</span> <span class="n">ClockTicker</span>
 
@@ -78,7 +78,11 @@
             <span class="n">delegate</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span>
             <span class="n">prefetch_count</span><span class="o">=</span><span class="n">prefetch_count</span><span class="p">,</span>
         <span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">clock</span> <span class="o">=</span> <span class="n">ClockTicker</span><span class="p">(</span><span class="n">seconds</span><span class="o">=</span><span class="n">conf</span><span class="o">.</span><span class="n">settings</span><span class="o">.</span><span class="n">FLUSH_TIMEOUT</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">clock</span> <span class="o">=</span> <span class="n">ClockTicker</span><span class="p">(</span>
+            <span class="n">seconds</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_route_options</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
+                <span class="n">Options</span><span class="o">.</span><span class="n">BULK_FLUSH_INTERVAL</span><span class="p">,</span> <span class="n">conf</span><span class="o">.</span><span class="n">settings</span><span class="o">.</span><span class="n">FLUSH_TIMEOUT</span>
+            <span class="p">)</span>
+        <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">clock_task</span> <span class="o">=</span> <span class="kc">None</span>
 
     <span class="nd">@property</span>
