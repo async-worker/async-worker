@@ -1,10 +1,12 @@
 import unittest
 
-from asynctest import CoroutineMock
+from aiohttp import web
+from asynctest import CoroutineMock, TestCase
 
-from asyncworker import RouteTypes
+from asyncworker import RouteTypes, App
 from asyncworker.exceptions import InvalidRoute
 from asyncworker.routes import RoutesRegistry, HTTPRoute, AMQPRoute
+from asyncworker.testing import HttpClientContext
 
 
 class RoutesRegistryTests(unittest.TestCase):
@@ -112,11 +114,38 @@ class HTTPRoutesTests(unittest.TestCase):
         self.assertIsInstance(route, HTTPRoute)
 
 
-class AMQPRouteTests(unittest.TestCase):
-    def test_it_raises_an_error_if_route_connection_is_invalid(self):
+class AMQPRouteTests(TestCase):
+    async def test_it_raises_an_error_if_route_connection_is_invalid(self):
         with self.assertRaises(ValueError):
             AMQPRoute(
                 routes=["Xablau", "Xena"],
                 handler=lambda *args, **kwargs: 42,
                 options={"connection": (..., ..., ...)},
             )
+
+    async def test_can_registrer_a_callable_as_a_valid_handler(self):
+        app = App()
+
+        class MyHandler:
+            async def __call__(self, req: web.Request):
+                return web.json_response({"OK": True})
+
+        handler = MyHandler()
+
+        app.route(["/"], type=RouteTypes.HTTP, methods=["GET"])(handler)
+
+        async with HttpClientContext(app) as client:
+            resp = await client.get("/")
+            data = await resp.json()
+            self.assertEqual({"OK": True}, data)
+
+    async def test_raise_if_object_is_not_callable(self):
+        app = App()
+
+        class MyHandler:
+            pass
+
+        handler = MyHandler()
+
+        with self.assertRaises(TypeError):
+            app.route(["/"], type=RouteTypes.HTTP, methods=["GET"])(handler)

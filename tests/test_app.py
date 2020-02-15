@@ -59,7 +59,7 @@ class AppTests(asynctest.TestCase):
         self.assertDictContainsSubset({"pet": "dog", "name": "Xablau"}, state)
 
     async def test_startup_freezes_applications_and_sends_the_on_startup_signal(
-        self
+        self,
     ):
         await self.app.startup()
 
@@ -71,7 +71,8 @@ class AppTests(asynctest.TestCase):
             self.app.route(["route"], type="invalid")
 
     async def test_route_registers_a_route_to_routes_registry(self):
-        handler = CoroutineMock()
+        async def handler(request):
+            pass
 
         self.app.route(["route"], type=RouteTypes.AMQP_RABBITMQ, dog="Xablau")(
             handler
@@ -81,7 +82,7 @@ class AppTests(asynctest.TestCase):
         self.assertIsInstance(self.app.routes_registry[handler], AMQPRoute)
 
     async def test_run_on_startup_registers_a_coroutine_to_be_executed_on_startup(
-        self
+        self,
     ):
         coro = CoroutineMock()
 
@@ -93,7 +94,7 @@ class AppTests(asynctest.TestCase):
         coro.assert_awaited_once_with(self.app)
 
     async def test_startup_calls_user_registered_startup_routines_after_app_signal_handlers_startup(
-        self
+        self,
     ):
         coro = CoroutineMock()
 
@@ -105,7 +106,7 @@ class AppTests(asynctest.TestCase):
         )
 
     async def test_run_on_shutdown_registers_a_coroutine_to_be_executed_on_shutdown(
-        self
+        self,
     ):
         coro = CoroutineMock()
 
@@ -143,7 +144,7 @@ class AppTests(asynctest.TestCase):
             self.assertTrue(shutdown_coro.done())
 
     async def test_run_every_registers_a_coroutine_to_be_executed_as_a_ScheduledTaskRunner(
-        self
+        self,
     ):
         with patch(
             "asyncworker.app.ScheduledTaskRunner", spec=ScheduledTaskRunner
@@ -164,7 +165,7 @@ class AppTests(asynctest.TestCase):
             self.assertIn(Runner.return_value, self.app["task_runners"])
 
     async def test_run_every_max_concurrency_can_be_overwritten_with_options(
-        self
+        self,
     ):
         with patch(
             "asyncworker.app.ScheduledTaskRunner", spec=ScheduledTaskRunner
@@ -215,7 +216,7 @@ class AppConnectionsTests(asynctest.TestCase):
         )
 
     def test_get_connection_raises_an_error_if_theres_no_connection_registered_for_name(
-        self
+        self,
     ):
         app = App(connections=self.connections)
 
