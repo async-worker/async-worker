@@ -25,7 +25,7 @@ setup(
         "aiologger>=0.4.0-rc1",
         "pydantic==0.30",
         "cached-property==1.5.1",
-        "aiohttp==3.4.4",
+        "aiohttp==3.6.2",
     ],
     entry_points={},
 )
