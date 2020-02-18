@@ -4,7 +4,7 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-aioamqp = "==0.12.0"
+aioamqp = "==0.14.0"
 aiohttp = "==3.6.2"
 pydantic = "==0.30"
 cached-property = "==1.5.1"
