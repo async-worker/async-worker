@@ -73,6 +73,49 @@ Esse decorator poderia ser aplicado a um handler assim:
   async def handler(req: web.Request):
     return web.json_response({})
 
+Handlers que são objetos callable
+---------------------------------
+
+.. versionadded:: 0.11.4
+
+É possível também escrever handlers como objetos que são callables, ou seja, possuem o método ``async def __call__()``. Importante notar que a assinatura do método ``__call__()`` segue as mesmas regras da assinatura de uma corotina decorada com o ``@app.route()``.
+
+Esses handlers são especialmente úteis quando você precisa guardar algum tipo de contexto e não quer fazer isso com variáveis globais no nível do módulo.
+
+Um exemplo de um handler:
+
+.. code:: python
+
+  class Handler:
+    async def __call__(self, req: web.Request):
+      pass
+
+
+Importante notar que como estamos lidando com um objeto ele precisará ser instanciado antes de ser usado e isso significa que não vamos poder decorá-lo da mesma forma que decoramos handlers que são apenas uma corotina. Um código desse gera erro de sintaxe:
+
+.. code:: python
+
+  class Handler:
+    async def __call__(self, req: web.Request):
+      pass
+
+  h = Handler()
+
+  @app.route(...)
+  h
+
+Por isso esses handlers precisam ser registrados chamando o decorator manualmente, assim:
+
+.. code:: python
+
+  class Handler:
+    async def __call__(self, req: web.Request):
+      pass
+
+  h = Handler()
+
+  app.route(...)(h)
+
 
 Handlers que recebem mais do que apenas Request
 -----------------------------------------------
