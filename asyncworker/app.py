@@ -1,4 +1,5 @@
 import asyncio
+import builtins
 from collections import MutableMapping
 from signal import Signals
 from typing import Iterable, Callable, Coroutine, Dict, Any, Optional
@@ -122,10 +123,19 @@ class App(MutableMapping, Freezable):
             )
 
         def wrapper(f):
-            self.routes_registry[f] = {
+            handler = f
+            if not asyncio.iscoroutinefunction(handler):
+                try:
+                    handler = f.__call__
+                except AttributeError:
+                    raise TypeError(
+                        f"Object passed as handler is not callable: {f}"
+                    )
+
+            self.routes_registry[handler] = {
                 "type": type,
                 "routes": routes,
-                "handler": f,
+                "handler": handler,
                 "options": options,
                 "default_options": self.default_route_options,
                 **kwargs,
