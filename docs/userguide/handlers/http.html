@@ -90,6 +90,41 @@
 </pre></div>
 </div>
 </div>
+<div class="section" id="handlers-que-sao-objetos-callable">
+<h2>Handlers que são objetos callable<a class="headerlink" href="#handlers-que-sao-objetos-callable" title="Link permanente para este título">¶</a></h2>
+<div class="versionadded">
+<p><span class="versionmodified added">Novo na versão 0.11.4.</span></p>
+</div>
+<p>É possível também escrever handlers como objetos que são callables, ou seja, possuem o método <code class="docutils literal notranslate"><span class="pre">async</span> <span class="pre">def</span> <span class="pre">__call__()</span></code>. Importante notar que a assinatura do método <code class="docutils literal notranslate"><span class="pre">__call__()</span></code> segue as mesmas regras da assinatura de uma corotina decorada com o <code class="docutils literal notranslate"><span class="pre">&#64;app.route()</span></code>.</p>
+<p>Esses handlers são especialmente úteis quando você precisa guardar algum tipo de contexto e não quer fazer isso com variáveis globais no nível do módulo.</p>
+<p>Um exemplo de um handler:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">Handler</span><span class="p">:</span>
+  <span class="n">async</span> <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">req</span><span class="p">:</span> <span class="n">web</span><span class="o">.</span><span class="n">Request</span><span class="p">):</span>
+    <span class="k">pass</span>
+</pre></div>
+</div>
+<p>Importante notar que como estamos lidando com um objeto ele precisará ser instanciado antes de ser usado e isso significa que não vamos poder decorá-lo da mesma forma que decoramos handlers que são apenas uma corotina. Um código desse gera erro de sintaxe:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">Handler</span><span class="p">:</span>
+  <span class="n">async</span> <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">req</span><span class="p">:</span> <span class="n">web</span><span class="o">.</span><span class="n">Request</span><span class="p">):</span>
+    <span class="k">pass</span>
+
+<span class="n">h</span> <span class="o">=</span> <span class="n">Handler</span><span class="p">()</span>
+
+<span class="nd">@app.route</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>
+<span class="n">h</span>
+</pre></div>
+</div>
+<p>Por isso esses handlers precisam ser registrados chamando o decorator manualmente, assim:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">Handler</span><span class="p">:</span>
+  <span class="n">async</span> <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">req</span><span class="p">:</span> <span class="n">web</span><span class="o">.</span><span class="n">Request</span><span class="p">):</span>
+    <span class="k">pass</span>
+
+<span class="n">h</span> <span class="o">=</span> <span class="n">Handler</span><span class="p">()</span>
+
+<span class="n">app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="o">...</span><span class="p">)(</span><span class="n">h</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
 <div class="section" id="handlers-que-recebem-mais-do-que-apenas-request">
 <h2>Handlers que recebem mais do que apenas Request<a class="headerlink" href="#handlers-que-recebem-mais-do-que-apenas-request" title="Link permanente para este título">¶</a></h2>
 <div class="versionadded">
