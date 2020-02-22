@@ -30,8 +30,14 @@ class ArgResolver:
     def wrap(self, coro_ref):
         return Task(self._coro_executor(coro_ref))
 
-    def resolve_param(self, param_type: Type) -> Union[Any, None]:
+    def resolve_param(
+        self, param_type: Type, param_name: str
+    ) -> Union[Any, None]:
         for registry in self.registries:
+            arg_value = registry.get(param_type, param_name=param_name)
+            if arg_value is not None:
+                return arg_value
+
             arg_value = registry.get(param_type)
             if arg_value is not None:
                 return arg_value
@@ -52,7 +58,7 @@ class ArgResolver:
                 )
 
             for param_name, param_type in type_annotations.items():
-                param_value = self.resolve_param(param_type)
+                param_value = self.resolve_param(param_type, param_name)
                 if param_value is not None:
                     params[param_name] = param_value
                 else:

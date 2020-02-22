@@ -131,3 +131,19 @@ class ArgResolverTest(TestCase):
         resolver = ArgResolver(registry)
         with self.assertRaises(MissingTypeAnnotationError):
             await resolver.wrap(my_coro)
+
+    async def test_prefer_named_paramteres_before_typed_parameters(self):
+        """
+        Primeiro sempre tentamos pegar o paramtero pelo nome, só depois
+        pegamos o valor olhando apenas o tipo
+        """
+
+        async def my_coro(arg0: int, value: int):
+            return arg0, value
+
+        registry = TypesRegistry()
+        registry.set(42, param_name="arg0")
+        registry.set(44, param_name="value")
+
+        resolver = ArgResolver(registry)
+        self.assertEqual((42, 44), await resolver.wrap(my_coro))
