@@ -1,27 +1,5 @@
-HTTP
-====
-
-.. versionadded:: 0.6.0
-
-Aqui mostraremos como escrever um handler que é estimulado através de requisições HTTP.
-
-
-Um handler é simplesmete uma corotina que recebe um request (``aiohttp.web.Request``) e retorna uma response (``aiohttp.web.Response``). Essa corotina passa a ser um handler "asyncworker" quando é decorada com ``@app.route()``, onde ``app`` é uma instância de ``asyncworker.App``.
-
-Vejamos um handler bem simples que apenas retorna ``HTTP 200 OK``.
-
-.. code:: python
-
-  @app.route(["/"], type=RouteTypes.HTTP, methods=["GET"])
-  async def handler(req: web.Request):
-    return web.json_response({})
-
-
-Como recebemos um request do aiohttp, podemos fazer o que for preciso para extrair dele as informações que precisarmos. Para mais detalhes, veja a doc do aiohttp: https://docs.aiohttp.org/en/stable/web.html
-
-
 Parametrização do decorator route() para handlers HTTP
-------------------------------------------------------
+=======================================================
 
 Para um handler HTTP deveremos passar os seguintes parametros para o decorator ``route()``:
 
@@ -30,7 +8,7 @@ Para um handler HTTP deveremos passar os seguintes parametros para o decorator `
   - ``methods`` sendo uma lista de métodos HTTP permitidos para esse handler
 
 ENVs para escolher a porta e o IP onde o server http estará escutando
------------------------------------------------------------------------
+========================================================================
 
 
 Por padrão, fazemos o binding em ``127.0.0.1``, porta ``8080``, mas isso pode ser alterado com as envvars ``ASYNCWORKER_HTTP_HOST`` e ``ASYNCWORKER_HTTP_PORT``, respectivamente.
@@ -38,7 +16,7 @@ Por padrão, fazemos o binding em ``127.0.0.1``, porta ``8080``, mas isso pode s
 
 
 Aplicando decorators customizados a um handler HTTP
-----------------------------------------------------
+=====================================================
 
 É possível escrever seus próprios decorators e aplicá-los a seus handlers, junto com o decorator ``@app.route``. No entando temos algumas regras:
 
@@ -74,7 +52,7 @@ Esse decorator poderia ser aplicado a um handler assim:
     return web.json_response({})
 
 Handlers que são objetos callable
----------------------------------
+===========================================
 
 .. versionadded:: 0.11.4
 
@@ -118,7 +96,7 @@ Por isso esses handlers precisam ser registrados chamando o decorator manualment
 
 
 Handlers que recebem mais do que apenas Request
------------------------------------------------
+================================================
 
 .. versionadded:: 0.11.0
 
