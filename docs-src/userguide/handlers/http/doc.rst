@@ -155,4 +155,7 @@ Nesse caso, como handler está dizendo que precisa de um parametro chamado ``_id
 
 Então nesse caso faremos um simples ``int(<valor>)``. Esse resultado será passado ao handler no parametro ``_id``, no momento da chamada.
 
+Importante notar que só serão passados ao handler os parametros que estão definidos na assinatura. Então se seu path recebe dois parametros e seu handler só se interessa por um deles, basta declarar na assinatura do handler o parametro que você quer receber.
+
+
 Essa implementação ainda é experimental e servirá de fundação para uma implementação mais complexa, talvez com tipos mais complexos e sem a necessidade de passar o decorator explicitamente.
