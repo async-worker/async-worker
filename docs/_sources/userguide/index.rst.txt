@@ -2,7 +2,7 @@ Guia de uso
 ===============
 
 .. toctree::
-   :maxdepth: 3
+   :maxdepth: 4
 
    quickstart.rst
    asyncworker-app/index.rst
