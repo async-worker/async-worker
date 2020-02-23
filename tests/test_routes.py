@@ -4,8 +4,13 @@ from aiohttp import web
 from asynctest import CoroutineMock, TestCase
 
 from asyncworker import RouteTypes, App
-from asyncworker.exceptions import InvalidRoute
-from asyncworker.routes import RoutesRegistry, HTTPRoute, AMQPRoute
+from asyncworker.http.wrapper import RequestWrapper
+from asyncworker.routes import (
+    call_http_handler,
+    RoutesRegistry,
+    HTTPRoute,
+    AMQPRoute,
+)
 from asyncworker.testing import HttpClientContext
 
 
@@ -149,3 +154,42 @@ class AMQPRouteTests(TestCase):
 
         with self.assertRaises(TypeError):
             app.route(["/"], type=RouteTypes.HTTP, methods=["GET"])(handler)
+
+    async def test_handler_receives_request_object(self):
+        """
+        Certifica que um decorator customizado pode receber 
+        uma instânccia de aiohttp.web.Request
+        """
+        app = App()
+
+        @app.route(["/"], type=RouteTypes.HTTP, methods=["GET"])
+        async def handler(req: web.Request):
+            return web.json_response(dict(req.query.items()))
+
+        async with HttpClientContext(app) as client:
+            resp = await client.get("/?a=10&b=20")
+            data = await resp.json()
+            self.assertEqual({"a": "10", "b": "20"}, data)
+
+    async def test_custom_decorator_receives_request_wrapper(self):
+        """
+        Certifica que um decorator customizado pode receber 
+        uma instância de asyncworker.http.wrapper.RequestWrapper
+        """
+        app = App()
+
+        def _deco(handler):
+            async def _wrap(req: RequestWrapper):
+                return await call_http_handler(req.http_request, handler)
+
+            return _wrap
+
+        @app.route(["/"], type=RouteTypes.HTTP, methods=["GET"])
+        @_deco
+        async def handler(wrap: RequestWrapper):
+            return web.json_response(dict(wrap.http_request.query.items()))
+
+        async with HttpClientContext(app) as client:
+            resp = await client.get("/?a=30&b=42")
+            data = await resp.json()
+            self.assertEqual({"a": "30", "b": "42"}, data)
