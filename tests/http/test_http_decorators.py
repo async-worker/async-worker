@@ -14,6 +14,13 @@ class HTTPDecoratorsTest(TestCase):
         self.app = App()
 
         @self.app.route(
+            ["/get_by_id/{_id}"], type=RouteTypes.HTTP, methods=["POST"]
+        )
+        @parse_path
+        async def parse_body_handler(_id: int):
+            return web.json_response({"numero": _id})
+
+        @self.app.route(
             ["/param/{p1}/{p2}"], type=RouteTypes.HTTP, methods=["POST"]
         )
         @parse_path
@@ -24,7 +31,7 @@ class HTTPDecoratorsTest(TestCase):
         async with HttpClientContext(self.app) as client:
             resp = await client.post("/get_by_id/42")
             data = await resp.json()
-            self.assertEqual({"name": "Dalton", "numero": 42}, data)
+            self.assertEqual({"numero": 42}, data)
 
     async def test_parse_two_path_param(self):
         async with HttpClientContext(self.app) as client:
