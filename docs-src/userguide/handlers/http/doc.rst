@@ -132,3 +132,27 @@ Um exemplo de como popular esse registry é através de um decorator aplicado di
       return web.json_response({})
 
 Aqui o decorator ``auth_required()`` é responsável por fazer a autenticação, pegando dados do Request e encontrando um usuário válido. Se um usuário não puder ser encontrado, retorna ``HTTPStatus.UNAUTHORIZED``. Se um usuário autenticar com sucesso, apenas adiciona o objeto user (que é do tipo ``User``) no registry que está no request. Isso é o suficiente para que o handler, quando for chamado, receba diretamente esse user já autenticado.
+
+Recebendo parâmetros vindos do path do Request
+===============================================
+
+.. versionadded:: 0.11.5
+
+É possível receber em seu handler parametros definidos no path da requisição. Isso é feito través do decorator :py:func:`asyncworker.http.decorators.parse_path`.
+
+Quando decoramos nosso handler com esse decorator instruímos o asyncworker a tentar extrair parametros do path e passar para nosso handler.
+
+Importante notar que, primeiro o asyncworker vai procurar nosso parametro pelo nome e só depois tentará procurar o tipo.  Exemplo:
+
+.. code-block:: python
+
+  @app.route(["/by_id/{_id}"], type=RouteTypes.HTTP, methods=["GET"])
+  @parse_path
+  async def by_id(_id: int):
+      return web.json_response({})
+
+Nesse caso, como handler está dizendo que precisa de um parametro chamado ``_id`` temos que declarar um parametro de mesmo nome no path da Request. Depois que esse `match` for feito passaremos o valor recebido no path para o construtor do tipo definido na assinatura do handler.
+
+Então nesse caso faremos um simples ``int(<valor>)``. Esse resultado será passado ao handler no parametro ``_id``, no momento da chamada.
+
+Essa implementação ainda é experimental e servirá de fundação para uma implementação mais complexa, talvez com tipos mais complexos e sem a necessidade de passar o decorator explicitamente.
