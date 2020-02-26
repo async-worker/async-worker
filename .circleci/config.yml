@@ -66,8 +66,7 @@ jobs:
       - all-tests
       - run:
           when: on_success
-          steps:
-            - cc-after-build
+          command: cc-after-build
 
   py37:
     <<: *template
