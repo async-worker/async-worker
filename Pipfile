@@ -32,7 +32,7 @@ python_version = "3"
 [scripts]
 test = "py.test -s --cov=asyncworker --cov-report term-missing"
 itest = "py.test -s --cov=asyncworker --cov-report term-missing itests/"
-all-tests = "py.test -s --cov=asyncworker --cov-report term-missing tests/ itests/"
+all-tests = "py.test -s --cov=asyncworker --cov-report=term-missing --cov-report=xml tests/ itests/"
 lint = "mypy asyncworker --ignore-missing-imports"
 fmt = "black --py36 -v --line-length 80 ."
 fmt-check = "black --py36 -v --line-length 80 --check ."
