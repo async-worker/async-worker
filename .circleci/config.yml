@@ -1,6 +1,20 @@
 version: 2.1
 
 commands:
+  cc-before-build:
+    description: "Code Climate before-build"
+    steps:
+      - run:
+          command: |
+            curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
+            chmod +x ./cc-test-reporter
+            ./cc-test-reporter before-build
+  cc-after-build:
+    description: "Code Climate after-build"
+    steps:
+      - run:
+          command: |
+            ./cc-test-reporter after-build --input-type coverage.py
   fmt-check:
     description: "Confirma que a formatação do código"
     steps:
@@ -48,10 +62,12 @@ jobs:
       - isort-check
       - lint
       #- typehint-cov
+      - cc-before-build
       - all-tests
       - run:
           when: on_success
-          command: pipenv run codecov --flags unittest
+          steps:
+            - cc-after-build
 
   py37:
     <<: *template
