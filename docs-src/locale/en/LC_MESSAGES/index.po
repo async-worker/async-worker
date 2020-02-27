@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Asyncworker \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-02-08 19:20-0300\n"
+"POT-Creation-Date: 2020-02-27 14:49-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -54,23 +54,23 @@ msgstr ""
 msgid "O projeto está no Github: https://github.com/b2wdigital/async-worker"
 msgstr ""
 
-#: ../../index.rst:16
+#: ../../index.rst:19
 msgid "Abaixo você econtra mais detalhes sobre como tudo isso funciona."
 msgstr ""
 
-#: ../../index.rst:30
+#: ../../index.rst:33
 msgid "Indices and tables"
 msgstr ""
 
-#: ../../index.rst:32
+#: ../../index.rst:35
 msgid ":ref:`genindex`"
 msgstr ""
 
-#: ../../index.rst:33
+#: ../../index.rst:36
 msgid ":ref:`modindex`"
 msgstr ""
 
-#: ../../index.rst:34
+#: ../../index.rst:37
 msgid ":ref:`search`"
 msgstr ""
 
@@ -101,5 +101,26 @@ msgstr ""
 #~ msgstr ""
 
 #~ msgid "Abaixo você econtra a documentação do projeto."
+#~ msgstr ""
+
+#~ msgid "Abaixo você econtra mais detalhes sobre como tudo isso funciona."
+#~ msgstr ""
+
+#~ msgid "O projeto está no Github: https://github.com/b2wdigital/async-worker"
+#~ msgstr ""
+
+#~ msgid "target"
+#~ msgstr ""
+
+#~ msgid "https://codeclimate.com/github/b2wdigital/async-worker/test_coverage"
+#~ msgstr ""
+
+#~ msgid "alt"
+#~ msgstr ""
+
+#~ msgid "Test Coverage"
+#~ msgstr ""
+
+#~ msgid "O projeto, está no Github: https://github.com/b2wdigital/async-worker"
 #~ msgstr ""
 

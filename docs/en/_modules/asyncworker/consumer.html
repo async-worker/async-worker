@@ -33,23 +33,23 @@
   <h1>Source code for asyncworker.consumer</h1><div class="highlight"><pre>
 <span></span><span class="kn">import</span> <span class="nn">asyncio</span>
 <span class="kn">import</span> <span class="nn">traceback</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="k">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Type</span><span class="p">,</span> <span class="n">Union</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Type</span><span class="p">,</span> <span class="n">Union</span>
 
-<span class="kn">from</span> <span class="nn">aioamqp.exceptions</span> <span class="k">import</span> <span class="n">AioamqpException</span>
+<span class="kn">from</span> <span class="nn">aioamqp.exceptions</span> <span class="kn">import</span> <span class="n">AioamqpException</span>
 
-<span class="kn">from</span> <span class="nn">asyncworker</span> <span class="k">import</span> <span class="n">conf</span>
-<span class="kn">from</span> <span class="nn">asyncworker.easyqueue.message</span> <span class="k">import</span> <span class="n">AMQPMessage</span>
-<span class="kn">from</span> <span class="nn">asyncworker.easyqueue.queue</span> <span class="k">import</span> <span class="n">JsonQueue</span><span class="p">,</span> <span class="n">QueueConsumerDelegate</span>
-<span class="kn">from</span> <span class="nn">asyncworker.options</span> <span class="k">import</span> <span class="n">Events</span><span class="p">,</span> <span class="n">Options</span>
-<span class="kn">from</span> <span class="nn">asyncworker.routes</span> <span class="k">import</span> <span class="n">AMQPRoute</span>
-<span class="kn">from</span> <span class="nn">asyncworker.time</span> <span class="k">import</span> <span class="n">ClockTicker</span>
+<span class="kn">from</span> <span class="nn">asyncworker</span> <span class="kn">import</span> <span class="n">conf</span>
+<span class="kn">from</span> <span class="nn">asyncworker.easyqueue.message</span> <span class="kn">import</span> <span class="n">AMQPMessage</span>
+<span class="kn">from</span> <span class="nn">asyncworker.easyqueue.queue</span> <span class="kn">import</span> <span class="n">JsonQueue</span><span class="p">,</span> <span class="n">QueueConsumerDelegate</span>
+<span class="kn">from</span> <span class="nn">asyncworker.options</span> <span class="kn">import</span> <span class="n">Events</span><span class="p">,</span> <span class="n">Options</span>
+<span class="kn">from</span> <span class="nn">asyncworker.routes</span> <span class="kn">import</span> <span class="n">AMQPRoute</span>
+<span class="kn">from</span> <span class="nn">asyncworker.time</span> <span class="kn">import</span> <span class="n">ClockTicker</span>
 
-<span class="kn">from</span> <span class="nn">.bucket</span> <span class="k">import</span> <span class="n">Bucket</span>
-<span class="kn">from</span> <span class="nn">.rabbitmq</span> <span class="k">import</span> <span class="n">RabbitMQMessage</span>
+<span class="kn">from</span> <span class="nn">.bucket</span> <span class="kn">import</span> <span class="n">Bucket</span>
+<span class="kn">from</span> <span class="nn">.rabbitmq</span> <span class="kn">import</span> <span class="n">RabbitMQMessage</span>
 
 
 <div class="viewcode-block" id="Consumer"><a class="viewcode-back" href="../../src/asyncworker/asyncworker.html#asyncworker.consumer.Consumer">[docs]</a><span class="k">class</span> <span class="nc">Consumer</span><span class="p">(</span><span class="n">QueueConsumerDelegate</span><span class="p">):</span>
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">route_info</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Dict</span><span class="p">,</span> <span class="n">AMQPRoute</span><span class="p">],</span>
         <span class="n">host</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
