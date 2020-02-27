@@ -45,14 +45,14 @@
 <span class="kn">from</span> <span class="nn">asyncworker.utils</span> <span class="kn">import</span> <span class="n">Timeit</span>
 
 
-<span class="n">async</span> <span class="k">def</span> <span class="nf">log_callback</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-    <span class="k">print</span><span class="p">(</span><span class="n">kwargs</span><span class="p">)</span>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">log_callback</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">kwargs</span><span class="p">)</span>
     <span class="c1"># &gt;&gt;&gt; {&#39;transactions&#39;: {&#39;xablau&#39;: 1.0028090476989746}, &#39;exc_type&#39;: None, &#39;exc_val&#39;: None, &#39;exc_tb&#39;: None}</span>
 
 
-<span class="n">async</span> <span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
-    <span class="n">async</span> <span class="k">with</span> <span class="n">Timeit</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;xablau&quot;</span><span class="p">,</span> <span class="n">callback</span><span class="o">=</span><span class="n">log_callback</span><span class="p">):</span>
-        <span class="n">await</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
+    <span class="k">async</span> <span class="k">with</span> <span class="n">Timeit</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;xablau&quot;</span><span class="p">,</span> <span class="n">callback</span><span class="o">=</span><span class="n">log_callback</span><span class="p">):</span>
+        <span class="k">await</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
 
 <span class="n">loop</span> <span class="o">=</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">get_event_loop</span><span class="p">()</span>
 <span class="n">loop</span><span class="o">.</span><span class="n">run_until_complete</span><span class="p">(</span><span class="n">main</span><span class="p">())</span>
@@ -63,13 +63,13 @@
 <span class="kn">from</span> <span class="nn">asyncworker.utils</span> <span class="kn">import</span> <span class="n">Timeit</span>
 
 
-<span class="n">async</span> <span class="k">def</span> <span class="nf">log_callback</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-    <span class="k">print</span><span class="p">(</span><span class="n">kwargs</span><span class="p">)</span>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">log_callback</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">kwargs</span><span class="p">)</span>
     <span class="c1"># &gt;&gt;&gt; {&#39;transactions&#39;: {&#39;xablau&#39;: 3.0994415283203125e-06}, &#39;exc_type&#39;: &lt;class &#39;KeyError&#39;&gt;, &#39;exc_val&#39;: KeyError(&#39;error&#39;,), &#39;exc_tb&#39;: &lt;traceback object at 0x10c10c7c8&gt;}</span>
 
 
-<span class="n">async</span> <span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
-    <span class="n">async</span> <span class="k">with</span> <span class="n">Timeit</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;xablau&quot;</span><span class="p">,</span> <span class="n">callback</span><span class="o">=</span><span class="n">log_callback</span><span class="p">):</span>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
+    <span class="k">async</span> <span class="k">with</span> <span class="n">Timeit</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;xablau&quot;</span><span class="p">,</span> <span class="n">callback</span><span class="o">=</span><span class="n">log_callback</span><span class="p">):</span>
         <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span><span class="s2">&quot;error&quot;</span><span class="p">)</span>
 
 <span class="n">loop</span> <span class="o">=</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">get_event_loop</span><span class="p">()</span>
@@ -82,10 +82,10 @@
 <p>Também é possível utilizar <cite>Timeit</cite> como um decorator:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># ...</span>
 
-<span class="nd">@app.route</span><span class="p">([</span><span class="s2">&quot;xablau-queue&quot;</span><span class="p">],</span> <span class="nb">type</span><span class="o">=</span><span class="n">RouteTypes</span><span class="o">.</span><span class="n">AMQP_RABBITMQ</span><span class="p">,</span> <span class="n">vhost</span><span class="o">=</span><span class="s2">&quot;/&quot;</span><span class="p">)</span>
+<span class="nd">@app</span><span class="o">.</span><span class="n">route</span><span class="p">([</span><span class="s2">&quot;xablau-queue&quot;</span><span class="p">],</span> <span class="nb">type</span><span class="o">=</span><span class="n">RouteTypes</span><span class="o">.</span><span class="n">AMQP_RABBITMQ</span><span class="p">,</span> <span class="n">vhost</span><span class="o">=</span><span class="s2">&quot;/&quot;</span><span class="p">)</span>
 <span class="nd">@Timeit</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;xablau-access-time&quot;</span><span class="p">,</span> <span class="n">callback</span><span class="o">=</span><span class="n">log_callback</span><span class="p">)</span>
-<span class="n">async</span> <span class="k">def</span> <span class="nf">drain_handler</span><span class="p">(</span><span class="n">message</span><span class="p">):</span>
-    <span class="n">await</span> <span class="n">access_some_remote_content</span><span class="p">()</span>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">drain_handler</span><span class="p">(</span><span class="n">message</span><span class="p">):</span>
+    <span class="k">await</span> <span class="n">access_some_remote_content</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
@@ -97,18 +97,18 @@
 <p>Muitas vezes queremos ter várias métricas ao mesmo tempo para contar o tempo
 dentro de um mesmo contexto de execução. Para isso, uma mesma instância pode
 receber múltiplas chamadas.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">async</span> <span class="k">def</span> <span class="nf">printit</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-    <span class="k">print</span><span class="p">(</span><span class="n">kwargs</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">async</span> <span class="k">def</span> <span class="nf">printit</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">kwargs</span><span class="p">)</span>
     <span class="c1"># &gt;&gt;&gt; {&#39;transactions&#39;: {&#39;c&#39;: 0.10274815559387207, &#39;b&#39;: 0.20585179328918457, &#39;a&#39;: 0.3061490058898926}, &#39;exc_type&#39;: None, &#39;exc_val&#39;: None, &#39;exc_tb&#39;: None}</span>
 
 
-<span class="n">async</span> <span class="k">def</span> <span class="nf">foo</span><span class="p">():</span>
-    <span class="n">async</span> <span class="k">with</span> <span class="n">Timeit</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="n">callback</span><span class="o">=</span><span class="n">printit</span><span class="p">)</span> <span class="k">as</span> <span class="n">timeit</span><span class="p">:</span>
-        <span class="n">await</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="o">.</span><span class="mi">1</span><span class="p">)</span>
-        <span class="n">async</span> <span class="k">with</span> <span class="n">timeit</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;b&#39;</span><span class="p">):</span>
-            <span class="n">await</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="o">.</span><span class="mi">1</span><span class="p">)</span>
-            <span class="n">async</span> <span class="k">with</span> <span class="n">timeit</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;c&#39;</span><span class="p">):</span>
-                <span class="n">await</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="o">.</span><span class="mi">1</span><span class="p">)</span>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">foo</span><span class="p">():</span>
+    <span class="k">async</span> <span class="k">with</span> <span class="n">Timeit</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="n">callback</span><span class="o">=</span><span class="n">printit</span><span class="p">)</span> <span class="k">as</span> <span class="n">timeit</span><span class="p">:</span>
+        <span class="k">await</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="o">.</span><span class="mi">1</span><span class="p">)</span>
+        <span class="k">async</span> <span class="k">with</span> <span class="n">timeit</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;b&#39;</span><span class="p">):</span>
+            <span class="k">await</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="o">.</span><span class="mi">1</span><span class="p">)</span>
+            <span class="k">async</span> <span class="k">with</span> <span class="n">timeit</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;c&#39;</span><span class="p">):</span>
+                <span class="k">await</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="o">.</span><span class="mi">1</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
