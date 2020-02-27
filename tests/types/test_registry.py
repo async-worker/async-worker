@@ -23,26 +23,6 @@ class TypesRegistryTest(TestCase):
 
         self.assertIsNone(self.registry.get(OtherObject))
 
-    async def test_get_object_of_list_type(self):
-        """
-        Searching for List[Class]
-        """
-
-        class MyClass:
-            pass
-
-        _list = [MyClass(), MyClass()]
-        self.registry.set(_list)
-        self.assertEqual(_list, self.registry.get(List[MyClass]))
-
-    async def test_get_object_list_type_empty_list(self):
-        class MyClass:
-            pass
-
-        _list: List[MyClass] = []
-        self.registry.set(_list, List[MyClass])
-        self.assertEqual(_list, self.registry.get(List[MyClass]))
-
     async def test_simple_coroutine_with_typehint(self):
         class MyClass:
             pass
@@ -52,3 +32,30 @@ class TypesRegistryTest(TestCase):
 
         instance = MyClass()
         self.assertTrue(instance)
+
+    async def test_register_a_new_type_with_its_name(self):
+        """
+        Um parametro registrado apenas com o tipo é diferente de um
+        parametro registrado com tipo e nome
+        """
+
+        class MyClass:
+            async def my_coro(self, obj_id: int):
+                return obj_id
+
+        self.registry.set(42, param_name="obj_id")
+        self.registry.set(10)
+        self.assertEqual(42, self.registry.get(int, param_name="obj_id"))
+
+    async def test_register_returns_None_when_name_not_found(self):
+        """
+        Lança uma exception quando tentamos buscar um parametro pelo
+        tipo e pelo nome mas ele não é encontrado.
+        """
+
+        class MyClass:
+            async def my_coro(self, obj_id: int):
+                return obj_id
+
+        self.registry.set(42, param_name="obj_id")
+        self.assertEqual(None, self.registry.get(str, param_name="obj_id"))

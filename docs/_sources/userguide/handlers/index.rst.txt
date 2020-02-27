@@ -16,5 +16,5 @@ Abaixo você poderá ver em detalhes cada um desses handlers e como criar cada u
    :maxdepth: 3
    :titlesonly:
 
-   http.rst
+   http/index.rst
    rabbitmq.rst

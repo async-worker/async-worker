@@ -15,6 +15,8 @@ As conexões possíveis estão mo módulo :py:mod:`asyncworker.connections`.
 As instâncias dessas conexões podem ser usadas dentro do handlers, se necessário.
 
 
+.. _asyncworker-app-handler:
+
 Definindo handlers em sua App Asyncworker
 -----------------------------------------
 

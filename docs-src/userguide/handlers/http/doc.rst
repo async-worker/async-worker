@@ -1,27 +1,21 @@
-HTTP
-====
-
-.. versionadded:: 0.6.0
-
-Aqui mostraremos como escrever um handler que é estimulado através de requisições HTTP.
 
 
-Um handler é simplesmete uma corotina que recebe um request (``aiohttp.web.Request``) e retorna uma response (``aiohttp.web.Response``). Essa corotina passa a ser um handler "asyncworker" quando é decorada com ``@app.route()``, onde ``app`` é uma instância de ``asyncworker.App``.
+Regras para criação de um handler HTTP
+======================================
 
-Vejamos um handler bem simples que apenas retorna ``HTTP 200 OK``.
+Todo handler HTTP deve seguir algumas regras:
 
-.. code:: python
+ - Deve sempre ser decorato com :ref:`@app.route() <asyncworker-app-handler>`
+ - Deve declarar seus parametros sempre com definição de tipos, pois é assim que o asyncworker saberá passar :ref:`parametros dinâmicos <handler-path-param>` para o handler.
+ - Um handler pode não receber nenhum parâmetro. Para isso basta a assinatura do handler ser vazia.
 
-  @app.route(["/"], type=RouteTypes.HTTP, methods=["GET"])
-  async def handler(req: web.Request):
-    return web.json_response({})
+Alguns objetos já são passados so handler, caso estejam presentes em sua assinatura.  Eles são:
 
-
-Como recebemos um request do aiohttp, podemos fazer o que for preciso para extrair dele as informações que precisarmos. Para mais detalhes, veja a doc do aiohttp: https://docs.aiohttp.org/en/stable/web.html
+ - Uma instância de ``aiohttp.web.Request``.
 
 
 Parametrização do decorator route() para handlers HTTP
-------------------------------------------------------
+=======================================================
 
 Para um handler HTTP deveremos passar os seguintes parametros para o decorator ``route()``:
 
@@ -29,8 +23,11 @@ Para um handler HTTP deveremos passar os seguintes parametros para o decorator `
   - ``type=RouteTypes.HTTP``
   - ``methods`` sendo uma lista de métodos HTTP permitidos para esse handler
 
+Parametros no path podem ser definidos cercando com ``{}``, ex: ``/users/{user_id}``. Mais delathes em como receber esses valores em seu handler :ref:`aqui <handler-path-param>`.
+
+
 ENVs para escolher a porta e o IP onde o server http estará escutando
------------------------------------------------------------------------
+========================================================================
 
 
 Por padrão, fazemos o binding em ``127.0.0.1``, porta ``8080``, mas isso pode ser alterado com as envvars ``ASYNCWORKER_HTTP_HOST`` e ``ASYNCWORKER_HTTP_PORT``, respectivamente.
@@ -38,7 +35,7 @@ Por padrão, fazemos o binding em ``127.0.0.1``, porta ``8080``, mas isso pode s
 
 
 Aplicando decorators customizados a um handler HTTP
-----------------------------------------------------
+=====================================================
 
 É possível escrever seus próprios decorators e aplicá-los a seus handlers, junto com o decorator ``@app.route``. No entando temos algumas regras:
 
@@ -74,7 +71,7 @@ Esse decorator poderia ser aplicado a um handler assim:
     return web.json_response({})
 
 Handlers que são objetos callable
----------------------------------
+===========================================
 
 .. versionadded:: 0.11.4
 
@@ -118,7 +115,7 @@ Por isso esses handlers precisam ser registrados chamando o decorator manualment
 
 
 Handlers que recebem mais do que apenas Request
------------------------------------------------
+================================================
 
 .. versionadded:: 0.11.0
 
@@ -154,3 +151,33 @@ Um exemplo de como popular esse registry é através de um decorator aplicado di
       return web.json_response({})
 
 Aqui o decorator ``auth_required()`` é responsável por fazer a autenticação, pegando dados do Request e encontrando um usuário válido. Se um usuário não puder ser encontrado, retorna ``HTTPStatus.UNAUTHORIZED``. Se um usuário autenticar com sucesso, apenas adiciona o objeto user (que é do tipo ``User``) no registry que está no request. Isso é o suficiente para que o handler, quando for chamado, receba diretamente esse user já autenticado.
+
+
+
+Recebendo parâmetros vindos do path do Request
+===============================================
+
+.. _handler-path-param:
+.. versionadded:: 0.11.5
+
+É possível receber em seu handler parametros definidos no path da requisição. Isso é feito través do decorator :py:func:`asyncworker.http.decorators.parse_path`.
+
+Quando decoramos nosso handler com esse decorator instruímos o asyncworker a tentar extrair parametros do path e passar para nosso handler.
+
+Importante notar que, primeiro o asyncworker vai procurar nosso parametro pelo nome e só depois tentará procurar o tipo.  Exemplo:
+
+.. code-block:: python
+
+  @app.route(["/by_id/{_id}"], type=RouteTypes.HTTP, methods=["GET"])
+  @parse_path
+  async def by_id(_id: int):
+      return web.json_response({})
+
+Nesse caso, como handler está dizendo que precisa de um parametro chamado ``_id`` temos que declarar um parametro de mesmo nome no path da Request. Depois que esse `match` for feito passaremos o valor recebido no path para o construtor do tipo definido na assinatura do handler.
+
+Então nesse caso faremos um simples ``int(<valor>)``. Esse resultado será passado ao handler no parametro ``_id``, no momento da chamada.
+
+Importante notar que só serão passados ao handler os parametros que estão definidos na assinatura. Então se seu path recebe dois parametros e seu handler só se interessa por um deles, basta declarar na assinatura do handler o parametro que você quer receber.
+
+
+Essa implementação ainda é experimental e servirá de fundação para uma implementação mais complexa, talvez com tipos mais complexos e sem a necessidade de passar o decorator explicitamente.

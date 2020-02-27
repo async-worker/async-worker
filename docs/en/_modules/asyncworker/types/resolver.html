@@ -63,8 +63,14 @@
 <div class="viewcode-block" id="ArgResolver.wrap"><a class="viewcode-back" href="../../../src/asyncworker/asyncworker.types.html#asyncworker.types.resolver.ArgResolver.wrap">[docs]</a>    <span class="k">def</span> <span class="nf">wrap</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">coro_ref</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">Task</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_coro_executor</span><span class="p">(</span><span class="n">coro_ref</span><span class="p">))</span></div>
 
-<div class="viewcode-block" id="ArgResolver.resolve_param"><a class="viewcode-back" href="../../../src/asyncworker/asyncworker.types.html#asyncworker.types.resolver.ArgResolver.resolve_param">[docs]</a>    <span class="k">def</span> <span class="nf">resolve_param</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">param_type</span><span class="p">:</span> <span class="n">Type</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">Any</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
+<div class="viewcode-block" id="ArgResolver.resolve_param"><a class="viewcode-back" href="../../../src/asyncworker/asyncworker.types.html#asyncworker.types.resolver.ArgResolver.resolve_param">[docs]</a>    <span class="k">def</span> <span class="nf">resolve_param</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">param_type</span><span class="p">:</span> <span class="n">Type</span><span class="p">,</span> <span class="n">param_name</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">Any</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
         <span class="k">for</span> <span class="n">registry</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">registries</span><span class="p">:</span>
+            <span class="n">arg_value</span> <span class="o">=</span> <span class="n">registry</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">param_type</span><span class="p">,</span> <span class="n">param_name</span><span class="o">=</span><span class="n">param_name</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">arg_value</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">arg_value</span>
+
             <span class="n">arg_value</span> <span class="o">=</span> <span class="n">registry</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">param_type</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">arg_value</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="k">return</span> <span class="n">arg_value</span>
@@ -85,7 +91,7 @@
                 <span class="p">)</span>
 
             <span class="k">for</span> <span class="n">param_name</span><span class="p">,</span> <span class="n">param_type</span> <span class="ow">in</span> <span class="n">type_annotations</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-                <span class="n">param_value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">resolve_param</span><span class="p">(</span><span class="n">param_type</span><span class="p">)</span>
+                <span class="n">param_value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">resolve_param</span><span class="p">(</span><span class="n">param_type</span><span class="p">,</span> <span class="n">param_name</span><span class="p">)</span>
                 <span class="k">if</span> <span class="n">param_value</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                     <span class="n">params</span><span class="p">[</span><span class="n">param_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">param_value</span>
                 <span class="k">else</span><span class="p">:</span>

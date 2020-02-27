@@ -109,17 +109,6 @@ class ArgResolverTest(TestCase):
 
         self.assertEqual(42, registry_one.get(int))
 
-    async def test_resolve_list_argument(self):
-        async def my_coro(arg0: List[int], value: str):
-            return arg0, value
-
-        registry = TypesRegistry()
-        registry.set([42, 42])
-        registry.set("value")
-
-        resolver = ArgResolver(registry)
-        self.assertEqual(([42, 42], "value"), await resolver.wrap(my_coro))
-
     async def test_resolves_coro_with_return_annotation(self):
         async def my_coro(arg0: int, value: str) -> Tuple[int, str]:
             return arg0, value
@@ -142,3 +131,19 @@ class ArgResolverTest(TestCase):
         resolver = ArgResolver(registry)
         with self.assertRaises(MissingTypeAnnotationError):
             await resolver.wrap(my_coro)
+
+    async def test_prefer_named_paramteres_before_typed_parameters(self):
+        """
+        Primeiro sempre tentamos pegar o paramtero pelo nome, só depois
+        pegamos o valor olhando apenas o tipo
+        """
+
+        async def my_coro(arg0: int, value: int):
+            return arg0, value
+
+        registry = TypesRegistry()
+        registry.set(42, param_name="arg0")
+        registry.set(44, param_name="value")
+
+        resolver = ArgResolver(registry)
+        self.assertEqual((42, 44), await resolver.wrap(my_coro))
