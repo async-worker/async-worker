@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Asyncworker \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-02-09 17:20-0300\n"
+"POT-Creation-Date: 2020-02-27 14:37-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -136,11 +136,48 @@ msgstr ""
 msgid "Esse decorator poderia ser aplicado a um handler assim:"
 msgstr ""
 
-#: ../../userguide/handlers/http.rst:78
+#: ../../userguide/handlers/http.rst:77
+msgid "Handlers que são objetos callable"
+msgstr ""
+
+#: ../../userguide/handlers/http.rst:81
+msgid ""
+"É possível também escrever handlers como objetos que são callables, ou "
+"seja, possuem o método ``async def __call__()``. Importante notar que a "
+"assinatura do método ``__call__()`` segue as mesmas regras da assinatura "
+"de uma corotina decorada com o ``@app.route()``."
+msgstr ""
+
+#: ../../userguide/handlers/http.rst:83
+msgid ""
+"Esses handlers são especialmente úteis quando você precisa guardar algum "
+"tipo de contexto e não quer fazer isso com variáveis globais no nível do "
+"módulo."
+msgstr ""
+
+#: ../../userguide/handlers/http.rst:85
+msgid "Um exemplo de um handler:"
+msgstr ""
+
+#: ../../userguide/handlers/http.rst:94
+msgid ""
+"Importante notar que como estamos lidando com um objeto ele precisará ser"
+" instanciado antes de ser usado e isso significa que não vamos poder "
+"decorá-lo da mesma forma que decoramos handlers que são apenas uma "
+"corotina. Um código desse gera erro de sintaxe:"
+msgstr ""
+
+#: ../../userguide/handlers/http.rst:107
+msgid ""
+"Por isso esses handlers precisam ser registrados chamando o decorator "
+"manualmente, assim:"
+msgstr ""
+
+#: ../../userguide/handlers/http.rst:121
 msgid "Handlers que recebem mais do que apenas Request"
 msgstr ""
 
-#: ../../userguide/handlers/http.rst:82
+#: ../../userguide/handlers/http.rst:125
 msgid ""
 "O asyncworker permite que um handler receba quaisquer prametros. Para "
 "isso a assinatura do handler deve conter typehints em todos os "
@@ -148,7 +185,7 @@ msgid ""
 "desses prametros e consiga chamar o handler corretamente."
 msgstr ""
 
-#: ../../userguide/handlers/http.rst:84
+#: ../../userguide/handlers/http.rst:127
 msgid ""
 "Todas as instancias de ``aiohttp.web.Request`` recebem um atributo "
 "chamado ``types_registry`` que é do tipo "
@@ -157,13 +194,13 @@ msgid ""
 "registry do request."
 msgstr ""
 
-#: ../../userguide/handlers/http.rst:86
+#: ../../userguide/handlers/http.rst:129
 msgid ""
 "Um exemplo de como popular esse registry é através de um decorator "
 "aplicado diretamente ao um handler. Vejamos um exemplo:"
 msgstr ""
 
-#: ../../userguide/handlers/http.rst:113
+#: ../../userguide/handlers/http.rst:156
 msgid ""
 "Aqui o decorator ``auth_required()`` é responsável por fazer a "
 "autenticação, pegando dados do Request e encontrando um usuário válido. "
