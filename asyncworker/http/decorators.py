@@ -1,8 +1,7 @@
 import typing
 
-from aiohttp import web
-
 from asyncworker.conf import logger
+from asyncworker.http.wrapper import RequestWrapper
 from asyncworker.routes import call_http_handler
 
 
@@ -10,7 +9,8 @@ def parse_path(handler):
     handler_types_args = typing.get_type_hints(handler)
     handler_args_names = list(handler_types_args.keys())
 
-    async def _wrap(req: web.Request):
+    async def _wrap(wrapper: RequestWrapper):
+        req = wrapper.http_request
 
         for param_name in handler_args_names:
             if param_name in req.match_info:

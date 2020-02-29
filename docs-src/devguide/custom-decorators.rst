@@ -25,7 +25,7 @@ Um exemplo simples de decorator:
 
       return _wrapper
 
-A razão para isso é que o asyncworker permite que um handler receba parametros dinâmicos (mais sobre isso adiante) e a função ``call_http_handler()`` é quem tem ciência disso e saberá fazer a resolução correta dos parametros necessários para que o handler seja corretamente chamado.
+A razão para isso é que o asyncworker permite que um handler receba parametros dinâmicos (:ref:`typed-handlers`) e a função ``call_http_handler()`` é quem tem ciência disso e saberá fazer a resolução correta dos parametros necessários para que o handler seja corretamente chamado.
 
 Esse decorator poderia ser aplicado a um handler assim:
 
