@@ -37,7 +37,7 @@
 <span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-asyncworker.connections" title="Link permanente para este título">¶</a></h2>
 <dl class="class">
 <dt id="asyncworker.connections.AMQPConnection">
-<em class="property">class </em><code class="sig-prename descclassname">asyncworker.connections.</code><code class="sig-name descname">AMQPConnection</code><a class="reference internal" href="../../_modules/asyncworker/connections.html#AMQPConnection"><span class="viewcode-link">[código fonte]</span></a><a class="headerlink" href="#asyncworker.connections.AMQPConnection" title="Link permanente para esta definição">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">asyncworker.connections.</code><code class="sig-name descname">AMQPConnection</code><span class="sig-paren">(</span><em class="sig-param">**data</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/asyncworker/connections.html#AMQPConnection"><span class="viewcode-link">[código fonte]</span></a><a class="headerlink" href="#asyncworker.connections.AMQPConnection" title="Link permanente para esta definição">¶</a></dt>
 <dd><p>Base: <a class="reference internal" href="#asyncworker.connections.Connection" title="asyncworker.connections.Connection"><code class="xref py py-class docutils literal notranslate"><span class="pre">asyncworker.connections.Connection</span></code></a></p>
 <dl class="class">
 <dt id="asyncworker.connections.AMQPConnection.Config">
@@ -86,7 +86,7 @@
 
 <dl class="class">
 <dt id="asyncworker.connections.Connection">
-<em class="property">class </em><code class="sig-prename descclassname">asyncworker.connections.</code><code class="sig-name descname">Connection</code><a class="reference internal" href="../../_modules/asyncworker/connections.html#Connection"><span class="viewcode-link">[código fonte]</span></a><a class="headerlink" href="#asyncworker.connections.Connection" title="Link permanente para esta definição">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">asyncworker.connections.</code><code class="sig-name descname">Connection</code><span class="sig-paren">(</span><em class="sig-param">**data</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/asyncworker/connections.html#Connection"><span class="viewcode-link">[código fonte]</span></a><a class="headerlink" href="#asyncworker.connections.Connection" title="Link permanente para esta definição">¶</a></dt>
 <dd><p>Base: <code class="xref py py-class docutils literal notranslate"><span class="pre">pydantic.main.BaseModel</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">abc.ABC</span></code></p>
 <p>Common ancestral for all Connection classes that auto generates a
 connection name and is responsible for keeping track of new connections on
@@ -113,7 +113,7 @@ also keeps a counter for each connection type</p>
 
 <dl class="class">
 <dt id="asyncworker.connections.SSEConnection">
-<em class="property">class </em><code class="sig-prename descclassname">asyncworker.connections.</code><code class="sig-name descname">SSEConnection</code><a class="reference internal" href="../../_modules/asyncworker/connections.html#SSEConnection"><span class="viewcode-link">[código fonte]</span></a><a class="headerlink" href="#asyncworker.connections.SSEConnection" title="Link permanente para esta definição">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">asyncworker.connections.</code><code class="sig-name descname">SSEConnection</code><span class="sig-paren">(</span><em class="sig-param">**data</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/asyncworker/connections.html#SSEConnection"><span class="viewcode-link">[código fonte]</span></a><a class="headerlink" href="#asyncworker.connections.SSEConnection" title="Link permanente para esta definição">¶</a></dt>
 <dd><p>Base: <a class="reference internal" href="#asyncworker.connections.Connection" title="asyncworker.connections.Connection"><code class="xref py py-class docutils literal notranslate"><span class="pre">asyncworker.connections.Connection</span></code></a></p>
 </dd></dl>
 

@@ -48,8 +48,8 @@ estado pelos handlers.</p>
 </pre></div>
 </div>
 <p>Então você poderá utilizá-los nos seus handlers</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@app.route</span><span class="p">(</span><span class="n">routes</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;words_to_index&quot;</span><span class="p">],</span> <span class="nb">type</span><span class="o">=</span><span class="n">RouteTypes</span><span class="o">.</span><span class="n">AMQP_RABBITMQ</span><span class="p">)</span>
-<span class="n">async</span> <span class="k">def</span> <span class="nf">drain_handler</span><span class="p">(</span><span class="n">messages</span><span class="p">):</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="n">routes</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;words_to_index&quot;</span><span class="p">],</span> <span class="nb">type</span><span class="o">=</span><span class="n">RouteTypes</span><span class="o">.</span><span class="n">AMQP_RABBITMQ</span><span class="p">)</span>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">drain_handler</span><span class="p">(</span><span class="n">messages</span><span class="p">):</span>
     <span class="n">app</span><span class="p">[</span><span class="s1">&#39;processed_messages&#39;</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
 </pre></div>
 </div>

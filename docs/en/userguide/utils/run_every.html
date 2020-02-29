@@ -40,9 +40,9 @@
 <span class="n">app</span> <span class="o">=</span> <span class="n">App</span><span class="p">()</span>
 
 
-<span class="nd">@app.run_every</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
-<span class="n">async</span> <span class="k">def</span> <span class="nf">every_5_seconds</span><span class="p">(</span><span class="n">myapp</span><span class="p">:</span> <span class="n">App</span><span class="p">):</span>
-    <span class="k">print</span><span class="p">(</span><span class="s2">&quot;OK&quot;</span><span class="p">)</span>
+<span class="nd">@app</span><span class="o">.</span><span class="n">run_every</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">every_5_seconds</span><span class="p">(</span><span class="n">myapp</span><span class="p">:</span> <span class="n">App</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;OK&quot;</span><span class="p">)</span>
 
 
 <span class="n">app</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
