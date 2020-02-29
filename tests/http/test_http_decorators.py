@@ -17,14 +17,14 @@ class HTTPDecoratorsTest(TestCase):
             ["/get_by_id/{_id}"], type=RouteTypes.HTTP, methods=["POST"]
         )
         @parse_path
-        async def parse_body_handler(_id: int):
+        async def get_by_id(_id: int):
             return web.json_response({"numero": _id})
 
         @self.app.route(
             ["/param/{p1}/{p2}"], type=RouteTypes.HTTP, methods=["POST"]
         )
         @parse_path
-        async def parse_body_handler(p1: int, p2: int):
+        async def path_multiple_params(p1: int, p2: int):
             return web.json_response({"p1": p1, "p2": p2})
 
     async def test_parse_one_path_param(self):

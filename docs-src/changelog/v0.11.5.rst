@@ -1,0 +1,25 @@
+0.11.5
+================
+
+
+Data de release:
+
+Tag: `0.11.5 <https://github.com/b2wdigital/async-worker/releases/tag/0.11.5>`_
+
+ * `PR 163 <https://github.com/b2wdigital/async-worker/pull/163>`_ Feature/fix build on py38
+ * `PR 164 <https://github.com/b2wdigital/async-worker/pull/164>`_ Feature/named parameteres on types registry
+ * `PR 165 <https://github.com/b2wdigital/async-worker/pull/165>`_ Implementação de um RequestWrapper
+ * `PR 166 <https://github.com/b2wdigital/async-worker/pull/166>`_ Tentativa de adicionar o report do codeclimate
+ * `PR 167 <https://github.com/b2wdigital/async-worker/pull/167>`_ Feature/code climate badges
+ * `PR 168 <https://github.com/b2wdigital/async-worker/pull/168>`_ Adicionando .gitattributes
+
+Raw Commits: `0.11.5 <https://github.com/b2wdigital/async-worker/compare/0.11.4...0.11.5>`_
+
+
+Notas de atualização
+--------------------
+
+Nessa versão, as implementações de decorators customizados passam a receber uma instância de :py:class:`asyncworker.http.wrapper.RequestWrapper` e não mais o Request do aiohttp.
+A chamada a esses decorators ainda funciona recebendo ``aiohttp.web.Request`` mas é considerada depreciada e será removida no futuro.
+
+Mais detalhes :ref:`custom-decorators`.
