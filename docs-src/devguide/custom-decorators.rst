@@ -1,3 +1,5 @@
+.. _custom-decorators:
+
 Aplicando decorators customizados a um handler HTTP
 =====================================================
 
