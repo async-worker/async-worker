@@ -78,6 +78,8 @@ Por isso esses handlers precisam ser registrados chamando o decorator manualment
   app.route(...)(h)
 
 
+.. _typed-handlers:
+
 Handlers que recebem mais do que apenas Request
 ================================================
 
