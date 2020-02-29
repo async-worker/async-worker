@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Asyncworker \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-02-09 18:16-0300\n"
+"POT-Creation-Date: 2020-02-28 21:42-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -22,27 +22,39 @@ msgstr ""
 msgid "Atualizando sua App Asyncworker"
 msgstr ""
 
-#: ../../userguide/updates/index.rst:6
+#: ../../userguide/updates/index.rst:5
+msgid ""
+"Se você estivere atualizando para versões pós ``0.6.0`` o melhor a fazer "
+"é consultar o changelog de cada uma das vesões."
+msgstr ""
+
+#: ../../userguide/updates/index.rst:7
+msgid ""
+"A lista de todas as versões com cada uma de suas mudanças está :ref:`aqui"
+" <changelog>`."
+msgstr ""
+
+#: ../../userguide/updates/index.rst:11
 msgid "0.5.x -> 0.6.0"
 msgstr ""
 
-#: ../../userguide/updates/index.rst:8
+#: ../../userguide/updates/index.rst:13
 msgid ""
 "Nessa versão, tornamos obrigatório o uso do Enum ``RouteTypes`` e a "
 "assinatura de ``app.route`` mudou. Ex.:"
 msgstr ""
 
-#: ../../userguide/updates/index.rst:21
+#: ../../userguide/updates/index.rst:26
 msgid "0.1.x -> 0.2.0"
 msgstr ""
 
-#: ../../userguide/updates/index.rst:23
+#: ../../userguide/updates/index.rst:28
 msgid ""
 "Na versão ``0.2.0`` criamos a possibilidade de receber mensagens em lote."
 " E a partir dessa versão a assinatura do handler mudo para:"
 msgstr ""
 
-#: ../../userguide/updates/index.rst:32
+#: ../../userguide/updates/index.rst:37
 msgid ""
 "As instâncias do objeto ``asyncworker.rabbitmq.RabbitMQMessage`` já vêm "
 "por padrão configurado para receber ``ack()`` depois que o handler "
@@ -51,13 +63,13 @@ msgid ""
 "a fila."
 msgstr ""
 
-#: ../../userguide/updates/index.rst:34
+#: ../../userguide/updates/index.rst:39
 msgid ""
 "O conteúdo da mensagem original está agora no atributo ``message.body``. "
 "Então um handler antigo que era assim:"
 msgstr ""
 
-#: ../../userguide/updates/index.rst:47
+#: ../../userguide/updates/index.rst:52
 msgid "passa a ser assim:"
 msgstr ""
 

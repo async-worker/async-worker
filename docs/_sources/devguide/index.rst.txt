@@ -2,6 +2,6 @@ Guia de desenvolvimento
 =======================
 
 .. toctree::
-   :maxdepth: 3
 
+  custom-decorators.rst
   tests.rst

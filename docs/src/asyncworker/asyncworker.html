@@ -656,7 +656,10 @@ is ready to be handled.</p>
 <dl class="function">
 <dt id="asyncworker.routes.call_http_handler">
 <em class="property">async </em><code class="sig-prename descclassname">asyncworker.routes.</code><code class="sig-name descname">call_http_handler</code><span class="sig-paren">(</span><em class="sig-param">request: aiohttp.web_request.Request, handler: Callable[[...], Coroutine]</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/asyncworker/routes.html#call_http_handler"><span class="viewcode-link">[código fonte]</span></a><a class="headerlink" href="#asyncworker.routes.call_http_handler" title="Link permanente para esta definição">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Quando o RequestWrapper estiver mais sólido, esse método deve receber <cite>asyncworker.http.wrapper.RequestWrapper</cite> e não <cite>web.Request</cite>.
+Primeiro vamos documentar que essa chamada será depreciada e função de chamada onde
+recebemos <cite>RequestWrapper</cite>.</p>
+</dd></dl>
 
 <dl class="function">
 <dt id="asyncworker.routes.http_handler_wrapper">
