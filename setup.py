@@ -10,7 +10,7 @@ setup(
     version="0.11.4",
     description="Microframework para escrever workers assíncronos em Python",
     long_description="Microframework para escrever workers assíncronos em Python",
-    url="https://github.com/B2W-BIT/async-worker",
+    url="https://github.com/b2wdigital/async-worker",
     # Author details
     author="Dalton Barreto",
     author_email="daltonmatos@gmail.com",
@@ -18,6 +18,7 @@ setup(
     classifiers=[
         "Programming Language :: Python :: 3.6",
         "Programming Language :: Python :: 3.7",
+        "Programming Language :: Python :: 3.8",
     ],
     packages=find_packages(exclude=["contrib", "docs", "tests*"]),
     install_requires=[
