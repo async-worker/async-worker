@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Asyncworker \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-02-29 21:11-0300\n"
+"POT-Creation-Date: 2020-03-01 00:31-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -80,17 +80,23 @@ msgid ""
 "Explicação sobre como mantemos as versões do asyncworker"
 msgstr ""
 
-#: ../../changelog/v0.11.5.rst:18
+#: ../../changelog/v0.11.5.rst:17
+msgid ""
+"`PR 174 <https://github.com/b2wdigital/async-worker/pull/174>`_ "
+"Feature/update code to use request wrapper"
+msgstr ""
+
+#: ../../changelog/v0.11.5.rst:19
 msgid ""
 "Raw Commits: `0.11.5 <https://github.com/b2wdigital/async-"
 "worker/compare/0.11.4...0.11.5>`_"
 msgstr ""
 
-#: ../../changelog/v0.11.5.rst:22
+#: ../../changelog/v0.11.5.rst:23
 msgid "Notas de atualização"
 msgstr ""
 
-#: ../../changelog/v0.11.5.rst:24
+#: ../../changelog/v0.11.5.rst:25
 msgid ""
 "Nessa versão, as implementações de decorators customizados passam a "
 "receber uma instância de "
@@ -100,7 +106,16 @@ msgid ""
 "futuro."
 msgstr ""
 
-#: ../../changelog/v0.11.5.rst:27
+#: ../../changelog/v0.11.5.rst:28
+msgid ""
+"A recomendação é que você primeiro atualize para essa versão e ajuste "
+"todos os seus handlers e decorators de handlers para passarem a receber "
+":py:class:`asyncworker.http.wrapper.RequestWrapper`. Fazendo isso seu "
+"código já estará bem melhor preparado para futuras versões do "
+"asyncworker."
+msgstr ""
+
+#: ../../changelog/v0.11.5.rst:30
 msgid "Mais detalhes :ref:`custom-decorators`."
 msgstr ""
 

@@ -52,7 +52,7 @@
                     <span class="n">value</span> <span class="o">=</span> <span class="n">handler_types_args</span><span class="p">[</span><span class="n">param_name</span><span class="p">](</span>
                         <span class="n">req</span><span class="o">.</span><span class="n">match_info</span><span class="p">[</span><span class="n">param_name</span><span class="p">]</span>
                     <span class="p">)</span>
-                    <span class="n">req</span><span class="p">[</span><span class="s2">&quot;types_registry&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">param_name</span><span class="o">=</span><span class="n">param_name</span><span class="p">)</span>
+                    <span class="n">wrapper</span><span class="o">.</span><span class="n">types_registry</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">param_name</span><span class="o">=</span><span class="n">param_name</span><span class="p">)</span>
                 <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
                     <span class="k">await</span> <span class="n">logger</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span>
                         <span class="p">{</span>
@@ -98,8 +98,6 @@
 <ul>
   <li><a href="../../../index.html">Documentation overview</a><ul>
   <li><a href="../../index.html">Código do módulo</a><ul>
-  <li><a href="../../asyncworker.html">asyncworker</a><ul>
-  </ul></li>
   </ul></li>
   </ul></li>
 </ul>
