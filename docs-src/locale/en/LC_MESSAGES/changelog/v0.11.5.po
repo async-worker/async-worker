@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Asyncworker \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-03-01 00:31-0300\n"
+"POT-Creation-Date: 2020-03-01 00:39-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -23,7 +23,7 @@ msgid "0.11.5"
 msgstr ""
 
 #: ../../changelog/v0.11.5.rst:5
-msgid "Data de release:"
+msgid "Data de release: 2020-03-01"
 msgstr ""
 
 #: ../../changelog/v0.11.5.rst:7
@@ -118,4 +118,7 @@ msgstr ""
 #: ../../changelog/v0.11.5.rst:30
 msgid "Mais detalhes :ref:`custom-decorators`."
 msgstr ""
+
+#~ msgid "Data de release:"
+#~ msgstr ""
 

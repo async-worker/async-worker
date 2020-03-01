@@ -2,7 +2,7 @@
 ================
 
 
-Data de release:
+Data de release: 2020-03-01
 
 Tag: `0.11.5 <https://github.com/b2wdigital/async-worker/releases/tag/0.11.5>`_
 
