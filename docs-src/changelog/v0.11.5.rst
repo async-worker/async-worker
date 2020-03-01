@@ -25,4 +25,6 @@ Notas de atualização
 Nessa versão, as implementações de decorators customizados passam a receber uma instância de :py:class:`asyncworker.http.wrapper.RequestWrapper` e não mais o Request do aiohttp.
 A chamada a esses decorators ainda funciona recebendo ``aiohttp.web.Request`` mas é considerada depreciada e será removida no futuro.
 
+A recomendação é que você primeiro atualize para essa versão e ajuste todos os seus handlers e decorators de handlers para passarem a receber :py:class:`asyncworker.http.wrapper.RequestWrapper`. Fazendo isso seu código já estará bem melhor preparado para futuras versões do asyncworker.
+
 Mais detalhes :ref:`custom-decorators`.
