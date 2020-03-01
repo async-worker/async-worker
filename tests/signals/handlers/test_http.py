@@ -270,9 +270,32 @@ class HTTPServerTests(asynctest.TestCase):
                 resp_data = await resp.json()
                 self.assertEqual({"num": "42"}, resp_data)
 
+    async def test_handler_can_receive_aiohttp_request(self):
         @self.app.route(["/"], type=RouteTypes.HTTP, methods=["GET"])
         async def handler(request: web.Request) -> web.Response:
             return web.json_response({"num": request.query["num"]})
+
+        async with HttpClientContext(self.app) as client:
+            settings_mock = Settings()
+            with mock.patch(
+                "asyncworker.signals.handlers.http.settings", settings_mock
+            ):
+                resp = await client.get("/", params={"num": 42})
+                self.assertEqual(200, resp.status)
+                resp_data = await resp.json()
+                self.assertEqual({"num": "42"}, resp_data)
+
+    async def test_handler_decorator_can_receive_aiohttp_request(self):
+        def my_decorator(handler):
+            async def _wrapper(request: web.Request):
+                return await call_http_handler(request, handler)
+
+            return _wrapper
+
+        @self.app.route(["/"], type=RouteTypes.HTTP, methods=["GET"])
+        @my_decorator
+        async def handler(wrapper: RequestWrapper):
+            return web.json_response({"num": wrapper.http_request.query["num"]})
 
         async with HttpClientContext(self.app) as client:
             settings_mock = Settings()
