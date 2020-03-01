@@ -18,7 +18,7 @@ def parse_path(handler):
                     value = handler_types_args[param_name](
                         req.match_info[param_name]
                     )
-                    req["types_registry"].set(value, param_name=param_name)
+                    wrapper.types_registry.set(value, param_name=param_name)
                 except ValueError:
                     await logger.exception(
                         {
