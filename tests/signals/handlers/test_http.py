@@ -2,10 +2,11 @@ from random import randint
 
 import asynctest
 from aiohttp import web
-from asynctest import mock, CoroutineMock, Mock, patch
+from asynctest import skip, mock, CoroutineMock, Mock, patch
 
 from asyncworker import App
 from asyncworker.conf import settings, Settings
+from asyncworker.http.wrapper import RequestWrapper
 from asyncworker.routes import call_http_handler, RouteTypes, RoutesRegistry
 from asyncworker.signals.handlers.http import HTTPServer
 from asyncworker.testing import HttpClientContext
@@ -103,7 +104,7 @@ class HTTPServerTests(asynctest.TestCase):
         """
 
         @self.app.route(["/"], type=RouteTypes.HTTP, methods=["GET"])
-        async def index(r):
+        async def index():
             return web.json_response({"OK": True})
 
         async with HttpClientContext(self.app) as client:
@@ -123,7 +124,7 @@ class HTTPServerTests(asynctest.TestCase):
         """
 
         @self.app.route(["/"], type=RouteTypes.HTTP, methods=["GET"])
-        async def handler(request):
+        async def handler():
             return web.json_response({})
 
         async with HttpClientContext(self.app) as client:
@@ -136,7 +137,8 @@ class HTTPServerTests(asynctest.TestCase):
 
     async def test_add_registry_to_all_requests(self):
         @self.app.route(["/"], type=RouteTypes.HTTP, methods=["GET"])
-        async def handler(request: web.Request):
+        async def handler(wrapper: RequestWrapper):
+            request = wrapper.http_request
             registry: TypesRegistry = request["types_registry"]
             assert registry is not None
             assert isinstance(registry, TypesRegistry)
@@ -158,9 +160,9 @@ class HTTPServerTests(asynctest.TestCase):
                 self.name = name
 
         def insert_user_into_type_registry(handler):
-            async def _wrapper(request: web.Request):
-                request["types_registry"].set(User(name=expected_user_name))
-                return await call_http_handler(request, handler)
+            async def _wrapper(wrapper: RequestWrapper):
+                wrapper.types_registry.set(User(name=expected_user_name))
+                return await call_http_handler(wrapper.http_request, handler)
 
             return _wrapper
 
@@ -192,18 +194,16 @@ class HTTPServerTests(asynctest.TestCase):
                 self.name = name
 
         def insert_user_into_type_registry(handler):
-            async def _wrapper(request: web.Request):
-                request["types_registry"].set(User(name=expected_user_name))
-                return await call_http_handler(request, handler)
+            async def _wrapper(wrapper: RequestWrapper):
+                wrapper.types_registry.set(User(name=expected_user_name))
+                return await call_http_handler(wrapper.http_request, handler)
 
             return _wrapper
 
         def insert_account_into_type_registry(handler):
-            async def _wrapper(request: web.Request):
-                request["types_registry"].set(
-                    Account(name=expected_account_name)
-                )
-                return await call_http_handler(request, handler)
+            async def _wrapper(wrapper: RequestWrapper):
+                wrapper.types_registry.set(Account(name=expected_account_name))
+                return await call_http_handler(wrapper.http_request, handler)
 
             return _wrapper
 
@@ -231,17 +231,19 @@ class HTTPServerTests(asynctest.TestCase):
                     resp_data,
                 )
 
-    async def test_resolves_handler_parameters_when_receiving_request(self):
+    async def test_resolves_handler_parameters_when_receiving_request_wrapper(
+        self
+    ):
         def my_decorator(handler):
-            async def _wrapper(request: web.Request):
-                return await call_http_handler(request, handler)
+            async def _wrapper(wrapper: RequestWrapper):
+                return await call_http_handler(wrapper.http_request, handler)
 
             return _wrapper
 
         @self.app.route(["/"], type=RouteTypes.HTTP, methods=["GET"])
         @my_decorator
-        async def handler(request: web.Request):
-            return web.json_response({"num": request.query["num"]})
+        async def handler(wrapper: RequestWrapper):
+            return web.json_response({"num": wrapper.http_request.query["num"]})
 
         async with HttpClientContext(self.app) as client:
             settings_mock = Settings()
@@ -255,8 +257,45 @@ class HTTPServerTests(asynctest.TestCase):
 
     async def test_ignores_return_annotation_when_resolving_parameters(self):
         @self.app.route(["/"], type=RouteTypes.HTTP, methods=["GET"])
+        async def handler(wrapper: RequestWrapper) -> web.Response:
+            return web.json_response({"num": wrapper.http_request.query["num"]})
+
+        async with HttpClientContext(self.app) as client:
+            settings_mock = Settings()
+            with mock.patch(
+                "asyncworker.signals.handlers.http.settings", settings_mock
+            ):
+                resp = await client.get("/", params={"num": 42})
+                self.assertEqual(200, resp.status)
+                resp_data = await resp.json()
+                self.assertEqual({"num": "42"}, resp_data)
+
+    async def test_handler_can_receive_aiohttp_request(self):
+        @self.app.route(["/"], type=RouteTypes.HTTP, methods=["GET"])
         async def handler(request: web.Request) -> web.Response:
             return web.json_response({"num": request.query["num"]})
+
+        async with HttpClientContext(self.app) as client:
+            settings_mock = Settings()
+            with mock.patch(
+                "asyncworker.signals.handlers.http.settings", settings_mock
+            ):
+                resp = await client.get("/", params={"num": 42})
+                self.assertEqual(200, resp.status)
+                resp_data = await resp.json()
+                self.assertEqual({"num": "42"}, resp_data)
+
+    async def test_handler_decorator_can_receive_aiohttp_request(self):
+        def my_decorator(handler):
+            async def _wrapper(request: web.Request):
+                return await call_http_handler(request, handler)
+
+            return _wrapper
+
+        @self.app.route(["/"], type=RouteTypes.HTTP, methods=["GET"])
+        @my_decorator
+        async def handler(wrapper: RequestWrapper):
+            return web.json_response({"num": wrapper.http_request.query["num"]})
 
         async with HttpClientContext(self.app) as client:
             settings_mock = Settings()
