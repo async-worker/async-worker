@@ -24,6 +24,7 @@ Abaixo você econtra mais detalhes sobre como tudo isso funciona.
 
    intro.rst
    incompat.rst
+   versions.rst
    userguide/index.rst
    devguide/index.rst
    changelog/index.rst
