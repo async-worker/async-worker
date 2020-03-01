@@ -132,7 +132,7 @@ class AMQPRouteTests(TestCase):
         app = App()
 
         class MyHandler:
-            async def __call__(self, req: web.Request):
+            async def __call__(self, wrapper: RequestWrapper):
                 return web.json_response({"OK": True})
 
         handler = MyHandler()
@@ -163,7 +163,8 @@ class AMQPRouteTests(TestCase):
         app = App()
 
         @app.route(["/"], type=RouteTypes.HTTP, methods=["GET"])
-        async def handler(req: web.Request):
+        async def handler(wrapper: RequestWrapper):
+            req = wrapper.http_request
             return web.json_response(dict(req.query.items()))
 
         async with HttpClientContext(app) as client:
