@@ -12,9 +12,17 @@ Vejamos um handler bem simples que apenas retorna ``HTTP 200 OK``.
 
 .. code:: python
 
+  from aiohttp import web
+
+  from asyncworker.http.wrapper import RequestWrapper
+  from asyncworker import App, RouteTypes
+
+  app = App()
+
+
   @app.route(["/"], type=RouteTypes.HTTP, methods=["GET"])
-  async def handler(req: web.Request):
-    return web.json_response({})
+  async def one_param(wrapper: RequestWrapper):
+      return web.json_response({})
 
 
 Como recebemos um request do aiohttp, podemos fazer o que for preciso para extrair dele as informações que precisarmos. Para mais detalhes, veja a doc do aiohttp: https://docs.aiohttp.org/en/stable/web.html
