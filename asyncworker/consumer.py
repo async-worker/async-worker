@@ -43,6 +43,7 @@ class Consumer(QueueConsumerDelegate):
             virtual_host=self.vhost,
             delegate=self,
             prefetch_count=prefetch_count,
+            logger=conf.logger,
             connection_fail_handler=self._route_options.get(
                 Options.CONNECTION_FAIL_HANDLER, None
             ),
