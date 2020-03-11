@@ -606,6 +606,7 @@ class EnsureConnectedDecoratorTests(asynctest.TestCase):
                 _connect=CoroutineMock(side_effect=[ConnectionError, True]),
             ),
             seconds_between_conn_retry=seconds,
+            connection_fail_handler=CoroutineMock(),
         )
         coro = CoroutineMock()
         with asynctest.patch(
@@ -630,6 +631,7 @@ class EnsureConnectedDecoratorTests(asynctest.TestCase):
                 is_connected=False,
             ),
             logger=Mock(spec=logging.Logger),
+            connection_fail_handler=CoroutineMock(),
         )
         coro = CoroutineMock()
         with asynctest.patch(

@@ -83,6 +83,7 @@ o dicionário ``options`` pode ter as seguintes chaves:
 
   - :py:attr:`Options.BULK_SIZE <asyncworker.options.Options.BULK_SIZE>`: Esse valor é um inteiro e diz qual será o tamanho máximo da lista que o handler vai receber, a cada vez que for chamado.
   - :py:attr:`Options.BULK_FLUSH_INTERVAL <asyncworker.options.Options.BULK_FLUSH_INTERVAL>`: Inteiro e diz o tempo máximo que o bulk de mensagens poderá ficar com tamanho menor do que ``bulk_size``. Exemplo: Se seu handler tem um bulk_size de 4096 mensagens mas você recebe apenas 100 msg/min na fila em alguns momentos seu handler será chamado recebendo uma lista de mensagens **menor** do que 4096.
+  - :py:attr:`Options.CONNECTION_FAIL_HANDLER <asyncworker.options.Options.CONNECTION_FAIL_HANDLER>`: Função assíncrona que é chamada caso haja uma falha durante a conexão com o broker. Essa função recebe a exceção que ocorreu e o número de retentativas que falharam até então. O número de retentativas é zerado quando o app consegue se conectar com o broker.
   - :py:attr:`Events.ON_SUCCESS <asyncworker.options.Events.ON_SUCCESS>`: Diz qual será a ação tomada pelo asyncworker quando uma chamada a um handler for concluída com sucesso, ou seja, o handler não lançar nenhuma exception. O Valor padrão é :py:attr:`Actions.ACK <asyncworker.options.Actions.ACK>`
   - :py:attr:`Events.ON_EXCEPTION <asyncworker.options.Events.ON_EXCEPTION>`: Diz qual será a ação padrão quando a chamada a um handler lançar uma excação não tratada. O valor padrão é :py:attr:`Actions.REQUEUE <asyncworker.options.Actions.REQUEUE>`
 
@@ -94,11 +95,15 @@ Exemplo de um código que usa essas opções:
   from asyncworker import App
   from asyncworker.options import Options, Actions, Events
 
+  async def fail_handler(e: Exception, n: int):
+      print(f"error: {e}, retries {n}")
+
   @app.route(
       ["queue"],
       options={
           Options.BULK_SIZE: 1000,
           Options.BULK_FLUSH_INTERVAL: 60,
+          Options.CONNECTION_FAIL_HANDLER: fail_handler,
           Events.ON_SUCCESS: Actions.ACK,
           Events.ON_EXCEPTION: Actions.REJECT,
       },

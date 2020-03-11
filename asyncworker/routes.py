@@ -122,6 +122,9 @@ class _AMQPRouteOptions(_RouteOptions):
     bulk_flush_interval: int = DefaultValues.BULK_FLUSH_INTERVAL
     on_success: Actions = DefaultValues.ON_SUCCESS
     on_exception: Actions = DefaultValues.ON_EXCEPTION
+    connection_fail_handler: Optional[
+        Callable[[Exception, int], Coroutine]
+    ] = None
     connection: Optional[Union[AMQPConnection, str]]
 
     class Config:

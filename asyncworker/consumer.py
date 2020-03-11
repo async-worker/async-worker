@@ -7,7 +7,7 @@ from aioamqp.exceptions import AioamqpException
 from asyncworker import conf
 from asyncworker.easyqueue.message import AMQPMessage
 from asyncworker.easyqueue.queue import JsonQueue, QueueConsumerDelegate
-from asyncworker.options import Events, Options
+from asyncworker.options import DefaultValues, Events, Options
 from asyncworker.routes import AMQPRoute
 from asyncworker.time import ClockTicker
 
@@ -43,6 +43,9 @@ class Consumer(QueueConsumerDelegate):
             virtual_host=self.vhost,
             delegate=self,
             prefetch_count=prefetch_count,
+            connection_fail_handler=self._route_options.get(
+                Options.CONNECTION_FAIL_HANDLER, None
+            ),
         )
         self.clock = ClockTicker(
             seconds=self._route_options.get(
