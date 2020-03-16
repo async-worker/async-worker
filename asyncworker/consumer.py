@@ -44,8 +44,8 @@ class Consumer(QueueConsumerDelegate):
             delegate=self,
             prefetch_count=prefetch_count,
             logger=conf.logger,
-            connection_fail_handler=self._route_options.get(
-                Options.CONNECTION_FAIL_HANDLER, None
+            connection_fail_callback=self._route_options.get(
+                Options.CONNECTION_FAIL_CALLBACK, None
             ),
         )
         self.clock = ClockTicker(

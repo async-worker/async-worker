@@ -91,8 +91,8 @@ def _ensure_connected(coro: Callable[..., Coroutine]):
             except Exception as e:
                 await asyncio.sleep(self.seconds_between_conn_retry)
                 retries += 1
-                if self.connection_fail_handler:
-                    await self.connection_fail_handler(e, retries)
+                if self.connection_fail_callback:
+                    await self.connection_fail_callback(e, retries)
                 if self.logger:
                     self.logger.error(
                         {
@@ -183,7 +183,7 @@ class JsonQueue(BaseQueue, Generic[T]):
         loop: AbstractEventLoop = None,
         seconds_between_conn_retry: int = 1,
         logger: logging.Logger = None,
-        connection_fail_handler: Optional[
+        connection_fail_callback: Optional[
             Callable[[Exception, int], Coroutine]
         ] = None,
     ) -> None:
@@ -221,7 +221,7 @@ class JsonQueue(BaseQueue, Generic[T]):
         self.seconds_between_conn_retry = seconds_between_conn_retry
         self.is_running = True
         self.logger = logger
-        self.connection_fail_handler = connection_fail_handler
+        self.connection_fail_callback = connection_fail_callback
 
     def serialize(self, body: T, **kwargs) -> str:
         return json.dumps(body, **kwargs)
