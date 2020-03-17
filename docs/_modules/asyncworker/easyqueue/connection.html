@@ -33,11 +33,11 @@
             
   <h1>Código fonte para asyncworker.easyqueue.connection</h1><div class="highlight"><pre>
 <span></span><span class="kn">import</span> <span class="nn">asyncio</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="k">import</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Coroutine</span><span class="p">,</span> <span class="n">Optional</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Coroutine</span><span class="p">,</span> <span class="n">Optional</span>
 
 <span class="kn">import</span> <span class="nn">aioamqp</span>
-<span class="kn">from</span> <span class="nn">aioamqp</span> <span class="k">import</span> <span class="n">AmqpProtocol</span>
-<span class="kn">from</span> <span class="nn">aioamqp.channel</span> <span class="k">import</span> <span class="n">Channel</span>
+<span class="kn">from</span> <span class="nn">aioamqp</span> <span class="kn">import</span> <span class="n">AmqpProtocol</span>
+<span class="kn">from</span> <span class="nn">aioamqp.channel</span> <span class="kn">import</span> <span class="n">Channel</span>
 
 <span class="n">OnErrorCallback</span> <span class="o">=</span> <span class="n">Union</span><span class="p">[</span>
     <span class="kc">None</span><span class="p">,</span> <span class="n">Callable</span><span class="p">[[</span><span class="ne">Exception</span><span class="p">],</span> <span class="kc">None</span><span class="p">],</span> <span class="n">Callable</span><span class="p">[[</span><span class="ne">Exception</span><span class="p">],</span> <span class="n">Coroutine</span><span class="p">]</span>
@@ -45,7 +45,7 @@
 
 
 <div class="viewcode-block" id="AMQPConnection"><a class="viewcode-back" href="../../../src/asyncworker/asyncworker.easyqueue.html#asyncworker.easyqueue.connection.AMQPConnection">[documentos]</a><span class="k">class</span> <span class="nc">AMQPConnection</span><span class="p">:</span>
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">host</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
         <span class="n">username</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
@@ -124,6 +124,7 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../intro.html">Introdução</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../incompat.html">Incompatibilidades</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../versions.html">Compatibilidade de Versões do asyncowker</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../userguide/index.html">Guia de uso</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../devguide/index.html">Guia de desenvolvimento</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../changelog/index.html">Changelog</a></li>
@@ -134,8 +135,6 @@
 <ul>
   <li><a href="../../../index.html">Documentation overview</a><ul>
   <li><a href="../../index.html">Código do módulo</a><ul>
-  <li><a href="../../asyncworker.html">asyncworker</a><ul>
-  </ul></li>
   </ul></li>
   </ul></li>
 </ul>

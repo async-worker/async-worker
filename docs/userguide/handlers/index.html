@@ -15,7 +15,7 @@
     <script type="text/javascript" src="../../_static/translations.js"></script>
     <link rel="index" title="Índice" href="../../genindex.html" />
     <link rel="search" title="Buscar" href="../../search.html" />
-    <link rel="next" title="HTTP" href="http.html" />
+    <link rel="next" title="HTTP" href="http/index.html" />
     <link rel="prev" title="Hooks de startup e shudtdown" href="../asyncworker-app/hooks.html" />
    
   <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
@@ -43,7 +43,15 @@ Um handler RabbitMQ recebe, por exemplo, uma lista de mensagens. Um Handler HTTP
 <p>Abaixo você poderá ver em detalhes cada um desses handlers e como criar cada um deles.</p>
 <div class="toctree-wrapper compound">
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="http.html">HTTP</a></li>
+<li class="toctree-l1"><a class="reference internal" href="http/index.html">HTTP</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="http/doc.html">Regras para criação de um handler HTTP</a></li>
+<li class="toctree-l2"><a class="reference internal" href="http/doc.html#parametrizacao-do-decorator-route-para-handlers-http">Parametrização do decorator route() para handlers HTTP</a></li>
+<li class="toctree-l2"><a class="reference internal" href="http/doc.html#envs-para-escolher-a-porta-e-o-ip-onde-o-server-http-estara-escutando">ENVs para escolher a porta e o IP onde o server http estará escutando</a></li>
+<li class="toctree-l2"><a class="reference internal" href="http/doc.html#handlers-que-sao-objetos-callable">Handlers que são objetos callable</a></li>
+<li class="toctree-l2"><a class="reference internal" href="http/doc.html#handlers-que-recebem-mais-do-que-apenas-request">Handlers que recebem mais do que apenas Request</a></li>
+<li class="toctree-l2"><a class="reference internal" href="http/doc.html#recebendo-parametros-vindos-do-path-do-request">Recebendo parâmetros vindos do path do Request</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="rabbitmq.html">RabbitMQ</a></li>
 </ul>
 </div>
@@ -69,11 +77,12 @@ Um handler RabbitMQ recebe, por exemplo, uma lista de mensagens. Um Handler HTTP
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../../intro.html">Introdução</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../incompat.html">Incompatibilidades</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../versions.html">Compatibilidade de Versões do asyncowker</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../index.html">Guia de uso</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="../quickstart.html">Início rápido</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../asyncworker-app/index.html">Asyncworker App</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">Tipos de Handlers</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="http.html">HTTP</a></li>
+<li class="toctree-l3"><a class="reference internal" href="http/index.html">HTTP</a></li>
 <li class="toctree-l3"><a class="reference internal" href="rabbitmq.html">RabbitMQ</a></li>
 </ul>
 </li>
@@ -91,7 +100,7 @@ Um handler RabbitMQ recebe, por exemplo, uma lista de mensagens. Um Handler HTTP
   <li><a href="../../index.html">Documentation overview</a><ul>
   <li><a href="../index.html">Guia de uso</a><ul>
       <li>Previous: <a href="../asyncworker-app/hooks.html" title="capítulo anterior">Hooks de startup e shudtdown</a></li>
-      <li>Next: <a href="http.html" title="próximo capítulo">HTTP</a></li>
+      <li>Next: <a href="http/index.html" title="próximo capítulo">HTTP</a></li>
   </ul></li>
   </ul></li>
 </ul>

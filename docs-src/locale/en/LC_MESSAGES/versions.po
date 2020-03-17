@@ -1,0 +1,94 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2019, B2W Digital
+# This file is distributed under the same license as the Asyncworker
+# package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2020.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: Asyncworker \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2020-02-29 21:11-0300\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.8.0\n"
+
+#: ../../versions.rst:2
+msgid "Compatibilidade de Versões do asyncowker"
+msgstr ""
+
+#: ../../versions.rst:4
+msgid ""
+"O versionamento do projeto segue a mesma linha do `Semver "
+"<https://semver.org/>`_ mas com uma peculiaridade. Como esse é um projeto"
+" que ainda está em pleno desenvolvimento ainda falta um longo caminho até"
+" chegarmos a uma versão ``1.0``."
+msgstr ""
+
+#: ../../versions.rst:6
+msgid ""
+"Por isso que fazemos é o seguinte: Mudamos apenas os valores da ``MINOR``"
+" e ``PATCH``."
+msgstr ""
+
+#: ../../versions.rst:8
+msgid ""
+"Quando mudamos apenas a ``PATCH`` version significa que o código novo é "
+"retro-compatível com o antigo, ou seja, pode ser atualizado sem "
+"problemas. Sem precisar olhar changelogs."
+msgstr ""
+
+#: ../../versions.rst:10
+msgid ""
+"Quando mudamos a ``MINOR`` version significa que o changelog requer "
+"atenção. Seja um mudança simples ou uma mudança mais complexa que vai "
+"demandar ajuster no seu código é recomendado que você olhe o changelog da"
+" nova versão para saber se você precisa ajustar alguma coisa."
+msgstr ""
+
+#: ../../versions.rst:12
+msgid "Lembrando que a formação da versão é ``0.MINOR.PATCH``."
+msgstr ""
+
+#: ../../versions.rst:16
+msgid "Atualização de dependências"
+msgstr ""
+
+#: ../../versions.rst:18
+msgid ""
+"O asyncworker depende basicamente de dois outros projetos: `aiohttp "
+"<https://docs.aiohttp.org/en/stable/>`_ e `Pydantic <https://pydantic-"
+"docs.helpmanual.io/>`_."
+msgstr ""
+
+#: ../../versions.rst:20
+msgid ""
+"Sempre que quaisquer dessas duas dependências precisarem ser atualizadas "
+"isso será considerado uma mudança (potencialmente) retro-incompatível e "
+"por isso o asyncworker terá sua minor version aumentada."
+msgstr ""
+
+#~ msgid ""
+#~ "O versionamento do projeto segue a "
+#~ "mesma linha do `Semver <https://semver.org/>`_"
+#~ " mas com uma peculiaridade. Como esse"
+#~ " é um projeto que ainda está em"
+#~ " pleno desenvolvimento ainda falta um "
+#~ "longo caminho até chegarmos a uma "
+#~ "versão `1.0`."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Sempre que essas duas dependências "
+#~ "preisarem ser atualizadas isso será "
+#~ "considerado uma mudança (potencialmente) "
+#~ "retro-incompatível e por isso o "
+#~ "asyncworker terá sua minor version "
+#~ "aumentada."
+#~ msgstr ""
+

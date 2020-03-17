@@ -10,10 +10,13 @@ O projeto tem como objetivo ser um framework para escrever workers assíncronos 
  - Uma requisição HTTP
  - ...
 
-  O projeto está no Github: https://github.com/b2wdigital/async-worker
+O projeto está no Github: https://github.com/b2wdigital/async-worker
+
+ .. image:: https://api.codeclimate.com/v1/badges/887336d926f34f908b32/test_coverage
+     :alt: Test Coverage
 
 
- Abaixo você econtra mais detalhes sobre como tudo isso funciona.
+Abaixo você econtra mais detalhes sobre como tudo isso funciona.
 
 .. toctree::
    :maxdepth: 3
@@ -21,6 +24,7 @@ O projeto tem como objetivo ser um framework para escrever workers assíncronos 
 
    intro.rst
    incompat.rst
+   versions.rst
    userguide/index.rst
    devguide/index.rst
    changelog/index.rst

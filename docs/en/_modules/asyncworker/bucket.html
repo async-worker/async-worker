@@ -31,13 +31,13 @@
           <div class="body" role="main">
             
   <h1>Source code for asyncworker.bucket</h1><div class="highlight"><pre>
-<span></span><span class="kn">from</span> <span class="nn">typing</span> <span class="k">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">TypeVar</span><span class="p">,</span> <span class="n">Generic</span>
+<span></span><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">TypeVar</span><span class="p">,</span> <span class="n">Generic</span>
 
 <span class="n">T</span> <span class="o">=</span> <span class="n">TypeVar</span><span class="p">(</span><span class="s2">&quot;T&quot;</span><span class="p">)</span>
 
 
 <div class="viewcode-block" id="Bucket"><a class="viewcode-back" href="../../src/asyncworker/asyncworker.html#asyncworker.bucket.Bucket">[docs]</a><span class="k">class</span> <span class="nc">Bucket</span><span class="p">(</span><span class="n">Generic</span><span class="p">[</span><span class="n">T</span><span class="p">]):</span>
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">size</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">size</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">size</span> <span class="o">=</span> <span class="n">size</span>
         <span class="c1"># fixme: Criar uma interface comum para as *Message</span>
         <span class="c1"># para substituir esse Any</span>
@@ -51,7 +51,7 @@
 
 <div class="viewcode-block" id="Bucket.put"><a class="viewcode-back" href="../../src/asyncworker/asyncworker.html#asyncworker.bucket.Bucket.put">[docs]</a>    <span class="k">def</span> <span class="nf">put</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">:</span> <span class="n">T</span><span class="p">):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_full</span><span class="p">():</span>
-            <span class="n">error_msg</span> <span class="o">=</span> <span class="n">f</span><span class="s2">&quot;Bucket is at full capacity: </span><span class="si">{self.size}</span><span class="s2">&quot;</span>
+            <span class="n">error_msg</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Bucket is at full capacity: </span><span class="si">{self.size}</span><span class="s2">&quot;</span>
             <span class="k">raise</span> <span class="n">BucketFullException</span><span class="p">(</span><span class="n">error_msg</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_items</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">item</span><span class="p">)</span></div>
 
@@ -88,6 +88,7 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../intro.html">Introdução</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../incompat.html">Incompatibilidades</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../versions.html">Compatibilidade de Versões do asyncowker</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../userguide/index.html">Guia de uso</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../devguide/index.html">Guia de desenvolvimento</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../changelog/index.html">Changelog</a></li>
@@ -98,8 +99,6 @@
 <ul>
   <li><a href="../../index.html">Documentation overview</a><ul>
   <li><a href="../index.html">Module code</a><ul>
-  <li><a href="../asyncworker.html">asyncworker</a><ul>
-  </ul></li>
   </ul></li>
   </ul></li>
 </ul>

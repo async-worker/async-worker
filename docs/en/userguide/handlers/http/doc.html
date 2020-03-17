@@ -1,0 +1,246 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Regras para criação de um handler HTTP &#8212; Asyncworker  documentation</title>
+    <link rel="stylesheet" href="../../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../../_static/language_data.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+    <link rel="next" title="RabbitMQ" href="../rabbitmq.html" />
+    <link rel="prev" title="HTTP" href="index.html" />
+   
+  <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="regras-para-criacao-de-um-handler-http">
+<h1>Regras para criação de um handler HTTP<a class="headerlink" href="#regras-para-criacao-de-um-handler-http" title="Permalink to this headline">¶</a></h1>
+<p>Todo handler HTTP deve seguir algumas regras:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Deve sempre ser decorato com <a class="reference internal" href="../../asyncworker-app/intro.html#asyncworker-app-handler"><span class="std std-ref">&#64;app.route()</span></a></p></li>
+<li><p>Deve declarar seus parametros sempre com definição de tipos, pois é assim que o asyncworker saberá passar <a class="reference internal" href="#handler-path-param"><span class="std std-ref">parametros dinâmicos</span></a> para o handler.</p></li>
+<li><p>Um handler pode não receber nenhum parâmetro. Para isso basta a assinatura do handler ser vazia.</p></li>
+</ul>
+</div></blockquote>
+<p>Alguns objetos já são passados so handler, caso estejam presentes em sua assinatura.  Eles são:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Uma instância de <code class="docutils literal notranslate"><span class="pre">aiohttp.web.Request</span></code>.</p></li>
+</ul>
+</div></blockquote>
+</div>
+<div class="section" id="parametrizacao-do-decorator-route-para-handlers-http">
+<h1>Parametrização do decorator route() para handlers HTTP<a class="headerlink" href="#parametrizacao-do-decorator-route-para-handlers-http" title="Permalink to this headline">¶</a></h1>
+<p>Para um handler HTTP deveremos passar os seguintes parametros para o decorator <code class="docutils literal notranslate"><span class="pre">route()</span></code>:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Lista de paths que devem estar na Request HTTP para que esse handler seja chamado;</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">type=RouteTypes.HTTP</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">methods</span></code> sendo uma lista de métodos HTTP permitidos para esse handler</p></li>
+</ul>
+</div></blockquote>
+<p>Parametros no path podem ser definidos cercando com <code class="docutils literal notranslate"><span class="pre">{}</span></code>, ex: <code class="docutils literal notranslate"><span class="pre">/users/{user_id}</span></code>. Mais delathes em como receber esses valores em seu handler <a class="reference internal" href="#handler-path-param"><span class="std std-ref">aqui</span></a>.</p>
+</div>
+<div class="section" id="envs-para-escolher-a-porta-e-o-ip-onde-o-server-http-estara-escutando">
+<h1>ENVs para escolher a porta e o IP onde o server http estará escutando<a class="headerlink" href="#envs-para-escolher-a-porta-e-o-ip-onde-o-server-http-estara-escutando" title="Permalink to this headline">¶</a></h1>
+<p>Por padrão, fazemos o binding em <code class="docutils literal notranslate"><span class="pre">127.0.0.1</span></code>, porta <code class="docutils literal notranslate"><span class="pre">8080</span></code>, mas isso pode ser alterado com as envvars <code class="docutils literal notranslate"><span class="pre">ASYNCWORKER_HTTP_HOST</span></code> e <code class="docutils literal notranslate"><span class="pre">ASYNCWORKER_HTTP_PORT</span></code>, respectivamente.</p>
+</div>
+<div class="section" id="handlers-que-sao-objetos-callable">
+<h1>Handlers que são objetos callable<a class="headerlink" href="#handlers-que-sao-objetos-callable" title="Permalink to this headline">¶</a></h1>
+<div class="versionadded">
+<p><span class="versionmodified added">New in version 0.11.4.</span></p>
+</div>
+<p>É possível também escrever handlers como objetos que são callables, ou seja, possuem o método <code class="docutils literal notranslate"><span class="pre">async</span> <span class="pre">def</span> <span class="pre">__call__()</span></code>. Importante notar que a assinatura do método <code class="docutils literal notranslate"><span class="pre">__call__()</span></code> segue as mesmas regras da assinatura de uma corotina decorada com o <code class="docutils literal notranslate"><span class="pre">&#64;app.route()</span></code>.</p>
+<p>Esses handlers são especialmente úteis quando você precisa guardar algum tipo de contexto e não quer fazer isso com variáveis globais no nível do módulo.</p>
+<p>Um exemplo de um handler:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">Handler</span><span class="p">:</span>
+  <span class="k">async</span> <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">req</span><span class="p">:</span> <span class="n">web</span><span class="o">.</span><span class="n">Request</span><span class="p">):</span>
+    <span class="k">pass</span>
+</pre></div>
+</div>
+<p>Importante notar que como estamos lidando com um objeto ele precisará ser instanciado antes de ser usado e isso significa que não vamos poder decorá-lo da mesma forma que decoramos handlers que são apenas uma corotina. Um código desse gera erro de sintaxe:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">Handler</span><span class="p">:</span>
+  <span class="k">async</span> <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">req</span><span class="p">:</span> <span class="n">web</span><span class="o">.</span><span class="n">Request</span><span class="p">):</span>
+    <span class="k">pass</span>
+
+<span class="n">h</span> <span class="o">=</span> <span class="n">Handler</span><span class="p">()</span>
+
+<span class="nd">@app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>
+<span class="n">h</span>
+</pre></div>
+</div>
+<p>Por isso esses handlers precisam ser registrados chamando o decorator manualmente, assim:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">Handler</span><span class="p">:</span>
+  <span class="k">async</span> <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">req</span><span class="p">:</span> <span class="n">web</span><span class="o">.</span><span class="n">Request</span><span class="p">):</span>
+    <span class="k">pass</span>
+
+<span class="n">h</span> <span class="o">=</span> <span class="n">Handler</span><span class="p">()</span>
+
+<span class="n">app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="o">...</span><span class="p">)(</span><span class="n">h</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="handlers-que-recebem-mais-do-que-apenas-request">
+<span id="typed-handlers"></span><h1>Handlers que recebem mais do que apenas Request<a class="headerlink" href="#handlers-que-recebem-mais-do-que-apenas-request" title="Permalink to this headline">¶</a></h1>
+<div class="versionadded">
+<p><span class="versionmodified added">New in version 0.11.0.</span></p>
+</div>
+<p>O asyncworker permite que um handler receba quaisquer prametros. Para isso a assinatura do handler deve conter typehints em todos os parametros. Isso faz com que o asyncowker consiga fazer a resolução desses prametros e consiga chamar o handler corretamente.</p>
+<p>Todas as instancias de <code class="docutils literal notranslate"><span class="pre">aiohttp.web.Request</span></code> recebem um atributo chamado <code class="docutils literal notranslate"><span class="pre">types_registry</span></code> que é do tipo <a class="reference internal" href="../../../src/asyncworker/asyncworker.types.html#asyncworker.types.registry.TypesRegistry" title="asyncworker.types.registry.TypesRegistry"><code class="xref py py-class docutils literal notranslate"><span class="pre">asyncworker.types.registry.TypesRegistry</span></code></a>. Para que um parametro possa ser passado a um handler ele deve ser adicionado a esse registry do request.</p>
+<p>Um exemplo de como popular esse registry é através de um decorator aplicado diretamente ao um handler. Vejamos um exemplo:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">aiohttp</span> <span class="kn">import</span> <span class="n">web</span>
+<span class="kn">from</span> <span class="nn">myproject.models.user</span> <span class="kn">import</span> <span class="n">User</span>
+<span class="kn">from</span> <span class="nn">http</span> <span class="kn">import</span> <span class="n">HTTPStatus</span>
+
+
+<span class="k">def</span> <span class="nf">auth_required</span><span class="p">(</span><span class="n">handler</span><span class="p">):</span>
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">_wrapper</span><span class="p">(</span><span class="n">request</span><span class="p">:</span> <span class="n">web</span><span class="o">.</span><span class="n">Request</span><span class="p">):</span>
+        <span class="n">basic_auth</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">headers</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;Authorization&quot;</span><span class="p">)</span>
+        <span class="n">user</span> <span class="o">=</span> <span class="n">get_authenticated_user</span><span class="p">(</span><span class="n">basic_auth</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">user</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">web</span><span class="o">.</span><span class="n">json_response</span><span class="p">({</span><span class="o">...</span><span class="p">},</span> <span class="n">status</span><span class="o">=</span><span class="n">HTTPStatus</span><span class="o">.</span><span class="n">UNAUTHORIZED</span><span class="p">)</span>
+
+        <span class="n">request</span><span class="p">[</span><span class="s2">&quot;types_registry&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">user</span><span class="p">)</span>
+        <span class="k">return</span> <span class="k">await</span> <span class="n">call_http_handler</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="n">handler</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">_wrapper</span>
+
+<span class="nd">@app</span><span class="o">.</span><span class="n">route</span><span class="p">([</span><span class="s2">&quot;/&quot;</span><span class="p">],</span> <span class="nb">type</span><span class="o">=</span><span class="n">RouteTypes</span><span class="o">.</span><span class="n">HTTP</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;GET&quot;</span><span class="p">])</span>
+<span class="nd">@auth_required</span>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">handler</span><span class="p">(</span><span class="n">user</span><span class="p">:</span> <span class="n">User</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">web</span><span class="o">.</span><span class="n">json_response</span><span class="p">({})</span>
+</pre></div>
+</div>
+<p>Aqui o decorator <code class="docutils literal notranslate"><span class="pre">auth_required()</span></code> é responsável por fazer a autenticação, pegando dados do Request e encontrando um usuário válido. Se um usuário não puder ser encontrado, retorna <code class="docutils literal notranslate"><span class="pre">HTTPStatus.UNAUTHORIZED</span></code>. Se um usuário autenticar com sucesso, apenas adiciona o objeto user (que é do tipo <code class="docutils literal notranslate"><span class="pre">User</span></code>) no registry que está no request. Isso é o suficiente para que o handler, quando for chamado, receba diretamente esse user já autenticado.</p>
+</div>
+<div class="section" id="recebendo-parametros-vindos-do-path-do-request">
+<h1>Recebendo parâmetros vindos do path do Request<a class="headerlink" href="#recebendo-parametros-vindos-do-path-do-request" title="Permalink to this headline">¶</a></h1>
+<div class="versionadded" id="handler-path-param">
+<p><span class="versionmodified added">New in version 0.11.5.</span></p>
+</div>
+<p>É possível receber em seu handler parametros definidos no path da requisição. Isso é feito través do decorator <a class="reference internal" href="../../../src/asyncworker/asyncworker.http.html#asyncworker.http.decorators.parse_path" title="asyncworker.http.decorators.parse_path"><code class="xref py py-func docutils literal notranslate"><span class="pre">asyncworker.http.decorators.parse_path()</span></code></a>.</p>
+<p>Quando decoramos nosso handler com esse decorator instruímos o asyncworker a tentar extrair parametros do path e passar para nosso handler.</p>
+<p>Importante notar que, primeiro o asyncworker vai procurar nosso parametro pelo nome e só depois tentará procurar o tipo.  Exemplo:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@app</span><span class="o">.</span><span class="n">route</span><span class="p">([</span><span class="s2">&quot;/by_id/</span><span class="si">{_id}</span><span class="s2">&quot;</span><span class="p">],</span> <span class="nb">type</span><span class="o">=</span><span class="n">RouteTypes</span><span class="o">.</span><span class="n">HTTP</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;GET&quot;</span><span class="p">])</span>
+<span class="nd">@parse_path</span>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">by_id</span><span class="p">(</span><span class="n">_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">web</span><span class="o">.</span><span class="n">json_response</span><span class="p">({})</span>
+</pre></div>
+</div>
+<p>Nesse caso, como handler está dizendo que precisa de um parametro chamado <code class="docutils literal notranslate"><span class="pre">_id</span></code> temos que declarar um parametro de mesmo nome no path da Request. Depois que esse <cite>match</cite> for feito passaremos o valor recebido no path para o construtor do tipo definido na assinatura do handler.</p>
+<p>Então nesse caso faremos um simples <code class="docutils literal notranslate"><span class="pre">int(&lt;valor&gt;)</span></code>. Esse resultado será passado ao handler no parametro <code class="docutils literal notranslate"><span class="pre">_id</span></code>, no momento da chamada.</p>
+<p>Importante notar que só serão passados ao handler os parametros que estão definidos na assinatura. Então se seu path recebe dois parametros e seu handler só se interessa por um deles, basta declarar na assinatura do handler o parametro que você quer receber.</p>
+<p>Essa implementação ainda é experimental e servirá de fundação para uma implementação mais complexa, talvez com tipos mais complexos e sem a necessidade de passar o decorator explicitamente.</p>
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../../../index.html">Asyncworker</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../../intro.html">Introdução</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../incompat.html">Incompatibilidades</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../versions.html">Compatibilidade de Versões do asyncowker</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../../index.html">Guia de uso</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../../quickstart.html">Início rápido</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../asyncworker-app/index.html">Asyncworker App</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../index.html">Tipos de Handlers</a><ul class="current">
+<li class="toctree-l3 current"><a class="reference internal" href="index.html">HTTP</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../rabbitmq.html">RabbitMQ</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../utils/index.html">Utilitários</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../updates/index.html">Atualizando sua App Asyncworker</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../devguide/index.html">Guia de desenvolvimento</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../changelog/index.html">Changelog</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../index.html">Documentation overview</a><ul>
+  <li><a href="../../index.html">Guia de uso</a><ul>
+  <li><a href="../index.html">Tipos de Handlers</a><ul>
+  <li><a href="index.html">HTTP</a><ul>
+      <li>Previous: <a href="index.html" title="previous chapter">HTTP</a></li>
+      <li>Next: <a href="../rabbitmq.html" title="next chapter">RabbitMQ</a></li>
+  </ul></li>
+  </ul></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2019, B2W Digital.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 2.1.2</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="../../../_sources/userguide/handlers/http/doc.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

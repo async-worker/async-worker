@@ -39,17 +39,23 @@
 <div class="section" id="module-asyncworker.types.registry">
 <span id="asyncworker-types-registry-module"></span><h2>asyncworker.types.registry module<a class="headerlink" href="#module-asyncworker.types.registry" title="Link permanente para este título">¶</a></h2>
 <dl class="class">
+<dt id="asyncworker.types.registry.RegistryItem">
+<em class="property">class </em><code class="sig-prename descclassname">asyncworker.types.registry.</code><code class="sig-name descname">RegistryItem</code><span class="sig-paren">(</span><em class="sig-param">type: Type</em>, <em class="sig-param">value: Any</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/asyncworker/types/registry.html#RegistryItem"><span class="viewcode-link">[código fonte]</span></a><a class="headerlink" href="#asyncworker.types.registry.RegistryItem" title="Link permanente para esta definição">¶</a></dt>
+<dd><p>Base: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+</dd></dl>
+
+<dl class="class">
 <dt id="asyncworker.types.registry.TypesRegistry">
 <em class="property">class </em><code class="sig-prename descclassname">asyncworker.types.registry.</code><code class="sig-name descname">TypesRegistry</code><a class="reference internal" href="../../_modules/asyncworker/types/registry.html#TypesRegistry"><span class="viewcode-link">[código fonte]</span></a><a class="headerlink" href="#asyncworker.types.registry.TypesRegistry" title="Link permanente para esta definição">¶</a></dt>
 <dd><p>Base: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <dl class="method">
 <dt id="asyncworker.types.registry.TypesRegistry.get">
-<code class="sig-name descname">get</code><span class="sig-paren">(</span><em class="sig-param">_type: Type</em><span class="sig-paren">)</span> &#x2192; Any<a class="reference internal" href="../../_modules/asyncworker/types/registry.html#TypesRegistry.get"><span class="viewcode-link">[código fonte]</span></a><a class="headerlink" href="#asyncworker.types.registry.TypesRegistry.get" title="Link permanente para esta definição">¶</a></dt>
+<code class="sig-name descname">get</code><span class="sig-paren">(</span><em class="sig-param">_type: Type</em>, <em class="sig-param">param_name: str = None</em><span class="sig-paren">)</span> &#x2192; Optional[Any]<a class="reference internal" href="../../_modules/asyncworker/types/registry.html#TypesRegistry.get"><span class="viewcode-link">[código fonte]</span></a><a class="headerlink" href="#asyncworker.types.registry.TypesRegistry.get" title="Link permanente para esta definição">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="asyncworker.types.registry.TypesRegistry.set">
-<code class="sig-name descname">set</code><span class="sig-paren">(</span><em class="sig-param">obj</em>, <em class="sig-param">type_definition=None</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/asyncworker/types/registry.html#TypesRegistry.set"><span class="viewcode-link">[código fonte]</span></a><a class="headerlink" href="#asyncworker.types.registry.TypesRegistry.set" title="Link permanente para esta definição">¶</a></dt>
+<code class="sig-name descname">set</code><span class="sig-paren">(</span><em class="sig-param">obj: Any</em>, <em class="sig-param">type_definition: Type = None</em>, <em class="sig-param">param_name: Optional[str] = None</em><span class="sig-paren">)</span> &#x2192; None<a class="reference internal" href="../../_modules/asyncworker/types/registry.html#TypesRegistry.set"><span class="viewcode-link">[código fonte]</span></a><a class="headerlink" href="#asyncworker.types.registry.TypesRegistry.set" title="Link permanente para esta definição">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -63,7 +69,7 @@
 <dd><p>Base: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <dl class="method">
 <dt id="asyncworker.types.resolver.ArgResolver.resolve_param">
-<code class="sig-name descname">resolve_param</code><span class="sig-paren">(</span><em class="sig-param">param_type: Type</em><span class="sig-paren">)</span> &#x2192; Optional[Any]<a class="reference internal" href="../../_modules/asyncworker/types/resolver.html#ArgResolver.resolve_param"><span class="viewcode-link">[código fonte]</span></a><a class="headerlink" href="#asyncworker.types.resolver.ArgResolver.resolve_param" title="Link permanente para esta definição">¶</a></dt>
+<code class="sig-name descname">resolve_param</code><span class="sig-paren">(</span><em class="sig-param">param_type: Type</em>, <em class="sig-param">param_name: str</em><span class="sig-paren">)</span> &#x2192; Optional[Any]<a class="reference internal" href="../../_modules/asyncworker/types/resolver.html#ArgResolver.resolve_param"><span class="viewcode-link">[código fonte]</span></a><a class="headerlink" href="#asyncworker.types.resolver.ArgResolver.resolve_param" title="Link permanente para esta definição">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
@@ -105,6 +111,7 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../intro.html">Introdução</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../incompat.html">Incompatibilidades</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../versions.html">Compatibilidade de Versões do asyncowker</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../userguide/index.html">Guia de uso</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../devguide/index.html">Guia de desenvolvimento</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../changelog/index.html">Changelog</a></li>

@@ -20,6 +20,7 @@ from pydantic import BaseModel, validator
 
 from asyncworker.conf import settings
 from asyncworker.connections import AMQPConnection
+from asyncworker.http.wrapper import RequestWrapper
 from asyncworker.options import DefaultValues, RouteTypes, Actions
 from asyncworker.types.registry import TypesRegistry
 from asyncworker.types.resolver import ArgResolver, MissingTypeAnnotationError
@@ -121,6 +122,9 @@ class _AMQPRouteOptions(_RouteOptions):
     bulk_flush_interval: int = DefaultValues.BULK_FLUSH_INTERVAL
     on_success: Actions = DefaultValues.ON_SUCCESS
     on_exception: Actions = DefaultValues.ON_EXCEPTION
+    connection_fail_callback: Optional[
+        Callable[[Exception, int], Coroutine]
+    ] = None
     connection: Optional[Union[AMQPConnection, str]]
 
     class Config:
@@ -156,6 +160,11 @@ class SSERoute(Route):
 
 
 async def call_http_handler(request: web.Request, handler: RouteHandler):
+    """
+    Quando o RequestWrapper estiver mais sólido, esse método deve receber `asyncworker.http.wrapper.RequestWrapper` e não `web.Request`.
+    Primeiro vamos documentar que essa chamada será depreciada e função de chamada onde
+    recebemos `RequestWrapper`.
+    """
     arg_resolver = ArgResolver(registry=request["types_registry"])
     try:
         return await arg_resolver.wrap(handler)
@@ -165,9 +174,17 @@ async def call_http_handler(request: web.Request, handler: RouteHandler):
 
 def http_handler_wrapper(handler):
     async def _insert_types_registry(request: web.Request):
+        """
+        Esse é o único ponto que tem contato direto com o aiohttp. É essa corotina que é efetivament registrada nas rotas do aiohttp. Daqui pra frente tudo é chamado através do ccall_http_handler() e pode receber `RequestWrapper` como parametro.
+        """
         registry = TypesRegistry()
         request["types_registry"] = registry
         registry.set(request)
+
+        r_wrapper = RequestWrapper(
+            http_request=request, types_registry=registry
+        )
+        registry.set(r_wrapper)
         return await call_http_handler(request, handler)
 
     return _insert_types_registry

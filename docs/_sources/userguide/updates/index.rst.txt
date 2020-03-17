@@ -2,6 +2,11 @@ Atualizando sua App Asyncworker
 ===============================
 
 
+Se você estivere atualizando para versões pós ``0.6.0`` o melhor a fazer é consultar o changelog de cada uma das vesões.
+
+A lista de todas as versões com cada uma de suas mudanças está :ref:`aqui <changelog>`.
+
+
 0.5.x -> 0.6.0
 ---------------
 

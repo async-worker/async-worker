@@ -34,8 +34,8 @@
   <h1>Código fonte para asyncworker.types.resolver</h1><div class="highlight"><pre>
 <span></span><span class="kn">import</span> <span class="nn">inspect</span>
 <span class="kn">import</span> <span class="nn">typing</span>
-<span class="kn">from</span> <span class="nn">asyncio</span> <span class="k">import</span> <span class="n">Task</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="k">import</span> <span class="p">(</span>
+<span class="kn">from</span> <span class="nn">asyncio</span> <span class="kn">import</span> <span class="n">Task</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="p">(</span>
     <span class="n">List</span><span class="p">,</span>
     <span class="n">Type</span><span class="p">,</span>
     <span class="n">Coroutine</span><span class="p">,</span>
@@ -47,7 +47,7 @@
     <span class="n">Tuple</span><span class="p">,</span>
 <span class="p">)</span>
 
-<span class="kn">from</span> <span class="nn">asyncworker.types.registry</span> <span class="k">import</span> <span class="n">TypesRegistry</span>
+<span class="kn">from</span> <span class="nn">asyncworker.types.registry</span> <span class="kn">import</span> <span class="n">TypesRegistry</span>
 
 
 <div class="viewcode-block" id="MissingTypeAnnotationError"><a class="viewcode-back" href="../../../src/asyncworker/asyncworker.types.html#asyncworker.types.resolver.MissingTypeAnnotationError">[documentos]</a><span class="k">class</span> <span class="nc">MissingTypeAnnotationError</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
@@ -55,7 +55,7 @@
 
 
 <div class="viewcode-block" id="ArgResolver"><a class="viewcode-back" href="../../../src/asyncworker/asyncworker.types.html#asyncworker.types.resolver.ArgResolver">[documentos]</a><span class="k">class</span> <span class="nc">ArgResolver</span><span class="p">:</span>
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">registry</span><span class="p">:</span> <span class="n">TypesRegistry</span><span class="p">,</span> <span class="o">*</span><span class="n">extra_registries</span><span class="p">:</span> <span class="n">TypesRegistry</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">registries</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">TypesRegistry</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">registry</span><span class="p">]</span>
@@ -64,8 +64,14 @@
 <div class="viewcode-block" id="ArgResolver.wrap"><a class="viewcode-back" href="../../../src/asyncworker/asyncworker.types.html#asyncworker.types.resolver.ArgResolver.wrap">[documentos]</a>    <span class="k">def</span> <span class="nf">wrap</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">coro_ref</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">Task</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_coro_executor</span><span class="p">(</span><span class="n">coro_ref</span><span class="p">))</span></div>
 
-<div class="viewcode-block" id="ArgResolver.resolve_param"><a class="viewcode-back" href="../../../src/asyncworker/asyncworker.types.html#asyncworker.types.resolver.ArgResolver.resolve_param">[documentos]</a>    <span class="k">def</span> <span class="nf">resolve_param</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">param_type</span><span class="p">:</span> <span class="n">Type</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">Any</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
+<div class="viewcode-block" id="ArgResolver.resolve_param"><a class="viewcode-back" href="../../../src/asyncworker/asyncworker.types.html#asyncworker.types.resolver.ArgResolver.resolve_param">[documentos]</a>    <span class="k">def</span> <span class="nf">resolve_param</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">param_type</span><span class="p">:</span> <span class="n">Type</span><span class="p">,</span> <span class="n">param_name</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">Any</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
         <span class="k">for</span> <span class="n">registry</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">registries</span><span class="p">:</span>
+            <span class="n">arg_value</span> <span class="o">=</span> <span class="n">registry</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">param_type</span><span class="p">,</span> <span class="n">param_name</span><span class="o">=</span><span class="n">param_name</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">arg_value</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">arg_value</span>
+
             <span class="n">arg_value</span> <span class="o">=</span> <span class="n">registry</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">param_type</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">arg_value</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="k">return</span> <span class="n">arg_value</span>
@@ -82,18 +88,18 @@
         <span class="k">if</span> <span class="n">coro_arguments</span><span class="p">:</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="n">type_annotations</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="n">MissingTypeAnnotationError</span><span class="p">(</span>
-                    <span class="n">f</span><span class="s2">&quot;</span><span class="si">{coro_ref}</span><span class="s2"> has no type annotation&quot;</span>
+                    <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{coro_ref}</span><span class="s2"> has no type annotation&quot;</span>
                 <span class="p">)</span>
 
             <span class="k">for</span> <span class="n">param_name</span><span class="p">,</span> <span class="n">param_type</span> <span class="ow">in</span> <span class="n">type_annotations</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-                <span class="n">param_value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">resolve_param</span><span class="p">(</span><span class="n">param_type</span><span class="p">)</span>
+                <span class="n">param_value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">resolve_param</span><span class="p">(</span><span class="n">param_type</span><span class="p">,</span> <span class="n">param_name</span><span class="p">)</span>
                 <span class="k">if</span> <span class="n">param_value</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                     <span class="n">params</span><span class="p">[</span><span class="n">param_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">param_value</span>
                 <span class="k">else</span><span class="p">:</span>
                     <span class="n">unresolved_params</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">param_name</span><span class="p">,</span> <span class="n">param_type</span><span class="p">))</span>
             <span class="k">if</span> <span class="n">unresolved_params</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
-                    <span class="n">f</span><span class="s2">&quot;Unresolved params for coroutine </span><span class="si">{coro_ref}</span><span class="s2">: </span><span class="si">{unresolved_params}</span><span class="s2">&quot;</span>
+                    <span class="sa">f</span><span class="s2">&quot;Unresolved params for coroutine </span><span class="si">{coro_ref}</span><span class="s2">: </span><span class="si">{unresolved_params}</span><span class="s2">&quot;</span>
                 <span class="p">)</span>
         <span class="k">return</span> <span class="k">await</span> <span class="n">coro_ref</span><span class="p">(</span><span class="o">**</span><span class="n">params</span><span class="p">)</span></div>
 </pre></div>
@@ -117,6 +123,7 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../intro.html">Introdução</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../incompat.html">Incompatibilidades</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../versions.html">Compatibilidade de Versões do asyncowker</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../userguide/index.html">Guia de uso</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../devguide/index.html">Guia de desenvolvimento</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../changelog/index.html">Changelog</a></li>
@@ -127,8 +134,6 @@
 <ul>
   <li><a href="../../../index.html">Documentation overview</a><ul>
   <li><a href="../../index.html">Código do módulo</a><ul>
-  <li><a href="../../asyncworker.html">asyncworker</a><ul>
-  </ul></li>
   </ul></li>
   </ul></li>
 </ul>
