@@ -659,4 +659,4 @@ class EnsureConnectedDecoratorTests(asynctest.TestCase):
             wrapped = _ensure_connected(coro)
             await wrapped(async_queue, 1, dog="Xablau")
 
-        async_queue.connection_fail_callback.assert_called_once_with(error, 1)
+        async_queue.connection_fail_callback.assert_awaited_once_with(error, 1)
