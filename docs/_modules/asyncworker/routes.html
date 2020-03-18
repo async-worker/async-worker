@@ -156,6 +156,9 @@
     <span class="n">bulk_flush_interval</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">DefaultValues</span><span class="o">.</span><span class="n">BULK_FLUSH_INTERVAL</span>
     <span class="n">on_success</span><span class="p">:</span> <span class="n">Actions</span> <span class="o">=</span> <span class="n">DefaultValues</span><span class="o">.</span><span class="n">ON_SUCCESS</span>
     <span class="n">on_exception</span><span class="p">:</span> <span class="n">Actions</span> <span class="o">=</span> <span class="n">DefaultValues</span><span class="o">.</span><span class="n">ON_EXCEPTION</span>
+    <span class="n">connection_fail_callback</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span>
+        <span class="n">Callable</span><span class="p">[[</span><span class="ne">Exception</span><span class="p">,</span> <span class="nb">int</span><span class="p">],</span> <span class="n">Coroutine</span><span class="p">]</span>
+    <span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="n">connection</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">AMQPConnection</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]</span>
 
     <span class="k">class</span> <span class="nc">Config</span><span class="p">:</span>
