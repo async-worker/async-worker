@@ -147,3 +147,5 @@ Importante notar que só serão passados ao handler os parametros que estão def
 
 
 Essa implementação ainda é experimental e servirá de fundação para uma implementação mais complexa, talvez com tipos mais complexos e sem a necessidade de passar o decorator explicitamente.
+
+**Impotante**: Esse decorator deve sempre ser o decorator "mais próximo" da função real, ou seja, deve ser sempre o primeiro decorator, logo acima da função sendo decorada. Isso porque o ``parse_path`` olha para a assinatura do handler sendo decorado. Se ele não for o primeiro decorator ele não vai receber o handler real como parâmetro e sim receberá o retorno de outro decorator, que já não reflete assinatura original do handler.
