@@ -2,14 +2,14 @@
 # Copyright (C) 2019, B2W Digital
 # This file is distributed under the same license as the Asyncworker
 # package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, 2019.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2020.
 #
 #, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: Asyncworker \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-02-09 15:23-0300\n"
+"POT-Creation-Date: 2020-02-12 10:37-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -32,51 +32,16 @@ msgid ""
 "me uma fila."
 msgstr ""
 
-#: ../../userguide/handlers/index.rst:11
+#: ../../userguide/handlers/index.rst:10
 msgid ""
 "Isso porque os parametros do handler mudam de acordo com a origem de seus"
 " eventos. Um handler RabbitMQ recebe, por exemplo, uma lista de "
 "mensagens. Um Handler HTTP recebe uma cópia do Request."
 msgstr ""
 
-#: ../../userguide/handlers/index.rst:14
+#: ../../userguide/handlers/index.rst:13
 msgid ""
 "Abaixo você poderá ver em detalhes cada um desses handlers e como criar "
 "cada um deles."
 msgstr ""
-
-#~ msgid "Handlers"
-#~ msgstr ""
-
-#~ msgid ""
-#~ "O asyncworker suporte alguns backends "
-#~ "diferentes. Por backend entende-se a "
-#~ "origem do estímulo que será processado"
-#~ " pelo seu worker, ou mais "
-#~ "específicamente, por um handler do seu"
-#~ " worker."
-#~ msgstr ""
-
-#~ msgid "Atualmente o projeto suporta os seguintes backends:"
-#~ msgstr ""
-
-#~ msgid ""
-#~ "Abaixo você poderá ver em detalhes "
-#~ "cada um desses handler e como "
-#~ "criar cada um deles."
-#~ msgstr ""
-
-#~ msgid ""
-#~ "O asyncworker suporte alguns tipos de"
-#~ " handlers diferentes. Por handnler "
-#~ "entende-se a função que será chamada"
-#~ " quando um estímulo externo chegar. "
-#~ "Cada Handler pode ser registrado em "
-#~ "apenas uma origem de eventos. Por "
-#~ "exemplo, não podemos te um mesmo "
-#~ "handler que é chamado por causa de"
-#~ " um Request HTTP e ao mesmo "
-#~ "tempo ser chamado por causa da uma"
-#~ " nova mensagem me uma fila."
-#~ msgstr ""
 

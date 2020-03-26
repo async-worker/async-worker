@@ -2,14 +2,14 @@
 # Copyright (C) 2019, B2W Digital
 # This file is distributed under the same license as the Asyncworker
 # package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, 2019.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2020.
 #
 #, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: Asyncworker \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-02-27 14:49-0300\n"
+"POT-Creation-Date: 2020-03-18 11:28-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -58,69 +58,19 @@ msgstr ""
 msgid "Abaixo você econtra mais detalhes sobre como tudo isso funciona."
 msgstr ""
 
-#: ../../index.rst:33
+#: ../../index.rst:34
 msgid "Indices and tables"
 msgstr ""
 
-#: ../../index.rst:35
+#: ../../index.rst:36
 msgid ":ref:`genindex`"
 msgstr ""
 
-#: ../../index.rst:36
+#: ../../index.rst:37
 msgid ":ref:`modindex`"
 msgstr ""
 
-#: ../../index.rst:37
+#: ../../index.rst:38
 msgid ":ref:`search`"
 msgstr ""
-
-#~ msgid "Propósito"
-#~ msgstr ""
-
-#~ msgid ""
-#~ "Ser um microframework (inspirado no "
-#~ "flask) para facilitar a escrita de "
-#~ "workers assíncronos. Atualmente o projeto "
-#~ "suporta as seguintes backends:"
-#~ msgstr ""
-
-#~ msgid "etc"
-#~ msgstr ""
-
-#~ msgid "Conteúdo:"
-#~ msgstr ""
-
-#~ msgid ""
-#~ "O projeto tem como objetivo ser um"
-#~ " framework para escrever workers "
-#~ "assíncronos em python. Por worker "
-#~ "entende-se qualquer aplicação que rode "
-#~ "por tempo indeterminado e que receba "
-#~ "estímulos de várias origens diferentes. "
-#~ "Essas orignes podem ser:"
-#~ msgstr ""
-
-#~ msgid "Abaixo você econtra a documentação do projeto."
-#~ msgstr ""
-
-#~ msgid "Abaixo você econtra mais detalhes sobre como tudo isso funciona."
-#~ msgstr ""
-
-#~ msgid "O projeto está no Github: https://github.com/b2wdigital/async-worker"
-#~ msgstr ""
-
-#~ msgid "target"
-#~ msgstr ""
-
-#~ msgid "https://codeclimate.com/github/b2wdigital/async-worker/test_coverage"
-#~ msgstr ""
-
-#~ msgid "alt"
-#~ msgstr ""
-
-#~ msgid "Test Coverage"
-#~ msgstr ""
-
-#~ msgid "O projeto, está no Github: https://github.com/b2wdigital/async-worker"
-#~ msgstr ""
 
