@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Asyncworker \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-02-08 11:54-0300\n"
+"POT-Creation-Date: 2020-02-12 10:37-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,11 +18,11 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.8.0\n"
 
-#: ../../incompat.rst:2
+#: ../../incompat.rst:4
 msgid "Incompatibilidades"
 msgstr ""
 
-#: ../../incompat.rst:8
+#: ../../incompat.rst:10
 msgid ""
 "Atualmente, pelo fato o asyncworker usar o `aiologger "
 "<https://github.com/b2wdigital/aiologger>`_, ele é incompatível com apps "
@@ -31,7 +31,7 @@ msgid ""
 "gerados pelo asyncworker (via aiologger)."
 msgstr ""
 
-#: ../../incompat.rst:10
+#: ../../incompat.rst:12
 msgid ""
 "No geral, as aplicações assíncronas usam apenas um loop de evento durante"
 " todo o seu ciclo de vida. Isso significa que a não se que você esteja "
@@ -40,7 +40,7 @@ msgid ""
 "o asyncworker."
 msgstr ""
 
-#: ../../incompat.rst:12
+#: ../../incompat.rst:14
 msgid ""
 "Essa incompatibilidade do aiologger está sendo tratada na issue `#35 "
 "<https://github.com/b2wdigital/aiologger/issues/35>`_. O projeto tem como"
@@ -49,41 +49,4 @@ msgid ""
 " e que receba estímulos de várias origens diferentes. Essas orignes podem"
 " ser:"
 msgstr ""
-
-#~ msgid ""
-#~ "Atualmente, pelo fato o asyncworker usar"
-#~ " o [aiologger](https://github.com/b2wdigital/aiologger), "
-#~ "ele é incompatível com apps que "
-#~ "usam **múltiplos** loops de evento. Ou"
-#~ " seja, se sua app cria um novo"
-#~ " loop e substitui o loop anterior "
-#~ "isso causará um problema com os "
-#~ "logs gerados pelo asyncworker (via "
-#~ "aiologger)."
-#~ msgstr ""
-
-#~ msgid ""
-#~ "Atualmente, pelo fato o asyncworker usar"
-#~ " o aiologger `<la> "
-#~ "https://github.com/b2wdigital/aiologger`_, ele é "
-#~ "incompatível com apps que usam "
-#~ "**múltiplos** loops de evento. Ou seja,"
-#~ " se sua app cria um novo loop"
-#~ " e substitui o loop anterior isso "
-#~ "causará um problema com os logs "
-#~ "gerados pelo asyncworker (via aiologger)."
-#~ msgstr ""
-
-#~ msgid ""
-#~ "Essa incompatibilidade do aiologger está "
-#~ "sendo tratada na issue "
-#~ "[#35](https://github.com/b2wdigital/aiologger/issues/35). O "
-#~ "projeto tem como objetivo ser um "
-#~ "framework para escrever workers assíncronos"
-#~ " em python. Por worker entende-se "
-#~ "qualquer aplicação que rode por tempo"
-#~ " indeterminado e que receba estímulos "
-#~ "de várias origens diferentes. Essas "
-#~ "orignes podem ser:"
-#~ msgstr ""
 

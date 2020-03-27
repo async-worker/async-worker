@@ -38,14 +38,23 @@
 <p><span class="versionmodified added">New in version 0.6.0.</span></p>
 </div>
 <p>Aqui mostraremos como escrever um handler que é estimulado através de requisições HTTP.</p>
-<p>Um handler é simplesmete uma corotina que recebe um request (<code class="docutils literal notranslate"><span class="pre">aiohttp.web.Request</span></code>) e retorna uma response (<code class="docutils literal notranslate"><span class="pre">aiohttp.web.Response</span></code>). Essa corotina passa a ser um handler “asyncworker” quando é decorada com <code class="docutils literal notranslate"><span class="pre">&#64;app.route()</span></code>, onde <code class="docutils literal notranslate"><span class="pre">app</span></code> é uma instância de <code class="docutils literal notranslate"><span class="pre">asyncworker.App</span></code>.</p>
+<p>Um handler é simplesmete uma corotina que recebe um request wrapper (<a class="reference internal" href="../../../src/asyncworker/asyncworker.http.html#asyncworker.http.wrapper.RequestWrapper" title="asyncworker.http.wrapper.RequestWrapper"><code class="xref py py-class docutils literal notranslate"><span class="pre">asyncworker.http.wrapper.RequestWrapper</span></code></a>) e retorna uma response (<code class="docutils literal notranslate"><span class="pre">aiohttp.web.Response</span></code>). Essa corotina passa a ser um handler “asyncworker” quando é decorada com <code class="docutils literal notranslate"><span class="pre">&#64;app.route()</span></code>, onde <code class="docutils literal notranslate"><span class="pre">app</span></code> é uma instância de <code class="docutils literal notranslate"><span class="pre">asyncworker.App</span></code>.</p>
 <p>Vejamos um handler bem simples que apenas retorna <code class="docutils literal notranslate"><span class="pre">HTTP</span> <span class="pre">200</span> <span class="pre">OK</span></code>.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@app</span><span class="o">.</span><span class="n">route</span><span class="p">([</span><span class="s2">&quot;/&quot;</span><span class="p">],</span> <span class="nb">type</span><span class="o">=</span><span class="n">RouteTypes</span><span class="o">.</span><span class="n">HTTP</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;GET&quot;</span><span class="p">])</span>
-<span class="k">async</span> <span class="k">def</span> <span class="nf">handler</span><span class="p">(</span><span class="n">req</span><span class="p">:</span> <span class="n">web</span><span class="o">.</span><span class="n">Request</span><span class="p">):</span>
-  <span class="k">return</span> <span class="n">web</span><span class="o">.</span><span class="n">json_response</span><span class="p">({})</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">aiohttp</span> <span class="kn">import</span> <span class="n">web</span>
+
+<span class="kn">from</span> <span class="nn">asyncworker.http.wrapper</span> <span class="kn">import</span> <span class="n">RequestWrapper</span>
+<span class="kn">from</span> <span class="nn">asyncworker</span> <span class="kn">import</span> <span class="n">App</span><span class="p">,</span> <span class="n">RouteTypes</span>
+
+<span class="n">app</span> <span class="o">=</span> <span class="n">App</span><span class="p">()</span>
+
+
+<span class="nd">@app</span><span class="o">.</span><span class="n">route</span><span class="p">([</span><span class="s2">&quot;/&quot;</span><span class="p">],</span> <span class="nb">type</span><span class="o">=</span><span class="n">RouteTypes</span><span class="o">.</span><span class="n">HTTP</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;GET&quot;</span><span class="p">])</span>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">one_param</span><span class="p">(</span><span class="n">wrapper</span><span class="p">:</span> <span class="n">RequestWrapper</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">web</span><span class="o">.</span><span class="n">json_response</span><span class="p">({})</span>
 </pre></div>
 </div>
-<p>Como recebemos um request do aiohttp, podemos fazer o que for preciso para extrair dele as informações que precisarmos. Para mais detalhes, veja a doc do aiohttp: <a class="reference external" href="https://docs.aiohttp.org/en/stable/web.html">https://docs.aiohttp.org/en/stable/web.html</a></p>
+<p>O <code class="docutils literal notranslate"><span class="pre">RequestWrapper</span></code> tem um atributo <code class="docutils literal notranslate"><span class="pre">.http_request</span></code> que é o Request original entregue pelo <code class="docutils literal notranslate"><span class="pre">aiohttp</span></code>.
+Podemos fazer o que for preciso para extrair dele as informações que precisarmos. Para mais detalhes, veja a doc do aiohttp: <a class="reference external" href="https://docs.aiohttp.org/en/stable/web.html">https://docs.aiohttp.org/en/stable/web.html</a></p>
 <div class="toctree-wrapper compound">
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="doc.html">Regras para criação de um handler HTTP</a></li>

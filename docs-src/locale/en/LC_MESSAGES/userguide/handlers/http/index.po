@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Asyncworker \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-02-22 21:30-0300\n"
+"POT-Creation-Date: 2020-03-26 14:49-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -30,10 +30,10 @@ msgstr ""
 
 #: ../../userguide/handlers/http/index.rst:9
 msgid ""
-"Um handler é simplesmete uma corotina que recebe um request "
-"(``aiohttp.web.Request``) e retorna uma response "
-"(``aiohttp.web.Response``). Essa corotina passa a ser um handler "
-"\"asyncworker\" quando é decorada com ``@app.route()``, onde ``app`` é "
+"Um handler é simplesmete uma corotina que recebe um request wrapper "
+"(:py:class:`asyncworker.http.wrapper.RequestWrapper`) e retorna uma "
+"response (``aiohttp.web.Response``). Essa corotina passa a ser um handler"
+" \"asyncworker\" quando é decorada com ``@app.route()``, onde ``app`` é "
 "uma instância de ``asyncworker.App``."
 msgstr ""
 
@@ -41,19 +41,11 @@ msgstr ""
 msgid "Vejamos um handler bem simples que apenas retorna ``HTTP 200 OK``."
 msgstr ""
 
-#: ../../userguide/handlers/http/index.rst:20
+#: ../../userguide/handlers/http/index.rst:28
 msgid ""
-"Como recebemos um request do aiohttp, podemos fazer o que for preciso "
-"para extrair dele as informações que precisarmos. Para mais detalhes, "
-"veja a doc do aiohttp: https://docs.aiohttp.org/en/stable/web.html"
+"O ``RequestWrapper`` tem um atributo ``.http_request`` que é o Request "
+"original entregue pelo ``aiohttp``. Podemos fazer o que for preciso para "
+"extrair dele as informações que precisarmos. Para mais detalhes, veja a "
+"doc do aiohttp: https://docs.aiohttp.org/en/stable/web.html"
 msgstr ""
-
-#~ msgid "Handler HTTP"
-#~ msgstr ""
-
-#~ msgid "Índice:"
-#~ msgstr ""
-
-#~ msgid "Índice"
-#~ msgstr ""
 

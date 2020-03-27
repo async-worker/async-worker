@@ -53,9 +53,9 @@
 <p>Raw Commits: <a class="reference external" href="https://github.com/b2wdigital/async-worker/compare/0.11.4...0.11.5">0.11.5</a></p>
 <div class="section" id="notas-de-atualizacao">
 <h2>Notas de atualização<a class="headerlink" href="#notas-de-atualizacao" title="Link permanente para este título">¶</a></h2>
-<p>Nessa versão, as implementações de decorators customizados passam a receber uma instância de <code class="xref py py-class docutils literal notranslate"><span class="pre">asyncworker.http.wrapper.RequestWrapper</span></code> e não mais o Request do aiohttp.
+<p>Nessa versão, as implementações de decorators customizados passam a receber uma instância de <a class="reference internal" href="../src/asyncworker/asyncworker.http.html#asyncworker.http.wrapper.RequestWrapper" title="asyncworker.http.wrapper.RequestWrapper"><code class="xref py py-class docutils literal notranslate"><span class="pre">asyncworker.http.wrapper.RequestWrapper</span></code></a> e não mais o Request do aiohttp.
 A chamada a esses decorators ainda funciona recebendo <code class="docutils literal notranslate"><span class="pre">aiohttp.web.Request</span></code> mas é considerada depreciada e será removida no futuro.</p>
-<p>A recomendação é que você primeiro atualize para essa versão e ajuste todos os seus handlers e decorators de handlers para passarem a receber <code class="xref py py-class docutils literal notranslate"><span class="pre">asyncworker.http.wrapper.RequestWrapper</span></code>. Fazendo isso seu código já estará bem melhor preparado para futuras versões do asyncworker.</p>
+<p>A recomendação é que você primeiro atualize para essa versão e ajuste todos os seus handlers e decorators de handlers para passarem a receber <a class="reference internal" href="../src/asyncworker/asyncworker.http.html#asyncworker.http.wrapper.RequestWrapper" title="asyncworker.http.wrapper.RequestWrapper"><code class="xref py py-class docutils literal notranslate"><span class="pre">asyncworker.http.wrapper.RequestWrapper</span></code></a>. Fazendo isso seu código já estará bem melhor preparado para futuras versões do asyncworker.</p>
 <p>Mais detalhes <a class="reference internal" href="../devguide/custom-decorators.html#custom-decorators"><span class="std std-ref">Aplicando decorators customizados a um handler HTTP</span></a>.</p>
 </div>
 </div>

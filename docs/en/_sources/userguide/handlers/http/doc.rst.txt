@@ -9,9 +9,9 @@ Todo handler HTTP deve seguir algumas regras:
  - Deve declarar seus parametros sempre com definição de tipos, pois é assim que o asyncworker saberá passar :ref:`parametros dinâmicos <handler-path-param>` para o handler.
  - Um handler pode não receber nenhum parâmetro. Para isso basta a assinatura do handler ser vazia.
 
-Alguns objetos já são passados so handler, caso estejam presentes em sua assinatura.  Eles são:
+Alguns objetos já são passados ao handler, caso estejam presentes em sua assinatura.  Eles são:
 
- - Uma instância de ``aiohttp.web.Request``.
+ - Uma instância de :py:class:`asyncworker.http.wrapper.RequestWrapper`.
 
 
 Parametrização do decorator route() para handlers HTTP
@@ -48,7 +48,7 @@ Um exemplo de um handler:
 .. code:: python
 
   class Handler:
-    async def __call__(self, req: web.Request):
+    async def __call__(self, wrapper: RequestWrapper):
       pass
 
 
@@ -57,7 +57,7 @@ Importante notar que como estamos lidando com um objeto ele precisará ser insta
 .. code:: python
 
   class Handler:
-    async def __call__(self, req: web.Request):
+    async def __call__(self, wrapper: RequestWrapper):
       pass
 
   h = Handler()
@@ -70,7 +70,7 @@ Por isso esses handlers precisam ser registrados chamando o decorator manualment
 .. code:: python
 
   class Handler:
-    async def __call__(self, req: web.Request):
+    async def __call__(self, wrapper: RequestWrapper):
       pass
 
   h = Handler()
@@ -85,9 +85,9 @@ Handlers que recebem mais do que apenas Request
 
 .. versionadded:: 0.11.0
 
-O asyncworker permite que um handler receba quaisquer prametros. Para isso a assinatura do handler deve conter typehints em todos os parametros. Isso faz com que o asyncowker consiga fazer a resolução desses prametros e consiga chamar o handler corretamente.
+O asyncworker permite que um handler receba quaisquer prametros. Para isso a assinatura do handler deve conter typehints em todos os parametros. Isso faz com que o asyncworker consiga fazer a resolução desses prametros e consiga chamar o handler corretamente.
 
-Todas as instancias de ``aiohttp.web.Request`` recebem um atributo chamado ``types_registry`` que é do tipo :py:class:`asyncworker.types.registry.TypesRegistry`. Para que um parametro possa ser passado a um handler ele deve ser adicionado a esse registry do request.
+O wrapper que é passado ao handler (:py:class:`asyncworker.http.wrapper.RequestWrapper`) possui um atributo chamado ``types_registry`` que é do tipo :py:class:`asyncworker.types.registry.TypesRegistry`. Para que um parametro possa ser passado a um handler ele deve ser adicionado a esse registry.
 
 Um exemplo de como popular esse registry é através de um decorator aplicado diretamente ao um handler. Vejamos um exemplo:
 
@@ -97,17 +97,18 @@ Um exemplo de como popular esse registry é através de um decorator aplicado di
   from aiohttp import web
   from myproject.models.user import User
   from http import HTTPStatus
+  from asyncworker.http.wrapper import RequestWrapper
 
 
   def auth_required(handler):
-      async def _wrapper(request: web.Request):
-          basic_auth = request.headers.get("Authorization")
+      async def _wrapper(wrapper: RequestWrapper):
+          basic_auth = wrapper.http_request.headers.get("Authorization")
           user = get_authenticated_user(basic_auth)
           if not user:
               return web.json_response({...}, status=HTTPStatus.UNAUTHORIZED)
 
-          request["types_registry"].set(user)
-          return await call_http_handler(request, handler)
+          wrapper.types_registry.set(user)
+          return await call_http_handler(wrapper.http_request, handler)
 
       return _wrapper
 
@@ -116,7 +117,7 @@ Um exemplo de como popular esse registry é através de um decorator aplicado di
   async def handler(user: User):
       return web.json_response({})
 
-Aqui o decorator ``auth_required()`` é responsável por fazer a autenticação, pegando dados do Request e encontrando um usuário válido. Se um usuário não puder ser encontrado, retorna ``HTTPStatus.UNAUTHORIZED``. Se um usuário autenticar com sucesso, apenas adiciona o objeto user (que é do tipo ``User``) no registry que está no request. Isso é o suficiente para que o handler, quando for chamado, receba diretamente esse user já autenticado.
+Aqui o decorator ``auth_required()`` é responsável por fazer a autenticação, pegando dados do Request e encontrando um usuário válido. Se um usuário não puder ser encontrado, retorna ``HTTPStatus.UNAUTHORIZED``. Se um usuário autenticar com sucesso, apenas adiciona o objeto user (que é do tipo ``User``) no registry que está no ``RequestWrapper``. Isso é o suficiente para que o handler, quando for chamado, receba diretamente esse user já autenticado.
 
 
 
