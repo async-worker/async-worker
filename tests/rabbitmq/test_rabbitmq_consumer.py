@@ -129,13 +129,15 @@ class ConsumerTest(asynctest.TestCase):
         self.assertTrue(isinstance(consumer.queue, JsonQueue))
         self.assertEqual("fluentd", connection_parameters["virtualhost"])
 
-    def test_consumer_instantiate_async_queue_other_vhost_strip_slash(self):
+    def test_consumer_instantiate_async_queue_other_vhost_does_not_strip_slash(
+        self
+    ):
         self.one_route_fixture["vhost"] = "/fluentd"
         consumer = Consumer(self.one_route_fixture, *self.connection_parameters)
         connection_parameters = consumer.queue.connection.connection_parameters
 
         self.assertTrue(isinstance(consumer.queue, JsonQueue))
-        self.assertEqual("fluentd", connection_parameters["virtualhost"])
+        self.assertEqual("/fluentd", connection_parameters["virtualhost"])
 
     def test_consumer_instantiate_async_queue_prefetch_count(self):
         self.one_route_fixture["vhost"] = "/fluentd"
@@ -143,7 +145,7 @@ class ConsumerTest(asynctest.TestCase):
         connection_parameters = consumer.queue.connection.connection_parameters
 
         self.assertTrue(isinstance(consumer.queue, JsonQueue))
-        self.assertEqual("fluentd", connection_parameters["virtualhost"])
+        self.assertEqual("/fluentd", connection_parameters["virtualhost"])
         self.assertEqual(1024, consumer.queue.prefetch_count)
 
     def test_consumer_returns_correct_queue_name(self):

@@ -31,8 +31,6 @@ class Consumer(QueueConsumerDelegate):
         self._route_options = route_info["options"]
         self.host = host
         self.vhost = route_info.get("vhost", "/")
-        if self.vhost != "/":
-            self.vhost = self.vhost.lstrip("/")
         self.bucket = bucket_class(
             size=min(self._route_options["bulk_size"], prefetch_count)
         )
