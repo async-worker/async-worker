@@ -7,7 +7,7 @@ here = path.abspath(path.dirname(__file__))
 
 setup(
     name="async-worker",
-    version="0.13.0",
+    version="0.14.0",
     description="Microframework para escrever workers assíncronos em Python",
     long_description="Microframework para escrever workers assíncronos em Python",
     url="https://github.com/b2wdigital/async-worker",
