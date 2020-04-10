@@ -7,7 +7,7 @@ here = path.abspath(path.dirname(__file__))
 
 setup(
     name="async-worker",
-    version="0.12.0",
+    version="0.14.0",
     description="Microframework para escrever workers assíncronos em Python",
     long_description="Microframework para escrever workers assíncronos em Python",
     url="https://github.com/b2wdigital/async-worker",
@@ -24,7 +24,7 @@ setup(
     install_requires=[
         "aioamqp==0.14.0",
         "aiologger==0.5.0",
-        "pydantic==0.32.2",
+        "pydantic>=0.32.2, <2.0",
         "cached-property==1.5.1",
         "aiohttp==3.6.2",
     ],

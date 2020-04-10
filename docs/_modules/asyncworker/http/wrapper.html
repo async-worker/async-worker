@@ -4,7 +4,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="pt_BR">
   <head>
     <meta charset="utf-8" />
-    <title>asyncworker.sse.app &#8212; documentação Asyncworker </title>
+    <title>asyncworker.http.wrapper &#8212; documentação Asyncworker </title>
     <link rel="stylesheet" href="../../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
     <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
@@ -31,32 +31,21 @@
 
           <div class="body" role="main">
             
-  <h1>Código fonte para asyncworker.sse.app</h1><div class="highlight"><pre>
-<span></span><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Dict</span>
+  <h1>Código fonte para asyncworker.http.wrapper</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">aiohttp.web</span> <span class="kn">import</span> <span class="n">Request</span>
 
-<span class="kn">from</span> <span class="nn">asyncworker</span> <span class="kn">import</span> <span class="n">BaseApp</span>
-<span class="kn">from</span> <span class="nn">asyncworker.signals.handlers.sse</span> <span class="kn">import</span> <span class="n">SSE</span>
-
-<span class="n">SSE_DEFAULT_HEADERS</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;Accept&quot;</span><span class="p">:</span> <span class="s2">&quot;text/event-stream&quot;</span><span class="p">}</span>
+<span class="kn">from</span> <span class="nn">asyncworker.types.registry</span> <span class="kn">import</span> <span class="n">TypesRegistry</span>
 
 
-<div class="viewcode-block" id="SSEApplication"><a class="viewcode-back" href="../../../src/asyncworker/asyncworker.sse.html#asyncworker.sse.app.SSEApplication">[documentos]</a><span class="k">class</span> <span class="nc">SSEApplication</span><span class="p">(</span><span class="n">BaseApp</span><span class="p">):</span>
-    <span class="n">handlers</span> <span class="o">=</span> <span class="p">(</span><span class="n">SSE</span><span class="p">(),)</span>
+<div class="viewcode-block" id="RequestWrapper"><a class="viewcode-back" href="../../../src/asyncworker/asyncworker.http.html#asyncworker.http.wrapper.RequestWrapper">[documentos]</a><span class="k">class</span> <span class="nc">RequestWrapper</span><span class="p">:</span>
+    <span class="n">http_request</span><span class="p">:</span> <span class="n">Request</span>
+    <span class="n">types_registry</span><span class="p">:</span> <span class="n">TypesRegistry</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span>
-        <span class="n">url</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-        <span class="n">logger</span><span class="p">,</span>
-        <span class="n">user</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">password</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">headers</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">SSE_DEFAULT_HEADERS</span><span class="p">,</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">http_request</span><span class="p">:</span> <span class="n">Request</span><span class="p">,</span> <span class="n">types_registry</span><span class="p">:</span> <span class="n">TypesRegistry</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="nb">super</span><span class="p">(</span><span class="n">SSEApplication</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">url</span> <span class="o">=</span> <span class="n">url</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">user</span> <span class="o">=</span> <span class="n">user</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">password</span> <span class="o">=</span> <span class="n">password</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">default_route_options</span><span class="p">[</span><span class="s2">&quot;headers&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">headers</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span> <span class="o">=</span> <span class="n">logger</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">http_request</span> <span class="o">=</span> <span class="n">http_request</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">types_registry</span> <span class="o">=</span> <span class="n">types_registry</span></div>
 </pre></div>
 
           </div>
@@ -89,8 +78,6 @@
 <ul>
   <li><a href="../../../index.html">Documentation overview</a><ul>
   <li><a href="../../index.html">Código do módulo</a><ul>
-  <li><a href="../../asyncworker.html">asyncworker</a><ul>
-  </ul></li>
   </ul></li>
   </ul></li>
 </ul>

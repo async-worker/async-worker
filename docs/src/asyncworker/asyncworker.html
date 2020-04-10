@@ -37,10 +37,6 @@
 <h2>Subpackages<a class="headerlink" href="#subpackages" title="Link permanente para este título">¶</a></h2>
 <div class="toctree-wrapper compound">
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="asyncworker.connections.html">asyncworker.connections package</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="asyncworker.connections.html#module-asyncworker.connections">Module contents</a></li>
-</ul>
-</li>
 <li class="toctree-l1"><a class="reference internal" href="asyncworker.easyqueue.html">asyncworker.easyqueue package</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="asyncworker.easyqueue.html#submodules">Submodules</a></li>
 <li class="toctree-l2"><a class="reference internal" href="asyncworker.easyqueue.html#module-asyncworker.easyqueue.connection">asyncworker.easyqueue.connection module</a></li>
@@ -50,8 +46,11 @@
 <li class="toctree-l2"><a class="reference internal" href="asyncworker.easyqueue.html#module-asyncworker.easyqueue">Module contents</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="asyncworker.exceptions.html">asyncworker.exceptions package</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="asyncworker.exceptions.html#module-asyncworker.exceptions">Module contents</a></li>
+<li class="toctree-l1"><a class="reference internal" href="asyncworker.http.html">asyncworker.http package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="asyncworker.http.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="asyncworker.http.html#module-asyncworker.http.decorators">asyncworker.http.decorators module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="asyncworker.http.html#module-asyncworker.http.wrapper">asyncworker.http.wrapper module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="asyncworker.http.html#module-asyncworker.http">Module contents</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="asyncworker.rabbitmq.html">asyncworker.rabbitmq package</a><ul>
@@ -87,6 +86,13 @@
 </li>
 <li class="toctree-l1"><a class="reference internal" href="asyncworker.testing.html">asyncworker.testing package</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="asyncworker.testing.html#module-asyncworker.testing">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="asyncworker.types.html">asyncworker.types package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="asyncworker.types.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="asyncworker.types.html#module-asyncworker.types.registry">asyncworker.types.registry module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="asyncworker.types.html#module-asyncworker.types.resolver">asyncworker.types.resolver module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="asyncworker.types.html#module-asyncworker.types">Module contents</a></li>
 </ul>
 </li>
 </ul>
@@ -139,13 +145,13 @@
 
 <dl class="method">
 <dt id="asyncworker.app.App.run_on_shutdown">
-<code class="sig-name descname">run_on_shutdown</code><span class="sig-paren">(</span><em class="sig-param">coro: Callable[App, Coroutine]</em><span class="sig-paren">)</span> &#x2192; None<a class="reference internal" href="../../_modules/asyncworker/app.html#App.run_on_shutdown"><span class="viewcode-link">[código fonte]</span></a><a class="headerlink" href="#asyncworker.app.App.run_on_shutdown" title="Link permanente para esta definição">¶</a></dt>
+<code class="sig-name descname">run_on_shutdown</code><span class="sig-paren">(</span><em class="sig-param">coro: Callable[[App], Coroutine]</em><span class="sig-paren">)</span> &#x2192; None<a class="reference internal" href="../../_modules/asyncworker/app.html#App.run_on_shutdown"><span class="viewcode-link">[código fonte]</span></a><a class="headerlink" href="#asyncworker.app.App.run_on_shutdown" title="Link permanente para esta definição">¶</a></dt>
 <dd><p>Registers a coroutine to be awaited for during app shutdown</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="asyncworker.app.App.run_on_startup">
-<code class="sig-name descname">run_on_startup</code><span class="sig-paren">(</span><em class="sig-param">coro: Callable[App, Coroutine]</em><span class="sig-paren">)</span> &#x2192; None<a class="reference internal" href="../../_modules/asyncworker/app.html#App.run_on_startup"><span class="viewcode-link">[código fonte]</span></a><a class="headerlink" href="#asyncworker.app.App.run_on_startup" title="Link permanente para esta definição">¶</a></dt>
+<code class="sig-name descname">run_on_startup</code><span class="sig-paren">(</span><em class="sig-param">coro: Callable[[App], Coroutine]</em><span class="sig-paren">)</span> &#x2192; None<a class="reference internal" href="../../_modules/asyncworker/app.html#App.run_on_startup"><span class="viewcode-link">[código fonte]</span></a><a class="headerlink" href="#asyncworker.app.App.run_on_startup" title="Link permanente para esta definição">¶</a></dt>
 <dd><p>Registers a coroutine to be awaited for during app startup</p>
 </dd></dl>
 
@@ -300,7 +306,7 @@ the ConnectionsMapping</p>
 <dl class="class">
 <dt id="asyncworker.connections.ConnectionsMapping">
 <em class="property">class </em><code class="sig-prename descclassname">asyncworker.connections.</code><code class="sig-name descname">ConnectionsMapping</code><a class="reference internal" href="../../_modules/asyncworker/connections.html#ConnectionsMapping"><span class="viewcode-link">[código fonte]</span></a><a class="headerlink" href="#asyncworker.connections.ConnectionsMapping" title="Link permanente para esta definição">¶</a></dt>
-<dd><p>Base: <code class="xref py py-class docutils literal notranslate"><span class="pre">typing.Mapping</span></code>, <a class="reference internal" href="asyncworker.signals.html#asyncworker.signals.base.Freezable" title="asyncworker.signals.base.Freezable"><code class="xref py py-class docutils literal notranslate"><span class="pre">asyncworker.signals.base.Freezable</span></code></a></p>
+<dd><p>Base: <code class="xref py py-class docutils literal notranslate"><span class="pre">collections.abc.Mapping</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">typing.Generic</span></code>, <a class="reference internal" href="asyncworker.signals.html#asyncworker.signals.base.Freezable" title="asyncworker.signals.base.Freezable"><code class="xref py py-class docutils literal notranslate"><span class="pre">asyncworker.signals.base.Freezable</span></code></a></p>
 <p>A mapping (Connection.name-&gt;Connection) of all available connections that
 also keeps a counter for each connection type</p>
 <dl class="method">
@@ -529,6 +535,11 @@ is ready to be handled.</p>
 <dd></dd></dl>
 
 <dl class="attribute">
+<dt id="asyncworker.options.Options.CONNECTION_FAIL_CALLBACK">
+<code class="sig-name descname">CONNECTION_FAIL_CALLBACK</code><em class="property"> = 'connection_fail_callback'</em><a class="headerlink" href="#asyncworker.options.Options.CONNECTION_FAIL_CALLBACK" title="Link permanente para esta definição">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
 <dt id="asyncworker.options.Options.MAX_CONCURRENCY">
 <code class="sig-name descname">MAX_CONCURRENCY</code><em class="property"> = 'max_concurrency'</em><a class="headerlink" href="#asyncworker.options.Options.MAX_CONCURRENCY" title="Link permanente para esta definição">¶</a></dt>
 <dd></dd></dl>
@@ -577,7 +588,7 @@ is ready to be handled.</p>
 
 <dl class="method">
 <dt id="asyncworker.routes.HTTPRoute.validate_method">
-<em class="property">classmethod </em><code class="sig-name descname">validate_method</code><span class="sig-paren">(</span><em class="sig-param">v: str</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/asyncworker/routes.html#HTTPRoute.validate_method"><span class="viewcode-link">[código fonte]</span></a><a class="headerlink" href="#asyncworker.routes.HTTPRoute.validate_method" title="Link permanente para esta definição">¶</a></dt>
+<em class="property">classmethod </em><code class="sig-name descname">validate_method</code><span class="sig-paren">(</span><em class="sig-param">v: Union[str, List[str]]</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/asyncworker/routes.html#HTTPRoute.validate_method"><span class="viewcode-link">[código fonte]</span></a><a class="headerlink" href="#asyncworker.routes.HTTPRoute.validate_method" title="Link permanente para esta definição">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -632,7 +643,7 @@ is ready to be handled.</p>
 
 <dl class="method">
 <dt id="asyncworker.routes.RoutesRegistry.route_for">
-<code class="sig-name descname">route_for</code><span class="sig-paren">(</span><em class="sig-param">handler: Callable[..., Coroutine]</em><span class="sig-paren">)</span> &#x2192; asyncworker.routes.Route<a class="reference internal" href="../../_modules/asyncworker/routes.html#RoutesRegistry.route_for"><span class="viewcode-link">[código fonte]</span></a><a class="headerlink" href="#asyncworker.routes.RoutesRegistry.route_for" title="Link permanente para esta definição">¶</a></dt>
+<code class="sig-name descname">route_for</code><span class="sig-paren">(</span><em class="sig-param">handler: Callable[[...], Coroutine]</em><span class="sig-paren">)</span> &#x2192; asyncworker.routes.Route<a class="reference internal" href="../../_modules/asyncworker/routes.html#RoutesRegistry.route_for"><span class="viewcode-link">[código fonte]</span></a><a class="headerlink" href="#asyncworker.routes.RoutesRegistry.route_for" title="Link permanente para esta definição">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
@@ -655,7 +666,7 @@ is ready to be handled.</p>
 
 <dl class="function">
 <dt id="asyncworker.routes.call_http_handler">
-<em class="property">async </em><code class="sig-prename descclassname">asyncworker.routes.</code><code class="sig-name descname">call_http_handler</code><span class="sig-paren">(</span><em class="sig-param">request: aiohttp.web_request.Request, handler: Callable[..., Coroutine]</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/asyncworker/routes.html#call_http_handler"><span class="viewcode-link">[código fonte]</span></a><a class="headerlink" href="#asyncworker.routes.call_http_handler" title="Link permanente para esta definição">¶</a></dt>
+<em class="property">async </em><code class="sig-prename descclassname">asyncworker.routes.</code><code class="sig-name descname">call_http_handler</code><span class="sig-paren">(</span><em class="sig-param">request: aiohttp.web_request.Request, handler: Callable[[...], Coroutine]</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/asyncworker/routes.html#call_http_handler"><span class="viewcode-link">[código fonte]</span></a><a class="headerlink" href="#asyncworker.routes.call_http_handler" title="Link permanente para esta definição">¶</a></dt>
 <dd><p>Quando o RequestWrapper estiver mais sólido, esse método deve receber <cite>asyncworker.http.wrapper.RequestWrapper</cite> e não <cite>web.Request</cite>.
 Primeiro vamos documentar que essa chamada será depreciada e função de chamada onde
 recebemos <cite>RequestWrapper</cite>.</p>
@@ -671,7 +682,7 @@ recebemos <cite>RequestWrapper</cite>.</p>
 <span id="asyncworker-task-runners-module"></span><h2>asyncworker.task_runners module<a class="headerlink" href="#module-asyncworker.task_runners" title="Link permanente para este título">¶</a></h2>
 <dl class="class">
 <dt id="asyncworker.task_runners.ScheduledTaskRunner">
-<em class="property">class </em><code class="sig-prename descclassname">asyncworker.task_runners.</code><code class="sig-name descname">ScheduledTaskRunner</code><span class="sig-paren">(</span><em class="sig-param">seconds: int, task: Callable[App, Coroutine], app: App, max_concurrency: int</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/asyncworker/task_runners.html#ScheduledTaskRunner"><span class="viewcode-link">[código fonte]</span></a><a class="headerlink" href="#asyncworker.task_runners.ScheduledTaskRunner" title="Link permanente para esta definição">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">asyncworker.task_runners.</code><code class="sig-name descname">ScheduledTaskRunner</code><span class="sig-paren">(</span><em class="sig-param">seconds: int, task: Callable[[App], Coroutine], app: App, max_concurrency: int</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/asyncworker/task_runners.html#ScheduledTaskRunner"><span class="viewcode-link">[código fonte]</span></a><a class="headerlink" href="#asyncworker.task_runners.ScheduledTaskRunner" title="Link permanente para esta definição">¶</a></dt>
 <dd><p>Base: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <dl class="method">
 <dt id="asyncworker.task_runners.ScheduledTaskRunner.can_dispatch_task">
@@ -689,20 +700,6 @@ recebemos <cite>RequestWrapper</cite>.</p>
 <dd></dd></dl>
 
 </dd></dl>
-
-</div>
-<div class="section" id="module-asyncworker.testing">
-<span id="asyncworker-testing-module"></span><h2>asyncworker.testing module<a class="headerlink" href="#module-asyncworker.testing" title="Link permanente para este título">¶</a></h2>
-<dl class="class">
-<dt id="asyncworker.testing.HttpClientContext">
-<em class="property">class </em><code class="sig-prename descclassname">asyncworker.testing.</code><code class="sig-name descname">HttpClientContext</code><span class="sig-paren">(</span><em class="sig-param">app: asyncworker.app.App</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/asyncworker/testing.html#HttpClientContext"><span class="viewcode-link">[código fonte]</span></a><a class="headerlink" href="#asyncworker.testing.HttpClientContext" title="Link permanente para esta definição">¶</a></dt>
-<dd><p>Base: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-</dd></dl>
-
-<dl class="function">
-<dt id="asyncworker.testing.http_client">
-<code class="sig-prename descclassname">asyncworker.testing.</code><code class="sig-name descname">http_client</code><span class="sig-paren">(</span><em class="sig-param">app: asyncworker.app.App</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/asyncworker/testing.html#http_client"><span class="viewcode-link">[código fonte]</span></a><a class="headerlink" href="#asyncworker.testing.http_client" title="Link permanente para esta definição">¶</a></dt>
-<dd></dd></dl>
 
 </div>
 <div class="section" id="module-asyncworker.time">
@@ -734,7 +731,7 @@ I: x—————x—————x—————x—————</p>
 <span id="asyncworker-utils-module"></span><h2>asyncworker.utils module<a class="headerlink" href="#module-asyncworker.utils" title="Link permanente para este título">¶</a></h2>
 <dl class="class">
 <dt id="asyncworker.utils.Timeit">
-<em class="property">class </em><code class="sig-prename descclassname">asyncworker.utils.</code><code class="sig-name descname">Timeit</code><span class="sig-paren">(</span><em class="sig-param">name: str</em>, <em class="sig-param">callback: Callable[...</em>, <em class="sig-param">Coroutine] = None</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/asyncworker/utils.html#Timeit"><span class="viewcode-link">[código fonte]</span></a><a class="headerlink" href="#asyncworker.utils.Timeit" title="Link permanente para esta definição">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">asyncworker.utils.</code><code class="sig-name descname">Timeit</code><span class="sig-paren">(</span><em class="sig-param">name: str, callback: Callable[[...], Coroutine] = None</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/asyncworker/utils.html#Timeit"><span class="viewcode-link">[código fonte]</span></a><a class="headerlink" href="#asyncworker.utils.Timeit" title="Link permanente para esta definição">¶</a></dt>
 <dd><p>Base: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <dl class="attribute">
 <dt id="asyncworker.utils.Timeit.TRANSACTIONS_KEY">

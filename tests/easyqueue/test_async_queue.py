@@ -606,6 +606,7 @@ class EnsureConnectedDecoratorTests(asynctest.TestCase):
                 _connect=CoroutineMock(side_effect=[ConnectionError, True]),
             ),
             seconds_between_conn_retry=seconds,
+            connection_fail_callback=None,
         )
         coro = CoroutineMock()
         with asynctest.patch(
@@ -630,6 +631,7 @@ class EnsureConnectedDecoratorTests(asynctest.TestCase):
                 is_connected=False,
             ),
             logger=Mock(spec=logging.Logger),
+            connection_fail_callback=None,
         )
         coro = CoroutineMock()
         with asynctest.patch(
@@ -639,3 +641,22 @@ class EnsureConnectedDecoratorTests(asynctest.TestCase):
             await wrapped(async_queue, 1, dog="Xablau")
 
         async_queue.logger.error.assert_called_once()
+
+    async def test_it_calls_connection_fail_callback_if_connect_fails(self):
+        error = ConnectionError()
+        async_queue = Mock(
+            is_running=True,
+            connection=Mock(
+                _connect=CoroutineMock(side_effect=[error, True]),
+                is_connected=False,
+            ),
+            connection_fail_callback=CoroutineMock(),
+        )
+        coro = CoroutineMock()
+        with asynctest.patch(
+            "asyncworker.easyqueue.queue.asyncio.sleep"
+        ) as sleep:
+            wrapped = _ensure_connected(coro)
+            await wrapped(async_queue, 1, dog="Xablau")
+
+        async_queue.connection_fail_callback.assert_awaited_once_with(error, 1)

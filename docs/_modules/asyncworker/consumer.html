@@ -41,7 +41,7 @@
 <span class="kn">from</span> <span class="nn">asyncworker</span> <span class="kn">import</span> <span class="n">conf</span>
 <span class="kn">from</span> <span class="nn">asyncworker.easyqueue.message</span> <span class="kn">import</span> <span class="n">AMQPMessage</span>
 <span class="kn">from</span> <span class="nn">asyncworker.easyqueue.queue</span> <span class="kn">import</span> <span class="n">JsonQueue</span><span class="p">,</span> <span class="n">QueueConsumerDelegate</span>
-<span class="kn">from</span> <span class="nn">asyncworker.options</span> <span class="kn">import</span> <span class="n">Events</span><span class="p">,</span> <span class="n">Options</span>
+<span class="kn">from</span> <span class="nn">asyncworker.options</span> <span class="kn">import</span> <span class="n">DefaultValues</span><span class="p">,</span> <span class="n">Events</span><span class="p">,</span> <span class="n">Options</span>
 <span class="kn">from</span> <span class="nn">asyncworker.routes</span> <span class="kn">import</span> <span class="n">AMQPRoute</span>
 <span class="kn">from</span> <span class="nn">asyncworker.time</span> <span class="kn">import</span> <span class="n">ClockTicker</span>
 
@@ -65,8 +65,6 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_route_options</span> <span class="o">=</span> <span class="n">route_info</span><span class="p">[</span><span class="s2">&quot;options&quot;</span><span class="p">]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">host</span> <span class="o">=</span> <span class="n">host</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">vhost</span> <span class="o">=</span> <span class="n">route_info</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;vhost&quot;</span><span class="p">,</span> <span class="s2">&quot;/&quot;</span><span class="p">)</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">vhost</span> <span class="o">!=</span> <span class="s2">&quot;/&quot;</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">vhost</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">vhost</span><span class="o">.</span><span class="n">lstrip</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">bucket</span> <span class="o">=</span> <span class="n">bucket_class</span><span class="p">(</span>
             <span class="n">size</span><span class="o">=</span><span class="nb">min</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_route_options</span><span class="p">[</span><span class="s2">&quot;bulk_size&quot;</span><span class="p">],</span> <span class="n">prefetch_count</span><span class="p">)</span>
         <span class="p">)</span>
@@ -77,6 +75,10 @@
             <span class="n">virtual_host</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">vhost</span><span class="p">,</span>
             <span class="n">delegate</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span>
             <span class="n">prefetch_count</span><span class="o">=</span><span class="n">prefetch_count</span><span class="p">,</span>
+            <span class="n">logger</span><span class="o">=</span><span class="n">conf</span><span class="o">.</span><span class="n">logger</span><span class="p">,</span>
+            <span class="n">connection_fail_callback</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_route_options</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
+                <span class="n">Options</span><span class="o">.</span><span class="n">CONNECTION_FAIL_CALLBACK</span><span class="p">,</span> <span class="kc">None</span>
+            <span class="p">),</span>
         <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">clock</span> <span class="o">=</span> <span class="n">ClockTicker</span><span class="p">(</span>
             <span class="n">seconds</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_route_options</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>

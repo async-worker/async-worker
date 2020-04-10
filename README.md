@@ -33,7 +33,7 @@ app = App()
 
 
 @app.route(["/", "/other"], type=RouteTypes.HTTP, methods=["GET"])
-async def handler(req: web.Request):
+async def handler():
     return web.json_response({})
 
 

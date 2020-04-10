@@ -2,14 +2,14 @@
 # Copyright (C) 2019, B2W Digital
 # This file is distributed under the same license as the Asyncworker
 # package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, 2019.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2020.
 #
 #, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: Asyncworker \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-03-01 00:31-0300\n"
+"POT-Creation-Date: 2020-03-26 14:53-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -91,8 +91,7 @@ msgstr ""
 #: asyncworker.conf.Settings.Config:1
 #: asyncworker.connections.AMQPConnection.Config:1
 #: asyncworker.options.DefaultValues:1
-#: asyncworker.task_runners.ScheduledTaskRunner:1
-#: asyncworker.testing.HttpClientContext:1 asyncworker.utils.Timeit:1 of
+#: asyncworker.task_runners.ScheduledTaskRunner:1 asyncworker.utils.Timeit:1 of
 msgid "Base: :class:`object`"
 msgstr ""
 
@@ -125,7 +124,9 @@ msgid ""
 msgstr ""
 
 #: asyncworker.connections.ConnectionsMapping:1 of
-msgid "Base: :class:`typing.Mapping`, :class:`asyncworker.signals.base.Freezable`"
+msgid ""
+"Base: :class:`collections.abc.Mapping`, :class:`typing.Generic`, "
+":class:`asyncworker.signals.base.Freezable`"
 msgstr ""
 
 #: asyncworker.connections.ConnectionsMapping:1 of
@@ -229,7 +230,7 @@ msgstr ""
 msgid "Defines an invalid route definition condition."
 msgstr ""
 
-#: ../../src/asyncworker/asyncworker.rst:70
+#: ../../src/asyncworker/asyncworker.rst:69
 msgid "asyncworker.options module"
 msgstr ""
 
@@ -248,7 +249,7 @@ msgstr ""
 msgid "Base: :class:`str`, :class:`enum.Enum`"
 msgstr ""
 
-#: ../../src/asyncworker/asyncworker.rst:78
+#: ../../src/asyncworker/asyncworker.rst:77
 msgid "asyncworker.routes module"
 msgstr ""
 
@@ -281,15 +282,11 @@ msgid ""
 "onde recebemos `RequestWrapper`."
 msgstr ""
 
-#: ../../src/asyncworker/asyncworker.rst:86
+#: ../../src/asyncworker/asyncworker.rst:85
 msgid "asyncworker.task\\_runners module"
 msgstr ""
 
-#: ../../src/asyncworker/asyncworker.rst:94
-msgid "asyncworker.testing module"
-msgstr ""
-
-#: ../../src/asyncworker/asyncworker.rst:103
+#: ../../src/asyncworker/asyncworker.rst:93
 msgid "asyncworker.time module"
 msgstr ""
 
@@ -322,65 +319,11 @@ msgid ""
 "---------------x---------------x---------------x---------------"
 msgstr ""
 
-#: ../../src/asyncworker/asyncworker.rst:111
+#: ../../src/asyncworker/asyncworker.rst:101
 msgid "asyncworker.utils module"
 msgstr ""
 
-#: ../../src/asyncworker/asyncworker.rst:120
+#: ../../src/asyncworker/asyncworker.rst:110
 msgid "Module contents"
 msgstr ""
-
-#~ msgid ""
-#~ "Base: :class:`collections.abc.MutableMapping`, "
-#~ ":class:`asyncworker.signals.base.Freezable`"
-#~ msgstr ""
-
-#~ msgid "Registers a coroutine to be called with a given interval"
-#~ msgstr ""
-
-#~ msgid "Registers a coroutine to be awaited for during app shutdown"
-#~ msgstr ""
-
-#~ msgid "Registers a coroutine to be awaited for during app startup"
-#~ msgstr ""
-
-#~ msgid "Schedules an on_startup signal"
-#~ msgstr ""
-
-#~ msgid ""
-#~ "Is called automatically when the "
-#~ "application receives a SIGINT or SIGTERM"
-#~ msgstr ""
-
-#~ msgid "Causes on_startup signal"
-#~ msgstr ""
-
-#~ msgid "Should be called in the event loop along with the request handler."
-#~ msgstr ""
-
-#~ msgid "Base: :class:`asyncworker.base.BaseApp`"
-#~ msgstr ""
-
-#~ msgid "asyncworker.base module"
-#~ msgstr ""
-
-#~ msgid "the message :return:"
-#~ msgstr ""
-
-#~ msgid ""
-#~ "Base: :class:`collections.abc.Mapping`, "
-#~ ":class:`typing.Generic`, "
-#~ ":class:`asyncworker.connections.Connection`"
-#~ msgstr ""
-
-#~ msgid ""
-#~ "Base: :class:`collections.abc.Mapping`, "
-#~ ":class:`typing.Generic`, "
-#~ ":class:`asyncworker.signals.base.Freezable`"
-#~ msgstr ""
-
-#~ msgid ""
-#~ "Base: :class:`typing.Mapping`, "
-#~ ":class:`asyncworker.signals.base.Freezable`"
-#~ msgstr ""
 

@@ -132,12 +132,20 @@
     <span class="n">methods</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
     <span class="n">options</span><span class="p">:</span> <span class="n">_RouteOptions</span> <span class="o">=</span> <span class="n">_RouteOptions</span><span class="p">()</span>
 
-<div class="viewcode-block" id="HTTPRoute.validate_method"><a class="viewcode-back" href="../../src/asyncworker/asyncworker.html#asyncworker.routes.HTTPRoute.validate_method">[documentos]</a>    <span class="nd">@validator</span><span class="p">(</span><span class="s2">&quot;methods&quot;</span><span class="p">)</span>
-    <span class="k">def</span> <span class="nf">validate_method</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">v</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
-        <span class="n">method</span> <span class="o">=</span> <span class="n">v</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">_validate_method</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">method</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="n">method</span> <span class="o">=</span> <span class="n">method</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span>
         <span class="k">if</span> <span class="n">method</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">METH_ALL</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;&#39;</span><span class="si">{v}</span><span class="s2">&#39; isn&#39;t a valid supported HTTP method.&quot;</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">method</span></div>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;&#39;</span><span class="si">{method}</span><span class="s2">&#39; isn&#39;t a valid supported HTTP method.&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">method</span>
+
+<div class="viewcode-block" id="HTTPRoute.validate_method"><a class="viewcode-back" href="../../src/asyncworker/asyncworker.html#asyncworker.routes.HTTPRoute.validate_method">[documentos]</a>    <span class="nd">@validator</span><span class="p">(</span><span class="s2">&quot;methods&quot;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">validate_method</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">v</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]):</span>
+        <span class="c1"># compatibility with older versions of pydantic</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>  <span class="c1"># pragma: no cover</span>
+            <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_validate_method</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="p">[</span><span class="bp">cls</span><span class="o">.</span><span class="n">_validate_method</span><span class="p">(</span><span class="n">method</span><span class="p">)</span> <span class="k">for</span> <span class="n">method</span> <span class="ow">in</span> <span class="n">v</span><span class="p">]</span></div>
 
 <div class="viewcode-block" id="HTTPRoute.aiohttp_routes"><a class="viewcode-back" href="../../src/asyncworker/asyncworker.html#asyncworker.routes.HTTPRoute.aiohttp_routes">[documentos]</a>    <span class="k">def</span> <span class="nf">aiohttp_routes</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">RouteDef</span><span class="p">]:</span>
         <span class="k">for</span> <span class="n">route</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">routes</span><span class="p">:</span>
@@ -156,6 +164,9 @@
     <span class="n">bulk_flush_interval</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">DefaultValues</span><span class="o">.</span><span class="n">BULK_FLUSH_INTERVAL</span>
     <span class="n">on_success</span><span class="p">:</span> <span class="n">Actions</span> <span class="o">=</span> <span class="n">DefaultValues</span><span class="o">.</span><span class="n">ON_SUCCESS</span>
     <span class="n">on_exception</span><span class="p">:</span> <span class="n">Actions</span> <span class="o">=</span> <span class="n">DefaultValues</span><span class="o">.</span><span class="n">ON_EXCEPTION</span>
+    <span class="n">connection_fail_callback</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span>
+        <span class="n">Callable</span><span class="p">[[</span><span class="ne">Exception</span><span class="p">,</span> <span class="nb">int</span><span class="p">],</span> <span class="n">Coroutine</span><span class="p">]</span>
+    <span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="n">connection</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">AMQPConnection</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]</span>
 
     <span class="k">class</span> <span class="nc">Config</span><span class="p">:</span>

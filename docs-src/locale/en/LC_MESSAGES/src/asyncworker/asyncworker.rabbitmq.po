@@ -2,14 +2,14 @@
 # Copyright (C) 2019, B2W Digital
 # This file is distributed under the same license as the Asyncworker
 # package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, 2019.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2020.
 #
 #, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: Asyncworker \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-02-09 17:33-0300\n"
+"POT-Creation-Date: 2020-02-12 10:37-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -50,16 +50,4 @@ msgstr ""
 #: ../../src/asyncworker/asyncworker.rabbitmq.rst:17
 msgid "Module contents"
 msgstr ""
-
-#~ msgid "Base: :class:`collections.abc.Mapping`"
-#~ msgstr ""
-
-#~ msgid "Register a virtual subclass of an ABC."
-#~ msgstr ""
-
-#~ msgid "Returns the subclass, to allow usage as a class decorator."
-#~ msgstr ""
-
-#~ msgid "asyncworker.rabbitmq.connection module"
-#~ msgstr ""
 

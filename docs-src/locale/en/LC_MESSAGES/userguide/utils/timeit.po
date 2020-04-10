@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Asyncworker \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-02-09 18:23-0300\n"
+"POT-Creation-Date: 2020-02-12 10:37-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -39,25 +39,22 @@ msgid ""
 " chamado com os dados da exceção explicitamente."
 msgstr ""
 
-#: ../../userguide/utils/timeit.rst:50
+#: ../../userguide/utils/timeit.rst:51
 msgid "Decorator"
 msgstr ""
 
-#: ../../userguide/utils/timeit.rst:52
+#: ../../userguide/utils/timeit.rst:53
 msgid "Também é possível utilizar `Timeit` como um decorator:"
 msgstr ""
 
-#: ../../userguide/utils/timeit.rst:63
+#: ../../userguide/utils/timeit.rst:65
 msgid "Múltiplas transações"
 msgstr ""
 
-#: ../../userguide/utils/timeit.rst:67
+#: ../../userguide/utils/timeit.rst:69
 msgid ""
 "Muitas vezes queremos ter várias métricas ao mesmo tempo para contar o "
 "tempo dentro de um mesmo contexto de execução. Para isso, uma mesma "
 "instância pode receber múltiplas chamadas."
 msgstr ""
-
-#~ msgid "Timeit (0.3.0+)"
-#~ msgstr ""
 

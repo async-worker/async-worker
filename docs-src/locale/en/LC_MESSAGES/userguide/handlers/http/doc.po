@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Asyncworker \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-02-29 00:22-0300\n"
+"POT-Creation-Date: 2020-03-26 18:51-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -45,12 +45,12 @@ msgstr ""
 
 #: ../../userguide/handlers/http/doc.rst:12
 msgid ""
-"Alguns objetos já são passados so handler, caso estejam presentes em sua "
+"Alguns objetos já são passados ao handler, caso estejam presentes em sua "
 "assinatura.  Eles são:"
 msgstr ""
 
 #: ../../userguide/handlers/http/doc.rst:14
-msgid "Uma instância de ``aiohttp.web.Request``."
+msgid "Uma instância de :py:class:`asyncworker.http.wrapper.RequestWrapper`."
 msgstr ""
 
 #: ../../userguide/handlers/http/doc.rst:18
@@ -132,69 +132,70 @@ msgid ""
 "manualmente, assim:"
 msgstr ""
 
-#: ../../userguide/handlers/http/doc.rst:82
+#: ../../userguide/handlers/http/doc.rst:84
 msgid "Handlers que recebem mais do que apenas Request"
-msgstr ""
-
-#: ../../userguide/handlers/http/doc.rst:86
-msgid ""
-"O asyncworker permite que um handler receba quaisquer prametros. Para "
-"isso a assinatura do handler deve conter typehints em todos os "
-"parametros. Isso faz com que o asyncowker consiga fazer a resolução "
-"desses prametros e consiga chamar o handler corretamente."
 msgstr ""
 
 #: ../../userguide/handlers/http/doc.rst:88
 msgid ""
-"Todas as instancias de ``aiohttp.web.Request`` recebem um atributo "
-"chamado ``types_registry`` que é do tipo "
-":py:class:`asyncworker.types.registry.TypesRegistry`. Para que um "
-"parametro possa ser passado a um handler ele deve ser adicionado a esse "
-"registry do request."
+"O asyncworker permite que um handler receba quaisquer prametros. Para "
+"isso a assinatura do handler deve conter typehints em todos os "
+"parametros. Isso faz com que o asyncworker consiga fazer a resolução "
+"desses prametros e consiga chamar o handler corretamente."
 msgstr ""
 
 #: ../../userguide/handlers/http/doc.rst:90
+msgid ""
+"O wrapper que é passado ao handler "
+"(:py:class:`asyncworker.http.wrapper.RequestWrapper`) possui um atributo "
+"chamado ``types_registry`` que é do tipo "
+":py:class:`asyncworker.types.registry.TypesRegistry`. Para que um "
+"parametro possa ser passado a um handler ele deve ser adicionado a esse "
+"registry."
+msgstr ""
+
+#: ../../userguide/handlers/http/doc.rst:92
 msgid ""
 "Um exemplo de como popular esse registry é através de um decorator "
 "aplicado diretamente ao um handler. Vejamos um exemplo:"
 msgstr ""
 
-#: ../../userguide/handlers/http/doc.rst:117
+#: ../../userguide/handlers/http/doc.rst:120
 msgid ""
 "Aqui o decorator ``auth_required()`` é responsável por fazer a "
 "autenticação, pegando dados do Request e encontrando um usuário válido. "
 "Se um usuário não puder ser encontrado, retorna "
 "``HTTPStatus.UNAUTHORIZED``. Se um usuário autenticar com sucesso, apenas"
 " adiciona o objeto user (que é do tipo ``User``) no registry que está no "
-"request. Isso é o suficiente para que o handler, quando for chamado, "
-"receba diretamente esse user já autenticado."
+"``RequestWrapper``. Isso é o suficiente para que o handler, quando for "
+"chamado, receba diretamente esse user já autenticado."
 msgstr ""
 
-#: ../../userguide/handlers/http/doc.rst:122
+#: ../../userguide/handlers/http/doc.rst:125
 msgid "Recebendo parâmetros vindos do path do Request"
 msgstr ""
 
-#: ../../userguide/handlers/http/doc.rst:127
+#: ../../userguide/handlers/http/doc.rst:130
 msgid ""
 "É possível receber em seu handler parametros definidos no path da "
 "requisição. Isso é feito través do decorator "
 ":py:func:`asyncworker.http.decorators.parse_path`."
 msgstr ""
 
-#: ../../userguide/handlers/http/doc.rst:129
+#: ../../userguide/handlers/http/doc.rst:132
 msgid ""
 "Quando decoramos nosso handler com esse decorator instruímos o "
 "asyncworker a tentar extrair parametros do path e passar para nosso "
 "handler."
 msgstr ""
 
-#: ../../userguide/handlers/http/doc.rst:131
+#: ../../userguide/handlers/http/doc.rst:134
 msgid ""
 "Importante notar que, primeiro o asyncworker vai procurar nosso parametro"
 " pelo nome e só depois tentará procurar o tipo.  Exemplo:"
 msgstr ""
 
-#: ../../userguide/handlers/http/doc.rst:140
+#: ../../userguide/handlers/http/doc.rst:143
 msgid ""
 "Nesse caso, como handler está dizendo que precisa de um parametro chamado"
 " ``_id`` temos que declarar um parametro de mesmo nome no path da "
@@ -202,13 +203,13 @@ msgid ""
 " path para o construtor do tipo definido na assinatura do handler."
 msgstr ""
 
-#: ../../userguide/handlers/http/doc.rst:142
+#: ../../userguide/handlers/http/doc.rst:145
 msgid ""
 "Então nesse caso faremos um simples ``int(<valor>)``. Esse resultado será"
 " passado ao handler no parametro ``_id``, no momento da chamada."
 msgstr ""
 
-#: ../../userguide/handlers/http/doc.rst:144
+#: ../../userguide/handlers/http/doc.rst:147
 msgid ""
 "Importante notar que só serão passados ao handler os parametros que estão"
 " definidos na assinatura. Então se seu path recebe dois parametros e seu "
@@ -216,119 +217,21 @@ msgid ""
 "handler o parametro que você quer receber."
 msgstr ""
 
-#: ../../userguide/handlers/http/doc.rst:147
+#: ../../userguide/handlers/http/doc.rst:150
 msgid ""
 "Essa implementação ainda é experimental e servirá de fundação para uma "
 "implementação mais complexa, talvez com tipos mais complexos e sem a "
 "necessidade de passar o decorator explicitamente."
 msgstr ""
 
-#~ msgid "HTTP"
-#~ msgstr ""
-
-#~ msgid "Handler HTTP"
-#~ msgstr ""
-
-#~ msgid ""
-#~ "Aqui mostraremos como escrever um "
-#~ "handler que é estimulado através de "
-#~ "requisições HTTP."
-#~ msgstr ""
-
-#~ msgid ""
-#~ "Um handler é simplesmete uma corotina"
-#~ " que recebe um request "
-#~ "(``aiohttp.web.Request``) e retorna uma "
-#~ "response (``aiohttp.web.Response``). Essa corotina"
-#~ " passa a ser um handler "
-#~ "\"asyncworker\" quando é decorada com "
-#~ "``@app.route()``, onde ``app`` é uma "
-#~ "instância de ``asyncworker.App``."
-#~ msgstr ""
-
-#~ msgid "Vejamos um handler bem simples que apenas retorna ``HTTP 200 OK``."
-#~ msgstr ""
-
-#~ msgid ""
-#~ "Como recebemos um request do aiohttp,"
-#~ " podemos fazer o que for preciso "
-#~ "para extrair dele as informações que "
-#~ "precisarmos. Para mais detalhes, veja a"
-#~ " doc do aiohttp: "
-#~ "https://docs.aiohttp.org/en/stable/web.html"
-#~ msgstr ""
-
-#~ msgid "Recbendo parametros vindos do path do Request"
-#~ msgstr ""
-
-#~ msgid ""
-#~ "É possível receber emm seu handler "
-#~ "parametros definidos no path da "
-#~ "requisição. Isso é feito través do "
-#~ "decorator :py:func:`asyncworker.http.decorators.parse_path`."
-#~ msgstr ""
-
-#~ msgid ""
-#~ "Então nesse caso faremos um simples "
-#~ "``int(<valor>)``. Esse resultado será passado"
-#~ " ao handler no momento da chamada."
-#~ msgstr ""
-
-#~ msgid ""
-#~ "Parametros no path podem ser definidos"
-#~ " cercando com ``{}``, ex: "
-#~ "``/users/{user_id}``. Mais delathes em como"
-#~ " receber esses valores em seu handler"
-#~ " :ref:`aqui <handler-path-param>`"
-#~ msgstr ""
-
-#~ msgid "Aplicando decorators customizados a um handler HTTP"
-#~ msgstr ""
-
-#~ msgid ""
-#~ "É possível escrever seus próprios "
-#~ "decorators e aplicá-los a seus handlers,"
-#~ " junto com o decorator ``@app.route``. "
-#~ "No entando temos algumas regras:"
-#~ msgstr ""
-
-#~ msgid ""
-#~ "O decorator ``@app.route()`` deve estar "
-#~ "sempre no topo da lista de "
-#~ "decorators de um handler;"
-#~ msgstr ""
-
-#~ msgid ""
-#~ "Os decorators intermediários devem sempre "
-#~ "usar a função "
-#~ ":py:func:`asyncworker.routes.call_http_handler()` no "
-#~ "momento de chamar o objeto que "
-#~ "estão decorando;"
-#~ msgstr ""
-
-#~ msgid "A inner function retornada pelo decorator deve ser uma corotina;"
-#~ msgstr ""
-
-#~ msgid "A inner function deve receber apenas ``aiohttp.web.Request``;"
-#~ msgstr ""
-
-#~ msgid "Essa inner function não deve ser decorada com ``@functools.wraps()``."
-#~ msgstr ""
-
-#~ msgid "Um exemplo simples de decorator:"
-#~ msgstr ""
-
-#~ msgid ""
-#~ "A razão para isso é que o "
-#~ "asyncworker permite que um handler "
-#~ "receba parametros dinâmicos (mais sobre "
-#~ "isso adiante) e a função "
-#~ "``call_http_handler()`` é quem tem ciência "
-#~ "disso e saberá fazer a resolução "
-#~ "correta dos parametros necessários para "
-#~ "que o handler seja corretamente chamado."
-#~ msgstr ""
-
-#~ msgid "Esse decorator poderia ser aplicado a um handler assim:"
-#~ msgstr ""
+#: ../../userguide/handlers/http/doc.rst:152
+msgid ""
+"**Impotante**: Esse decorator deve sempre ser o decorator \"mais "
+"próximo\" da função real, ou seja, deve ser sempre o primeiro decorator, "
+"logo acima da função sendo decorada. Isso porque o ``parse_path`` olha "
+"para a assinatura do handler sendo decorado. Se ele não for o primeiro "
+"decorator ele não vai receber o handler real como parâmetro e sim "
+"receberá o retorno de outro decorator, que já não reflete assinatura "
+"original do handler."
+msgstr ""
 

@@ -6,13 +6,13 @@ Um exemplo rápido para mostrar a ideia geral do asynworker.
 .. code:: python
 
   from asyncworker import App, RouteTypes
-  from aiohttp import web
+  from asyncworker.http.wrapper import RequestWrapper
 
 
   app = App()
 
   @app.route(["/"], type=RouteTypes.HTTP, methods=["GET"])
-  async def handler(req: web.Request):
+  async def handler(wrapper: RequestWrapper):
     return web.json_response({})
 
 Esse código é possível ser rodado na linha de comando e é capaz de atendar a uma requisição HTTP assim:
@@ -87,17 +87,17 @@ Recebendo dados através de requisições HTTP
 
 .. code:: python
 
-   from aiohttp import web
    from asyncworker import App, RouteTypes
+   from asynworker.http.wrapper import RequestWrapper
 
    # ...
 
    @app.route(routes=['/', '/hello'], methods=['GET'], type=RouteTypes.HTTP)
-   async def index(request: web.Request) -> web.Response:
+   async def index(wrapper: RequestWrapper) -> web.Response:
        return web.Response(body="Hello world")
 
 Nesse exemplo, declaramos um handler ``index``, que receberá uma
-instância de ``aiohttp.web.Request`` para cada acesso as rotas ``GET /``
+instância de :py:class:`asyncworker.http.wrapper.RequestWrapper` para cada acesso às rotas ``GET /``
 e ``GET /hello``.
 
 

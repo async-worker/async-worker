@@ -37,13 +37,13 @@
 <h1>Início rápido<a class="headerlink" href="#inicio-rapido" title="Link permanente para este título">¶</a></h1>
 <p>Um exemplo rápido para mostrar a ideia geral do asynworker.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">asyncworker</span> <span class="kn">import</span> <span class="n">App</span><span class="p">,</span> <span class="n">RouteTypes</span>
-<span class="kn">from</span> <span class="nn">aiohttp</span> <span class="kn">import</span> <span class="n">web</span>
+<span class="kn">from</span> <span class="nn">asyncworker.http.wrapper</span> <span class="kn">import</span> <span class="n">RequestWrapper</span>
 
 
 <span class="n">app</span> <span class="o">=</span> <span class="n">App</span><span class="p">()</span>
 
 <span class="nd">@app</span><span class="o">.</span><span class="n">route</span><span class="p">([</span><span class="s2">&quot;/&quot;</span><span class="p">],</span> <span class="nb">type</span><span class="o">=</span><span class="n">RouteTypes</span><span class="o">.</span><span class="n">HTTP</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;GET&quot;</span><span class="p">])</span>
-<span class="k">async</span> <span class="k">def</span> <span class="nf">handler</span><span class="p">(</span><span class="n">req</span><span class="p">:</span> <span class="n">web</span><span class="o">.</span><span class="n">Request</span><span class="p">):</span>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">handler</span><span class="p">(</span><span class="n">wrapper</span><span class="p">:</span> <span class="n">RequestWrapper</span><span class="p">):</span>
   <span class="k">return</span> <span class="n">web</span><span class="o">.</span><span class="n">json_response</span><span class="p">({})</span>
 </pre></div>
 </div>
@@ -105,18 +105,18 @@ usando <code class="docutils literal notranslate"><span class="pre">BULK_SIZE=1<
 </div>
 <div class="section" id="recebendo-dados-atraves-de-requisicoes-http">
 <h2>Recebendo dados através de requisições HTTP<a class="headerlink" href="#recebendo-dados-atraves-de-requisicoes-http" title="Link permanente para este título">¶</a></h2>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">aiohttp</span> <span class="kn">import</span> <span class="n">web</span>
-<span class="kn">from</span> <span class="nn">asyncworker</span> <span class="kn">import</span> <span class="n">App</span><span class="p">,</span> <span class="n">RouteTypes</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">asyncworker</span> <span class="kn">import</span> <span class="n">App</span><span class="p">,</span> <span class="n">RouteTypes</span>
+<span class="kn">from</span> <span class="nn">asynworker.http.wrapper</span> <span class="kn">import</span> <span class="n">RequestWrapper</span>
 
 <span class="c1"># ...</span>
 
 <span class="nd">@app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="n">routes</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;/&#39;</span><span class="p">,</span> <span class="s1">&#39;/hello&#39;</span><span class="p">],</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;GET&#39;</span><span class="p">],</span> <span class="nb">type</span><span class="o">=</span><span class="n">RouteTypes</span><span class="o">.</span><span class="n">HTTP</span><span class="p">)</span>
-<span class="k">async</span> <span class="k">def</span> <span class="nf">index</span><span class="p">(</span><span class="n">request</span><span class="p">:</span> <span class="n">web</span><span class="o">.</span><span class="n">Request</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">web</span><span class="o">.</span><span class="n">Response</span><span class="p">:</span>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">index</span><span class="p">(</span><span class="n">wrapper</span><span class="p">:</span> <span class="n">RequestWrapper</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">web</span><span class="o">.</span><span class="n">Response</span><span class="p">:</span>
     <span class="k">return</span> <span class="n">web</span><span class="o">.</span><span class="n">Response</span><span class="p">(</span><span class="n">body</span><span class="o">=</span><span class="s2">&quot;Hello world&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>Nesse exemplo, declaramos um handler <code class="docutils literal notranslate"><span class="pre">index</span></code>, que receberá uma
-instância de <code class="docutils literal notranslate"><span class="pre">aiohttp.web.Request</span></code> para cada acesso as rotas <code class="docutils literal notranslate"><span class="pre">GET</span> <span class="pre">/</span></code>
+instância de <a class="reference internal" href="../src/asyncworker/asyncworker.http.html#asyncworker.http.wrapper.RequestWrapper" title="asyncworker.http.wrapper.RequestWrapper"><code class="xref py py-class docutils literal notranslate"><span class="pre">asyncworker.http.wrapper.RequestWrapper</span></code></a> para cada acesso às rotas <code class="docutils literal notranslate"><span class="pre">GET</span> <span class="pre">/</span></code>
 e <code class="docutils literal notranslate"><span class="pre">GET</span> <span class="pre">/hello</span></code>.</p>
 </div>
 <div class="section" id="rodando-seu-worker">

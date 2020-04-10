@@ -13,6 +13,7 @@ class Options(AutoNameEnum):
     BULK_SIZE = auto()
     BULK_FLUSH_INTERVAL = auto()
     MAX_CONCURRENCY = auto()
+    CONNECTION_FAIL_CALLBACK = auto()
 
 
 class Actions(AutoNameEnum):

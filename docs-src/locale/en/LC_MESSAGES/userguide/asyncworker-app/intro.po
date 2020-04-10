@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Asyncworker \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-02-09 18:03-0300\n"
+"POT-Creation-Date: 2020-03-18 11:28-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -52,11 +52,11 @@ msgid ""
 "necessário."
 msgstr ""
 
-#: ../../userguide/asyncworker-app/intro.rst:19
+#: ../../userguide/asyncworker-app/intro.rst:21
 msgid "Definindo handlers em sua App Asyncworker"
 msgstr ""
 
-#: ../../userguide/asyncworker-app/intro.rst:22
+#: ../../userguide/asyncworker-app/intro.rst:24
 msgid ""
 "Nesse objeto temos um método especial chamado ``route()``. Esse método é "
 "o ponto central para registrar seus handlers. Esse mesmo método registra "
@@ -64,23 +64,23 @@ msgid ""
 "origem de estímulos fará esse handler ser chamado."
 msgstr ""
 
-#: ../../userguide/asyncworker-app/intro.rst:24
+#: ../../userguide/asyncworker-app/intro.rst:26
 msgid ""
 "Os tipos estão definidos no Enum "
 ":py:class:`asyncworker.options.RouteTypes`."
 msgstr ""
 
-#: ../../userguide/asyncworker-app/intro.rst:27
+#: ../../userguide/asyncworker-app/intro.rst:29
 msgid "Esse método tem a seguinte assinatura:"
 msgstr ""
 
-#: ../../userguide/asyncworker-app/intro.rst:33
+#: ../../userguide/asyncworker-app/intro.rst:35
 msgid ""
 "O primeiro parâmetro tem múltiplos significados, dependento do tipo de "
 "handler que você está registrando."
 msgstr ""
 
-#: ../../userguide/asyncworker-app/intro.rst:35
+#: ../../userguide/asyncworker-app/intro.rst:37
 msgid ""
 "Por exmeplo, para um handler HTTP essa lista é lista de paths do Request "
 "HTTP que farão esse handler ser chamado. Se for um handlar RabbitMQ essa "
@@ -89,14 +89,14 @@ msgid ""
 "handler será chamado."
 msgstr ""
 
-#: ../../userguide/asyncworker-app/intro.rst:37
+#: ../../userguide/asyncworker-app/intro.rst:39
 msgid ""
 "Um outro parametro obrigatório é o parametro ``type``. Ele, "
 "necessariamente, deve ser uma das opções do Enum "
 ":py:class:`asyncworker.options.RouteTypes`."
 msgstr ""
 
-#: ../../userguide/asyncworker-app/intro.rst:39
+#: ../../userguide/asyncworker-app/intro.rst:41
 msgid ""
 "Esse método deve ser usado como um decorator em funções que serão "
 "registradas como handlers da sua App."

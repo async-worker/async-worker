@@ -39,7 +39,7 @@
 <li><p>O decorator <code class="docutils literal notranslate"><span class="pre">&#64;app.route()</span></code> deve estar sempre no topo da lista de decorators de um handler;</p></li>
 <li><p>Os decorators intermediários devem sempre usar a função <a class="reference internal" href="../src/asyncworker/asyncworker.html#asyncworker.routes.call_http_handler" title="asyncworker.routes.call_http_handler"><code class="xref py py-func docutils literal notranslate"><span class="pre">asyncworker.routes.call_http_handler()</span></code></a> no momento de chamar o objeto que estão decorando;</p></li>
 <li><p>A inner function retornada pelo decorator deve ser uma corotina;</p></li>
-<li><p>A inner function deve receber apenas <code class="xref py py-class docutils literal notranslate"><span class="pre">asyncworker.http.wrapper.RequestWrapper</span></code>;</p></li>
+<li><p>A inner function deve receber apenas <a class="reference internal" href="../src/asyncworker/asyncworker.http.html#asyncworker.http.wrapper.RequestWrapper" title="asyncworker.http.wrapper.RequestWrapper"><code class="xref py py-class docutils literal notranslate"><span class="pre">asyncworker.http.wrapper.RequestWrapper</span></code></a>;</p></li>
 <li><p>Essa inner function não deve ser decorada com <code class="docutils literal notranslate"><span class="pre">&#64;functools.wraps()</span></code>.</p></li>
 </ul>
 <p>Um exemplo simples de decorator:</p>

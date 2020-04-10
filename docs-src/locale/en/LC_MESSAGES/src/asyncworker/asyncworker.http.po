@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Asyncworker \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-02-22 21:19-0300\n"
+"POT-Creation-Date: 2020-03-26 14:53-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -30,7 +30,15 @@ msgstr ""
 msgid "asyncworker.http.decorators module"
 msgstr ""
 
-#: ../../src/asyncworker/asyncworker.http.rst:17
+#: ../../src/asyncworker/asyncworker.http.rst:16
+msgid "asyncworker.http.wrapper module"
+msgstr ""
+
+#: asyncworker.http.wrapper.RequestWrapper:1 of
+msgid "Base: :class:`object`"
+msgstr ""
+
+#: ../../src/asyncworker/asyncworker.http.rst:25
 msgid "Module contents"
 msgstr ""
 

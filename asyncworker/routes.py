@@ -98,12 +98,20 @@ class HTTPRoute(Route):
     methods: List[str]
     options: _RouteOptions = _RouteOptions()
 
-    @validator("methods")
-    def validate_method(cls, v: str):
-        method = v.upper()
+    @classmethod
+    def _validate_method(cls, method: str) -> str:
+        method = method.upper()
         if method not in METH_ALL:
-            raise ValueError(f"'{v}' isn't a valid supported HTTP method.")
+            raise ValueError(f"'{method}' isn't a valid supported HTTP method.")
         return method
+
+    @validator("methods")
+    def validate_method(cls, v: Union[str, List[str]]):
+        # compatibility with older versions of pydantic
+        if isinstance(v, str):  # pragma: no cover
+            return cls._validate_method(v)
+
+        return [cls._validate_method(method) for method in v]
 
     def aiohttp_routes(self) -> Iterable[RouteDef]:
         for route in self.routes:
@@ -122,6 +130,9 @@ class _AMQPRouteOptions(_RouteOptions):
     bulk_flush_interval: int = DefaultValues.BULK_FLUSH_INTERVAL
     on_success: Actions = DefaultValues.ON_SUCCESS
     on_exception: Actions = DefaultValues.ON_EXCEPTION
+    connection_fail_callback: Optional[
+        Callable[[Exception, int], Coroutine]
+    ] = None
     connection: Optional[Union[AMQPConnection, str]]
 
     class Config:
