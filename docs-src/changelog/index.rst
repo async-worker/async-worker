@@ -6,4 +6,5 @@ Changelog
   :titlesonly:
   :glob:
 
+  v0.2.0
   v*
