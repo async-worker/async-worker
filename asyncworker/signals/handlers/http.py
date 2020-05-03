@@ -10,13 +10,11 @@ class HTTPServer(SignalHandler):
     async def startup(self, app):
         app[RouteTypes.HTTP] = {}
         routes = app.routes_registry.http_routes
-        if not routes:
-            return
 
         app[RouteTypes.HTTP]["app"] = http_app = web.Application()
         http_app.router.add_route(
             method="GET",
-            path=settings.METRICS_ENDPOINT,
+            path=settings.METRICS_HTTP_ROUTE_PATH,
             handler=metrics_route_handler,
         )
 

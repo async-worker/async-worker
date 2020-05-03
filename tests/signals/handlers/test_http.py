@@ -7,6 +7,7 @@ from asynctest import skip, mock, CoroutineMock, Mock, patch
 from asyncworker import App
 from asyncworker.conf import settings, Settings
 from asyncworker.http.wrapper import RequestWrapper
+from asyncworker.metrics.aiohttp_resources import metrics_route_handler
 from asyncworker.routes import call_http_handler, RouteTypes, RoutesRegistry
 from asyncworker.signals.handlers.http import HTTPServer
 from asyncworker.testing import HttpClientContext
@@ -55,15 +56,17 @@ class HTTPServerTests(asynctest.TestCase):
         start.assert_awaited_once()
 
     @asynctest.patch("asyncworker.signals.handlers.http.web.TCPSite.start")
-    async def test_startup_doesnt_initializes_an_web_application_if_there_are_no_http_routes(
-        self, start
-    ):
-        await self.signal_handler.startup(self.app)
+    async def test_startup_exposes_metrics_http_route(self, start):
+        with patch(
+            "aiohttp.web_urldispatcher.UrlDispatcher.add_route"
+        ) as add_route:
+            await self.signal_handler.startup(self.app)
 
-        start.assert_not_awaited()
-        self.assertNotIn("http_app", self.app[RouteTypes.HTTP])
-        self.assertNotIn("http_runner", self.app[RouteTypes.HTTP])
-        self.assertNotIn("http_site", self.app[RouteTypes.HTTP])
+            add_route.assert_called_once_with(
+                method="GET",
+                path=settings.METRICS_HTTP_ROUTE_PATH,
+                handler=metrics_route_handler,
+            )
 
     @asynctest.patch("asyncworker.signals.handlers.http.web.AppRunner.cleanup")
     async def test_shutdown_closes_the_running_http_server(self, cleanup):
