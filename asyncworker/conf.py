@@ -30,8 +30,8 @@ class Settings(BaseSettings):
         100,
         200,
         500,
-        1_000,
-        5_000,
+        1000,
+        5000,
         INFINITY,
     ]
 
