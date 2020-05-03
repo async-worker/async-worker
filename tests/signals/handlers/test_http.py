@@ -37,6 +37,9 @@ class HTTPServerTests(asynctest.TestCase):
         )
         self.app = App(connections=[])
 
+    async def tearDown(self):
+        await self.app.shutdown()
+
     @asynctest.patch("asyncworker.signals.handlers.http.web.TCPSite.start")
     async def test_startup_initializes_an_web_application(self, start):
         self.app.routes_registry = self.routes_registry
