@@ -1,3 +1,3 @@
-from .types import *
-from .definitions import *
 from .collectors import *
+from .definitions import *
+from .types import *
