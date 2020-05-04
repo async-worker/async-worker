@@ -16,7 +16,7 @@ Raw Commits: `0.11.0 <https://github.com/B2W-BIT/async-worker/compare/0.10.1...0
 Notas de Atualização
 --------------------
 
-A partir dessa versão o construtos do objeto :py:class:`asyncworker.app.App` mudou. Isso significa que todas os seus projetos precisam ser ajustados.
+A partir dessa versão o construtor do objeto :py:class:`asyncworker.app.App` mudou. Isso significa que todas os seus projetos precisam ser ajustados.
 Onde antes tínhamos:
 
 .. code-block:: python
@@ -32,7 +32,7 @@ Onde antes tínhamos:
 Temos agora um objeto ``Connection`` que deve ser passado ao construtor do ``App``.
 O construtor recebe uma lista de objetos filhos de :py:class:`asyncworker.connections.Connection`.
 
-A nova forma de passar as credenciais do RabbitMQ para usua asyncworker App é assim:
+A nova forma de passar as credenciais do RabbitMQ para sua asyncworker App é assim:
 
 .. code-block:: python
 
