@@ -5,7 +5,6 @@ from aiohttp.web_middlewares import middleware
 
 from asyncworker import metrics
 from asyncworker.conf import default_timer
-from asyncworker.metrics import requests_in_progress
 from asyncworker.metrics.registry import generate_latest
 
 _Handler = Callable[[web.Request], Awaitable[web.Response]]
@@ -15,11 +14,13 @@ _Handler = Callable[[web.Request], Awaitable[web.Response]]
 async def http_metrics_middleware(request: web.Request, handler: _Handler):
     start = default_timer()
     try:
-        requests_in_progress.labels(
+        metrics.requests_in_progress.labels(
             method=request.method, path=request.path
         ).inc()
         response = await handler(request)
-
+        metrics.response_size.labels(
+            method=request.method, path=request.path
+        ).observe(response.content_length)
         metrics.request_duration.labels(
             method=request.method, path=request.path, status=response.status
         ).observe(default_timer() - start)
@@ -29,9 +30,12 @@ async def http_metrics_middleware(request: web.Request, handler: _Handler):
         metrics.request_duration.labels(
             method=request.method, path=request.path, status=e.status
         ).observe(default_timer() - start)
+        metrics.response_size.labels(
+            method=request.method, path=request.path
+        ).observe(e.content_length)
         raise e
     finally:
-        requests_in_progress.labels(
+        metrics.requests_in_progress.labels(
             method=request.method, path=request.path
         ).dec()
 
