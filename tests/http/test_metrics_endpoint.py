@@ -1,8 +1,9 @@
 from functools import partial
 from http import HTTPStatus
+from importlib import reload
 
 from aiohttp import web
-from asynctest import TestCase
+from asynctest import mock, TestCase
 from prometheus_client import CollectorRegistry
 from prometheus_client.parser import text_string_to_metric_families
 
@@ -29,7 +30,7 @@ class MetricsEndpointTest(TestCase):
             metrics_route_handler
         )
 
-    async def test_counter_namespace(self):
+    async def test_metrics_namespace(self):
         def _check_metrics_cant_override_namespace(metric, metric_name):
             result = metric.collect()
             self.assertEqual(1, len(result))
@@ -56,6 +57,29 @@ class MetricsEndpointTest(TestCase):
         Gauge("gauge", "Doc", registry=registry)
         Histogram("histogram", "Doc", registry=registry)
         self.assertEqual(b"", generate_latest(registry))
+
+    async def test_metrics_with_app_prefix(self):
+        import os
+        from asyncworker.metrics import types
+        from asyncworker import conf
+
+        with mock.patch.dict(os.environ, ASYNCWORKER_APPMETRICS_PREFIX="myapp"):
+            reload(conf)
+            reload(types)
+            self.assertEqual("myapp", conf.settings.APPMETRICS_PREFIX)
+            c = types.Counter("my_other_counter", "Docs")
+            result = c.collect()[0]
+            self.assertEqual("asyncworker_myapp_my_other_counter", result.name)
+
+            g = Gauge("my_other_gauge", "Docs")
+            self.assertEqual(
+                "asyncworker_myapp_my_other_gauge", g.collect()[0].name
+            )
+
+            h = Histogram("my_other_histogram", "docs")
+            self.assertEqual(
+                "asyncworker_myapp_my_other_histogram", h.collect()[0].name
+            )
 
     async def test_count_metric(self):
         metric_name = "myapp_example_counter"
