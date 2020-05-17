@@ -3,6 +3,7 @@ from http import HTTPStatus
 
 from aiohttp import web
 from asynctest import TestCase
+from prometheus_client import CollectorRegistry
 from prometheus_client.parser import text_string_to_metric_families
 
 from asyncworker import App, RouteTypes
@@ -10,7 +11,11 @@ from asyncworker.conf import settings
 from asyncworker.http.decorators import parse_path
 from asyncworker.metrics import Counter, Gauge, Histogram
 from asyncworker.metrics.aiohttp_resources import metrics_route_handler
-from asyncworker.metrics.registry import REGISTRY, DEFAULT_METRIC_NAMESAPACE
+from asyncworker.metrics.registry import (
+    generate_latest,
+    REGISTRY,
+    DEFAULT_METRIC_NAMESAPACE,
+)
 from asyncworker.testing import HttpClientContext
 
 
@@ -24,9 +29,37 @@ class MetricsEndpointTest(TestCase):
             metrics_route_handler
         )
 
+    async def test_counter_namespace(self):
+        def _check_metrics_cant_override_namespace(metric, metric_name):
+            result = metric.collect()
+            self.assertEqual(1, len(result))
+            self.assertEqual(
+                f"{DEFAULT_METRIC_NAMESAPACE}_{metric_name}", result[0].name
+            )
+
+        namespace = "namespaace"
+        _check_metrics_cant_override_namespace(
+            Counter("counter_with_namespace", "Doc", namespace=namespace),
+            "counter_with_namespace",
+        )
+        _check_metrics_cant_override_namespace(
+            Gauge("gauge_with_ns", "doc", namespace=namespace), "gauge_with_ns"
+        )
+        _check_metrics_cant_override_namespace(
+            Histogram("histogram_with_ns", "doc", namespace=namespace),
+            "histogram_with_ns",
+        )
+
+    async def test_metric_cant_override_registry(self):
+        registry = CollectorRegistry()
+        Counter("counter", "Doc", registry=registry)
+        Gauge("gauge", "Doc", registry=registry)
+        Histogram("histogram", "Doc", registry=registry)
+        self.assertEqual(b"", generate_latest(registry))
+
     async def test_count_metric(self):
         metric_name = "myapp_example_counter"
-        counter = Counter(metric_name, "Um contador simples", registry=REGISTRY)
+        counter = Counter(metric_name, "Um contador simples")
 
         @self.app.route(["/foo"], type=RouteTypes.HTTP, methods=["GET"])
         async def _handler():
