@@ -23,6 +23,7 @@ class Settings(BaseSettings):
     FLUSH_TIMEOUT: int = DefaultValues.BULK_FLUSH_INTERVAL
 
     # metrics
+    METRICS_NAMESPACE: str = "asyncworker"
     METRICS_HTTP_ROUTE_PATH: str = "/metrics"
     METRICS_DEFAULT_HISTOGRAM_BUCKETS_IN_MS: List[float] = [
         10,
