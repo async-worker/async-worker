@@ -20,8 +20,8 @@ Isso é útil para que suas métricas não se confundam com todas as outras mét
 
 Caso você precise de métrica com nomes diferentes **por aplicação** é possível adicionar um prefixo a todas as métricas exposta pela sua app. Isso inclui também o nome das métricas expostas `automaticamente pelo asyncworker <asyncworker-auto-metrics>`.
 
-Para isso basta usar a ENV ``ASYNCWORKER_APPMETRICS_PREFIX`` e colocar nela o valor que você quiser. Exemplo:
+Para isso basta usar a ENV ``ASYNCWORKER_METRICS_APPPREFIX`` e colocar nela o valor que você quiser. Exemplo:
 
-Se no seu código você declarou uma métrica de noma ``msg_processed`` e rodou sua app com a ENV ``ASYNCWORKER_APPMETRICS_PREFIX=myapp``. Essa métrica será exposta com o nome ``asyncworker_myapp_msg_processed``.
+Se no seu código você declarou uma métrica de noma ``msg_processed`` e rodou sua app com a ENV ``ASYNCWORKER_METRICS_APPPREFIX=myapp``. Essa métrica será exposta com o nome ``asyncworker_myapp_msg_processed``.
 
 Por padrão esse prefixo tem valor vazio.
