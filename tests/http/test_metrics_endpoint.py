@@ -12,11 +12,7 @@ from asyncworker.conf import settings
 from asyncworker.http.decorators import parse_path
 from asyncworker.metrics import Counter, Gauge, Histogram
 from asyncworker.metrics.aiohttp_resources import metrics_route_handler
-from asyncworker.metrics.registry import (
-    generate_latest,
-    REGISTRY,
-    DEFAULT_METRIC_NAMESAPACE,
-)
+from asyncworker.metrics.registry import generate_latest, REGISTRY, NAMESPACE
 from asyncworker.testing import HttpClientContext
 
 
@@ -34,9 +30,7 @@ class MetricsEndpointTest(TestCase):
         def _check_metrics_cant_override_namespace(metric, metric_name):
             result = metric.collect()
             self.assertEqual(1, len(result))
-            self.assertEqual(
-                f"{DEFAULT_METRIC_NAMESAPACE}_{metric_name}", result[0].name
-            )
+            self.assertEqual(f"{NAMESPACE}_{metric_name}", result[0].name)
 
         namespace = "namespaace"
         _check_metrics_cant_override_namespace(
@@ -81,11 +75,12 @@ class MetricsEndpointTest(TestCase):
 
     async def test_metrics_with_app_prefix(self):
         import os
-        from asyncworker.metrics import types
+        from asyncworker.metrics import types, registry
         from asyncworker import conf
 
         with mock.patch.dict(os.environ, ASYNCWORKER_METRICS_APPPREFIX="myapp"):
             reload(conf)
+            reload(registry)
             reload(types)
             self.assertEqual("myapp", conf.settings.METRICS_APPPREFIX)
             c = types.Counter("my_other_counter", "Docs")
@@ -123,7 +118,7 @@ class MetricsEndpointTest(TestCase):
             count_metric = [
                 m
                 for m in metrics_parsed
-                if m.name == f"{DEFAULT_METRIC_NAMESAPACE}_{metric_name}"
+                if m.name == f"{NAMESPACE}_{metric_name}"
             ]
             self.assertEqual(1, len(count_metric))
             self.assertEqual(2.0, count_metric[0].samples[0].value)
@@ -151,7 +146,7 @@ class MetricsEndpointTest(TestCase):
             gauge_metric = [
                 m
                 for m in metrics_parsed
-                if m.name == f"{DEFAULT_METRIC_NAMESAPACE}_{metric_name}"
+                if m.name == f"{NAMESPACE}_{metric_name}"
             ]
             self.assertEqual(1, len(gauge_metric))
             self.assertEqual(25.0, gauge_metric[0].samples[0].value)
@@ -182,7 +177,7 @@ class MetricsEndpointTest(TestCase):
             histogram_metric = [
                 m
                 for m in metrics_parsed
-                if m.name == f"{DEFAULT_METRIC_NAMESAPACE}_{metric_name}"
+                if m.name == f"{NAMESPACE}_{metric_name}"
             ]
             self.assertEqual(1, len(histogram_metric))
             self._assert_bucket_value(

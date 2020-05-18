@@ -1,16 +1,9 @@
 from abc import ABCMeta
-from functools import partial
 
 import prometheus_client as prometheus
 
 from asyncworker.conf import settings
-from asyncworker.metrics.registry import REGISTRY
-
-NAMESPACE = (
-    f"{settings.METRICS_NAMESPACE}_{settings.METRICS_APPPREFIX}"
-    if settings.METRICS_APPPREFIX
-    else f"{settings.METRICS_NAMESPACE}"
-)
+from asyncworker.metrics.registry import REGISTRY, NAMESPACE
 
 
 class _BaseMetric(metaclass=ABCMeta):
