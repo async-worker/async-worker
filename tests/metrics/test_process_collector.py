@@ -3,8 +3,6 @@ from importlib import reload
 
 from asynctest import TestCase, mock
 
-from asyncworker.metrics.registry import PROCESS_COLLECTOR
-
 
 class ProcessCollectorTest(TestCase):
     async def test_use_global_namespace(self):

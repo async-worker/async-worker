@@ -1,10 +1,9 @@
-from functools import partial
 from http import HTTPStatus
 from importlib import reload
 
 from aiohttp import web
 from asynctest import mock, TestCase
-from prometheus_client import CollectorRegistry
+from prometheus_client import CollectorRegistry, generate_latest
 from prometheus_client.parser import text_string_to_metric_families
 
 from asyncworker import App, RouteTypes
@@ -12,7 +11,7 @@ from asyncworker.conf import settings
 from asyncworker.http.decorators import parse_path
 from asyncworker.metrics import Counter, Gauge, Histogram
 from asyncworker.metrics.aiohttp_resources import metrics_route_handler
-from asyncworker.metrics.registry import generate_latest, REGISTRY, NAMESPACE
+from asyncworker.metrics.registry import REGISTRY, NAMESPACE
 from asyncworker.testing import HttpClientContext
 
 
@@ -195,6 +194,74 @@ class MetricsEndpointTest(TestCase):
                 settings.METRICS_DEFAULT_HISTOGRAM_BUCKETS_IN_MS[3],
                 histogram_metric[0].samples[3],
             )
+
+    async def test_gc_collector_metric(self):
+
+        async with HttpClientContext(self.app) as client:
+            metrics = await client.get("/metrics")
+            self.assertEqual(HTTPStatus.OK, metrics.status)
+
+            data = await metrics.text()
+            metrics_parsed = list(text_string_to_metric_families(data))
+            python_gc_metrics = [
+                m
+                for m in metrics_parsed
+                if m.name.startswith(f"{NAMESPACE}_python_gc")
+            ]
+            self.assertEqual(3, len(python_gc_metrics))
+            python_gc_metric_names = [m.name for m in python_gc_metrics]
+            self.assertEqual(
+                [
+                    "asyncworker_python_gc_objects_collected",
+                    "asyncworker_python_gc_objects_uncollectable",
+                    "asyncworker_python_gc_collections",
+                ],
+                python_gc_metric_names,
+            )
+
+    async def test_process_collector_metric(self):
+
+        async with HttpClientContext(self.app) as client:
+            metrics = await client.get("/metrics")
+            self.assertEqual(HTTPStatus.OK, metrics.status)
+
+            data = await metrics.text()
+            metrics_parsed = list(text_string_to_metric_families(data))
+            metrics = [
+                m
+                for m in metrics_parsed
+                if m.name.startswith(f"{NAMESPACE}_process")
+            ]
+            self.assertEqual(6, len(metrics))
+            metric_names = [m.name for m in metrics]
+            self.assertEqual(
+                [
+                    "asyncworker_process_virtual_memory_bytes",
+                    "asyncworker_process_resident_memory_bytes",
+                    "asyncworker_process_start_time_seconds",
+                    "asyncworker_process_cpu_seconds",
+                    "asyncworker_process_open_fds",
+                    "asyncworker_process_max_fds",
+                ],
+                metric_names,
+            )
+
+    async def test_platform_collector_metric(self):
+
+        async with HttpClientContext(self.app) as client:
+            metrics = await client.get("/metrics")
+            self.assertEqual(HTTPStatus.OK, metrics.status)
+
+            data = await metrics.text()
+            metrics_parsed = list(text_string_to_metric_families(data))
+            metrics = [
+                m
+                for m in metrics_parsed
+                if m.name == f"{NAMESPACE}_python_info"
+            ]
+            self.assertEqual(1, len(metrics))
+            metric_names = [m.name for m in metrics]
+            self.assertEqual(["asyncworker_python_info"], metric_names)
 
     def _assert_bucket_value(self, expected_value, bucket_value, metric):
         self.assertEqual(
