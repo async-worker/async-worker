@@ -1,16 +1,19 @@
-import gc
-import platform as pf
+import platform
 
+from prometheus_client import CollectorRegistry
 from prometheus_client.metrics_core import GaugeMetricFamily
 
+from asyncworker.metrics.collectors.base import BaseCollector
 
-class PlatformCollector(object):
+
+class PlatformCollector(BaseCollector):
     """Collector for python platform information"""
 
-    def __init__(self, registry, namespace=""):
-        self._platform = pf
+    def __init__(
+        self, registry: CollectorRegistry, namespace: str = ""
+    ) -> None:
         info = self._info()
-        system = self._platform.system()
+        system = platform.system()
         if system == "Java":
             info.update(self._java())
 
@@ -31,7 +34,9 @@ class PlatformCollector(object):
         return self._metrics
 
     @staticmethod
-    def _add_metric(name, documentation, data):
+    def _add_metric(
+        name: str, documentation: str, data: dict
+    ) -> GaugeMetricFamily:
         labels = data.keys()
         values = [data[k] for k in labels]
         g = GaugeMetricFamily(name, documentation, labels=labels)
@@ -39,17 +44,17 @@ class PlatformCollector(object):
         return g
 
     def _info(self):
-        major, minor, patchlevel = self._platform.python_version_tuple()
+        major, minor, patchlevel = platform.python_version_tuple()
         return {
-            "version": self._platform.python_version(),
-            "implementation": self._platform.python_implementation(),
+            "version": platform.python_version(),
+            "implementation": platform.python_implementation(),
             "major": major,
             "minor": minor,
             "patchlevel": patchlevel,
         }
 
     def _java(self):
-        java_version, _, vminfo, osinfo = self._platform.java_ver()
+        java_version, _, vminfo, osinfo = platform.java_ver()
         vm_name, vm_release, vm_vendor = vminfo
         return {
             "jvm_version": java_version,

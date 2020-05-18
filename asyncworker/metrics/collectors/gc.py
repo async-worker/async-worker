@@ -1,13 +1,18 @@
 import gc
 import platform
 
+from prometheus_client import CollectorRegistry
 from prometheus_client.metrics_core import CounterMetricFamily
 
+from asyncworker.metrics.collectors.base import BaseCollector
 
-class GCCollector(object):
+
+class GCCollector(BaseCollector):
     """Collector for Garbage collection statistics."""
 
-    def __init__(self, registry, namespace=""):
+    def __init__(
+        self, registry: CollectorRegistry, namespace: str = ""
+    ) -> None:
         if (
             not hasattr(gc, "get_stats")
             or platform.python_implementation() != "CPython"

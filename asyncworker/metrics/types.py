@@ -6,19 +6,19 @@ from asyncworker.conf import settings
 from asyncworker.metrics.registry import REGISTRY, NAMESPACE
 
 
-class _BaseMetric(metaclass=ABCMeta):
+class Metric(metaclass=ABCMeta):
     pass
 
 
-class Counter(_BaseMetric, prometheus.Counter):
-    def __init__(self, name, documentation, **kwargs) -> None:
+class Counter(Metric, prometheus.Counter):
+    def __init__(self, name: str, documentation: str, **kwargs) -> None:
         kwargs["namespace"] = NAMESPACE
         kwargs["registry"] = REGISTRY
         super().__init__(name, documentation, **kwargs)
 
 
-class Histogram(_BaseMetric, prometheus.Histogram):
-    def __init__(self, name, documentation, **kwargs) -> None:
+class Histogram(Metric, prometheus.Histogram):
+    def __init__(self, name: str, documentation: str, **kwargs) -> None:
         kwargs["namespace"] = NAMESPACE
         kwargs["registry"] = REGISTRY
         if not kwargs.get("buckets"):
@@ -26,8 +26,8 @@ class Histogram(_BaseMetric, prometheus.Histogram):
         super().__init__(name, documentation, **kwargs)
 
 
-class Gauge(_BaseMetric, prometheus.Gauge):
-    def __init__(self, name, documentation, **kwargs) -> None:
+class Gauge(Metric, prometheus.Gauge):
+    def __init__(self, name: str, documentation: str, **kwargs) -> None:
         kwargs["namespace"] = NAMESPACE
         kwargs["registry"] = REGISTRY
         super().__init__(name, documentation, **kwargs)
