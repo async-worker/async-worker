@@ -51,6 +51,27 @@ class MetricsEndpointTest(TestCase):
             "histogram_with_ns",
         )
 
+    async def test_histogram_override_buckets(self):
+        h = Histogram(
+            "my_new_histogram", "New Histogram", buckets=[7.0, 12.0, 30.0]
+        )
+        h.observe(5)
+        h.observe(9)
+
+        samples = h.collect()[0].samples
+        self.assertEqual(
+            {"value": 1.0, "le": "7.0"},
+            {"value": samples[0].value, **samples[0].labels},
+        )
+        self.assertEqual(
+            {"value": 2.0, "le": "12.0"},
+            {"value": samples[1].value, **samples[1].labels},
+        )
+        self.assertEqual(
+            {"value": 2.0, "le": "30.0"},
+            {"value": samples[2].value, **samples[2].labels},
+        )
+
     async def test_metric_cant_override_registry(self):
         registry = CollectorRegistry()
         Counter("counter", "Doc", registry=registry)

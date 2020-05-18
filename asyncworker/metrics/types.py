@@ -28,7 +28,8 @@ class Histogram(_BaseMetric, prometheus.Histogram):
     def __init__(self, name, documentation, **kwargs) -> None:
         kwargs["namespace"] = NAMESPACE
         kwargs["registry"] = REGISTRY
-        kwargs["buckets"] = settings.METRICS_DEFAULT_HISTOGRAM_BUCKETS_IN_MS
+        if not kwargs.get("buckets"):
+            kwargs["buckets"] = settings.METRICS_DEFAULT_HISTOGRAM_BUCKETS_IN_MS
         super().__init__(name, documentation, **kwargs)
 
 
