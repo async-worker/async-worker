@@ -7,8 +7,8 @@ from asyncworker.conf import settings
 from asyncworker.metrics.registry import REGISTRY
 
 NAMESPACE = (
-    f"{settings.METRICS_NAMESPACE}_{settings.APPMETRICS_PREFIX}"
-    if settings.APPMETRICS_PREFIX
+    f"{settings.METRICS_NAMESPACE}_{settings.METRICS_APPPREFIX}"
+    if settings.METRICS_APPPREFIX
     else f"{settings.METRICS_NAMESPACE}"
 )
 

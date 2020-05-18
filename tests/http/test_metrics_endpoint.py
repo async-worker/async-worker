@@ -63,10 +63,10 @@ class MetricsEndpointTest(TestCase):
         from asyncworker.metrics import types
         from asyncworker import conf
 
-        with mock.patch.dict(os.environ, ASYNCWORKER_APPMETRICS_PREFIX="myapp"):
+        with mock.patch.dict(os.environ, ASYNCWORKER_METRICS_APPPREFIX="myapp"):
             reload(conf)
             reload(types)
-            self.assertEqual("myapp", conf.settings.APPMETRICS_PREFIX)
+            self.assertEqual("myapp", conf.settings.METRICS_APPPREFIX)
             c = types.Counter("my_other_counter", "Docs")
             result = c.collect()[0]
             self.assertEqual("asyncworker_myapp_my_other_counter", result.name)
