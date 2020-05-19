@@ -13,9 +13,6 @@ class PlatformCollector(BaseCollector):
         self, registry: CollectorRegistry, namespace: str = ""
     ) -> None:
         info = self._info()
-        system = platform.system()
-        if system == "Java":
-            info.update(self._java())
 
         if namespace:
             self.namespace = f"{namespace}_"
@@ -51,14 +48,4 @@ class PlatformCollector(BaseCollector):
             "major": major,
             "minor": minor,
             "patchlevel": patchlevel,
-        }
-
-    def _java(self):
-        java_version, _, vminfo, osinfo = platform.java_ver()
-        vm_name, vm_release, vm_vendor = vminfo
-        return {
-            "jvm_version": java_version,
-            "jvm_release": vm_release,
-            "jvm_vendor": vm_vendor,
-            "jvm_name": vm_name,
         }
