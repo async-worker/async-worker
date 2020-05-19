@@ -4,9 +4,12 @@ Métricas expostas para aplicações HTTP
 Aqui estão descritas todas as métricas automaticamente expostas para qualquer aplicação asyncworker HTTP.
 
 
-- ``http_request_duration``
-    labels ("method", "path", "status")
+- ``http_request_duration_seconds``
+    - labels
+        - ``method``: Método usado no request
+        - ``path``: Path do request
+        - ``status``: Status code retornado, mesmo quando já uma exception.
 
-    buckets (0.01, 0.05, 0.1, INFINITY)
+    - ``buckets`` :py:class:`settings.METRICS_DEFAULT_HISTOGRAM_BUCKETS_IN_MS <asyncworker.conf.Settings>`
 
-    Histograma contento o tempo de duração de cada request.
+    Histograma que mede o tempo (em segundos) de cada request e distribui essas ocorrências nos buckets configurados.
