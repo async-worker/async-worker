@@ -1,6 +1,8 @@
 Métricas expostas para aplicações RabbitMQ
 ==============================================
 
+.. versionadded:: 0.15.0
+
 Essas são as métricas expostas automaticamente para todas as aplicações RabbitMQ.
 
 
