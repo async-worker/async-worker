@@ -1,17 +1,18 @@
-import platform
+import platform as pf
 
-from prometheus_client import CollectorRegistry
 from prometheus_client.metrics_core import GaugeMetricFamily
 
-from asyncworker.metrics.collectors.base import BaseCollector
 
+class PlatformCollector(object):
+    """
+    Collector for python platform information
 
-class PlatformCollector(BaseCollector):
-    """Collector for python platform information"""
+    Esse código veio do prometheus_client (https://github.com/prometheus/client_python/blob/6b091aba77db44459290808368bd4ab913ef8ba5/prometheus_client/platform_collector.py)
+    Foi modificado para que possamos ter um namespace em suas métricas
+    """
 
-    def __init__(
-        self, registry: CollectorRegistry, namespace: str = ""
-    ) -> None:
+    def __init__(self, registry, namespace=""):
+        self._platform = pf
         info = self._info()
 
         if namespace:
@@ -31,9 +32,7 @@ class PlatformCollector(BaseCollector):
         return self._metrics
 
     @staticmethod
-    def _add_metric(
-        name: str, documentation: str, data: dict
-    ) -> GaugeMetricFamily:
+    def _add_metric(name, documentation, data):
         labels = data.keys()
         values = [data[k] for k in labels]
         g = GaugeMetricFamily(name, documentation, labels=labels)
@@ -41,10 +40,10 @@ class PlatformCollector(BaseCollector):
         return g
 
     def _info(self):
-        major, minor, patchlevel = platform.python_version_tuple()
+        major, minor, patchlevel = self._platform.python_version_tuple()
         return {
-            "version": platform.python_version(),
-            "implementation": platform.python_implementation(),
+            "version": self._platform.python_version(),
+            "implementation": self._platform.python_implementation(),
             "major": major,
             "minor": minor,
             "patchlevel": patchlevel,
