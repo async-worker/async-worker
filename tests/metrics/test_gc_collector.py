@@ -55,3 +55,22 @@ class GCCollectorest(TestCase):
             self.assertEquals(
                 expected_samples_names_collections, samples_names_collections
             )
+
+    async def test_do_nothing_if_gc_does_not_have_get_stats(self):
+        from asyncworker.metrics.collectors import gc as gc_collector
+
+        registry_mock = mock.MagicMock()
+        gc_mock = mock.MagicMock()
+        del gc_mock.get_stats
+
+        gc_collector.GCCollector(registry=registry_mock, gc=gc_mock)
+        self.assertEqual(0, registry_mock.register.call_count)
+
+    async def test_do_nothing_if_is_not_cpython(self):
+        from asyncworker.metrics.collectors import gc as gc_collector
+
+        registry_mock = mock.MagicMock()
+        with mock.patch("platform.python_implementation") as gc_mock:
+            gc_mock.return_value = "Jython"
+            gc_collector.GCCollector(registry=registry_mock)
+            self.assertEqual(0, registry_mock.register.call_count)

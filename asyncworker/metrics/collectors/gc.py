@@ -11,7 +11,7 @@ class GCCollector(BaseCollector):
     """Collector for Garbage collection statistics."""
 
     def __init__(
-        self, registry: CollectorRegistry, namespace: str = ""
+        self, registry: CollectorRegistry, namespace: str = "", gc=gc
     ) -> None:
         if (
             not hasattr(gc, "get_stats")
