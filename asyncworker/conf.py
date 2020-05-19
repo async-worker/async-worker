@@ -1,6 +1,6 @@
 import logging
 import time
-from typing import List
+from typing import Optional, List
 
 from aiologger.loggers.json import JsonLogger
 from pydantic import BaseSettings
@@ -23,6 +23,8 @@ class Settings(BaseSettings):
     FLUSH_TIMEOUT: int = DefaultValues.BULK_FLUSH_INTERVAL
 
     # metrics
+    METRICS_NAMESPACE: str = "asyncworker"
+    METRICS_APPPREFIX: Optional[str]
     METRICS_HTTP_ROUTE_PATH: str = "/metrics"
     METRICS_DEFAULT_HISTOGRAM_BUCKETS_IN_MS: List[float] = [
         10,
