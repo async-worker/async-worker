@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Asyncworker \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-05-19 23:17-0300\n"
+"POT-Creation-Date: 2020-05-19 23:33-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -29,7 +29,7 @@ msgstr ""
 #: ../../changelog/v0.14.1.rst:7
 msgid ""
 "Tag: `0.14.1 <https://github.com/b2wdigital/async-"
-"worker/releases/tag/0.14.1c>`_"
+"worker/releases/tag/0.14.1>`_"
 msgstr ""
 
 #: ../../changelog/v0.14.1.rst:10
@@ -181,5 +181,10 @@ msgstr ""
 #~ "`#205 <https://github.com/b2wdigital/async-"
 #~ "worker/pull/205>`_ Feature/document test client "
 #~ "(https://github.com/daltonmatos)"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Tag: `0.14.1 <https://github.com/b2wdigital/async-"
+#~ "worker/releases/tag/0.14.1c>`_"
 #~ msgstr ""
 
