@@ -4,7 +4,7 @@
 
 Data de release: 2020-05-19
 
-Tag: `0.14.1 <https://github.com/b2wdigital/async-worker/releases/tag/0.14.1c>`_
+Tag: `0.14.1 <https://github.com/b2wdigital/async-worker/releases/tag/0.14.1>`_
 
 
 - `#181 <https://github.com/b2wdigital/async-worker/pull/181>`_ Ajustar o link do changelog em todas as tags já criadas (`@daltonmatos <https://github.com/daltonmatos>`_)
