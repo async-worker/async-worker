@@ -86,7 +86,7 @@ erros, a mensagem é automaticamente confirmada (ack).</p>
 <span class="nd">@app</span><span class="o">.</span><span class="n">route</span><span class="p">([</span><span class="s2">&quot;/v2/events&quot;</span><span class="p">],</span> <span class="nb">type</span><span class="o">=</span><span class="n">RouteTypes</span><span class="o">.</span><span class="n">SSE</span><span class="p">,</span> <span class="n">options</span><span class="o">=</span><span class="p">{</span><span class="n">Options</span><span class="o">.</span><span class="n">BULK_SIZE</span><span class="p">:</span> <span class="mi">2</span><span class="p">})</span>
 <span class="k">async</span> <span class="k">def</span> <span class="nf">_on_event</span><span class="p">(</span><span class="n">events</span><span class="p">):</span>
     <span class="n">event_names</span> <span class="o">=</span> <span class="p">[</span><span class="n">e</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="n">events</span><span class="p">]</span>
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Events received: {len(events)} </span><span class="si">{event_names}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Events received: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">events</span><span class="p">)</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">event_names</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
     <span class="k">for</span> <span class="n">event</span> <span class="ow">in</span> <span class="n">events</span><span class="p">:</span>
         <span class="n">data</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
         <span class="k">if</span> <span class="n">event</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s1">&#39;deployment_info&#39;</span><span class="p">:</span>
@@ -94,9 +94,9 @@ erros, a mensagem é automaticamente confirmada (ack).</p>
         <span class="k">if</span> <span class="n">event</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s1">&#39;deployment_success&#39;</span><span class="p">:</span>
             <span class="n">data</span> <span class="o">=</span> <span class="n">event</span><span class="o">.</span><span class="n">body</span><span class="p">[</span><span class="s1">&#39;id&#39;</span><span class="p">]</span>
         <span class="k">if</span> <span class="n">event</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s1">&#39;status_update_event&#39;</span><span class="p">:</span>
-            <span class="n">data</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;app=</span><span class="si">{event.body[&#39;appId&#39;]}</span><span class="s2">, task=</span><span class="si">{event.body[&#39;taskId&#39;]}</span><span class="s2"> (</span><span class="si">{event.body[&#39;taskStatus&#39;]}</span><span class="s2">)&quot;</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;app=</span><span class="si">{</span><span class="n">event</span><span class="o">.</span><span class="n">body</span><span class="p">[</span><span class="s1">&#39;appId&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">, task=</span><span class="si">{</span><span class="n">event</span><span class="o">.</span><span class="n">body</span><span class="p">[</span><span class="s1">&#39;taskId&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2"> (</span><span class="si">{</span><span class="n">event</span><span class="o">.</span><span class="n">body</span><span class="p">[</span><span class="s1">&#39;taskStatus&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">)&quot;</span>
 
-        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Event Received: </span><span class="si">{event.name}</span><span class="s2"> </span><span class="si">{data}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Event Received: </span><span class="si">{</span><span class="n">event</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">data</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>Nesse exemplo, o handler <code class="docutils literal notranslate"><span class="pre">_on_event()</span></code> recebe os eventos enviados pelo
@@ -156,12 +156,12 @@ exception é gerado.</p>
 <li class="toctree-l1"><a class="reference internal" href="../intro.html">Introdução</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../incompat.html">Incompatibilidades</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../versions.html">Compatibilidade de Versões do asyncowker</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../update.html">Atualizando sua App Asyncworker</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="index.html">Guia de uso</a><ul class="current">
 <li class="toctree-l2 current"><a class="current reference internal" href="#">Início rápido</a></li>
 <li class="toctree-l2"><a class="reference internal" href="asyncworker-app/index.html">Asyncworker App</a></li>
 <li class="toctree-l2"><a class="reference internal" href="handlers/index.html">Tipos de Handlers</a></li>
 <li class="toctree-l2"><a class="reference internal" href="utils/index.html">Utilitários</a></li>
-<li class="toctree-l2"><a class="reference internal" href="updates/index.html">Atualizando sua App Asyncworker</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../devguide/index.html">Guia de desenvolvimento</a></li>

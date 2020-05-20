@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Asyncworker \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-02-12 10:37-0300\n"
+"POT-Creation-Date: 2020-05-19 23:00-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -32,5 +32,46 @@ msgid ""
 "True`` (doc `aqui "
 "<https://asynctest.readthedocs.io/en/latest/asynctest.case.html#asynctest.TestCase.use_default_loop>`_)"
 " em sua classe de teste."
+msgstr ""
+
+#: ../../devguide/tests.rst:9
+msgid "Usando um HTTP test client para testar rotas HTTP"
+msgstr ""
+
+#: ../../devguide/tests.rst:11
+msgid ""
+"Quando estamos testando uma app HTTP é bem útil podermos fazer uma "
+"requisição real paa rotas dessa app. Para isso o asyncworker dispõe de um"
+" TestClient."
+msgstr ""
+
+#: ../../devguide/tests.rst:14
+msgid "Instanciando com ContextManager"
+msgstr ""
+
+#: ../../devguide/tests.rst:16
+msgid ""
+"Esse TestClient recebe como parametro a instância de sua :py:class:`App "
+"<asyncworker.app.App>`, que é onde estão definidas as rotas. Esse "
+"TestClient é conseguido através de um contextmanager, usando a classe "
+":py:class:`asyncworker.testing.HttpClientContext`."
+msgstr ""
+
+#: ../../devguide/tests.rst:36
+msgid ""
+"essa forma é útil quando você precisa testar características que podem "
+"ser comprovadas em qualquer app asyncworker e por isso você declara uma "
+"nova app em cada caso de teste."
+msgstr ""
+
+#: ../../devguide/tests.rst:39
+msgid "Instanciando com decorator"
+msgstr ""
+
+#: ../../devguide/tests.rst:41
+msgid ""
+"Se você estiver testando uma app principal que já está toda declaradad e "
+"não precisará mudar durante os testes é possível decorar seus casos de "
+"teste com :py:func:`asyncworker.testing.http_client`."
 msgstr ""
 

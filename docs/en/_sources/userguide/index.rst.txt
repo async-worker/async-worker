@@ -8,4 +8,3 @@ Guia de uso
    asyncworker-app/index.rst
    handlers/index.rst
    utils/index.rst
-   updates/index.rst

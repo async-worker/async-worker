@@ -42,6 +42,41 @@
 </ul>
 </div></blockquote>
 <p>Raw Commits: <a class="reference external" href="https://github.com/B2W-BIT/async-worker/compare/0.10.1...0.11.0">0.11.0</a></p>
+<div class="section" id="notas-de-atualizacao">
+<h2>Notas de Atualização<a class="headerlink" href="#notas-de-atualizacao" title="Permalink to this headline">¶</a></h2>
+<p>A partir dessa versão o construtor do objeto <a class="reference internal" href="../src/asyncworker/asyncworker.html#asyncworker.app.App" title="asyncworker.app.App"><code class="xref py py-class docutils literal notranslate"><span class="pre">asyncworker.app.App</span></code></a> mudou. Isso significa que todas os seus projetos precisam ser ajustados.
+Onde antes tínhamos:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">asyncworker</span> <span class="kn">import</span> <span class="n">App</span>
+
+<span class="n">app</span> <span class="o">=</span> <span class="n">App</span><span class="p">(</span><span class="n">hosy</span><span class="o">=</span><span class="s2">&quot;127.0.0.1&quot;</span><span class="p">,</span> <span class="n">user</span><span class="o">=</span><span class="s2">&quot;guest&quot;</span><span class="p">,</span> <span class="n">password</span><span class="o">=</span><span class="s2">&quot;guest&quot;</span><span class="p">,</span>  <span class="n">pretech_count</span><span class="o">=</span><span class="mi">1024</span><span class="p">)</span>
+
+<span class="nd">@app</span><span class="o">.</span><span class="n">routes</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">handler</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>
+    <span class="o">...</span>
+</pre></div>
+</div>
+<p>Temos agora um objeto <code class="docutils literal notranslate"><span class="pre">Connection</span></code> que deve ser passado ao construtor do <code class="docutils literal notranslate"><span class="pre">App</span></code>.
+O construtor recebe uma lista de objetos filhos de <a class="reference internal" href="../src/asyncworker/asyncworker.html#asyncworker.connections.Connection" title="asyncworker.connections.Connection"><code class="xref py py-class docutils literal notranslate"><span class="pre">asyncworker.connections.Connection</span></code></a>.</p>
+<p>A nova forma de passar as credenciais do RabbitMQ para sua asyncworker App é assim:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span>
+
+<span class="kn">from</span> <span class="nn">asyncworker</span> <span class="kn">import</span> <span class="n">App</span>
+<span class="kn">from</span> <span class="nn">asyncworker.connections</span> <span class="kn">import</span> <span class="n">AMQPConnection</span>
+<span class="kn">from</span> <span class="nn">asyncworker.options</span> <span class="kn">import</span> <span class="n">RouteTypes</span><span class="p">,</span> <span class="n">Options</span>
+<span class="kn">from</span> <span class="nn">asyncworker.rabbitmq</span> <span class="kn">import</span> <span class="n">RabbitMQMessage</span>
+
+<span class="n">amqp_conn</span> <span class="o">=</span> <span class="n">AMQPConnection</span><span class="p">(</span>
+    <span class="n">hostname</span><span class="o">=</span><span class="s2">&quot;127.0.0.1&quot;</span><span class="p">,</span>
+    <span class="n">username</span><span class="o">=</span><span class="s2">&quot;guest&quot;</span><span class="p">,</span>
+    <span class="n">password</span><span class="o">=</span><span class="s2">&quot;guest&quot;</span><span class="p">,</span>
+    <span class="n">prefetch_count</span><span class="o">=</span><span class="mi">1024</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="n">app</span> <span class="o">=</span> <span class="n">App</span><span class="p">(</span><span class="n">connections</span><span class="o">=</span><span class="p">[</span><span class="n">amqp_conn</span><span class="p">])</span>
+</pre></div>
+</div>
+<p>E a partir daqui o uso do <code class="docutils literal notranslate"><span class="pre">app</span></code> é igual ao que sempre foi.</p>
+</div>
 </div>
 
 
@@ -65,9 +100,12 @@
 <li class="toctree-l1"><a class="reference internal" href="../intro.html">Introdução</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../incompat.html">Incompatibilidades</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../versions.html">Compatibilidade de Versões do asyncowker</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../update.html">Atualizando sua App Asyncworker</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../userguide/index.html">Guia de uso</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../devguide/index.html">Guia de desenvolvimento</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="index.html">Changelog</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="v0.2.0.html">0.2.0</a></li>
+<li class="toctree-l2"><a class="reference internal" href="v0.6.0.html">0.6.0</a></li>
 <li class="toctree-l2"><a class="reference internal" href="v0.10.0.html">0.10.0</a></li>
 <li class="toctree-l2"><a class="reference internal" href="v0.10.1.html">0.10.1</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">0.11.0</a></li>
@@ -79,6 +117,8 @@
 <li class="toctree-l2"><a class="reference internal" href="v0.12.0.html">0.12.0</a></li>
 <li class="toctree-l2"><a class="reference internal" href="v0.12.1.html">0.12.1</a></li>
 <li class="toctree-l2"><a class="reference internal" href="v0.13.0.html">0.13.0</a></li>
+<li class="toctree-l2"><a class="reference internal" href="v0.14.0.html">0.14.0</a></li>
+<li class="toctree-l2"><a class="reference internal" href="v0.14.1.html">0.14.1</a></li>
 </ul>
 </li>
 </ul>
