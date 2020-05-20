@@ -30,7 +30,7 @@ def http_client(app: App):
             client, server = await _get_client_and_server(app)
 
             try:
-                return await handler(client, *args, **kwargs)
+                return await handler(*args, client, **kwargs)
             except Exception as e:
                 raise e
             finally:

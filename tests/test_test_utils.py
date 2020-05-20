@@ -1,4 +1,5 @@
 import os
+from http import HTTPStatus
 
 from aiohttp import web
 from aiohttp.test_utils import TestClient
@@ -6,6 +7,13 @@ from asynctest import TestCase, mock, skip
 
 from asyncworker import App, RouteTypes
 from asyncworker.testing import http_client, HttpClientContext
+
+global_app = App()
+
+
+@global_app.route(["/"], type=RouteTypes.HTTP, methods=["GET"])
+async def _h():
+    return web.json_response({})
 
 
 class HttpClientTestCaseDecoratorTest(TestCase):
@@ -19,6 +27,11 @@ class HttpClientTestCaseDecoratorTest(TestCase):
 
         client = await my_test_case()
         self.assertTrue(isinstance(client, TestClient))
+
+    @http_client(global_app)
+    async def test_can_decorate_method(self, client):
+        resp = await client.get("/")
+        self.assertEqual(HTTPStatus.OK, resp.status)
 
     async def test_client_can_perform_http_requests(self):
         @self.app.route(["/"], type=RouteTypes.HTTP, methods=["GET"])
@@ -37,7 +50,7 @@ class HttpClientTestCaseDecoratorTest(TestCase):
 
     async def test_decorated_method_can_have_its_own_params(self):
         @http_client(self.app)
-        async def my_method(http_client, a, b):
+        async def my_method(a, b, http_client):
             return (http_client, a, b)
 
         rv = await my_method(42, 10)
