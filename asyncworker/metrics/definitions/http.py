@@ -1,11 +1,11 @@
-from asyncworker.conf import INFINITY
+from asyncworker.conf import settings
 from asyncworker.metrics.types import Histogram, Gauge, exponential_buckets
 
 request_duration = Histogram(
-    name="http_request_duration",
-    documentation="HTTP request duration",
+    name="http_request_duration_ms",
+    documentation="HTTP request duration in milliseconds",
     labelnames=("method", "path", "status"),
-    buckets=(0.01, 0.05, 0.1, INFINITY),
+    buckets=settings.METRICS_DEFAULT_HISTOGRAM_BUCKETS_IN_MS,
 )
 
 requests_in_progress = Gauge(

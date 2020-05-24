@@ -1,11 +1,11 @@
 import logging
-import time
 from typing import Optional, List
 
 from aiologger.loggers.json import JsonLogger
 from pydantic import BaseSettings
 
 from asyncworker.options import DefaultValues
+from asyncworker.time import perf_counter_ms
 
 INFINITY = float("inf")
 
@@ -42,7 +42,7 @@ class Settings(BaseSettings):
         env_prefix = "ASYNCWORKER_"
 
 
-default_timer = time.perf_counter
+default_timer = perf_counter_ms
 settings = Settings()
 
 loglevel = getattr(logging, settings.LOGLEVEL, logging.INFO)
