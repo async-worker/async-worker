@@ -1,3 +1,4 @@
+from http import HTTPStatus
 from typing import Callable, Awaitable
 
 from aiohttp import web
@@ -34,6 +35,13 @@ async def http_metrics_middleware(request: web.Request, handler: _Handler):
         metrics.response_size.labels(
             method=request.method, path=request.path
         ).observe(e.content_length)
+        raise e
+    except Exception as e:
+        metrics.request_duration.labels(
+            method=request.method,
+            path=request.path,
+            status=HTTPStatus.INTERNAL_SERVER_ERROR,
+        ).observe(default_timer() - start)
         raise e
     finally:
         metrics.requests_in_progress.labels(
