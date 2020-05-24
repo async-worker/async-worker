@@ -1,5 +1,4 @@
 from abc import ABCMeta
-from functools import partial
 
 import prometheus_client as prometheus
 

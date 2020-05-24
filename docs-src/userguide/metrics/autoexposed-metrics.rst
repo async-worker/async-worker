@@ -1,7 +1,8 @@
+.. _asyncworker-auto-metrics:
+
 Métricas expostas automaticamente
 ===================================
 
-.. _asyncworker-auto-metrics:
 
 O asyncworker já expõe automaticamente algumas métricas. Porém algumas métricas são independentes do tipo de handler e elas estão documentadas aqui.
 
