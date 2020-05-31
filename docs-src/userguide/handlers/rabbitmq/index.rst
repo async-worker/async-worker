@@ -71,4 +71,3 @@ se a fila de destino estiver um outro virtual host, basta pegar uma nova conexã
    :titlesonly:
 
    doc.rst
-   exposed-metrics.rst

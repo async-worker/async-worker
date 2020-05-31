@@ -17,5 +17,4 @@ Mais detalhes em como esses valores são expostos em sua aplicação podem ser e
    :titlesonly:
 
    config.rst
-   autoexposed-metrics.rst
    types/index.rst
