@@ -121,7 +121,7 @@ class HTTPRoute(Route):
             return values
         if settings.METRICS_HTTP_ROUTE_PATH in values["routes"]:
             raise ValueError(
-                f"Conflicting {cls.__name__} routes."
+                f"Conflicting HTTP routes."
                 f"Defining a `{settings.METRICS_HTTP_ROUTE_PATH}` "
                 f"conflicts with asyncworker's metrics path. Consider the "
                 f"following options: a) Remove your route and use asyncworker "
