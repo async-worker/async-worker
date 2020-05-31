@@ -26,6 +26,7 @@ class Settings(BaseSettings):
     METRICS_NAMESPACE: str = "asyncworker"
     METRICS_APPPREFIX: Optional[str]
     METRICS_HTTP_ROUTE_PATH: str = "/metrics"
+    METRICS_HTTP_ROUTE_ENABLED: bool = True
     METRICS_DEFAULT_HISTOGRAM_BUCKETS_IN_MS: List[float] = [
         10,
         50,
