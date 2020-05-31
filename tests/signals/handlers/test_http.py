@@ -2,6 +2,7 @@ from random import randint
 
 import asynctest
 from aiohttp import web
+from aiohttp.client import ClientSession
 from asynctest import skip, mock, CoroutineMock, Mock, patch
 
 from asyncworker import App
@@ -58,18 +59,15 @@ class HTTPServerTests(asynctest.TestCase):
 
         start.assert_awaited_once()
 
-    @asynctest.patch("asyncworker.signals.handlers.http.web.TCPSite.start")
-    async def test_startup_exposes_metrics_http_route(self, start):
-        with patch(
-            "aiohttp.web_urldispatcher.UrlDispatcher.add_route"
-        ) as add_route:
-            await self.signal_handler.startup(self.app)
+    @asynctest.patch("asyncworker.signals.handlers.http.web.AppRunner.cleanup")
+    async def test_add_handler_for_metrics_endpoint(self, cleanup):
+        await self.signal_handler.startup(self.app)
 
-            add_route.assert_called_once_with(
-                method="GET",
-                path=settings.METRICS_HTTP_ROUTE_PATH,
-                handler=metrics_route_handler,
-            )
+        async with ClientSession() as client:
+            async with client.get(
+                f"http://{settings.HTTP_HOST}:{settings.HTTP_PORT}{settings.METRICS_HTTP_ROUTE_PATH}"
+            ) as resp:
+                self.assertEqual(200, resp.status)
 
     @asynctest.patch("asyncworker.signals.handlers.http.web.AppRunner.cleanup")
     async def test_shutdown_closes_the_running_http_server(self, cleanup):
