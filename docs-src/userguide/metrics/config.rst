@@ -4,11 +4,11 @@ Configurando exposição de Métricas
 .. _metrics-config:
 
 
-Todas as métricas expostas por uma aplicação asyncworker podem ser lidas através de um endpoint HTTP. A porta onde esse endpoint estará sendo servido é a mesma porta da sua app HTTP (caso esteja usando uma) e por padrão é o valor da config :py:class:`settings.HTTP_PORT <asyncworker.conf.Settings>`
+Todas as métricas expostas por uma aplicação asyncworker podem ser lidas através de um endpoint HTTP. A porta onde esse endpoint é servido é a mesma porta da sua app HTTP (caso esteja usando uma) e por padrão é o valor da config :py:class:`settings.HTTP_PORT <asyncworker.conf.Settings>`
 
-O path padrão desse endpoint é :py:class:`settings.METRICS_HTTP_ROUTE_PATH <asyncworker.conf.Settings>`.
+O path padrão desse endpoint é :py:class:`settings.METRICS_ROUTE_PATH <asyncworker.conf.Settings>`.
 
-Por padrão o endpoint que expõe as métricas já é ativado. Caso queira desligar esse endpoint isso pode ser feito pela envvar ``ASYNCWORKER_METRICS_ENABLE=0``.
+Por padrão o endpoint que expõe as métricas já é ativado. Caso queira desligar esse endpoint isso pode ser feito pela envvar ``ASYNCWORKER_METRICS_ROUTE_ENABLE=0``.
 
 
 Formação do nome das métricas

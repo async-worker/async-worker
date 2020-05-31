@@ -34,4 +34,3 @@ Podemos fazer o que for preciso para extrair dele as informações que precisarm
    :titlesonly:
 
    doc.rst
-   exposed-metrics.rst
