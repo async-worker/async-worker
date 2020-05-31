@@ -9,4 +9,3 @@ Guia de uso
    handlers/index.rst
    metrics/index.rst
    utils/index.rst
-   updates/index.rst
