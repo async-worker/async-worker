@@ -65,7 +65,7 @@ class HTTPServerTests(asynctest.TestCase):
 
         async with ClientSession() as client:
             async with client.get(
-                f"http://{settings.HTTP_HOST}:{settings.HTTP_PORT}{settings.METRICS_HTTP_ROUTE_PATH}"
+                f"http://{settings.HTTP_HOST}:{settings.HTTP_PORT}{settings.METRICS_ROUTE_PATH}"
             ) as resp:
                 self.assertEqual(200, resp.status)
 

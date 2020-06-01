@@ -115,14 +115,14 @@ class HTTPRoute(Route):
 
     @root_validator
     def _validate_metrics_route(cls, values: dict) -> dict:
-        if not settings.METRICS_HTTP_ROUTE_ENABLED:
+        if not settings.METRICS_ROUTE_ENABLED:
             return values
         if "GET" not in values["methods"]:
             return values
-        if settings.METRICS_HTTP_ROUTE_PATH in values["routes"]:
+        if settings.METRICS_ROUTE_PATH in values["routes"]:
             raise ValueError(
                 f"Conflicting HTTP routes."
-                f"Defining a `{settings.METRICS_HTTP_ROUTE_PATH}` "
+                f"Defining a `{settings.METRICS_ROUTE_PATH}` "
                 f"conflicts with asyncworker's metrics path. Consider the "
                 f"following options: a) Remove your route and use asyncworker "
                 f"metrics; b) disable asyncworker's metrics route "
