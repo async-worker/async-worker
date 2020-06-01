@@ -104,8 +104,8 @@
 
         <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">InvalidConnection</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s2">&quot;Invalid connection: `</span><span class="si">{value}</span><span class="s2">`. &quot;</span>
-                <span class="sa">f</span><span class="s2">&quot;The name `</span><span class="si">{key}</span><span class="s2">` already exists in </span><span class="si">{self.__class__.__name__}</span><span class="s2">&quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;Invalid connection: `</span><span class="si">{</span><span class="n">value</span><span class="si">}</span><span class="s2">`. &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;The name `</span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2">` already exists in </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">&quot;</span>
             <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">counter</span><span class="p">[</span><span class="n">value</span><span class="o">.</span><span class="vm">__class__</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
@@ -238,6 +238,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../intro.html">Introdução</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../incompat.html">Incompatibilidades</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../versions.html">Compatibilidade de Versões do asyncowker</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../update.html">Atualizando sua App Asyncworker</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../userguide/index.html">Guia de uso</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../devguide/index.html">Guia de desenvolvimento</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../changelog/index.html">Changelog</a></li>
