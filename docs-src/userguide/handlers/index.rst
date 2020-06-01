@@ -24,4 +24,4 @@ Abaixo você poderá ver em detalhes cada um desses handlers e como criar cada u
 Métricas
 --------
 
-Os handlers do asyncworker expõem automaticamente algumas métricas em relação à execução do código. Mais detalhes em como expor suas próprias métricas você poderá ver na documentação sobre :ref:`métricas <handler-metrics>`.
+Mais detalhes em como expor suas próprias métricas você poderá ver na documentação sobre :ref:`métricas <handler-metrics>`.
