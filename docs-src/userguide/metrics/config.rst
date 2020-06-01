@@ -8,7 +8,7 @@ Todas as métricas expostas por uma aplicação asyncworker podem ser lidas atra
 
 O path padrão desse endpoint é :py:class:`settings.METRICS_ROUTE_PATH <asyncworker.conf.Settings>`.
 
-Por padrão o endpoint que expõe as métricas já é ativado. Caso queira desligar esse endpoint isso pode ser feito pela envvar ``ASYNCWORKER_METRICS_ROUTE_ENABLE=0``.
+Por padrão o endpoint que expõe as métricas já é ativado. Caso queira desligar esse endpoint isso pode ser feito pela envvar ``ASYNCWORKER_METRICS_ROUTE_ENABLED=0``.
 
 
 Formação do nome das métricas
@@ -18,10 +18,10 @@ Todas as métricas expostas por uma aplicação asyncworker possuem um prefixo. 
 
 Isso é útil para que suas métricas não se confundam com todas as outras métricas do seu sistema, incluindo métricas de outras aplicações.
 
-Caso você precise de métrica com nomes diferentes **por aplicação** é possível adicionar um prefixo a todas as métricas exposta pela sua app. Isso inclui também o nome das métricas expostas `automaticamente pelo asyncworker <asyncworker-auto-metrics>`.
+Caso você precise de métrica com nomes diferentes **por aplicação** é possível adicionar um prefixo a todas as métricas expostas pela sua app. Isso inclui também o nome de quaisquer das métricas expostas pelo próprio asyncworker (por enquando, nenhuma).
 
 Para isso basta usar a ENV ``ASYNCWORKER_METRICS_APPPREFIX`` e colocar nela o valor que você quiser. Exemplo:
 
-Se no seu código você declarou uma métrica de noma ``msg_processed`` e rodou sua app com a ENV ``ASYNCWORKER_METRICS_APPPREFIX=myapp``. Essa métrica será exposta com o nome ``asyncworker_myapp_msg_processed``.
+Se no seu código você declarou uma métrica de nome ``msg_processed`` e rodou sua app com a ENV ``ASYNCWORKER_METRICS_APPPREFIX=myapp``. Essa métrica será exposta com o nome ``asyncworker_myapp_msg_processed``.
 
 Por padrão esse prefixo tem valor vazio.
