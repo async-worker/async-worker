@@ -17,8 +17,8 @@ Notas de atualização
 A partir dessa versão é possível exportar métricas no formato do  `Prometheus <https://prometheus.io/docs/instrumenting/exposition_formats/#text-based-format>`_. Mais detalhes na documentação sobre :ref:`Métricas <handler-metrics>`.
 
 
-Isso significa que o asyncworker pode adicionar uma rota HTTP com path ``/metrics`` (valor padão da config :py:class:`settings.METRICS_HTTP_ROUTE_PATH <asyncworker.conf.Settings>`.
-Essa configuração está ligada por paadrão e pode ser desligada com a ENV VAR ``ASYNCWORKER_METRICS_ENABLE=0``. Mais detalhes na documentação sobre :ref:`Configuração de métricas <metrics-config>`.
+Isso significa que o asyncworker pode adicionar uma rota HTTP com path ``/metrics`` (valor padão da config :py:class:`settings.METRICS_ROUTE_PATH <asyncworker.conf.Settings>`.
+Essa configuração está ligada por padrão e pode ser desligada com a ENV VAR ``ASYNCWORKER_METRICS_ROUTE_ENABLED=0``. Mais detalhes na documentação sobre :ref:`Configuração de métricas <metrics-config>`.
 
 Se a usa aplicação já exporta métricas e faz isso usando as classes do ``prometheus_client`` o ideal é que você ajuste seu código para que faça uso das classes expostas pelo asyncworker (``asyncworker.metrics.*``). Se seu código importa as métricas dessa forma:
 
@@ -47,5 +47,3 @@ Se você faz uso de classes que ainda não são expostas pelo asyncworker, como 
 
 
 Dessa forma suas métricas estarão vinculadas ao MetricsRegistry do asyncworker e serão expostas no response do ``/metrics``.
-
-Algumas métricas já são automaticamente expostas pelo asyncworker. Elas estão documentadas aqui: :ref:`Métricas expostas automaticamente <asyncworker-auto-metrics>`.
