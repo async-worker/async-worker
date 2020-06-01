@@ -1,4 +1,3 @@
-# Always prefer setuptools over distutils
 from os import path
 
 from setuptools import setup, find_packages
@@ -9,7 +8,7 @@ setup(
     name="async-worker",
     version="0.15.0",
     description="Microframework para escrever workers assíncronos em Python",
-    long_description="Microframework para escrever workers assíncronos em Python",
+    long_description=open(f"{here}/README.md").read(),
     url="https://github.com/b2wdigital/async-worker",
     # Author details
     author="Dalton Barreto",
