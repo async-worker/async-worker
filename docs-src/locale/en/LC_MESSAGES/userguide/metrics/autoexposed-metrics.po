@@ -1,0 +1,161 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2019, B2W Digital
+# This file is distributed under the same license as the Asyncworker
+# package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2020.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: Asyncworker \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2020-06-01 16:55-0300\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.8.0\n"
+
+#: ../../userguide/metrics/autoexposed-metrics.rst:4
+msgid "Métricas expostas automaticamente"
+msgstr ""
+
+#: ../../userguide/metrics/autoexposed-metrics.rst:7
+msgid ""
+"O asyncworker já expõe automaticamente algumas métricas. Porém algumas "
+"métricas são independentes do tipo de handler e elas estão documentadas "
+"aqui."
+msgstr ""
+
+#: ../../userguide/metrics/autoexposed-metrics.rst:11
+msgid "Nota sobre as métricas expostas automaticamente"
+msgstr ""
+
+#: ../../userguide/metrics/autoexposed-metrics.rst:13
+msgid ""
+"Todas as métricas mostradas aqui também obedecem às :ref:`regras de "
+"formação de nome de métricas <metrics-config>`."
+msgstr ""
+
+#: ../../userguide/metrics/autoexposed-metrics.rst:17
+msgid "Métricas que são expostas por cada tipo de handler"
+msgstr ""
+
+#: ../../userguide/metrics/autoexposed-metrics.rst:19
+msgid ""
+"Cada tipo de handler expõe métricas específicas sobre seu domínio e mais "
+"detalhes sobre quais são essas métricas podem ser encontrados na "
+"documentação :ref:`dos tipos de handler <handler-types>` suportados pelo "
+"asyncworker."
+msgstr ""
+
+#: ../../userguide/metrics/autoexposed-metrics.rst:23
+msgid "Métricas que são independente do tipo de handler"
+msgstr ""
+
+#: ../../userguide/metrics/autoexposed-metrics.rst:25
+msgid "Aqui listamos métricas que são relacionadas ao processo Python."
+msgstr ""
+
+#: ../../userguide/metrics/autoexposed-metrics.rst:29
+msgid "Métricas sobre versão do Python"
+msgstr ""
+
+#: ../../userguide/metrics/autoexposed-metrics.rst:32
+msgid ""
+"Uma métrica é exposta contendo a versão do python que o código está "
+"rodando. O nome dessa métrica é ``python_info``. Essa métrica possui as "
+"seguintes labels:"
+msgstr ""
+
+#: ../../userguide/metrics/autoexposed-metrics.rst:34
+msgid "``version``"
+msgstr ""
+
+#: ../../userguide/metrics/autoexposed-metrics.rst:35
+msgid "``implementation``"
+msgstr ""
+
+#: ../../userguide/metrics/autoexposed-metrics.rst:36
+msgid "``major``"
+msgstr ""
+
+#: ../../userguide/metrics/autoexposed-metrics.rst:37
+msgid "``minor``"
+msgstr ""
+
+#: ../../userguide/metrics/autoexposed-metrics.rst:38
+msgid "``patchlevel``"
+msgstr ""
+
+#: ../../userguide/metrics/autoexposed-metrics.rst:40
+msgid ""
+"Todas essas informações são extraídas do módulo ``platform`` da `stdlib "
+"<https://docs.python.org/3/library/platform.html>`_."
+msgstr ""
+
+#: ../../userguide/metrics/autoexposed-metrics.rst:43
+msgid "Métricas sobre o processo Python"
+msgstr ""
+
+#: ../../userguide/metrics/autoexposed-metrics.rst:45
+msgid ""
+"Algumas métricas sobre o processo do Python também são expostas por "
+"padrão. São elas:"
+msgstr ""
+
+#: ../../userguide/metrics/autoexposed-metrics.rst:48
+msgid "``process_virtual_memory_bytes``"
+msgstr ""
+
+#: ../../userguide/metrics/autoexposed-metrics.rst:49
+msgid "``process_resident_memory_bytes``"
+msgstr ""
+
+#: ../../userguide/metrics/autoexposed-metrics.rst:50
+msgid "``process_start_time_seconds``"
+msgstr ""
+
+#: ../../userguide/metrics/autoexposed-metrics.rst:51
+msgid "``process_cpu_seconds_total``"
+msgstr ""
+
+#: ../../userguide/metrics/autoexposed-metrics.rst:52
+msgid "``process_open_fds``"
+msgstr ""
+
+#: ../../userguide/metrics/autoexposed-metrics.rst:53
+msgid "``process_max_fds``"
+msgstr ""
+
+#: ../../userguide/metrics/autoexposed-metrics.rst:58
+msgid "Métricas sobre o Garbage Collector do Python"
+msgstr ""
+
+#: ../../userguide/metrics/autoexposed-metrics.rst:61
+msgid ""
+"Essas são métricas sobre o Garbage Collector. Todos os dados são "
+"extraídos do módulo ``gc`` da `stdlib "
+"<https://docs.python.org/3/library/gc.html>`_."
+msgstr ""
+
+#: ../../userguide/metrics/autoexposed-metrics.rst:64
+msgid "``python_gc_objects_collected_total``"
+msgstr ""
+
+#: ../../userguide/metrics/autoexposed-metrics.rst:65
+msgid "``python_gc_objects_uncollectable_total``"
+msgstr ""
+
+#: ../../userguide/metrics/autoexposed-metrics.rst:66
+msgid "``python_gc_collections_total``"
+msgstr ""
+
+#: ../../userguide/metrics/autoexposed-metrics.rst:68
+msgid ""
+"Cada uma dessas métricas possui uma label, ``generation``. Os valores "
+"dessa label vêm também diretamente do módulo ``gc``."
+msgstr ""
+

@@ -1,0 +1,102 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2019, B2W Digital
+# This file is distributed under the same license as the Asyncworker
+# package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2020.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: Asyncworker \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2020-06-01 16:55-0300\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.8.0\n"
+
+#: ../../userguide/metrics/types/type_histogram.rst:2
+msgid "Histograma"
+msgstr ""
+
+#: ../../userguide/metrics/types/type_histogram.rst:4
+msgid ""
+"O tipo Histigrama serve para observar a quantidade de vezes que um evento"
+" ocorreu e categorizar essa quantidade em intervalos chamados `buckets`."
+msgstr ""
+
+#: ../../userguide/metrics/types/type_histogram.rst:6
+msgid ""
+"Um métrica histograma sempre tem buckets definidos. O valor padrão para "
+"essa métrica em aplicações asyncworker é "
+":py:class:`settings.METRICS_DEFAULT_HISTOGRAM_BUCKETS_IN_MS "
+"<asyncworker.conf.Settings>`."
+msgstr ""
+
+#: ../../userguide/metrics/types/type_histogram.rst:8
+msgid ""
+"Você pode escolher seus próprios buckets passando um parametro nomeado no"
+" construtor da métrica. Esse parametro é o ``buckets`` e é uma lista de "
+"``float``."
+msgstr ""
+
+#: ../../userguide/metrics/types/type_histogram.rst:20
+msgid ""
+"Sempre que você entrega um novo valor para essa métrica ela vai "
+"categorizar esse valor dentro das divisões dos buckets. Olhando essa "
+"execução acima teremos as seguintes métrias sendo geradas no output:"
+msgstr ""
+
+#: ../../userguide/metrics/types/type_histogram.rst:32
+msgid ""
+"Nesse exemplo tivemos 3 observações dessa métrica, por isso a metrica "
+"``asyncworker_users_count`` tem valor `3.0`. Cada observação somou um ao "
+"valor do intervalo correspondente."
+msgstr ""
+
+#: ../../userguide/metrics/types/type_histogram.rst:34
+msgid ""
+"Nenhum valor é menor que ``20`` por isso a métrica "
+"``asyncworker_users_age_bucket{le=\"20.0\"}`` tem valor ``0.0``"
+msgstr ""
+
+#: ../../userguide/metrics/types/type_histogram.rst:35
+msgid ""
+"Dois valores são ao mesmo tempo menores que ``20`` e ``30``. São eles: "
+"``19`` e ``25``. Por isso as métricas possuem valor ``2.0``"
+msgstr ""
+
+#: ../../userguide/metrics/types/type_histogram.rst:36
+msgid ""
+"Todos os valores observados são menores que ``+Inf`` e por isso essa "
+"merica possui valor ``3.0``."
+msgstr ""
+
+#: ../../userguide/metrics/types/type_histogram.rst:39
+msgid "Interface principal"
+msgstr ""
+
+#: ../../userguide/metrics/types/type_histogram.rst:41
+msgid ""
+"A interface principal dessa métrica é o método ``observe()``. Esse método"
+" pode receber qualquer valor."
+msgstr ""
+
+#: ../../userguide/metrics/types/type_histogram.rst:44
+msgid "Interfaces adicionais"
+msgstr ""
+
+#: ../../userguide/metrics/types/type_histogram.rst:47
+msgid "time()"
+msgstr ""
+
+#: ../../userguide/metrics/types/type_histogram.rst:49
+msgid ""
+"O método ``time()`` serve para marcar o tempo de algo e passar esse tempo"
+" para o ``observe()``. Ele pode ser usado tanto como decorator como "
+"contextmanager."
+msgstr ""
+

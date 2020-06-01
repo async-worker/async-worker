@@ -1,0 +1,96 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2019, B2W Digital
+# This file is distributed under the same license as the Asyncworker
+# package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2020.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: Asyncworker \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2020-06-01 16:55-0300\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.8.0\n"
+
+#: ../../userguide/handlers/rabbitmq/exposed-metrics.rst:2
+msgid "Métricas expostas para aplicações RabbitMQ"
+msgstr ""
+
+#: ../../userguide/handlers/rabbitmq/exposed-metrics.rst:6
+msgid ""
+"Essas são as métricas expostas automaticamente para todas as aplicações "
+"RabbitMQ."
+msgstr ""
+
+#: ../../userguide/handlers/rabbitmq/exposed-metrics.rst:9
+msgid "``amqp_active_consumers``"
+msgstr ""
+
+#: ../../userguide/handlers/rabbitmq/exposed-metrics.rst:10
+msgid "Total atual de consumers ativos"
+msgstr ""
+
+#: ../../userguide/handlers/rabbitmq/exposed-metrics.rst:14
+msgid "``amqp_processed_messages``"
+msgstr ""
+
+#: ../../userguide/handlers/rabbitmq/exposed-metrics.rst:12
+msgid "labels: (\"queue_name\", \"action\")"
+msgstr ""
+
+#: ../../userguide/handlers/rabbitmq/exposed-metrics.rst:14
+msgid ""
+"Quantidade de mensagens processadas separadas por fila de origem "
+"(``queue_name``) e ``action`` (ack, reject e requeue)"
+msgstr ""
+
+#: ../../userguide/handlers/rabbitmq/exposed-metrics.rst:17
+msgid "``amqp_active_connections``"
+msgstr ""
+
+#: ../../userguide/handlers/rabbitmq/exposed-metrics.rst:17
+msgid "Quantidade de conexões ativas com o Broker"
+msgstr ""
+
+#: ../../userguide/handlers/rabbitmq/exposed-metrics.rst:20
+msgid "``amqp_filled_buckets``"
+msgstr ""
+
+#: ../../userguide/handlers/rabbitmq/exposed-metrics.rst:20
+msgid ""
+"Quantidade de vezes que o bucket interno (para processamento em lote) "
+"ficou cheio. Mais detalhes: :ref:`BULK_SIZE <rabbitmq-options>`."
+msgstr ""
+
+#: ../../userguide/handlers/rabbitmq/exposed-metrics.rst:24
+msgid "``amqp_flushed_buckets``"
+msgstr ""
+
+#: ../../userguide/handlers/rabbitmq/exposed-metrics.rst:23
+msgid ""
+"Quantidade de vezes que o bucket foi esvaziado e teve suas mensagens "
+"entregues ao handler. Mais detalhes: :ref:`BULK_FLUSH_INTERVAL <rabbitmq-"
+"options>` O bucket é esvaziado se seu tamanho limite (``BULK SIZE``) é "
+"atingido ou se o tempo máximo é antingido (``BULK_FLUSH_INTERVAL``)."
+msgstr ""
+
+#: ../../userguide/handlers/rabbitmq/exposed-metrics.rst:28
+msgid "``amqp_bucket_handle``"
+msgstr ""
+
+#: ../../userguide/handlers/rabbitmq/exposed-metrics.rst:27
+msgid ""
+"buckets :py:class:`settings.METRICS_DEFAULT_HISTOGRAM_BUCKETS_IN_MS "
+"<asyncworker.conf.Settings>`."
+msgstr ""
+
+#: ../../userguide/handlers/rabbitmq/exposed-metrics.rst:29
+msgid "Histograma contendoo tempo gasto em cada chamada ao handler."
+msgstr ""
+
