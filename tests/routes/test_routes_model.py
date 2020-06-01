@@ -49,8 +49,9 @@ class HTTPRouteTests(TestCase):
     def test_it_doesnt_raises_an_error_if_user_declares_a_metrics_route_with_asyncworker_metrics_disabled(
         self
     ):
+
         with patch(
-            "asyncworker.routes.settings",
+            "asyncworker.routes.conf.settings",
             METRICS_ROUTE_ENABLED=False,
             METRICS_ROUTE_PATH=settings.METRICS_ROUTE_PATH,
         ):

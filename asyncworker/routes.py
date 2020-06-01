@@ -18,7 +18,7 @@ from aiohttp.web_routedef import RouteDef
 from cached_property import cached_property
 from pydantic import BaseModel, validator, root_validator
 
-from asyncworker.conf import settings
+from asyncworker import conf
 from asyncworker.connections import AMQPConnection
 from asyncworker.http.wrapper import RequestWrapper
 from asyncworker.options import DefaultValues, RouteTypes, Actions
@@ -115,16 +115,16 @@ class HTTPRoute(Route):
 
     @root_validator
     def _validate_metrics_route(cls, values: dict) -> dict:
-        if not settings.METRICS_ROUTE_ENABLED:
+        if not conf.settings.METRICS_ROUTE_ENABLED:
             return values
         if "methods" not in values:
             return values
         if "GET" not in values["methods"]:
             return values
-        if settings.METRICS_ROUTE_PATH in values["routes"]:
+        if conf.settings.METRICS_ROUTE_PATH in values["routes"]:
             raise ValueError(
                 f"Conflicting HTTP routes."
-                f"Defining a `{settings.METRICS_ROUTE_PATH}` "
+                f"Defining a `{conf.settings.METRICS_ROUTE_PATH}` "
                 f"conflicts with asyncworker's metrics path. Consider the "
                 f"following options: a) Remove your route and use asyncworker "
                 f"metrics; b) disable asyncworker's metrics route "
@@ -160,7 +160,7 @@ class _AMQPRouteOptions(_RouteOptions):
 
 class AMQPRoute(Route):
     type: RouteTypes = RouteTypes.AMQP_RABBITMQ
-    vhost: str = settings.AMQP_DEFAULT_VHOST
+    vhost: str = conf.settings.AMQP_DEFAULT_VHOST
     options: _AMQPRouteOptions
 
 
