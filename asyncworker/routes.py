@@ -117,6 +117,8 @@ class HTTPRoute(Route):
     def _validate_metrics_route(cls, values: dict) -> dict:
         if not settings.METRICS_ROUTE_ENABLED:
             return values
+        if "methods" not in values:
+            return values
         if "GET" not in values["methods"]:
             return values
         if settings.METRICS_ROUTE_PATH in values["routes"]:
