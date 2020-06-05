@@ -111,7 +111,7 @@
 <span class="kn">from</span> <span class="nn">asyncworker.options</span> <span class="kn">import</span> <span class="n">Options</span><span class="p">,</span> <span class="n">Actions</span><span class="p">,</span> <span class="n">Events</span>
 
 <span class="k">async</span> <span class="k">def</span> <span class="nf">fail_handler</span><span class="p">(</span><span class="n">e</span><span class="p">:</span> <span class="ne">Exception</span><span class="p">,</span> <span class="n">n</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;error: </span><span class="si">{e}</span><span class="s2">, retries </span><span class="si">{n}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;error: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">, retries </span><span class="si">{</span><span class="n">n</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
 <span class="nd">@app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span>
     <span class="p">[</span><span class="s2">&quot;queue&quot;</span><span class="p">],</span>
@@ -231,6 +231,7 @@ podemos chamar <code class="docutils literal notranslate"><span class="pre">mess
 <li class="toctree-l1"><a class="reference internal" href="../../intro.html">Introdução</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../incompat.html">Incompatibilidades</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../versions.html">Compatibilidade de Versões do asyncowker</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../update.html">Atualizando sua App Asyncworker</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../index.html">Guia de uso</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="../quickstart.html">Início rápido</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../asyncworker-app/index.html">Asyncworker App</a></li>
@@ -240,7 +241,6 @@ podemos chamar <code class="docutils literal notranslate"><span class="pre">mess
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../utils/index.html">Utilitários</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../updates/index.html">Atualizando sua App Asyncworker</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../devguide/index.html">Guia de desenvolvimento</a></li>
