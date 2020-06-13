@@ -20,10 +20,11 @@ class MetricsEndpointTest(TestCase):
     maxDiff = None
 
     async def setUp(self):
+        self.METRICS_PATH = "/metrics-2"
         self.app = App()
-        self.app.route(["/metrics"], type=RouteTypes.HTTP, methods=["GET"])(
-            metrics_route_handler
-        )
+        self.app.route(
+            [self.METRICS_PATH], type=RouteTypes.HTTP, methods=["GET"]
+        )(metrics_route_handler)
 
     async def test_metrics_namespace(self):
         def _check_metrics_cant_override_namespace(metric, metric_name):
@@ -109,7 +110,7 @@ class MetricsEndpointTest(TestCase):
             await client.get("/foo")
             await client.get("/foo")
 
-            metrics = await client.get("/metrics")
+            metrics = await client.get(self.METRICS_PATH)
             self.assertEqual(HTTPStatus.OK, metrics.status)
 
             data = await metrics.text()
@@ -137,7 +138,7 @@ class MetricsEndpointTest(TestCase):
             await client.get("/foo/20")
             await client.get("/foo/-5")
 
-            metrics = await client.get("/metrics")
+            metrics = await client.get(self.METRICS_PATH)
             self.assertEqual(HTTPStatus.OK, metrics.status)
 
             data = await metrics.text()
@@ -168,7 +169,7 @@ class MetricsEndpointTest(TestCase):
             await client.get("/foo/12")
             await client.get("/foo/201")
 
-            metrics = await client.get("/metrics")
+            metrics = await client.get(self.METRICS_PATH)
             self.assertEqual(HTTPStatus.OK, metrics.status)
 
             data = await metrics.text()
@@ -198,7 +199,7 @@ class MetricsEndpointTest(TestCase):
     async def test_gc_collector_metric(self):
 
         async with HttpClientContext(self.app) as client:
-            metrics = await client.get("/metrics")
+            metrics = await client.get(self.METRICS_PATH)
             self.assertEqual(HTTPStatus.OK, metrics.status)
 
             data = await metrics.text()
@@ -222,7 +223,7 @@ class MetricsEndpointTest(TestCase):
     async def test_process_collector_metric(self):
 
         async with HttpClientContext(self.app) as client:
-            metrics = await client.get("/metrics")
+            metrics = await client.get(self.METRICS_PATH)
             self.assertEqual(HTTPStatus.OK, metrics.status)
 
             data = await metrics.text()
@@ -249,7 +250,7 @@ class MetricsEndpointTest(TestCase):
     async def test_platform_collector_metric(self):
 
         async with HttpClientContext(self.app) as client:
-            metrics = await client.get("/metrics")
+            metrics = await client.get(self.METRICS_PATH)
             self.assertEqual(HTTPStatus.OK, metrics.status)
 
             data = await metrics.text()

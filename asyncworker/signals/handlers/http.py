@@ -17,15 +17,17 @@ class HTTPServer(SignalHandler):
         app[RouteTypes.HTTP]["app"] = http_app = web.Application(
             middlewares=(http_metrics_middleware,)
         )
-        http_app.router.add_route(
-            method="GET",
-            path=settings.METRICS_HTTP_ROUTE_PATH,
-            handler=metrics_route_handler,
-        )
 
         for route in routes:
             for route_def in route.aiohttp_routes():
                 route_def.register(http_app.router)
+
+        if settings.METRICS_ROUTE_ENABLED:
+            http_app.router.add_route(
+                method="GET",
+                path=settings.METRICS_ROUTE_PATH,
+                handler=metrics_route_handler,
+            )
 
         app[RouteTypes.HTTP]["runner"] = web.AppRunner(http_app)
         await app[RouteTypes.HTTP]["runner"].setup()
