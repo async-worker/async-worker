@@ -2,7 +2,6 @@ from abc import ABCMeta
 from typing import List
 
 import prometheus_client as prometheus
-
 from asyncworker.conf import settings, INFINITY
 from asyncworker.metrics.registry import REGISTRY, NAMESPACE
 

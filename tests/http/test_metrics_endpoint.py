@@ -3,8 +3,6 @@ from importlib import reload
 
 from aiohttp import web
 from asynctest import mock, TestCase
-from prometheus_client import CollectorRegistry, generate_latest
-from prometheus_client.parser import text_string_to_metric_families
 
 from asyncworker import App, RouteTypes
 from asyncworker.conf import settings
@@ -13,6 +11,8 @@ from asyncworker.metrics import Counter, Gauge, Histogram
 from asyncworker.metrics.aiohttp_resources import metrics_route_handler
 from asyncworker.metrics.registry import REGISTRY, NAMESPACE
 from asyncworker.testing import HttpClientContext
+from prometheus_client import CollectorRegistry, generate_latest
+from prometheus_client.parser import text_string_to_metric_families
 
 
 class MetricsEndpointTest(TestCase):

@@ -1,9 +1,8 @@
-from prometheus_client import CollectorRegistry
-
 from asyncworker.conf import settings
 from asyncworker.metrics.collectors.gc import GCCollector
 from asyncworker.metrics.collectors.platform import PlatformCollector
 from asyncworker.metrics.collectors.process import ProcessCollector
+from prometheus_client import CollectorRegistry
 
 NAMESPACE = (
     f"{settings.METRICS_NAMESPACE}_{settings.METRICS_APPPREFIX}"

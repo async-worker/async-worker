@@ -1,10 +1,10 @@
 import asyncio
 from http import HTTPStatus
 
-from aiohttp.web_exceptions import HTTPNotFound
-from asynctest import TestCase, patch, CoroutineMock
 from aiohttp import ClientSession
+from aiohttp.web_exceptions import HTTPNotFound
 from aiohttp.web_response import Response
+from asynctest import TestCase, patch, CoroutineMock
 
 from asyncworker import App, RouteTypes
 from asyncworker.conf import settings
