@@ -2,7 +2,7 @@ Métricas expostas para aplicações HTTP
 ==========================================
 
 
-.. versionadded:: 0.16.0
+.. versionadded:: 0.15.1
 
 Aqui estão descritas todas as métricas automaticamente expostas para qualquer aplicação asyncworker HTTP.
 
