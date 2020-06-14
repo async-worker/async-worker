@@ -3,11 +3,11 @@ from typing import Callable, Awaitable
 
 from aiohttp import web
 from aiohttp.web_middlewares import middleware
+from prometheus_client import generate_latest
 
 from asyncworker import metrics
-from asyncworker.time import perf_counter_ms as now
 from asyncworker.metrics.registry import REGISTRY
-from prometheus_client import generate_latest
+from asyncworker.time import perf_counter_ms as now
 
 _Handler = Callable[[web.Request], Awaitable[web.Response]]
 
