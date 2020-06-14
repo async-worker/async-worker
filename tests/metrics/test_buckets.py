@@ -1,7 +1,8 @@
 import unittest
 
 from asyncworker.conf import INFINITY
-from asyncworker.metrics import exponential_buckets, linear_buckets
+from asyncworker.metrics import exponential_buckets
+from asyncworker.metrics.buckets import linear_buckets
 
 
 class ExponentialBucketsTests(unittest.TestCase):

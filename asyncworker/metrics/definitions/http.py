@@ -1,5 +1,6 @@
 from asyncworker.conf import settings
-from asyncworker.metrics.types import Histogram, Gauge, exponential_buckets
+from asyncworker.metrics.buckets import exponential_buckets
+from asyncworker.metrics.types import Histogram, Gauge
 
 request_duration = Histogram(
     name="http_request_duration_ms",
