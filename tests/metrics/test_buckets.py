@@ -51,7 +51,7 @@ class LinearBucketsTests(unittest.TestCase):
         buckets = linear_buckets(start=100.0, width=100, count=5)
         self.assertEqual(buckets, [100.0, 200.0, 300.0, 400.0, 500.0, INFINITY])
 
-        linear_buckets(start=100.0, width=1000, count=5)
+        buckets = linear_buckets(start=100.0, width=1000, count=5)
         self.assertEqual(
             buckets, [100.0, 1100.0, 2100.0, 3100.0, 4100.0, INFINITY]
         )
