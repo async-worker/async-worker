@@ -33,7 +33,6 @@
             
   <h1>Código fonte para asyncworker.conf</h1><div class="highlight"><pre>
 <span></span><span class="kn">import</span> <span class="nn">logging</span>
-<span class="kn">import</span> <span class="nn">time</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">List</span>
 
 <span class="kn">from</span> <span class="nn">aiologger.loggers.json</span> <span class="kn">import</span> <span class="n">JsonLogger</span>
@@ -77,7 +76,6 @@
         <span class="n">env_prefix</span> <span class="o">=</span> <span class="s2">&quot;ASYNCWORKER_&quot;</span></div></div>
 
 
-<span class="n">default_timer</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">perf_counter</span>
 <span class="n">settings</span> <span class="o">=</span> <span class="n">Settings</span><span class="p">()</span>
 
 <span class="n">loglevel</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">logging</span><span class="p">,</span> <span class="n">settings</span><span class="o">.</span><span class="n">LOGLEVEL</span><span class="p">,</span> <span class="n">logging</span><span class="o">.</span><span class="n">INFO</span><span class="p">)</span>
