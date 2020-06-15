@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Asyncworker \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-06-01 16:55-0300\n"
+"POT-Creation-Date: 2020-06-14 21:52-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -39,9 +39,9 @@ msgstr ""
 
 #: ../../userguide/metrics/config.rst:11
 msgid ""
-"Por padrão o endpoint que expõe as métricas já é ativado. Caso queira "
-"desligar esse endpoint isso pode ser feito pela envvar "
-"``ASYNCWORKER_METRICS_ROUTE_ENABLED=0``."
+":ref:`Por padrão o endpoint que expõe as métricas já é ativado "
+"<asyncworker-auto-metrics>`. Caso queira desligar esse endpoint isso pode"
+" ser feito pela envvar ``ASYNCWORKER_METRICS_ROUTE_ENABLED=0``."
 msgstr ""
 
 #: ../../userguide/metrics/config.rst:15
@@ -86,4 +86,12 @@ msgstr ""
 #: ../../userguide/metrics/config.rst:27
 msgid "Por padrão esse prefixo tem valor vazio."
 msgstr ""
+
+#~ msgid ""
+#~ "Por padrão o endpoint que expõe as"
+#~ " métricas já é ativado. Caso queira"
+#~ " desligar esse endpoint isso pode ser"
+#~ " feito pela envvar "
+#~ "``ASYNCWORKER_METRICS_ROUTE_ENABLED=0``."
+#~ msgstr ""
 
