@@ -1,6 +1,7 @@
 import asyncio
 
 import asynctest
+from aioamqp.exceptions import AioamqpException
 from asynctest import Mock, CoroutineMock, call, ANY, mock
 
 from asyncworker.easyqueue.connection import AMQPConnection
@@ -79,3 +80,50 @@ class AMQPConnectionTests(AsyncBaseTestCase, asynctest.TestCase):
 
             self.assertEqual(0, _protocol.close.await_count)
             self.assertEqual(0, _transport.close.call_count)
+
+    async def test_call_connect_channel_closed_protocol_raised_aioamqp_exception(
+        self
+    ):
+        """
+        Quando o channel está fechado devemos tentar apenas pegar outro, usando a 
+        mesma conexão já existente.
+        Apenas se essa chamada lançar exception é que precisamos chamar aioamqp.connect()
+        """
+        channel = CoroutineMock()
+        transport = Mock()
+        protocol = Mock(
+            channel=CoroutineMock(is_open=True, return_value=channel)
+        )
+        conn = (transport, protocol)
+
+        _proto_mock = CoroutineMock()
+        with asynctest.mock.patch.object(
+            self.connection, "_protocol", protocol
+        ), asynctest.patch(
+            "asyncworker.easyqueue.connection.aioamqp.connect",
+            return_value=conn,
+        ) as connect:
+            _proto_mock.channel = CoroutineMock(side_effect=AioamqpException())
+            await self.connection._connect()
+            connect.assert_awaited
+            self.assertEqual(self.connection.channel, channel)
+
+    async def test_call_connect_with_channel_closed_has_protocol(self):
+
+        channel = CoroutineMock()
+        transport = Mock()
+        protocol = CoroutineMock(channel=CoroutineMock(return_value=channel))
+        conn = (transport, protocol)
+
+        self.connection._protocol = protocol
+
+        self.connection.channel = CoroutineMock(is_open=False)
+        with asynctest.mock.patch.object(
+            self.connection, "_protocol", protocol
+        ), asynctest.patch(
+            "asyncworker.easyqueue.connection.aioamqp.connect",
+            return_value=conn,
+        ) as connect:
+            await self.connection._connect()
+            connect.assert_not_awaited()
+            self.assertEqual(self.connection.channel, channel)

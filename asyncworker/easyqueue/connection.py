@@ -4,6 +4,7 @@ from typing import Callable, Union, Coroutine, Optional
 import aioamqp
 from aioamqp import AmqpProtocol
 from aioamqp.channel import Channel
+from aioamqp.exceptions import AioamqpException
 
 OnErrorCallback = Union[
     None, Callable[[Exception], None], Callable[[Exception], Coroutine]
@@ -65,6 +66,16 @@ class AMQPConnection:
         async with self._connection_lock:
             if self.is_connected:
                 return
+
+            try:
+                if self._protocol:
+                    self.channel = await self._protocol.channel()
+                    return
+            except AioamqpException as e:
+                # Se não conseguirmos pegar um channel novo
+                # a conexão atual deve mesmo ser renovada e isso
+                # será feito logo abaixo.
+                pass
 
             conn = await aioamqp.connect(**self.connection_parameters)
             self._transport, self._protocol = conn
