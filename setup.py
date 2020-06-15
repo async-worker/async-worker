@@ -9,6 +9,7 @@ setup(
     version="0.15.1",
     description="Microframework para escrever workers assíncronos em Python",
     long_description=open(f"{here}/README.md").read(),
+    long_description_content_type="text/markdown",
     url="https://github.com/b2wdigital/async-worker",
     # Author details
     author="Dalton Barreto",
