@@ -1,7 +1,10 @@
 from aiohttp import web
 
 from asyncworker.conf import settings
-from asyncworker.metrics.aiohttp_resources import metrics_route_handler
+from asyncworker.metrics.aiohttp_resources import (
+    metrics_route_handler,
+    http_metrics_middleware,
+)
 from asyncworker.options import RouteTypes
 from asyncworker.signals.handlers.base import SignalHandler
 
@@ -11,7 +14,9 @@ class HTTPServer(SignalHandler):
         app[RouteTypes.HTTP] = {}
         routes = app.routes_registry.http_routes
 
-        app[RouteTypes.HTTP]["app"] = http_app = web.Application()
+        app[RouteTypes.HTTP]["app"] = http_app = web.Application(
+            middlewares=(http_metrics_middleware,)
+        )
 
         for route in routes:
             for route_def in route.aiohttp_routes():

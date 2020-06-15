@@ -1,5 +1,4 @@
 import logging
-import time
 from typing import Optional, List
 
 from aiologger.loggers.json import JsonLogger
@@ -43,7 +42,6 @@ class Settings(BaseSettings):
         env_prefix = "ASYNCWORKER_"
 
 
-default_timer = time.perf_counter
 settings = Settings()
 
 loglevel = getattr(logging, settings.LOGLEVEL, logging.INFO)
