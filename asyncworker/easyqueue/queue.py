@@ -179,7 +179,6 @@ class JsonQueue(BaseQueue, Generic[T]):
         virtual_host: str = "/",
         heartbeat: int = 60,
         prefetch_count: int = 100,
-        max_message_length=0,
         loop: AbstractEventLoop = None,
         seconds_between_conn_retry: int = 1,
         logger: logging.Logger = None,
@@ -200,11 +199,6 @@ class JsonQueue(BaseQueue, Generic[T]):
             self.delegate = delegate  # type: ignore
 
         self.prefetch_count = prefetch_count
-
-        if max_message_length < 0:
-            raise ValueError("max_message_length must be a positive integer")
-
-        self.max_message_length = max_message_length
 
         on_error = self.delegate.on_connection_error if self.delegate else None
 
