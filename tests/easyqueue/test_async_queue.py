@@ -65,48 +65,6 @@ class AsyncBaseTestCase:
 
 
 class AsynQueueTests(asynctest.TestCase):
-    async def test_it_raises_value_error_if_max_message_length_is_a_negative_number(
-        self
-    ):
-        invalid_value = -666
-        with self.assertRaises(ValueError):
-            JsonQueue(
-                host="Olha",
-                username="a",
-                password="explosão",
-                loop=Mock(),
-                delegate=Mock(),
-                max_message_length=invalid_value,
-            )
-
-    async def test_it_doesnt_raise_value_error_if_max_message_length_is_a_positive_number(
-        self
-    ):
-        valid_value = 666
-        queue = JsonQueue(
-            host="Essa",
-            username="menina",
-            password="é terrorista",
-            loop=Mock(),
-            delegate=Mock(),
-            max_message_length=valid_value,
-        )
-        self.assertEqual(queue.max_message_length, valid_value)
-
-    async def test_it_doesnt_raise_value_error_if_max_message_length_is_zero(
-        self
-    ):
-        valid_value = 0
-        queue = JsonQueue(
-            host="diogommartins.com",
-            username="diogo",
-            password="XablauBolado",
-            loop=Mock(),
-            delegate=Mock(),
-            max_message_length=valid_value,
-        )
-        self.assertEqual(queue.max_message_length, valid_value)
-
     async def test_it_raises_an_error_if_its_initialized_with_both_delegate_and_delegate_class(
         self
     ):

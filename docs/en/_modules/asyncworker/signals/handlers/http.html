@@ -34,7 +34,10 @@
 <span></span><span class="kn">from</span> <span class="nn">aiohttp</span> <span class="kn">import</span> <span class="n">web</span>
 
 <span class="kn">from</span> <span class="nn">asyncworker.conf</span> <span class="kn">import</span> <span class="n">settings</span>
-<span class="kn">from</span> <span class="nn">asyncworker.metrics.aiohttp_resources</span> <span class="kn">import</span> <span class="n">metrics_route_handler</span>
+<span class="kn">from</span> <span class="nn">asyncworker.metrics.aiohttp_resources</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">metrics_route_handler</span><span class="p">,</span>
+    <span class="n">http_metrics_middleware</span><span class="p">,</span>
+<span class="p">)</span>
 <span class="kn">from</span> <span class="nn">asyncworker.options</span> <span class="kn">import</span> <span class="n">RouteTypes</span>
 <span class="kn">from</span> <span class="nn">asyncworker.signals.handlers.base</span> <span class="kn">import</span> <span class="n">SignalHandler</span>
 
@@ -44,7 +47,9 @@
         <span class="n">app</span><span class="p">[</span><span class="n">RouteTypes</span><span class="o">.</span><span class="n">HTTP</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="n">routes</span> <span class="o">=</span> <span class="n">app</span><span class="o">.</span><span class="n">routes_registry</span><span class="o">.</span><span class="n">http_routes</span>
 
-        <span class="n">app</span><span class="p">[</span><span class="n">RouteTypes</span><span class="o">.</span><span class="n">HTTP</span><span class="p">][</span><span class="s2">&quot;app&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">http_app</span> <span class="o">=</span> <span class="n">web</span><span class="o">.</span><span class="n">Application</span><span class="p">()</span>
+        <span class="n">app</span><span class="p">[</span><span class="n">RouteTypes</span><span class="o">.</span><span class="n">HTTP</span><span class="p">][</span><span class="s2">&quot;app&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">http_app</span> <span class="o">=</span> <span class="n">web</span><span class="o">.</span><span class="n">Application</span><span class="p">(</span>
+            <span class="n">middlewares</span><span class="o">=</span><span class="p">(</span><span class="n">http_metrics_middleware</span><span class="p">,)</span>
+        <span class="p">)</span>
 
         <span class="k">for</span> <span class="n">route</span> <span class="ow">in</span> <span class="n">routes</span><span class="p">:</span>
             <span class="k">for</span> <span class="n">route_def</span> <span class="ow">in</span> <span class="n">route</span><span class="o">.</span><span class="n">aiohttp_routes</span><span class="p">():</span>

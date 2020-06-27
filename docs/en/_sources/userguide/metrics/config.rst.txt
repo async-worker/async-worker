@@ -8,7 +8,7 @@ Todas as métricas expostas por uma aplicação asyncworker podem ser lidas atra
 
 O path padrão desse endpoint é :py:class:`settings.METRICS_ROUTE_PATH <asyncworker.conf.Settings>`.
 
-Por padrão o endpoint que expõe as métricas já é ativado. Caso queira desligar esse endpoint isso pode ser feito pela envvar ``ASYNCWORKER_METRICS_ROUTE_ENABLED=0``.
+:ref:`Por padrão o endpoint que expõe as métricas já é ativado <asyncworker-auto-metrics>`. Caso queira desligar esse endpoint isso pode ser feito pela envvar ``ASYNCWORKER_METRICS_ROUTE_ENABLED=0``.
 
 
 Formação do nome das métricas
