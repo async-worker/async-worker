@@ -6,10 +6,7 @@ from asyncworker.options import RouteTypes, Options
 from asyncworker.rabbitmq import RabbitMQMessage
 
 amqp_conn = AMQPConnection(
-    hostname="127.0.0.1",
-    username="guest",
-    password="guest",
-    prefetch_count=1024,
+    hostname="127.0.0.1", username="guest", password="guest", prefetch=1024
 )
 
 app = App(connections=[amqp_conn])
