@@ -1,6 +1,6 @@
 import json
 import logging
-from unittest.mock import patch, call, ANY
+from unittest.mock import patch, call, ANY, Mock
 
 import aioamqp
 import asynctest
@@ -575,34 +575,12 @@ class AsyncQueueConsumerHandlerMethodsTests(
 
 
 class EnsureConnectedDecoratorTests(asynctest.TestCase):
-    async def test_it_calls_connect_if_queue_isnt_connected(self):
-        async_queue = Mock(
-            connection=Mock(is_connected=False, _connect=CoroutineMock())
-        )
-        coro = CoroutineMock()
-        wrapped = _ensure_connected(coro)
-        await wrapped(async_queue, 1, dog="Xablau")
-
-        async_queue.connection._connect.assert_awaited_once()
-        coro.assert_awaited_once_with(async_queue, 1, dog="Xablau")
-
-    async def test_it_doesnt_calls_connect_if_queue_is_connected(self):
-        async_queue = Mock(
-            connection=Mock(is_connected=True, _connect=CoroutineMock())
-        )
-        coro = CoroutineMock()
-        wrapped = _ensure_connected(coro)
-        await wrapped(async_queue, 1, dog="Xablau")
-
-        async_queue.connection._connect.assert_not_awaited()
-        coro.assert_awaited_once_with(async_queue, 1, dog="Xablau")
-
     async def test_it_waits_before_trying_to_reconnect_if_connect_fails(self):
         seconds = 666
         async_queue = Mock(
             is_running=True,
             connection=Mock(
-                is_connected=False,
+                has_channel_ready=Mock(return_value=False),
                 _connect=CoroutineMock(side_effect=[ConnectionError, True]),
             ),
             seconds_between_conn_retry=seconds,
@@ -628,7 +606,7 @@ class EnsureConnectedDecoratorTests(asynctest.TestCase):
             is_running=True,
             connection=Mock(
                 _connect=CoroutineMock(side_effect=[ConnectionError, True]),
-                is_connected=False,
+                has_channel_ready=Mock(return_value=False),
             ),
             logger=Mock(spec=logging.Logger),
             connection_fail_callback=None,
@@ -648,7 +626,7 @@ class EnsureConnectedDecoratorTests(asynctest.TestCase):
             is_running=True,
             connection=Mock(
                 _connect=CoroutineMock(side_effect=[error, True]),
-                is_connected=False,
+                has_channel_ready=Mock(return_value=False),
             ),
             connection_fail_callback=CoroutineMock(),
         )

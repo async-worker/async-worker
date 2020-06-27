@@ -5,6 +5,7 @@ import aioamqp
 from aioamqp import AmqpProtocol
 from aioamqp.channel import Channel
 from aioamqp.exceptions import AioamqpException
+from aioamqp.protocol import OPEN
 
 OnErrorCallback = Union[
     None, Callable[[Exception], None], Callable[[Exception], Coroutine]
@@ -50,10 +51,12 @@ class AMQPConnection:
 
     @property
     def is_connected(self) -> bool:
-        if self.channel is None:
-            return False
+        procotol_ok = self._protocol and self._protocol.state == OPEN
+        return procotol_ok
 
-        return self.channel and self.channel.is_open
+    def has_channel_ready(self):
+        channel_ok = self.channel and self.channel.is_open
+        return channel_ok
 
     async def close(self) -> None:
         if not self.is_connected:
@@ -64,7 +67,7 @@ class AMQPConnection:
 
     async def _connect(self) -> None:
         async with self._connection_lock:
-            if self.is_connected:
+            if self.is_connected and self.has_channel_ready():
                 return
 
             try:

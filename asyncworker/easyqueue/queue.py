@@ -84,7 +84,7 @@ def _ensure_connected(coro: Callable[..., Coroutine]):
     @wraps(coro)
     async def wrapper(self: "JsonQueue", *args, **kwargs):
         retries = 0
-        while self.is_running and not self.connection.is_connected:
+        while self.is_running and not self.connection.has_channel_ready():
             try:
                 await self.connection._connect()
                 break
