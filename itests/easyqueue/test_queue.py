@@ -1,7 +1,11 @@
 from aioamqp.protocol import OPEN
 from asynctest import TestCase
 
-from asyncworker.easyqueue.queue import JsonQueue, _ensure_connected
+from asyncworker.easyqueue.queue import (
+    JsonQueue,
+    _ensure_conn_is_ready,
+    ConnType,
+)
 
 
 class EnsureConnectedTest(TestCase):
@@ -9,61 +13,62 @@ class EnsureConnectedTest(TestCase):
         self.queue = JsonQueue(
             host="127.0.0.1", username="guest", password="guest"
         )
-        self.wrapped = _ensure_connected(self._func)
+        self.write_conn = self.queue.conn_for(ConnType.WRITE)
+        self.wrapped = _ensure_conn_is_ready(ConnType.WRITE)(self._func)
 
     async def _func(self, arg1):
         return 42
 
     async def tearDown(self):
-        await self.queue.connection.close()
+        await self.write_conn.close()
 
     async def test_create_new_channel_if_channel_is_closed(self):
         await self.wrapped(self.queue)
 
-        await self.queue.connection.channel.close()
+        await self.write_conn.channel.close()
 
         channel, proto, transp = (
-            self.queue.connection.channel,
-            self.queue.connection._protocol,
-            self.queue.connection._transport,
+            self.write_conn.channel,
+            self.write_conn._protocol,
+            self.write_conn._transport,
         )
 
         self.assertEqual(42, await self.wrapped(self.queue))
 
-        self.assertNotEqual(channel, self.queue.connection.channel)
-        self.assertEqual(proto, self.queue.connection._protocol)
-        self.assertEqual(transp, self.queue.connection._transport)
+        self.assertNotEqual(channel, self.write_conn.channel)
+        self.assertEqual(proto, self.write_conn._protocol)
+        self.assertEqual(transp, self.write_conn._transport)
 
     async def test_do_nothing_if_protocol_and_channel_are_open(self):
         await self.wrapped(self.queue)
 
         channel, proto, transp = (
-            self.queue.connection.channel,
-            self.queue.connection._protocol,
-            self.queue.connection._transport,
+            self.write_conn.channel,
+            self.write_conn._protocol,
+            self.write_conn._transport,
         )
 
         self.assertEqual(42, await self.wrapped(self.queue))
 
-        self.assertEqual(channel, self.queue.connection.channel)
-        self.assertEqual(proto, self.queue.connection._protocol)
-        self.assertEqual(transp, self.queue.connection._transport)
+        self.assertEqual(channel, self.write_conn.channel)
+        self.assertEqual(proto, self.write_conn._protocol)
+        self.assertEqual(transp, self.write_conn._transport)
 
     async def test_recreate_connected_if_protocol_is_closed(self):
         await self.wrapped(self.queue)
 
-        await self.queue.connection.channel.close()
-        await self.queue.connection._protocol.close()
+        await self.write_conn.channel.close()
+        await self.write_conn._protocol.close()
         channel, proto, transp = (
-            self.queue.connection.channel,
-            self.queue.connection._protocol,
-            self.queue.connection._transport,
+            self.write_conn.channel,
+            self.write_conn._protocol,
+            self.write_conn._transport,
         )
 
         self.assertEqual(42, await self.wrapped(self.queue))
 
-        self.assertNotEqual(channel, self.queue.connection.channel)
-        self.assertNotEqual(proto, self.queue.connection._protocol)
-        self.assertNotEqual(transp, self.queue.connection._transport)
-        self.assertTrue(self.queue.connection.channel.is_open)
-        self.assertEqual(self.queue.connection._protocol.state, OPEN)
+        self.assertNotEqual(channel, self.write_conn.channel)
+        self.assertNotEqual(proto, self.write_conn._protocol)
+        self.assertNotEqual(transp, self.write_conn._transport)
+        self.assertTrue(self.write_conn.channel.is_open)
+        self.assertEqual(self.write_conn._protocol.state, OPEN)
