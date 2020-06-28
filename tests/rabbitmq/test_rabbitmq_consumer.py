@@ -593,7 +593,7 @@ class ConsumerTest(asynctest.TestCase):
 
     async def test_restart_all_consumers_if_channel_is_closed(self):
         """
-        Se detectamos que o channel está fechado, deveomos reinicir todos os
+        Se detectamos que o channel está fechado, devemos reiniciar todos os
         consumers. Isso vale pois atualmente todos eles compartilham o mesmo channel.
         """
         self.one_route_fixture["routes"] = [
