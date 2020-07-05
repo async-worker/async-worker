@@ -248,5 +248,11 @@ class RoutesRegistry(UserDict):
     def add_route(self, route: Route) -> None:
         self[route.handler] = route
 
+    def add_http_route(self, route: HTTPRoute) -> None:
+        self[route.handler] = route
+
+    def add_amqp_route(self, route: AMQPRoute) -> None:
+        self[route.handler] = route
+
     def route_for(self, handler: RouteHandler) -> Route:
         return self[handler]

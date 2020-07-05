@@ -2,7 +2,7 @@ import asyncio
 from signal import Signals
 
 import asynctest
-from asynctest import Mock, CoroutineMock, patch, call
+from asynctest import Mock, CoroutineMock, patch, call, skip
 
 from asyncworker.app import App
 from asyncworker.connections import AMQPConnection
@@ -10,6 +10,7 @@ from asyncworker.exceptions import InvalidConnection
 from asyncworker.options import RouteTypes, DefaultValues, Options
 from asyncworker.routes import AMQPRoute
 from asyncworker.task_runners import ScheduledTaskRunner
+from asyncworker.testing import HttpClientContext
 
 
 class AppTests(asynctest.TestCase):
@@ -180,6 +181,27 @@ class AppTests(asynctest.TestCase):
             Runner.assert_called_once_with(
                 seconds=seconds, task=coro, app=self.app, max_concurrency=666
             )
+
+    async def test_http_route_decorator(self):
+        from typing import Optional, List
+        from aiohttp import web
+
+        app = App()
+
+        @app.http.route(["/"], method="GET")
+        async def _h():
+            return web.json_response({})
+
+        @app.http.get(["/other"])
+        async def _h_other():
+            return web.json_response({})
+
+        async with HttpClientContext(app) as client:
+            resp = await client.get("/")
+            self.assertEqual(200, resp.status)
+
+            resp_other = await client.get("/other")
+            self.assertEqual(200, resp_other.status)
 
 
 class AppConnectionsTests(asynctest.TestCase):

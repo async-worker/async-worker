@@ -1,14 +1,29 @@
 import asyncio
-import builtins
+import typing
+from abc import ABC, abstractmethod
 from collections import MutableMapping
 from signal import Signals
-from typing import Iterable, Callable, Coroutine, Dict, Any, Optional
+from typing import (
+    Iterable,
+    Callable,
+    Coroutine,
+    Dict,
+    Any,
+    Optional,
+    List,
+    Generic,
+    TypeVar,
+)
 
+from asyncworker.app_entrypoints import (
+    HTTPEntryPointImpl,
+    AMQPRouteEntryPointImpl,
+)
 from asyncworker.conf import logger
 from asyncworker.connections import ConnectionsMapping, Connection
 from asyncworker.exceptions import InvalidRoute, InvalidConnection
 from asyncworker.options import RouteTypes, Options, DefaultValues
-from asyncworker.routes import RoutesRegistry, Route
+from asyncworker.routes import RoutesRegistry, Route, RouteHandler
 from asyncworker.signals.base import Signal, Freezable
 from asyncworker.signals.handlers.http import HTTPServer
 from asyncworker.signals.handlers.rabbitmq import RabbitMQ
@@ -107,6 +122,14 @@ class App(MutableMapping, Freezable):
         a SIGINT or SIGTERM
         """
         return asyncio.ensure_future(self._on_shutdown.send(self))
+
+    @property
+    def http(self):
+        return HTTPEntryPointImpl(self)
+
+    @property
+    def amqp(self):
+        return AMQPRouteEntryPointImpl(self)
 
     def route(
         self,
