@@ -194,3 +194,19 @@ class AMQPRouteTests(TestCase):
             resp = await client.get("/?a=30&b=42")
             data = await resp.json()
             self.assertEqual({"a": "30", "b": "42"}, data)
+
+    async def test_raises_if_handler_is_not_coroutine(self):
+        """
+        Certifica que um decorator customizado pode receber 
+        uma instânccia de aiohttp.web.Request
+        """
+        app = App()
+
+        def handler(wrapper: RequestWrapper):
+            req = wrapper.http_request
+            return web.json_response(dict(req.query.items()))
+
+        with self.assertRaises(TypeError) as ex:
+            app.route(["/"], type=RouteTypes.HTTP, methods=["GET"])(handler)
+
+        self.assertTrue("handler must be a coroutine" in ex.exception.args[0])
