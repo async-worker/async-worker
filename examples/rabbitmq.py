@@ -17,10 +17,6 @@ app = App(connections=[amqp_conn])
 )
 async def handler(messages: List[RabbitMQMessage]):
     print(f"Received {len(messages)} messages")
-    for m in messages:
-        await amqp_conn.put(
-            data=m.body, exchange="other", routing_key="another-routing-key"
-        )
 
 
 @app.run_every(1)
