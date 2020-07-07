@@ -1,6 +1,7 @@
 import asyncio
 
 import asynctest
+from aioamqp.exceptions import AioamqpException
 from asynctest import Mock, CoroutineMock, call, ANY, mock
 
 from asyncworker.easyqueue.connection import AMQPConnection
@@ -11,19 +12,6 @@ class AMQPConnectionTests(AsyncBaseTestCase, asynctest.TestCase):
     async def setUp(self):
         super(AMQPConnectionTests, self).setUp()
         self.connection = AMQPConnection(**self.conn_params, on_error=Mock())
-
-    async def test_connect_opens_a_connection_communication_channel(self):
-        self.assertFalse(self.connection.is_connected)
-        self.assertIsNone(self.connection._protocol)
-        self.assertIsNone(self.connection._transport)
-        self.assertIsNone(self.connection.channel)
-
-        await self.connection._connect()
-
-        self.assertTrue(self.connection.is_connected)
-        self.assertEqual(self.connection._protocol, self._protocol)
-        self.assertEqual(self.connection._transport, self._transport)
-        self.assertIsNotNone(self.connection.channel)
 
     async def test_connection_lock_ensures_amqp_connect_is_only_called_once(
         self
@@ -59,23 +47,3 @@ class AMQPConnectionTests(AsyncBaseTestCase, asynctest.TestCase):
                 )
             ],
         )
-
-    async def test_it_closes_the_connection(self):
-        await self.connection._connect()
-        await self.connection.close()
-
-        self.assertTrue(self._protocol.close.called)
-        self.assertTrue(self._transport.close.called)
-
-    async def test_is_does_not_close_if_already_closed(self):
-
-        with mock.patch.object(
-            self.connection, "_protocol", CoroutineMock(close=CoroutineMock())
-        ) as _protocol, mock.patch.object(
-            self.connection, "_transport"
-        ) as _transport:
-
-            await self.connection.close()
-
-            self.assertEqual(0, _protocol.close.await_count)
-            self.assertEqual(0, _transport.close.call_count)
