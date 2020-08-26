@@ -1,16 +1,10 @@
 from abc import ABC
 from asyncio import iscoroutinefunction
-from typing import Generic, TypeVar, List, Optional
+from typing import Generic, TypeVar, List
 
 import asyncworker
 from asyncworker.http import HTTPMethods
-from asyncworker.routes import (
-    RoutesRegistry,
-    HTTPRoute,
-    RouteHandler,
-    AMQPRoute,
-    _AMQPRouteOptions,
-)
+from asyncworker.routes import RoutesRegistry, HTTPRoute, RouteHandler
 
 T = TypeVar("T")
 
@@ -44,22 +38,6 @@ def _register_http_handler(
     return _wrap
 
 
-def _register_amqp_handler(
-    registry: RoutesRegistry,
-    routes: List[str],
-    options: Optional[_AMQPRouteOptions],
-):
-    def _wrap(f):
-
-        cb = _extract_async_callable(f)
-        route = AMQPRoute(handler=cb, routes=routes, options=options)
-        registry.add_amqp_route(route)
-
-        return f
-
-    return _wrap
-
-
 class EntrypointInterface(ABC, Generic[T]):
     def __init__(self, app: "asyncworker.App") -> None:
         self.app = app
@@ -86,12 +64,3 @@ class HTTPEntryPointImpl(EntrypointInterface):
 
     def put(self, routes: List[str]):
         return self.route(routes=routes, method=HTTPMethods.PUT)
-
-
-class AMQPRouteEntryPointImpl(EntrypointInterface):
-    def consume(
-        self,
-        routes: List[str],
-        options: Optional[_AMQPRouteOptions] = _AMQPRouteOptions(),
-    ):
-        return _register_amqp_handler(self.app.routes_registry, routes, options)

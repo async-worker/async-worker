@@ -3,7 +3,7 @@ from asynctest import CoroutineMock, TestCase
 
 from asyncworker import RouteTypes, App
 from asyncworker.http.wrapper import RequestWrapper
-from asyncworker.options import DefaultValues, Actions
+from asyncworker.options import Actions
 from asyncworker.routes import (
     call_http_handler,
     RoutesRegistry,
@@ -223,7 +223,7 @@ class HTTPRouteRegisterTest(TestCase):
 
     async def test_handler_receives_request_object(self):
         """
-        Certifica que um decorator customizado pode receber 
+        Certifica que um decorator customizado pode receber
         uma instânccia de aiohttp.web.Request
         """
         app = App()
@@ -247,7 +247,7 @@ class HTTPRouteRegisterTest(TestCase):
 
     async def test_custom_decorator_receives_request_wrapper(self):
         """
-        Certifica que um decorator customizado pode receber 
+        Certifica que um decorator customizado pode receber
         uma instância de asyncworker.http.wrapper.RequestWrapper
         """
         app = App()
@@ -381,7 +381,7 @@ class AMQPRouteRegiterTest(TestCase):
 
     async def test_raises_if_handler_is_not_coroutine(self):
         """
-        Certifica que um decorator customizado pode receber 
+        Certifica que um decorator customizado pode receber
         uma instânccia de aiohttp.web.Request
         """
         app = App()

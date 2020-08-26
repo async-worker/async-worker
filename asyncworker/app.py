@@ -5,9 +5,10 @@ from typing import Iterable, Callable, Coroutine, Dict, Any, Optional
 
 from asyncworker.conf import logger
 from asyncworker.connections import ConnectionsMapping, Connection
-from asyncworker.entrypoints import HTTPEntryPointImpl, AMQPRouteEntryPointImpl
+from asyncworker.entrypoints import HTTPEntryPointImpl
 from asyncworker.exceptions import InvalidRoute, InvalidConnection
 from asyncworker.options import RouteTypes, Options, DefaultValues
+from asyncworker.rabbitmq.entrypoints import AMQPRouteEntryPointImpl
 from asyncworker.routes import RoutesRegistry, Route
 from asyncworker.signals.base import Signal, Freezable
 from asyncworker.signals.handlers.http import HTTPServer
