@@ -135,6 +135,10 @@ class App(MutableMapping, Freezable):
             if not asyncio.iscoroutinefunction(handler):
                 try:
                     handler = f.__call__
+                    if not asyncio.iscoroutinefunction(handler):
+                        raise TypeError(
+                            f"handler must be a coroutine: {handler}"
+                        )
                 except AttributeError:
                     raise TypeError(
                         f"Object passed as handler is not callable: {f}"

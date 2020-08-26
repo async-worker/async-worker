@@ -193,7 +193,7 @@ class Consumer(QueueConsumerDelegate):
 
     async def start(self):
         while self.keep_runnig():
-            if not self.queue.connection.is_connected:
+            if not self.queue.connection.has_channel_ready():
                 try:
                     await self.consume_all_queues(self.queue)
 
