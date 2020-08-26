@@ -1,8 +1,10 @@
 import asyncio
+from http import HTTPStatus
 from signal import Signals
 
 import asynctest
-from asynctest import Mock, CoroutineMock, patch, call, skip
+from aiohttp import web
+from asynctest import Mock, CoroutineMock, patch, call
 
 from asyncworker.app import App
 from asyncworker.connections import AMQPConnection
@@ -183,8 +185,6 @@ class AppTests(asynctest.TestCase):
             )
 
     async def test_http_route_decorator(self):
-        from typing import Optional, List
-        from aiohttp import web
 
         app = App()
 
@@ -192,16 +192,96 @@ class AppTests(asynctest.TestCase):
         async def _h():
             return web.json_response({})
 
-        @app.http.get(["/other"])
-        async def _h_other():
-            return web.json_response({})
-
         async with HttpClientContext(app) as client:
             resp = await client.get("/")
             self.assertEqual(200, resp.status)
 
-            resp_other = await client.get("/other")
-            self.assertEqual(200, resp_other.status)
+            data = await resp.json()
+            self.assertEqual({}, data)
+
+    async def test_http_get_decorator(self):
+        app = App()
+
+        @app.http.get(["/"])
+        async def _handler():
+            return web.json_response({})
+
+        async with HttpClientContext(app) as client:
+            resp = await client.get("/")
+            self.assertEqual(HTTPStatus.OK, resp.status)
+
+            data = await resp.json()
+            self.assertEqual({}, data)
+
+    async def test_http_head_decorator(self):
+        app = App()
+
+        @app.http.head(["/"])
+        async def _handler():
+            return web.json_response({"OK": True})
+
+        async with HttpClientContext(app) as client:
+            resp = await client.head("/")
+            self.assertEqual(HTTPStatus.OK, resp.status)
+
+            data = await resp.json()
+            self.assertIsNone(data)
+
+    async def test_http_delete_decorator(self):
+        app = App()
+
+        @app.http.delete(["/"])
+        async def _handler():
+            return web.json_response({"DELETE": True})
+
+        async with HttpClientContext(app) as client:
+            resp = await client.delete("/")
+            self.assertEqual(HTTPStatus.OK, resp.status)
+
+            data = await resp.json()
+            self.assertEqual({"DELETE": True}, data)
+
+    async def test_http_patch_decorator(self):
+        app = App()
+
+        @app.http.patch(["/"])
+        async def _handler():
+            return web.json_response({"PATCH": True})
+
+        async with HttpClientContext(app) as client:
+            resp = await client.patch("/", json={})
+            self.assertEqual(HTTPStatus.OK, resp.status)
+
+            data = await resp.json()
+            self.assertEqual({"PATCH": True}, data)
+
+    async def test_http_post_decorator(self):
+        app = App()
+
+        @app.http.post(["/"])
+        async def _handler():
+            return web.json_response({"POST": True})
+
+        async with HttpClientContext(app) as client:
+            resp = await client.post("/", json={})
+            self.assertEqual(HTTPStatus.OK, resp.status)
+
+            data = await resp.json()
+            self.assertEqual({"POST": True}, data)
+
+    async def test_http_put_decorator(self):
+        app = App()
+
+        @app.http.put(["/"])
+        async def _handler():
+            return web.json_response({"PUT": True})
+
+        async with HttpClientContext(app) as client:
+            resp = await client.put("/", json={})
+            self.assertEqual(HTTPStatus.OK, resp.status)
+
+            data = await resp.json()
+            self.assertEqual({"PUT": True}, data)
 
 
 class AppConnectionsTests(asynctest.TestCase):

@@ -71,6 +71,21 @@ class HTTPEntryPointImpl(EntrypointInterface):
     def get(self, routes: List[str]):
         return self.route(routes=routes, method="GET")
 
+    def head(self, routes: List[str]):
+        return self.route(routes=routes, method="HEAD")
+
+    def delete(self, routes: List[str]):
+        return self.route(routes=routes, method="DELETE")
+
+    def patch(self, routes: List[str]):
+        return self.route(routes=routes, method="PATCH")
+
+    def post(self, routes: List[str]):
+        return self.route(routes=routes, method="POST")
+
+    def put(self, routes: List[str]):
+        return self.route(routes=routes, method="PUT")
+
 
 class AMQPRouteEntryPointImpl(EntrypointInterface):
     def consume(
