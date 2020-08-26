@@ -3,6 +3,7 @@ from asyncio import iscoroutinefunction
 from typing import Generic, TypeVar, List, Optional
 
 import asyncworker
+from asyncworker.http import HTTPMethods
 from asyncworker.routes import (
     RoutesRegistry,
     HTTPRoute,
@@ -69,22 +70,22 @@ class HTTPEntryPointImpl(EntrypointInterface):
         return _register_http_handler(self.app.routes_registry, routes, method)
 
     def get(self, routes: List[str]):
-        return self.route(routes=routes, method="GET")
+        return self.route(routes=routes, method=HTTPMethods.GET)
 
     def head(self, routes: List[str]):
-        return self.route(routes=routes, method="HEAD")
+        return self.route(routes=routes, method=HTTPMethods.HEAD)
 
     def delete(self, routes: List[str]):
-        return self.route(routes=routes, method="DELETE")
+        return self.route(routes=routes, method=HTTPMethods.DELETE)
 
     def patch(self, routes: List[str]):
-        return self.route(routes=routes, method="PATCH")
+        return self.route(routes=routes, method=HTTPMethods.PATCH)
 
     def post(self, routes: List[str]):
-        return self.route(routes=routes, method="POST")
+        return self.route(routes=routes, method=HTTPMethods.POST)
 
     def put(self, routes: List[str]):
-        return self.route(routes=routes, method="PUT")
+        return self.route(routes=routes, method=HTTPMethods.PUT)
 
 
 class AMQPRouteEntryPointImpl(EntrypointInterface):
