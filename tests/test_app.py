@@ -9,6 +9,7 @@ from asynctest import Mock, CoroutineMock, patch, call
 from asyncworker.app import App
 from asyncworker.connections import AMQPConnection
 from asyncworker.exceptions import InvalidConnection
+from asyncworker.http import HTTPMethods
 from asyncworker.options import RouteTypes, DefaultValues, Options
 from asyncworker.routes import AMQPRoute
 from asyncworker.task_runners import ScheduledTaskRunner
@@ -188,7 +189,7 @@ class AppTests(asynctest.TestCase):
 
         app = App()
 
-        @app.http.route(["/"], method="GET")
+        @app.http.route(["/"], method=HTTPMethods.GET)
         async def _h():
             return web.json_response({})
 
@@ -232,56 +233,56 @@ class AppTests(asynctest.TestCase):
 
         @app.http.delete(["/"])
         async def _handler():
-            return web.json_response({"DELETE": True})
+            return web.json_response({HTTPMethods.DELETE: True})
 
         async with HttpClientContext(app) as client:
             resp = await client.delete("/")
             self.assertEqual(HTTPStatus.OK, resp.status)
 
             data = await resp.json()
-            self.assertEqual({"DELETE": True}, data)
+            self.assertEqual({HTTPMethods.DELETE: True}, data)
 
     async def test_http_patch_decorator(self):
         app = App()
 
         @app.http.patch(["/"])
         async def _handler():
-            return web.json_response({"PATCH": True})
+            return web.json_response({HTTPMethods.PATCH: True})
 
         async with HttpClientContext(app) as client:
             resp = await client.patch("/", json={})
             self.assertEqual(HTTPStatus.OK, resp.status)
 
             data = await resp.json()
-            self.assertEqual({"PATCH": True}, data)
+            self.assertEqual({HTTPMethods.PATCH: True}, data)
 
     async def test_http_post_decorator(self):
         app = App()
 
         @app.http.post(["/"])
         async def _handler():
-            return web.json_response({"POST": True})
+            return web.json_response({HTTPMethods.POST: True})
 
         async with HttpClientContext(app) as client:
             resp = await client.post("/", json={})
             self.assertEqual(HTTPStatus.OK, resp.status)
 
             data = await resp.json()
-            self.assertEqual({"POST": True}, data)
+            self.assertEqual({HTTPMethods.POST: True}, data)
 
     async def test_http_put_decorator(self):
         app = App()
 
         @app.http.put(["/"])
         async def _handler():
-            return web.json_response({"PUT": True})
+            return web.json_response({HTTPMethods.PUT: True})
 
         async with HttpClientContext(app) as client:
             resp = await client.put("/", json={})
             self.assertEqual(HTTPStatus.OK, resp.status)
 
             data = await resp.json()
-            self.assertEqual({"PUT": True}, data)
+            self.assertEqual({HTTPMethods.PUT: True}, data)
 
 
 class AppConnectionsTests(asynctest.TestCase):
