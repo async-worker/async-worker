@@ -18,7 +18,7 @@ Isso significa que a assinatura dos seus handlers são fixas, ou seja, todos ele
     ...
 
 
-Como no caso de handlers RabitMQ é preciso ter uma conexão prévia com o servidor d e filas, precisamos criar uma instância de :py:class:`asyncworker.connections.AMQPConnection`. Essa instância deve ser passada no momento da criação de sua :ref:`Asyncworker App <asyncworker-app>`.
+Como no caso de handlers RabitMQ é preciso ter uma conexão prévia com o servidor de filas, precisamos criar uma instância de :py:class:`asyncworker.connections.AMQPConnection`. Essa instância deve ser passada no momento da criação de sua :ref:`Asyncworker App <asyncworker-app>`.
 
 Essa instância de conexão pode também ser usada dentro do handler, caso necessário.
 
@@ -31,7 +31,6 @@ Um exemplo disso é quando precisamos de um handler que lê mensagens de um fila
 
   from asyncworker import App
   from asyncworker.connections import AMQPConnection
-  from asyncworker.options import RouteTypes
   from asyncworker.rabbitmq import RabbitMQMessage
 
   amqp_conn = AMQPConnection(
@@ -44,7 +43,7 @@ Um exemplo disso é quando precisamos de um handler que lê mensagens de um fila
   app = App(connections=[amqp_conn])
 
 
-  @app.route(["original_queue"], type=RouteTypes.AMQP_RABBITMQ)
+  @app.amqp.consume(["original_queue"])
   async def handler(messages: List[RabbitMQMessage]):
       await amqp_conn.put(
           data={"dogs": ["Xablau", "Xena"]},
@@ -58,7 +57,7 @@ se a fila de destino estiver um outro virtual host, basta pegar uma nova conexã
 .. code-block:: python
 
 
-  @app.route(["original_queue"], type=RouteTypes.AMQP_RABBITMQ)
+  @app.amqp.consume(["original_queue"])
   async def handler(messages: List[RabbitMQMessage]):
       await amqp_conn["other-vhost"].put(
           data={"dogs": ["Xablau", "Xena"]},

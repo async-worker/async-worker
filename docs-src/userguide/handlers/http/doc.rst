@@ -5,7 +5,7 @@ Regras para criação de um handler HTTP
 
 Todo handler HTTP deve seguir algumas regras:
 
- - Deve sempre ser decorato com :ref:`@app.route() <asyncworker-app-handler>`
+ - Deve sempre ser decorado com :ref:`@app.http.*() <supported-methods>`
  - Deve declarar seus parametros sempre com definição de tipos, pois é assim que o asyncworker saberá passar :ref:`parametros dinâmicos <handler-path-param>` para o handler.
  - Um handler pode não receber nenhum parâmetro. Para isso basta a assinatura do handler ser vazia.
 
@@ -14,14 +14,39 @@ Alguns objetos já são passados ao handler, caso estejam presentes em sua assin
  - Uma instância de :py:class:`asyncworker.http.wrapper.RequestWrapper`.
 
 
-Parametrização do decorator route() para handlers HTTP
-=======================================================
+Métodos HTTP suportados
+=======================
 
-Para um handler HTTP deveremos passar os seguintes parametros para o decorator ``route()``:
+.. _supported-methods:
+.. versionadded:: 0.15.2
 
-  - Lista de paths que devem estar na Request HTTP para que esse handler seja chamado;
-  - ``type=RouteTypes.HTTP``
-  - ``methods`` sendo uma lista de métodos HTTP permitidos para esse handler
+Para definirmos qual método HTTP nosso handler vai responder, devemos usar um dos decorators que estão disponíveis abaixo de `app.http.*`. Atualmente temos:
+
+- ``@app.http.get()``
+- ``@app.http.post()``
+- ``@app.http.put()``
+- ``@app.http.patch()``
+- ``@app.http.delete()``
+- ``@app.http.head()``
+
+Esses decorators recebem como parametro uma lista de paths que serão respondidos pelo handler decorado. Exemplo:
+
+.. code-block:: python
+
+
+  from aiohttp import web
+
+  from asyncworker import App
+  from asyncworker.http.decorators import parse_path
+  from asyncworker.http.wrapper import RequestWrapper
+
+  app = App()
+
+
+  @app.http.get(["/", "/other"])
+  async def handler():
+      return web.json_response({})
+
 
 Parametros no path podem ser definidos cercando com ``{}``, ex: ``/users/{user_id}``. Mais delathes em como receber esses valores em seu handler :ref:`aqui <handler-path-param>`.
 
@@ -62,7 +87,7 @@ Importante notar que como estamos lidando com um objeto ele precisará ser insta
 
   h = Handler()
 
-  @app.route(...)
+  @app.http.get(...)
   h
 
 Por isso esses handlers precisam ser registrados chamando o decorator manualmente, assim:
@@ -112,7 +137,7 @@ Um exemplo de como popular esse registry é através de um decorator aplicado di
 
       return _wrapper
 
-  @app.route(["/"], type=RouteTypes.HTTP, methods=["GET"])
+  @app.http.get(["/"])
   @auth_required
   async def handler(user: User):
       return web.json_response({})
@@ -135,7 +160,7 @@ Importante notar que, primeiro o asyncworker vai procurar nosso parametro pelo n
 
 .. code-block:: python
 
-  @app.route(["/by_id/{_id}"], type=RouteTypes.HTTP, methods=["GET"])
+  @app.http.get(["/by_id/{_id}"])
   @parse_path
   async def by_id(_id: int):
       return web.json_response({})

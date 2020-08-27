@@ -1,25 +1,25 @@
-Parametros adicionais para o decorator route()
-----------------------------------------------
+Parametros adicionais para o decorator app.amqp.consume()
+---------------------------------------------------------
 
-Para um handler RabbitMQ o decortor ``route()`` pode receber alguns parametros adicionais.
+Para um handler RabbitMQ o decorator ``@app.amqp.consume()`` pode receber alguns parametros adicionais.
 
   - Lista de filas de onde esse handler receberá mensagens
-  - ``type=RouteTypes.AMQP_RABBITMQ``
   - ``vhost``: Indica em qual vhost as filas estatão definidas. Se não passarmos nada será usado ``vhost="/"``
-  - ``options`` pode ser um dicionário compatível com o modelo `asyncworker.routes._AMQPRouteOptions <https://github.com/b2wdigital/async-worker/blob/691549d296f7dc2f8dfc0c58452ccd1f88375847/asyncworker/routes.py#L119-L124>`_.
+  - ``options`` é uma instância do objeto :py:class:`asyncworker.rabbitmq.AMQPRouteOptions <asyncworker.routes.AMQPRouteOptions>`.
 
 Exemplo de valores para o campo options
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. _rabbitmq-options:
 
-o dicionário ``options`` pode ter as seguintes chaves:
+O objeto :py:class:`AMQPRouteOptions <asyncworker.routes.AMQPRouteOptions>` pode ter os seguintes atributos:
 
-  - :py:attr:`Options.BULK_SIZE <asyncworker.options.Options.BULK_SIZE>`: Esse valor é um inteiro e diz qual será o tamanho máximo da lista que o handler vai receber, a cada vez que for chamado.
-  - :py:attr:`Options.BULK_FLUSH_INTERVAL <asyncworker.options.Options.BULK_FLUSH_INTERVAL>`: Inteiro e diz o tempo máximo que o bulk de mensagens poderá ficar com tamanho menor do que ``bulk_size``. Exemplo: Se seu handler tem um bulk_size de 4096 mensagens mas você recebe apenas 100 msg/min na fila em alguns momentos seu handler será chamado recebendo uma lista de mensagens **menor** do que 4096.
-  - :py:attr:`Options.CONNECTION_FAIL_CALLBACK <asyncworker.options.Options.CONNECTION_FAIL_CALLBACK>`: Função assíncrona que é chamada caso haja uma falha durante a conexão com o broker. Essa função recebe a exceção que ocorreu e o número de retentativas que falharam até então. O número de retentativas é zerado quando o app consegue se conectar com o broker.
-  - :py:attr:`Events.ON_SUCCESS <asyncworker.options.Events.ON_SUCCESS>`: Diz qual será a ação tomada pelo asyncworker quando uma chamada a um handler for concluída com sucesso, ou seja, o handler não lançar nenhuma exception. O Valor padrão é :py:attr:`Actions.ACK <asyncworker.options.Actions.ACK>`
-  - :py:attr:`Events.ON_EXCEPTION <asyncworker.options.Events.ON_EXCEPTION>`: Diz qual será a ação padrão quando a chamada a um handler lançar uma excação não tratada. O valor padrão é :py:attr:`Actions.REQUEUE <asyncworker.options.Actions.REQUEUE>`
+  - ``bulk_size``: Esse valor é um inteiro e diz qual será o tamanho máximo da lista que o handler vai receber, a cada vez que for chamado.
+  - ``bulk_flush_interval``: Inteiro e diz o tempo máximo que o bulk de mensagens poderá ficar com tamanho menor do que ``bulk_size``. Exemplo: Se seu handler tem um bulk_size de 4096 mensagens mas você recebe apenas 100 msg/min na fila em alguns momentos seu handler será chamado recebendo uma lista de mensagens **menor** do que 4096.
+  - ``connection_fail_callback``: Função assíncrona que é chamada caso haja uma falha durante a conexão com o broker. Essa função recebe a exceção que ocorreu e o número de retentativas que falharam até então. O número de retentativas é zerado quando o app consegue se conectar com o broker.
+  - ``on_success``: Diz qual será a ação tomada pelo asyncworker quando uma chamada a um handler for concluída com sucesso, ou seja, o handler não lançar nenhuma exception. O Valor padrão é :py:attr:`Actions.ACK <asyncworker.options.Actions.ACK>`
+  - ``on_exception``: Diz qual será a ação padrão quando a chamada a um handler lançar uma excação não tratada. O valor padrão é :py:attr:`Actions.REQUEUE <asyncworker.options.Actions.REQUEUE>`
+  - ``connection``: Recebe um objeto :py:class:`AMQPConnection <asyncworker.connections.AMQPConnection>`. Esse atributo é muito útil quando sua app se conecta a mais de um broker AMQP.
 
 
 Exemplo de um código que usa essas opções:
@@ -27,24 +27,56 @@ Exemplo de um código que usa essas opções:
 .. code-block:: python
 
   from asyncworker import App
-  from asyncworker.options import Options, Actions, Events
+  from asyncworker.options import Actions
+  from asyncworker.rabbitmq.AMQPRouteOptions
 
   async def fail_handler(e: Exception, n: int):
       print(f"error: {e}, retries {n}")
 
-  @app.route(
+  @app.amqp.consume(
       ["queue"],
-      options={
-          Options.BULK_SIZE: 1000,
-          Options.BULK_FLUSH_INTERVAL: 60,
-          Options.CONNECTION_FAIL_CALLBACK: fail_handler,
-          Events.ON_SUCCESS: Actions.ACK,
-          Events.ON_EXCEPTION: Actions.REJECT,
-      },
+      options=AMQPRouteOptions(
+          bulk_size=60,
+          bulk_flush_interval=10,
+          on_success=Actions.ACK,
+          on_exception=Actions.REJECT,
+      ),
   )
   async def _handler(messages):
       pass
 
+
+Consumindo de filas de outros virtualhosts
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+É possível consumir de filas que estão em outros vistualhosts do mesmo broker. Para isso basta passar o parametro ``vhost`` para do decorator ``@app.amqp.consume()``. Exemplo:
+
+
+.. code-block:: python
+
+  from asyncworker import App
+  from asyncworker.options import Options, Actions, Events
+  from asyncworker.rabbitmq.AMQPRouteOptions
+
+  async def fail_handler(e: Exception, n: int):
+      print(f"error: {e}, retries {n}")
+
+  @app.amqp.consume(
+      ["queue"],
+      vhost="logs",
+      options=AMQPRouteOptions(
+          bulk_size=60,
+          bulk_flush_interval=10,
+          on_success=Actions.ACK,
+          on_exception=Actions.REJECT,
+      ),
+  )
+  async def _handler(messages):
+      pass
+
+
+
+Nesse caso esse handler consome a fila ``queue`` do virtualhost ``logs``.
 
 Uma nota sobre bulk_size e prefetch
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -68,7 +100,7 @@ Nesse caso a ``app`` irá esperar o timeout do flush para liberar essas mensagen
 Caso queira alterar o tempo default do timeout do flush basta definir env ``ASYNCWORKER_FLUSH_TIMEOUT`` com um número que representará os segundos em que a app irá esperar para realizar o flush.
 
 Também é possível alterar o tempo do timeout do flush definindo o campo ``Options.BULK_FLUSH_INTERVAL`` do dicionário ``options`` passado como parâmetro na criação da rota.
-O valor passado para o dicionário ``options`` tem precedência sobre a variável de ambiente ``ASYNCWORKER_FLUSH_TIMEOUT``.
+O valor passado para o parametro ``options`` tem precedência sobre a variável de ambiente ``ASYNCWORKER_FLUSH_TIMEOUT``.
 
 
 
@@ -78,9 +110,9 @@ Exemplo de um código mais completo
 .. code-block:: python
 
   from typing import List
-  from asyncworker import App, RouteTypes
+  from asyncworker import App
   from asyncworker.connections import AMQPConnection
-  from asyncworker.rabbitmq.message import RabbitMQMessage
+  from asyncworker.rabbitmq import RabbitMQMessage, AMQPRouteOptions
 
 
   amqp_conn = AMQPConnection(
@@ -92,12 +124,15 @@ Exemplo de um código mais completo
 
   app = App(connections=[amqp_conn])
 
-  @app.route(["asgard/counts", "asgard/counts/errors"],
-             type=RouteTypes.AMQP_RABBITMQ,
-             vhost="fluentd")
+
+  @app.amqp.consume(
+      ["asgard/counts", "asgard/counts/errors"],
+      vhost="fluentd",
+      options=AMQPRouteOptions(bulk_size=60, bulk_flush_interval=10),
+  )
   async def drain_handler(messages: List[RabbitMQMessage]):
       for m in messages:
-        print(m)
+          print(m)
 
 
 Nesse exemplo, o handler ``drain_handler()`` recebe mensagens de ambas as filas: ``asgard/counts`` e ``asgard/counts/errors``.
