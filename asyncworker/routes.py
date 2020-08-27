@@ -144,7 +144,7 @@ class HTTPRoute(Route):
                 )
 
 
-class _AMQPRouteOptions(_RouteOptions):
+class AMQPRouteOptions(_RouteOptions):
     bulk_size: int = DefaultValues.BULK_SIZE
     bulk_flush_interval: int = DefaultValues.BULK_FLUSH_INTERVAL
     on_success: Actions = DefaultValues.ON_SUCCESS
@@ -161,7 +161,7 @@ class _AMQPRouteOptions(_RouteOptions):
 class AMQPRoute(Route):
     type: RouteTypes = RouteTypes.AMQP_RABBITMQ
     vhost: str = conf.settings.AMQP_DEFAULT_VHOST
-    options: _AMQPRouteOptions
+    options: AMQPRouteOptions
 
 
 class _SSERouteOptions(_RouteOptions):

@@ -9,7 +9,7 @@ from asyncworker.routes import (
     RoutesRegistry,
     HTTPRoute,
     AMQPRoute,
-    _AMQPRouteOptions,
+    AMQPRouteOptions,
 )
 from asyncworker.testing import HttpClientContext
 
@@ -103,7 +103,7 @@ class RoutesRegistryTests(TestCase):
         route = AMQPRoute(
             handler=CoroutineMock(),
             routes=["queue1", "queue2"],
-            options=_AMQPRouteOptions(),
+            options=AMQPRouteOptions(),
         )
 
         self.routes_registry.add_amqp_route(route)
@@ -364,7 +364,7 @@ class AMQPRouteRegiterTest(TestCase):
     async def test_register_handler_with_options(self):
         app = App()
 
-        options = _AMQPRouteOptions(
+        options = AMQPRouteOptions(
             bulk_size=1024,
             bulk_flush_intereval=10,
             on_success=Actions.ACK,
