@@ -20,7 +20,7 @@ Métodos HTTP suportados
 .. _supported-methods:
 .. versionadded:: 0.15.2
 
-Para definirmos qual método HTTP nosso handler vai responder, devemos usar um dos decorators que estão disponíveis abaixo de `app.http.*`. Atualmente temos:
+Para definirmos qual método HTTP nosso handler vai responder, devemos usar um dos decorators que estão disponíveis abaixo de ``app.http.*``. Atualmente temos:
 
 - ``@app.http.get()``
 - ``@app.http.post()``
@@ -49,6 +49,24 @@ Esses decorators recebem como parametro uma lista de paths que serão respondido
 
 
 Parametros no path podem ser definidos cercando com ``{}``, ex: ``/users/{user_id}``. Mais delathes em como receber esses valores em seu handler :ref:`aqui <handler-path-param>`.
+
+
+Usando métodos não suportados pelo asyncworker
+==============================================
+
+Eventualmente você pode precisar registrar um handler que responde por um método HTTP que não possui um decorator específico. Nesse caso você pode usar o decorator ``@app.http._route()`` para regisgtrar esse handler.
+
+Mas lembre-se que você está usando uma API interna do asyncworker e que não há garantias de que essa inteface seja mantida estável. O ideal é que o método que você precisa seja adicionado ao projeto.
+
+Um exemplo de handler que usa um método HTTP qualquer:
+
+.. code-block:: python
+
+  @app.http.route(["/bla"], method="CONTINUE")
+  async def handler(...):
+    pass
+
+
 
 
 ENVs para escolher a porta e o IP onde o server http estará escutando

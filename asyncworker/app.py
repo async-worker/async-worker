@@ -110,11 +110,11 @@ class App(MutableMapping, Freezable):
         return asyncio.ensure_future(self._on_shutdown.send(self))
 
     @property
-    def http(self):
+    def http(self) -> HTTPEntryPointImpl:
         return HTTPEntryPointImpl(self)
 
     @property
-    def amqp(self):
+    def amqp(self) -> AMQPRouteEntryPointImpl:
         return AMQPRouteEntryPointImpl(self)
 
     def route(

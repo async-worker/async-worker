@@ -189,7 +189,7 @@ class AppTests(asynctest.TestCase):
 
         app = App()
 
-        @app.http.route(["/"], method=HTTPMethods.GET)
+        @app.http._route(["/"], method=HTTPMethods.GET)
         async def _h():
             return web.json_response({})
 
