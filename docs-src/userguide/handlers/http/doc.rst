@@ -1,7 +1,7 @@
 
 
-Regras para criação de um handler HTTP
-======================================
+Registrando um novo handler HTTP
+=================================
 
 Todo handler HTTP deve seguir algumas regras:
 
@@ -62,7 +62,7 @@ Um exemplo de handler que usa um método HTTP qualquer:
 
 .. code-block:: python
 
-  @app.http.route(["/bla"], method="CONTINUE")
+  @app.http._route(["/bla"], method="CONTINUE")
   async def handler(...):
     pass
 
@@ -118,7 +118,7 @@ Por isso esses handlers precisam ser registrados chamando o decorator manualment
 
   h = Handler()
 
-  app.route(...)(h)
+  app.http.get(...)(h)
 
 
 .. _typed-handlers:

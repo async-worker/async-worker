@@ -3,9 +3,10 @@ Parametros adicionais para o decorator app.amqp.consume()
 
 Para um handler RabbitMQ o decorator ``@app.amqp.consume()`` pode receber alguns parametros adicionais.
 
-  - Lista de filas de onde esse handler receberá mensagens
+  - ``queues``: Lista de filas de onde esse handler receberá mensagens
   - ``vhost``: Indica em qual vhost as filas estatão definidas. Se não passarmos nada será usado ``vhost="/"``
-  - ``options`` é uma instância do objeto :py:class:`asyncworker.rabbitmq.AMQPRouteOptions <asyncworker.routes.AMQPRouteOptions>`.
+  - ``connection``: Serve para passar manualmente um objeto :py:class:`AMQPConnection <asyncworker.connections.AMQPConnection>` para esse handler. Isso é útil quando sua app se conecta a mais de um broker simultaneamente;
+  - ``options``: É uma instância do objeto :py:class:`asyncworker.rabbitmq.AMQPRouteOptions <asyncworker.routes.AMQPRouteOptions>`.
 
 Exemplo de valores para o campo options
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -19,7 +20,6 @@ O objeto :py:class:`AMQPRouteOptions <asyncworker.routes.AMQPRouteOptions>` pode
   - ``connection_fail_callback``: Função assíncrona que é chamada caso haja uma falha durante a conexão com o broker. Essa função recebe a exceção que ocorreu e o número de retentativas que falharam até então. O número de retentativas é zerado quando o app consegue se conectar com o broker.
   - ``on_success``: Diz qual será a ação tomada pelo asyncworker quando uma chamada a um handler for concluída com sucesso, ou seja, o handler não lançar nenhuma exception. O Valor padrão é :py:attr:`Actions.ACK <asyncworker.options.Actions.ACK>`
   - ``on_exception``: Diz qual será a ação padrão quando a chamada a um handler lançar uma excação não tratada. O valor padrão é :py:attr:`Actions.REQUEUE <asyncworker.options.Actions.REQUEUE>`
-  - ``connection``: Recebe um objeto :py:class:`AMQPConnection <asyncworker.connections.AMQPConnection>`. Esse atributo é muito útil quando sua app se conecta a mais de um broker AMQP.
 
 
 Exemplo de um código que usa essas opções:
@@ -78,6 +78,54 @@ Consumindo de filas de outros virtualhosts
 
 Nesse caso esse handler consome a fila ``queue`` do virtualhost ``logs``.
 
+
+Consumindo de filas de brokers diferentes
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+É possível consumir, de forma concorrente, de brokers diferentes. Basta que pra isso tenhamos duas conexões distintas e que passemos uma das conexões na hora de regisgtrar nossos handlers. Assim:
+
+.. code-block:: python
+
+  from datetime import datetime
+  from typing import List
+
+  from asyncworker import App
+  from asyncworker.connections import AMQPConnection
+  from asyncworker.http.methods import HTTPMethods
+  from asyncworker.options import Actions, Events, Options
+  from asyncworker.rabbitmq import RabbitMQMessage, AMQPRouteOptions
+
+  amqp_conn = AMQPConnection(
+      hostname="127.0.0.1:5672", username="guest", password="guest", prefetch=1024
+  )
+
+  amqp_conn_2 = AMQPConnection(
+      hostname="127.0.0.1:5673", username="guest", password="guest", prefetch=128
+  )
+
+  app = App(connections=[amqp_conn, amqp_conn_2])
+
+
+  @app.amqp.consume(["queue"], connection=amqp_conn)
+  async def _handler_broker_1(msgs: List[RabbitMQMessage]):
+      print(f"Broker 1 ({amqp_conn.hostname}): Recv: {len(msgs)}")
+
+
+  @app.amqp.consume(["queue"], connection=amqp_conn_2)
+  async def _handler_roker_2(msgs: List[RabbitMQMessage]):
+      print(f"Broker 2 ({amqp_conn_2.hostname}): Recv: {len(msgs)}")
+
+
+  @app.run_every(1)
+  async def produce(app: App):
+      await amqp_conn.put(data={"msg": "Broker 1"}, routing_key="queue")
+      await amqp_conn_2.put(data={"msg": "broker 2"}, routing_key="queue")
+
+
+  app.run()
+
+
+
 Uma nota sobre bulk_size e prefetch
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -135,7 +183,7 @@ Exemplo de um código mais completo
           print(m)
 
 
-Nesse exemplo, o handler ``drain_handler()`` recebe mensagens de ambas as filas: ``asgard/counts`` e ``asgard/counts/errors``.
+Nesse exemplo, o handler ``drain_handler()`` recebe mensagens de ambas as filas: ``asgard/counts`` e ``asgard/counts/errors``, que estão no virtualhost ``fluentd``.
 
 Se o handler lançar alguma exception, a mensagem é automaticamente devolvida para a fila (reject com requeue=True);
 Se o handler rodar sem erros, a mensagem é automaticamente confirmada (ack).
