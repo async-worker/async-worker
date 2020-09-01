@@ -151,7 +151,7 @@ class HTTPRouteRegisterTest(TestCase):
 
         handler = MyHandler()
 
-        app.route(["/"], type=RouteTypes.HTTP, methods=["GET"])(handler)
+        app.http.get(["/"])(handler)
 
         async with HttpClientContext(app) as client:
             resp = await client.get("/")
@@ -209,7 +209,7 @@ class HTTPRouteRegisterTest(TestCase):
         handler = MyHandler()
 
         with self.assertRaises(TypeError):
-            app.route(["/"], type=RouteTypes.HTTP, methods=["GET"])(handler)
+            app.http.get(["/"])(handler)
 
     async def test_raise_if_object_is_not_callable_new_decorator(self):
         app = App()
@@ -235,7 +235,7 @@ class HTTPRouteRegisterTest(TestCase):
 
             return _wrap
 
-        @app.route(["/"], type=RouteTypes.HTTP, methods=["GET"])
+        @app.http.get(["/"])
         @_deco
         async def handler(wrapper: RequestWrapper):
             req = wrapper.http_request
@@ -259,7 +259,7 @@ class HTTPRouteRegisterTest(TestCase):
 
             return _wrap
 
-        @app.route(["/"], type=RouteTypes.HTTP, methods=["GET"])
+        @app.http.get(["/"])
         @_deco
         async def handler(wrap: RequestWrapper):
             return web.json_response(dict(wrap.http_request.query.items()))
@@ -290,7 +290,7 @@ class AMQPRouteRegiterTest(TestCase):
 
         handler = MyHandler()
 
-        app.route(["/"], type=RouteTypes.AMQP_RABBITMQ)(handler)
+        app.amqp.consume(["/"])(handler)
 
         self.assertEqual(1, len(app.routes_registry.amqp_routes))
         self.assertEqual(
@@ -315,7 +315,7 @@ class AMQPRouteRegiterTest(TestCase):
             handler.__call__, app.routes_registry.amqp_routes[0].handler
         )
 
-    async def test_raise_if_object_is_not_callable_register_with_app_route(
+    async def test_raise_if_object_is_not_callable_register_with_app_amqp_consume(
         self
     ):
         app = App()
@@ -326,7 +326,7 @@ class AMQPRouteRegiterTest(TestCase):
         handler = MyHandler()
 
         with self.assertRaises(TypeError):
-            app.route(["/"], type=RouteTypes.AMQP_RABBITMQ)(handler)
+            app.amqp.consume(["/"])(handler)
 
     async def test_raise_if_object_is_not_callable_register_with_amqp_route_register(
         self
@@ -433,6 +433,6 @@ class AMQPRouteRegiterTest(TestCase):
             return web.json_response(dict(req.query.items()))
 
         with self.assertRaises(TypeError) as ex:
-            app.route(["/"], type=RouteTypes.HTTP, methods=["GET"])(handler)
+            app.http.get(["/"])(handler)
 
-        self.assertTrue("handler must be a coroutine" in ex.exception.args[0])
+        self.assertTrue("handler must be async" in ex.exception.args[0])

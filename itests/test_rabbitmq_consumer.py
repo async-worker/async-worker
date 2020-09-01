@@ -1,5 +1,4 @@
 import asyncio
-from http import HTTPStatus
 
 from asynctest import TestCase
 
@@ -37,7 +36,7 @@ class RabbitMQConsumerTest(TestCase):
         """
         message = {"key": "value"}
 
-        @self.app.route([self.queue_name], type=RouteTypes.AMQP_RABBITMQ)
+        @self.app.amqp.consume([self.queue_name])
         async def handler(messages):
             global successful_message_value_is_equal
             successful_message_value_is_equal = (
@@ -61,7 +60,7 @@ class RabbitMQConsumerTest(TestCase):
         O handler confirmará a mensagem na segunda tentativa (`msg.ack()`)
         """
 
-        @self.app.route([self.queue_name], type=RouteTypes.AMQP_RABBITMQ)
+        @self.app.amqp.consume([self.queue_name])
         async def other_handler(messages):
             global handler_with_requeue_called
             if handler_with_requeue_called > 0:
@@ -89,7 +88,7 @@ class RabbitMQConsumerTest(TestCase):
         Temos que conferir que o handler foi chamado
         """
 
-        @self.app.route([self.queue_name], type=RouteTypes.AMQP_RABBITMQ)
+        @self.app.amqp.consume([self.queue_name])
         async def other_handler(messages):
             global handler_without_requeue_called
             handler_without_requeue_called += 1

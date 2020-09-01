@@ -10,6 +10,7 @@ from asyncworker.options import (
     Actions,
     RouteTypes,
 )
+from asyncworker.rabbitmq import AMQPRouteOptions
 from asyncworker.routes import AMQPRoute
 
 
@@ -32,11 +33,10 @@ class RabbitMQAppTest(asynctest.TestCase):
         expected_routes = ["/asgard/counts/ok"]
         expected_vhost = "/"
 
-        @self.app.route(
+        @self.app.amqp.consume(
             expected_routes,
-            type=RouteTypes.AMQP_RABBITMQ,
             vhost=expected_vhost,
-            options={Options.BULK_SIZE: 1024, Options.BULK_FLUSH_INTERVAL: 120},
+            options=AMQPRouteOptions(bulk_size=1024, bulk_flush_interval=120),
         )
         async def _handler(message):
             return 42
@@ -60,7 +60,7 @@ class RabbitMQAppTest(asynctest.TestCase):
         self.assertEqual(42, await route["handler"](None))
 
     async def test_register_hander_on_route_registry(self):
-        @self.app.route(["/asgard/counts/ok"], type=RouteTypes.AMQP_RABBITMQ)
+        @self.app.amqp.consume(["/asgard/counts/ok"])
         async def _handler(message):
             return 42
 
@@ -72,7 +72,7 @@ class RabbitMQAppTest(asynctest.TestCase):
     async def test_register_list_of_routes_to_the_same_handler(self):
         expected_routes = ["/asgard/counts/ok", "/asgard/counts/errors"]
 
-        @self.app.route(expected_routes, type=RouteTypes.AMQP_RABBITMQ)
+        @self.app.amqp.consume(expected_routes)
         async def _handler(message):
             return 42
 
@@ -85,7 +85,7 @@ class RabbitMQAppTest(asynctest.TestCase):
         expected_route = ["/asgard/counts/ok"]
         expected_vhost = settings.AMQP_DEFAULT_VHOST
 
-        @self.app.route(expected_route, type=RouteTypes.AMQP_RABBITMQ)
+        @self.app.amqp.consume(expected_route)
         async def _handler(message):
             return 42
 
@@ -97,10 +97,8 @@ class RabbitMQAppTest(asynctest.TestCase):
     async def test_register_bulk_size(self):
         expected_bulk_size = 1024
 
-        @self.app.route(
-            ["my-queue"],
-            type=RouteTypes.AMQP_RABBITMQ,
-            options={Options.BULK_SIZE: expected_bulk_size},
+        @self.app.amqp.consume(
+            ["my-queue"], options=AMQPRouteOptions(bulk_size=expected_bulk_size)
         )
         async def _handler(message):
             return 42
@@ -113,10 +111,11 @@ class RabbitMQAppTest(asynctest.TestCase):
     async def test_register_bulk_flush_timeout(self):
         expected_bulk_flush_interval = 120
 
-        @self.app.route(
+        @self.app.amqp.consume(
             ["my-queue"],
-            type=RouteTypes.AMQP_RABBITMQ,
-            options={Options.BULK_FLUSH_INTERVAL: expected_bulk_flush_interval},
+            options=AMQPRouteOptions(
+                bulk_flush_interval=expected_bulk_flush_interval
+            ),
         )
         async def _handler(message):
             return 42
@@ -132,7 +131,7 @@ class RabbitMQAppTest(asynctest.TestCase):
     async def test_register_default_bulk_size_and_default_bulk_flush_timeout(
         self
     ):
-        @self.app.route(["my-queue"], type=RouteTypes.AMQP_RABBITMQ)
+        @self.app.amqp.consume(["my-queue"])
         async def _handler(message):
             return 42
 
@@ -146,10 +145,8 @@ class RabbitMQAppTest(asynctest.TestCase):
         self.assertEqual(42, await route["handler"](None))
 
     async def test_register_action_on_success(self):
-        @self.app.route(
-            ["my-queue"],
-            type=RouteTypes.AMQP_RABBITMQ,
-            options={Events.ON_SUCCESS: Actions.REJECT},
+        @self.app.amqp.consume(
+            ["my-queue"], options=AMQPRouteOptions(on_success=Actions.REJECT)
         )
         async def _handler(message):
             return 42
@@ -161,10 +158,8 @@ class RabbitMQAppTest(asynctest.TestCase):
         )
 
     async def test_register_action_on_exception(self):
-        @self.app.route(
-            ["my-queue"],
-            type=RouteTypes.AMQP_RABBITMQ,
-            options={Events.ON_EXCEPTION: Actions.ACK},
+        @self.app.amqp.consume(
+            ["my-queue"], options=AMQPRouteOptions(on_exception=Actions.ACK)
         )
         async def _handler(message):
             return 42
@@ -176,7 +171,7 @@ class RabbitMQAppTest(asynctest.TestCase):
         )
 
     async def test_test_register_default_actions(self):
-        @self.app.route(["my-queue"], type=RouteTypes.AMQP_RABBITMQ)
+        @self.app.amqp.consume(["my-queue"])
         async def _handler(message):
             return 42
 
@@ -196,9 +191,7 @@ class RabbitMQAppTest(asynctest.TestCase):
         filas, se necessário.
         """
 
-        @self.app.route(
-            ["asgard/counts"], type=RouteTypes.AMQP_RABBITMQ, vhost="/"
-        )
+        @self.app.amqp.consume(["asgard/counts"], vhost="/")
         async def _handler(message):
             return message
 
@@ -227,17 +220,11 @@ class RabbitMQAppTest(asynctest.TestCase):
     async def test_instantiate_one_consumer_per_handler_multiple_handlers_registered_bla(
         self
     ):
-        @self.app.route(
-            ["asgard/counts"], type=RouteTypes.AMQP_RABBITMQ, vhost="/"
-        )
+        @self.app.amqp.consume(["asgard/counts"], vhost="/")
         async def _handler(message):
             return message
 
-        @self.app.route(
-            ["asgard/counts/errors"],
-            type=RouteTypes.AMQP_RABBITMQ,
-            vhost="fluentd",
-        )
+        @self.app.amqp.consume(["asgard/counts/errors"], vhost="fluentd")
         async def _other_handler(message):
             return message
 

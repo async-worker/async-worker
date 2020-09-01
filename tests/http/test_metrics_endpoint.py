@@ -22,9 +22,7 @@ class MetricsEndpointTest(TestCase):
     async def setUp(self):
         self.METRICS_PATH = "/metrics-2"
         self.app = App()
-        self.app.route(
-            [self.METRICS_PATH], type=RouteTypes.HTTP, methods=["GET"]
-        )(metrics_route_handler)
+        self.app.http.get([self.METRICS_PATH])(metrics_route_handler)
 
     async def test_metrics_namespace(self):
         def _check_metrics_cant_override_namespace(metric, metric_name):
@@ -101,7 +99,7 @@ class MetricsEndpointTest(TestCase):
         metric_name = "myapp_example_counter"
         counter = Counter(metric_name, "Um contador simples")
 
-        @self.app.route(["/foo"], type=RouteTypes.HTTP, methods=["GET"])
+        @self.app.http.get(["/foo"])
         async def _handler():
             counter.inc()
             return web.json_response({})
@@ -127,7 +125,7 @@ class MetricsEndpointTest(TestCase):
         metric_name = "myapp_example_gauge"
         gauge = Gauge(metric_name, "um Gauge simples", registry=REGISTRY)
 
-        @self.app.route(["/foo/{value}"], type=RouteTypes.HTTP, methods=["GET"])
+        @self.app.http.get(["/foo/{value}"])
         @parse_path
         async def _handler(value: int):
             gauge.inc(value)
@@ -157,7 +155,7 @@ class MetricsEndpointTest(TestCase):
             metric_name, "um Histogram simples", registry=REGISTRY
         )
 
-        @self.app.route(["/foo/{value}"], type=RouteTypes.HTTP, methods=["GET"])
+        @self.app.http.get(["/foo/{value}"])
         @parse_path
         async def _handler(value: int):
             histogram.observe(value)

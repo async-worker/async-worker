@@ -102,7 +102,7 @@ class HTTPServerTests(asynctest.TestCase):
         Tests if a response is correctly handled, Starts a real aiohttp server
         """
 
-        @self.app.route(["/"], type=RouteTypes.HTTP, methods=["GET"])
+        @self.app.http.get(["/"])
         async def index():
             return web.json_response({"OK": True})
 
@@ -136,7 +136,7 @@ class HTTPServerTests(asynctest.TestCase):
             reload(conf)
             with mock.patch.object(routes, "conf", conf):
 
-                @app.route(["/metrics"], type=RouteTypes.HTTP, methods=["GET"])
+                @app.http.get(["/metrics"])
                 async def _h():
                     return web.json_response({})
 
@@ -152,11 +152,7 @@ class HTTPServerTests(asynctest.TestCase):
 
         app = App()
 
-        @app.route(
-            [settings.METRICS_ROUTE_PATH],
-            type=RouteTypes.HTTP,
-            methods=["POST"],
-        )
+        @app.http.post([settings.METRICS_ROUTE_PATH])
         async def _h():
             return web.json_response({"OK": True})
 
@@ -172,7 +168,7 @@ class HTTPServerTests(asynctest.TestCase):
         one parameter and does not have any type annotations
         """
 
-        @self.app.route(["/"], type=RouteTypes.HTTP, methods=["GET"])
+        @self.app.http.get(["/"])
         async def handler():
             return web.json_response({"OK": True})
 
@@ -186,7 +182,7 @@ class HTTPServerTests(asynctest.TestCase):
                 self.assertEqual({"OK": True}, await resp.json())
 
     async def test_add_registry_to_all_requests(self):
-        @self.app.route(["/"], type=RouteTypes.HTTP, methods=["GET"])
+        @self.app.http.get(["/"])
         async def handler(wrapper: RequestWrapper):
             request = wrapper.http_request
             registry: TypesRegistry = request["types_registry"]
@@ -216,7 +212,7 @@ class HTTPServerTests(asynctest.TestCase):
 
             return _wrapper
 
-        @self.app.route(["/"], type=RouteTypes.HTTP, methods=["GET"])
+        @self.app.http.get(["/"])
         @insert_user_into_type_registry
         async def handler(user: User):
             return web.json_response({"name": user.name})
@@ -257,7 +253,7 @@ class HTTPServerTests(asynctest.TestCase):
 
             return _wrapper
 
-        @self.app.route(["/"], type=RouteTypes.HTTP, methods=["GET"])
+        @self.app.http.get(["/"])
         @insert_account_into_type_registry
         @insert_user_into_type_registry
         async def handler(user: User, account: Account):
@@ -290,7 +286,7 @@ class HTTPServerTests(asynctest.TestCase):
 
             return _wrapper
 
-        @self.app.route(["/"], type=RouteTypes.HTTP, methods=["GET"])
+        @self.app.http.get(["/"])
         @my_decorator
         async def handler(wrapper: RequestWrapper):
             return web.json_response({"num": wrapper.http_request.query["num"]})
@@ -306,7 +302,7 @@ class HTTPServerTests(asynctest.TestCase):
                 self.assertEqual({"num": "42"}, resp_data)
 
     async def test_ignores_return_annotation_when_resolving_parameters(self):
-        @self.app.route(["/"], type=RouteTypes.HTTP, methods=["GET"])
+        @self.app.http.get(["/"])
         async def handler(wrapper: RequestWrapper) -> web.Response:
             return web.json_response({"num": wrapper.http_request.query["num"]})
 
@@ -321,7 +317,7 @@ class HTTPServerTests(asynctest.TestCase):
                 self.assertEqual({"num": "42"}, resp_data)
 
     async def test_handler_can_receive_aiohttp_request(self):
-        @self.app.route(["/"], type=RouteTypes.HTTP, methods=["GET"])
+        @self.app.http.get(["/"])
         async def handler(request: web.Request) -> web.Response:
             return web.json_response({"num": request.query["num"]})
 
@@ -342,7 +338,7 @@ class HTTPServerTests(asynctest.TestCase):
 
             return _wrapper
 
-        @self.app.route(["/"], type=RouteTypes.HTTP, methods=["GET"])
+        @self.app.http.get(["/"])
         @my_decorator
         async def handler(wrapper: RequestWrapper):
             return web.json_response({"num": wrapper.http_request.query["num"]})

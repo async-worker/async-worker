@@ -120,7 +120,7 @@ class AMQPTests(asynctest.TestCase):
         )
         app = App(connections=[conn1, conn2])
 
-        @app.route(routes=["a_queue_name"], type=RouteTypes.AMQP_RABBITMQ)
+        @app.amqp.consume(routes=["a_queue_name"])
         async def mock_handler(*args, **kwargs):
             pass
 
@@ -132,7 +132,7 @@ class AMQPTests(asynctest.TestCase):
     ):
         app = App(connections=[])
 
-        @app.route(routes=["a_queue_name"], type=RouteTypes.AMQP_RABBITMQ)
+        @app.amqp.consume(routes=["a_queue_name"])
         async def mock_handler(*args, **kwargs):
             pass
 
