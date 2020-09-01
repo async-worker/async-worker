@@ -1,4 +1,5 @@
 import asyncio
+from http import HTTPStatus
 
 from asynctest import TestCase
 
@@ -9,6 +10,9 @@ consume_callback_shoud_not_be_called = False
 handler_with_requeue_called = 0
 handler_without_requeue_called = 0
 successful_message_value_is_equal = False
+
+message_processed_multiple_connections = False
+message_processed_other_vhost = False
 
 
 class RabbitMQConsumerTest(TestCase):
@@ -117,3 +121,70 @@ class RabbitMQConsumerTest(TestCase):
         )
         await asyncio.sleep(5)
         self.assertFalse(consume_callback_shoud_not_be_called)
+
+
+class AMQPConsumerTestWithAdditionalParameters(TestCase):
+    maxDiff = None
+
+    async def setUp(self):
+        from aiohttp import ClientSession, BasicAuth
+
+        client = ClientSession()
+
+        await client.put(
+            "http://127.0.0.1:15672/api/vhosts/logs",
+            json={},
+            auth=BasicAuth(login="guest", password="guest"),
+        )
+        resp = await client.put(
+            "http://127.0.0.1:15672/api/permissions/logs/guest",
+            json={"configure": ".*", "write": ".*", "read": ".*"},
+            auth=BasicAuth(login="guest", password="guest"),
+        )
+
+    async def test_consume_one_message_app_with_multiple_connections(self):
+        conn = AMQPConnection(
+            hostname="127.0.0.1", username="guest", password="guest", prefetch=1
+        )
+        conn_2 = AMQPConnection(
+            hostname="127.0.0.1:5673",
+            username="guest",
+            password="guest",
+            prefetch=1,
+        )
+        await conn["/"].connection._connect()
+        await conn["/"].connection.channel.queue_declare("queue")
+        await conn["/"].put(data={"num": 42}, routing_key="queue")
+
+        app = App(connections=[conn, conn_2])
+
+        @app.amqp.consume(["queue"], connection=conn)
+        async def handler(msgs):
+            global message_processed_multiple_connections
+            message_processed_multiple_connections = True
+
+        await app.startup()
+        await asyncio.sleep(1)
+        await app.shutdown()
+        self.assertTrue(message_processed_multiple_connections)
+
+    async def test_consume_from_other_vhost(self):
+        conn = AMQPConnection(
+            hostname="127.0.0.1", username="guest", password="guest", prefetch=1
+        )
+
+        await conn["logs"].connection._connect()
+        await conn["logs"].connection.channel.queue_declare("queue")
+        await conn["logs"].put(data={"num": 42}, routing_key="queue")
+
+        app = App(connections=[conn])
+
+        @app.amqp.consume(["queue"], vhost="logs")
+        async def handler(msgs):
+            global message_processed_other_vhost
+            message_processed_other_vhost = True
+
+        await app.startup()
+        await asyncio.sleep(1)
+        await app.shutdown()
+        self.assertTrue(message_processed_other_vhost)

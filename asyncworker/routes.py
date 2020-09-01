@@ -19,7 +19,7 @@ from cached_property import cached_property
 from pydantic import BaseModel, validator, root_validator
 
 from asyncworker import conf
-from asyncworker.connections import AMQPConnection
+from asyncworker.connections import Connection, AMQPConnection
 from asyncworker.http.wrapper import RequestWrapper
 from asyncworker.options import DefaultValues, RouteTypes, Actions
 from asyncworker.types.registry import TypesRegistry
@@ -75,6 +75,7 @@ class Route(Model, abc.ABC):
     type: RouteTypes
     handler: Any
     routes: List[str]
+    connection: Optional[Connection]
     options: _RouteOptions = _RouteOptions()
 
     @staticmethod
@@ -161,6 +162,7 @@ class AMQPRouteOptions(_RouteOptions):
 class AMQPRoute(Route):
     type: RouteTypes = RouteTypes.AMQP_RABBITMQ
     vhost: str = conf.settings.AMQP_DEFAULT_VHOST
+    connection: Optional[AMQPConnection]
     options: AMQPRouteOptions
 
 

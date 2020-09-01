@@ -13,7 +13,8 @@ app = App(connections=[amqp_conn])
 
 
 @app.amqp.consume(
-    ["queue"], options=AMQPRouteOptions(bulk_size=60, bulk_flush_interval=10)
+    ["queue"],
+    options=AMQPRouteOptions(bulk_size=1024 * 8, bulk_flush_interval=10),
 )
 async def _handler(msgs: List[RabbitMQMessage]):
     print(f"Recv {len(msgs)} {datetime.now().isoformat()}")

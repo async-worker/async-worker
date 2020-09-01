@@ -1,7 +1,8 @@
 from aiohttp import web
 from asynctest import CoroutineMock, TestCase
 
-from asyncworker import RouteTypes, App
+from asyncworker import conf, RouteTypes, App
+from asyncworker.connections import AMQPConnection
 from asyncworker.http.wrapper import RequestWrapper
 from asyncworker.options import Actions
 from asyncworker.routes import (
@@ -360,6 +361,10 @@ class AMQPRouteRegiterTest(TestCase):
 
         self.assertEqual(1, len(app.routes_registry.amqp_routes))
         self.assertEqual(handler, app.routes_registry.amqp_routes[0].handler)
+        self.assertEqual(
+            conf.settings.AMQP_DEFAULT_VHOST,
+            app.routes_registry.amqp_routes[0].vhost,
+        )
 
     async def test_register_handler_with_options(self):
         app = App()
@@ -378,6 +383,43 @@ class AMQPRouteRegiterTest(TestCase):
         self.assertEqual(1, len(app.routes_registry.amqp_routes))
         self.assertEqual(handler, app.routes_registry.amqp_routes[0].handler)
         self.assertEqual(options, app.routes_registry.amqp_routes[0].options)
+
+    async def test_register_handler_with_second_connection(self):
+        """
+        Em uma app com múltiplas conexões, a conexão que é passada para o decorator é a que vai para o objeto AMQPRoute.
+        """
+        conn = AMQPConnection(
+            hostname="127.0.0.1", username="guest", password="guest"
+        )
+        conn_2 = AMQPConnection(
+            hostname="127.0.0.1", username="guest", password="guest"
+        )
+        app = App(connections=[conn, conn_2])
+
+        @app.amqp.consume(["/"], connection=conn_2)
+        async def handler():
+            pass
+
+        self.assertEqual(1, len(app.routes_registry.amqp_routes))
+        self.assertEqual(handler, app.routes_registry.amqp_routes[0].handler)
+        self.assertEqual(conn_2, app.routes_registry.amqp_routes[0].connection)
+
+    async def test_register_handler_with_vhost(self):
+        """
+        Em uma app com múltiplas conexões, a conexão que é passada para o decorator é a que vai para o objeto AMQPRoute.
+        """
+        conn = AMQPConnection(
+            hostname="127.0.0.1", username="guest", password="guest"
+        )
+        app = App(connections=[conn])
+
+        @app.amqp.consume(["/"], vhost="logs")
+        async def handler():
+            pass
+
+        self.assertEqual(1, len(app.routes_registry.amqp_routes))
+        self.assertEqual(handler, app.routes_registry.amqp_routes[0].handler)
+        self.assertEqual("logs", app.routes_registry.amqp_routes[0].vhost)
 
     async def test_raises_if_handler_is_not_coroutine(self):
         """
