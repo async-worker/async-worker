@@ -371,7 +371,7 @@ class AMQPRouteRegiterTest(TestCase):
 
         options = AMQPRouteOptions(
             bulk_size=1024,
-            bulk_flush_intereval=10,
+            bulk_flush_interval=10,
             on_success=Actions.ACK,
             on_exception=Actions.REJECT,
         )

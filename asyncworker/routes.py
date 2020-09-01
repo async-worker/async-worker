@@ -16,7 +16,7 @@ from aiohttp import web
 from aiohttp.hdrs import METH_ALL
 from aiohttp.web_routedef import RouteDef
 from cached_property import cached_property
-from pydantic import BaseModel, validator, root_validator
+from pydantic import Extra, BaseModel, validator, root_validator
 
 from asyncworker import conf
 from asyncworker.connections import Connection, AMQPConnection
@@ -156,7 +156,8 @@ class AMQPRouteOptions(_RouteOptions):
     connection: Optional[Union[AMQPConnection, str]]
 
     class Config:
-        arbitrary_types_allowed = True
+        arbitrary_types_allowed = False
+        extra = Extra.forbid
 
 
 class AMQPRoute(Route):
