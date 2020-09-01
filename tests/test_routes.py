@@ -151,7 +151,7 @@ class HTTPRouteRegisterTest(TestCase):
 
         handler = MyHandler()
 
-        app.http.get(["/"])(handler)
+        app.route(["/"], type=RouteTypes.HTTP, methods=["GET"])(handler)
 
         async with HttpClientContext(app) as client:
             resp = await client.get("/")
@@ -169,6 +169,18 @@ class HTTPRouteRegisterTest(TestCase):
 
         handler = MyHandler()
         app.http.get(["/"])(handler)
+
+        async with HttpClientContext(app) as client:
+            resp = await client.get("/")
+            data = await resp.json()
+            self.assertEqual({"OK": True}, data)
+
+    async def test_can_registrer_a_coroutine_as_a_valid_handler(self):
+        app = App()
+
+        @app.route(["/"], type=RouteTypes.HTTP, methods=["GET"])
+        async def handler(wrapper: RequestWrapper):
+            return web.json_response({"OK": True})
 
         async with HttpClientContext(app) as client:
             resp = await client.get("/")
@@ -194,6 +206,17 @@ class HTTPRouteRegisterTest(TestCase):
 
         with self.assertRaises(TypeError) as err:
 
+            @app.route(["/"], type=RouteTypes.HTTP, methods=["GET"])
+            def handler(wrapper: RequestWrapper):
+                return web.json_response({"OK": True})
+
+        self.assertTrue("handler must be a coroutine" in err.exception.args[0])
+
+    async def test_raise_if_handler_is_not_coroutine_new_decorator(self):
+        app = App()
+
+        with self.assertRaises(TypeError) as err:
+
             @app.http.get(["/"])
             def handler(wrapper: RequestWrapper):
                 return web.json_response({"OK": True})
@@ -209,7 +232,7 @@ class HTTPRouteRegisterTest(TestCase):
         handler = MyHandler()
 
         with self.assertRaises(TypeError):
-            app.http.get(["/"])(handler)
+            app.route(["/"], type=RouteTypes.HTTP, methods=["GET"])(handler)
 
     async def test_raise_if_object_is_not_callable_new_decorator(self):
         app = App()
