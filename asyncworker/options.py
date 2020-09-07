@@ -1,5 +1,5 @@
 from enum import Enum, auto
-from typing import List, Any
+from typing import List
 
 
 class AutoNameEnum(str, Enum):

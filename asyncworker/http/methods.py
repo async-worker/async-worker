@@ -1,10 +1,12 @@
-from enum import Enum
+from enum import auto
+
+from asyncworker.options import AutoNameEnum
 
 
-class HTTPMethods(str, Enum):
-    GET = "GET"
-    POST = "POST"
-    PUT = "PUT"
-    DELETE = "DELETE"
-    PATCH = "PATCH"
-    HEAD = "HEAD"
+class HTTPMethods(AutoNameEnum):
+    GET = auto()
+    POST = auto()
+    PUT = auto()
+    DELETE = auto()
+    PATCH = auto()
+    HEAD = auto()
