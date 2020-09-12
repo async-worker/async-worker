@@ -15,7 +15,7 @@
     <script type="text/javascript" src="../../../_static/translations.js"></script>
     <link rel="index" title="Índice" href="../../../genindex.html" />
     <link rel="search" title="Buscar" href="../../../search.html" />
-    <link rel="next" title="Regras para criação de um handler HTTP" href="doc.html" />
+    <link rel="next" title="Registrando um novo handler HTTP" href="doc.html" />
     <link rel="prev" title="Tipos de Handlers" href="../index.html" />
    
   <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
@@ -39,17 +39,17 @@
 <p><span class="versionmodified added">Novo na versão 0.6.0.</span></p>
 </div>
 <p>Aqui mostraremos como escrever um handler que é estimulado através de requisições HTTP.</p>
-<p>Um handler é simplesmete uma corotina que recebe um request wrapper (<a class="reference internal" href="../../../src/asyncworker/asyncworker.http.html#asyncworker.http.wrapper.RequestWrapper" title="asyncworker.http.wrapper.RequestWrapper"><code class="xref py py-class docutils literal notranslate"><span class="pre">asyncworker.http.wrapper.RequestWrapper</span></code></a>) e retorna uma response (<code class="docutils literal notranslate"><span class="pre">aiohttp.web.Response</span></code>). Essa corotina passa a ser um handler “asyncworker” quando é decorada com <code class="docutils literal notranslate"><span class="pre">&#64;app.route()</span></code>, onde <code class="docutils literal notranslate"><span class="pre">app</span></code> é uma instância de <code class="docutils literal notranslate"><span class="pre">asyncworker.App</span></code>.</p>
+<p>Um handler é simplesmete uma corotina que recebe um request wrapper (<a class="reference internal" href="../../../src/asyncworker/asyncworker.http.html#asyncworker.http.wrapper.RequestWrapper" title="asyncworker.http.wrapper.RequestWrapper"><code class="xref py py-class docutils literal notranslate"><span class="pre">asyncworker.http.wrapper.RequestWrapper</span></code></a>) e retorna uma response (<code class="docutils literal notranslate"><span class="pre">aiohttp.web.Response</span></code>). Essa corotina passa a ser um handler “asyncworker” quando é decorada com <a class="reference internal" href="doc.html#supported-methods"><span class="std std-ref">&#64;app.http.*()</span></a>, onde <code class="docutils literal notranslate"><span class="pre">app</span></code> é uma instância de <code class="docutils literal notranslate"><span class="pre">asyncworker.App</span></code>.</p>
 <p>Vejamos um handler bem simples que apenas retorna <code class="docutils literal notranslate"><span class="pre">HTTP</span> <span class="pre">200</span> <span class="pre">OK</span></code>.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">aiohttp</span> <span class="kn">import</span> <span class="n">web</span>
 
 <span class="kn">from</span> <span class="nn">asyncworker.http.wrapper</span> <span class="kn">import</span> <span class="n">RequestWrapper</span>
-<span class="kn">from</span> <span class="nn">asyncworker</span> <span class="kn">import</span> <span class="n">App</span><span class="p">,</span> <span class="n">RouteTypes</span>
+<span class="kn">from</span> <span class="nn">asyncworker</span> <span class="kn">import</span> <span class="n">App</span>
 
 <span class="n">app</span> <span class="o">=</span> <span class="n">App</span><span class="p">()</span>
 
 
-<span class="nd">@app</span><span class="o">.</span><span class="n">route</span><span class="p">([</span><span class="s2">&quot;/&quot;</span><span class="p">],</span> <span class="nb">type</span><span class="o">=</span><span class="n">RouteTypes</span><span class="o">.</span><span class="n">HTTP</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;GET&quot;</span><span class="p">])</span>
+<span class="nd">@app</span><span class="o">.</span><span class="n">http</span><span class="o">.</span><span class="n">get</span><span class="p">([</span><span class="s2">&quot;/&quot;</span><span class="p">])</span>
 <span class="k">async</span> <span class="k">def</span> <span class="nf">one_param</span><span class="p">(</span><span class="n">wrapper</span><span class="p">:</span> <span class="n">RequestWrapper</span><span class="p">):</span>
     <span class="k">return</span> <span class="n">web</span><span class="o">.</span><span class="n">json_response</span><span class="p">({})</span>
 </pre></div>
@@ -58,8 +58,9 @@
 Podemos fazer o que for preciso para extrair dele as informações que precisarmos. Para mais detalhes, veja a doc do aiohttp: <a class="reference external" href="https://docs.aiohttp.org/en/stable/web.html">https://docs.aiohttp.org/en/stable/web.html</a></p>
 <div class="toctree-wrapper compound">
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="doc.html">Regras para criação de um handler HTTP</a></li>
-<li class="toctree-l1"><a class="reference internal" href="doc.html#parametrizacao-do-decorator-route-para-handlers-http">Parametrização do decorator route() para handlers HTTP</a></li>
+<li class="toctree-l1"><a class="reference internal" href="doc.html">Registrando um novo handler HTTP</a></li>
+<li class="toctree-l1"><a class="reference internal" href="doc.html#metodos-http-suportados">Métodos HTTP suportados</a></li>
+<li class="toctree-l1"><a class="reference internal" href="doc.html#usando-metodos-nao-suportados-pelo-asyncworker">Usando métodos não suportados pelo asyncworker</a></li>
 <li class="toctree-l1"><a class="reference internal" href="doc.html#envs-para-escolher-a-porta-e-o-ip-onde-o-server-http-estara-escutando">ENVs para escolher a porta e o IP onde o server http estará escutando</a></li>
 <li class="toctree-l1"><a class="reference internal" href="doc.html#handlers-que-sao-objetos-callable">Handlers que são objetos callable</a></li>
 <li class="toctree-l1"><a class="reference internal" href="doc.html#handlers-que-recebem-mais-do-que-apenas-request">Handlers que recebem mais do que apenas Request</a></li>
@@ -114,7 +115,7 @@ Podemos fazer o que for preciso para extrair dele as informações que precisarm
   <li><a href="../../index.html">Guia de uso</a><ul>
   <li><a href="../index.html">Tipos de Handlers</a><ul>
       <li>Previous: <a href="../index.html" title="capítulo anterior">Tipos de Handlers</a></li>
-      <li>Next: <a href="doc.html" title="próximo capítulo">Regras para criação de um handler HTTP</a></li>
+      <li>Next: <a href="doc.html" title="próximo capítulo">Registrando um novo handler HTTP</a></li>
   </ul></li>
   </ul></li>
   </ul></li>

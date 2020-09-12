@@ -5,13 +5,13 @@ Um exemplo rápido para mostrar a ideia geral do asynworker.
 
 .. code:: python
 
-  from asyncworker import App, RouteTypes
+  from asyncworker import App
   from asyncworker.http.wrapper import RequestWrapper
 
 
   app = App()
 
-  @app.route(["/"], type=RouteTypes.HTTP, methods=["GET"])
+  @app.http.get(["/"])
   async def handler(wrapper: RequestWrapper):
     return web.json_response({})
 
@@ -28,21 +28,20 @@ Consumindo de uma fila no RabbitMQ
 .. code:: python
 
 
-   from asyncworker import App, RouteTypes
+   from asyncworker import App
    from asyncworker.connections import AMQPConnection
 
 
    amqp_conn = AMQPConnection(host="127.0.0.1", user="guest", password="guest", prefetch_count=256)
    app = App(connections=[amqp_conn])
 
-   @app.route(["asgard/counts", "asgard/counts/errors"],
-              type=RouteTypes.AMQP_RABBITMQ,
+   @app.amqp.consume(["asgard/counts", "asgard/counts/errors"],
               vhost="fluentd")
    async def drain_handler(message):
        print(message)
 
 Nesse exemplo, o handler ``drain_handler()`` recebe mensagens de ambas
-as filas: ``asgard/counts`` e ``asgard/counts/errors``.
+as filas: ``asgard/counts`` e ``asgard/counts/errors``, que estão no virtualhost ``fluentd``.
 
 Se o handler lançar alguma exception, a mensagem é automaticamente
 devolvida para a fila (reject com requeue=True); Se o handler rodar sem
@@ -87,12 +86,12 @@ Recebendo dados através de requisições HTTP
 
 .. code:: python
 
-   from asyncworker import App, RouteTypes
+   from asyncworker import App
    from asynworker.http.wrapper import RequestWrapper
 
    # ...
 
-   @app.route(routes=['/', '/hello'], methods=['GET'], type=RouteTypes.HTTP)
+   @app.http.get(routes=['/', '/hello'])
    async def index(wrapper: RequestWrapper) -> web.Response:
        return web.Response(body="Hello world")
 
@@ -118,3 +117,5 @@ está no módulo ``myworker``:
 Nesse ponto sua app já estará rodando e caso você seja desconectado, um
 loop ficará tentanto reconectar. A cada erro de conexão um log de
 exception é gerado.
+
+No momento que você roda esse código (``app.run()``) todos os seus handlers registrados começam a funcionar.

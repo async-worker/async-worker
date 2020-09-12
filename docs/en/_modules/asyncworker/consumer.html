@@ -226,7 +226,7 @@
 
 <div class="viewcode-block" id="Consumer.start"><a class="viewcode-back" href="../../src/asyncworker/asyncworker.html#asyncworker.consumer.Consumer.start">[docs]</a>    <span class="k">async</span> <span class="k">def</span> <span class="nf">start</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">while</span> <span class="bp">self</span><span class="o">.</span><span class="n">keep_runnig</span><span class="p">():</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">queue</span><span class="o">.</span><span class="n">connection</span><span class="o">.</span><span class="n">is_connected</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">queue</span><span class="o">.</span><span class="n">connection</span><span class="o">.</span><span class="n">has_channel_ready</span><span class="p">():</span>
                 <span class="k">try</span><span class="p">:</span>
                     <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">consume_all_queues</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">queue</span><span class="p">)</span>
 
