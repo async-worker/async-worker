@@ -440,17 +440,6 @@ class AsyncQueueConsumerTests(AsyncBaseTestCase, asynctest.TestCase):
             consumer_tag=self.consumer_tag, queue=self.queue
         )
 
-    async def test_calling_stop_consumer_stops_consumer(self):
-        with patch.object(
-            self.queue.connection, "channel", Mock(spec=Channel)
-        ) as channel:
-            await self.queue.stop_consumer(consumer_tag="a_consumer_tag")
-            channel.basic_cancel.assert_awaited_once_with("a_consumer_tag")
-
-    async def test_calling_stop_consumer_raises_an_error_if_not_connected(self):
-        with self.assertRaises(ConnectionError):
-            await self.queue.stop_consumer(consumer_tag="a_consumer_tag")
-
 
 class AsyncQueueConsumerHandlerMethodsTests(
     AsyncBaseTestCase, asynctest.TestCase

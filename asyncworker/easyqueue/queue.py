@@ -330,15 +330,6 @@ class JsonQueue(BaseQueue, Generic[T]):
         handler.consumer_tag = consumer_tag
         return consumer_tag
 
-    async def stop_consumer(self, consumer_tag: str):
-        if self.connection.channel is None:
-            raise ConnectionError(
-                "Queue isn't connected. "
-                "Did you forgot to wait for `connect()`?"
-            )
-
-        return await self.connection.channel.basic_cancel(consumer_tag)
-
 
 class QueueConsumerDelegate(metaclass=abc.ABCMeta):
     async def on_before_start_consumption(
