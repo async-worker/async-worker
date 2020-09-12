@@ -14,7 +14,7 @@
     <script type="text/javascript" src="../../../_static/language_data.js"></script>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
-    <link rel="next" title="Parametros adicionais para o decorator route()" href="doc.html" />
+    <link rel="next" title="Parametros adicionais para o decorator app.amqp.consume()" href="doc.html" />
     <link rel="prev" title="Métricas expostas para aplicações HTTP" href="../http/exposed-metrics.html" />
    
   <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
@@ -44,14 +44,13 @@
   <span class="o">...</span>
 </pre></div>
 </div>
-<p>Como no caso de handlers RabitMQ é preciso ter uma conexão prévia com o servidor d e filas, precisamos criar uma instância de <a class="reference internal" href="../../../src/asyncworker/asyncworker.html#asyncworker.connections.AMQPConnection" title="asyncworker.connections.AMQPConnection"><code class="xref py py-class docutils literal notranslate"><span class="pre">asyncworker.connections.AMQPConnection</span></code></a>. Essa instância deve ser passada no momento da criação de sua <a class="reference internal" href="../../asyncworker-app/intro.html#asyncworker-app"><span class="std std-ref">Asyncworker App</span></a>.</p>
+<p>Como no caso de handlers RabitMQ é preciso ter uma conexão prévia com o servidor de filas, precisamos criar uma instância de <a class="reference internal" href="../../../src/asyncworker/asyncworker.html#asyncworker.connections.AMQPConnection" title="asyncworker.connections.AMQPConnection"><code class="xref py py-class docutils literal notranslate"><span class="pre">asyncworker.connections.AMQPConnection</span></code></a>. Essa instância deve ser passada no momento da criação de sua <a class="reference internal" href="../../asyncworker-app/intro.html#asyncworker-app"><span class="std std-ref">Asyncworker App</span></a>.</p>
 <p>Essa instância de conexão pode também ser usada dentro do handler, caso necessário.</p>
 <p>Um exemplo disso é quando precisamos de um handler que lê mensagens de um fila e publica em outra. Esse exemplo pode ser escrito assim:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span>
 
 <span class="kn">from</span> <span class="nn">asyncworker</span> <span class="kn">import</span> <span class="n">App</span>
 <span class="kn">from</span> <span class="nn">asyncworker.connections</span> <span class="kn">import</span> <span class="n">AMQPConnection</span>
-<span class="kn">from</span> <span class="nn">asyncworker.options</span> <span class="kn">import</span> <span class="n">RouteTypes</span>
 <span class="kn">from</span> <span class="nn">asyncworker.rabbitmq</span> <span class="kn">import</span> <span class="n">RabbitMQMessage</span>
 
 <span class="n">amqp_conn</span> <span class="o">=</span> <span class="n">AMQPConnection</span><span class="p">(</span>
@@ -64,7 +63,7 @@
 <span class="n">app</span> <span class="o">=</span> <span class="n">App</span><span class="p">(</span><span class="n">connections</span><span class="o">=</span><span class="p">[</span><span class="n">amqp_conn</span><span class="p">])</span>
 
 
-<span class="nd">@app</span><span class="o">.</span><span class="n">route</span><span class="p">([</span><span class="s2">&quot;original_queue&quot;</span><span class="p">],</span> <span class="nb">type</span><span class="o">=</span><span class="n">RouteTypes</span><span class="o">.</span><span class="n">AMQP_RABBITMQ</span><span class="p">)</span>
+<span class="nd">@app</span><span class="o">.</span><span class="n">amqp</span><span class="o">.</span><span class="n">consume</span><span class="p">([</span><span class="s2">&quot;original_queue&quot;</span><span class="p">])</span>
 <span class="k">async</span> <span class="k">def</span> <span class="nf">handler</span><span class="p">(</span><span class="n">messages</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">RabbitMQMessage</span><span class="p">]):</span>
     <span class="k">await</span> <span class="n">amqp_conn</span><span class="o">.</span><span class="n">put</span><span class="p">(</span>
         <span class="n">data</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;dogs&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;Xablau&quot;</span><span class="p">,</span> <span class="s2">&quot;Xena&quot;</span><span class="p">]},</span>
@@ -74,7 +73,7 @@
 </pre></div>
 </div>
 <p>se a fila de destino estiver um outro virtual host, basta pegar uma nova conexão com esse virtual host acessando o atributo (dict like) com o nome do virtual host desejado, no objeto da conexão, assim:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@app</span><span class="o">.</span><span class="n">route</span><span class="p">([</span><span class="s2">&quot;original_queue&quot;</span><span class="p">],</span> <span class="nb">type</span><span class="o">=</span><span class="n">RouteTypes</span><span class="o">.</span><span class="n">AMQP_RABBITMQ</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@app</span><span class="o">.</span><span class="n">amqp</span><span class="o">.</span><span class="n">consume</span><span class="p">([</span><span class="s2">&quot;original_queue&quot;</span><span class="p">])</span>
 <span class="k">async</span> <span class="k">def</span> <span class="nf">handler</span><span class="p">(</span><span class="n">messages</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">RabbitMQMessage</span><span class="p">]):</span>
     <span class="k">await</span> <span class="n">amqp_conn</span><span class="p">[</span><span class="s2">&quot;other-vhost&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">put</span><span class="p">(</span>
         <span class="n">data</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;dogs&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;Xablau&quot;</span><span class="p">,</span> <span class="s2">&quot;Xena&quot;</span><span class="p">]},</span>
@@ -85,7 +84,7 @@
 </div>
 <div class="toctree-wrapper compound">
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="doc.html">Parametros adicionais para o decorator route()</a></li>
+<li class="toctree-l1"><a class="reference internal" href="doc.html">Parametros adicionais para o decorator app.amqp.consume()</a></li>
 <li class="toctree-l1"><a class="reference internal" href="doc.html#escolhendo-individualmente-qual-acao-sera-dada-a-cada-mensgem-recebida">Escolhendo, individualmente, qual ação será dada a cada mensgem recebida</a></li>
 <li class="toctree-l1"><a class="reference internal" href="doc.html#sobre-amqpconnection">Sobre AMQPConnection</a></li>
 </ul>
@@ -137,7 +136,7 @@
   <li><a href="../../index.html">Guia de uso</a><ul>
   <li><a href="../index.html">Tipos de Handlers</a><ul>
       <li>Previous: <a href="../http/exposed-metrics.html" title="previous chapter">Métricas expostas para aplicações HTTP</a></li>
-      <li>Next: <a href="doc.html" title="next chapter">Parametros adicionais para o decorator route()</a></li>
+      <li>Next: <a href="doc.html" title="next chapter">Parametros adicionais para o decorator app.amqp.consume()</a></li>
   </ul></li>
   </ul></li>
   </ul></li>

@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Asyncworker \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-06-14 21:52-0300\n"
+"POT-Creation-Date: 2020-09-12 15:53-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -91,6 +91,7 @@ msgstr ""
 #: asyncworker.conf.Settings.Config:1
 #: asyncworker.connections.AMQPConnection.Config:1
 #: asyncworker.options.DefaultValues:1
+#: asyncworker.routes.AMQPRouteOptions.Config:1
 #: asyncworker.task_runners.ScheduledTaskRunner:1 asyncworker.utils.Timeit:1 of
 msgid "Base: :class:`object`"
 msgstr ""
@@ -124,9 +125,7 @@ msgid ""
 msgstr ""
 
 #: asyncworker.connections.ConnectionsMapping:1 of
-msgid ""
-"Base: :class:`collections.abc.Mapping`, :class:`typing.Generic`, "
-":class:`asyncworker.signals.base.Freezable`"
+msgid "Base: :class:`typing.Mapping`, :class:`asyncworker.signals.base.Freezable`"
 msgstr ""
 
 #: asyncworker.connections.ConnectionsMapping:1 of
@@ -258,6 +257,10 @@ msgstr ""
 msgid "Base: :class:`asyncworker.routes.Route`"
 msgstr ""
 
+#: asyncworker.routes.AMQPRouteOptions:1 of
+msgid "Base: :class:`asyncworker.routes._RouteOptions`"
+msgstr ""
+
 #: asyncworker.routes.Model:1 of
 msgid "An abstract pydantic BaseModel that also behaves like a Mapping"
 msgstr ""
@@ -335,4 +338,10 @@ msgstr ""
 #: ../../src/asyncworker/asyncworker.rst:110
 msgid "Module contents"
 msgstr ""
+
+#~ msgid ""
+#~ "Base: :class:`collections.abc.Mapping`, "
+#~ ":class:`typing.Generic`, "
+#~ ":class:`asyncworker.signals.base.Freezable`"
+#~ msgstr ""
 

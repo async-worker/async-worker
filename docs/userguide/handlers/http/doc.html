@@ -4,7 +4,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="pt_BR">
   <head>
     <meta charset="utf-8" />
-    <title>Regras para criação de um handler HTTP &#8212; documentação Asyncworker </title>
+    <title>Registrando um novo handler HTTP &#8212; documentação Asyncworker </title>
     <link rel="stylesheet" href="../../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
     <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
@@ -33,12 +33,12 @@
 
           <div class="body" role="main">
             
-  <div class="section" id="regras-para-criacao-de-um-handler-http">
-<h1>Regras para criação de um handler HTTP<a class="headerlink" href="#regras-para-criacao-de-um-handler-http" title="Link permanente para este título">¶</a></h1>
+  <div class="section" id="registrando-um-novo-handler-http">
+<h1>Registrando um novo handler HTTP<a class="headerlink" href="#registrando-um-novo-handler-http" title="Link permanente para este título">¶</a></h1>
 <p>Todo handler HTTP deve seguir algumas regras:</p>
 <blockquote>
 <div><ul class="simple">
-<li><p>Deve sempre ser decorato com <a class="reference internal" href="../../asyncworker-app/intro.html#asyncworker-app-handler"><span class="std std-ref">&#64;app.route()</span></a></p></li>
+<li><p>Deve sempre ser decorado com <a class="reference internal" href="#supported-methods"><span class="std std-ref">&#64;app.http.*()</span></a></p></li>
 <li><p>Deve declarar seus parametros sempre com definição de tipos, pois é assim que o asyncworker saberá passar <a class="reference internal" href="#handler-path-param"><span class="std std-ref">parametros dinâmicos</span></a> para o handler.</p></li>
 <li><p>Um handler pode não receber nenhum parâmetro. Para isso basta a assinatura do handler ser vazia.</p></li>
 </ul>
@@ -50,17 +50,47 @@
 </ul>
 </div></blockquote>
 </div>
-<div class="section" id="parametrizacao-do-decorator-route-para-handlers-http">
-<h1>Parametrização do decorator route() para handlers HTTP<a class="headerlink" href="#parametrizacao-do-decorator-route-para-handlers-http" title="Link permanente para este título">¶</a></h1>
-<p>Para um handler HTTP deveremos passar os seguintes parametros para o decorator <code class="docutils literal notranslate"><span class="pre">route()</span></code>:</p>
-<blockquote>
-<div><ul class="simple">
-<li><p>Lista de paths que devem estar na Request HTTP para que esse handler seja chamado;</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">type=RouteTypes.HTTP</span></code></p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">methods</span></code> sendo uma lista de métodos HTTP permitidos para esse handler</p></li>
+<div class="section" id="metodos-http-suportados">
+<h1>Métodos HTTP suportados<a class="headerlink" href="#metodos-http-suportados" title="Link permanente para este título">¶</a></h1>
+<div class="versionadded" id="supported-methods">
+<p><span class="versionmodified added">Novo na versão 0.15.2.</span></p>
+</div>
+<p>Para definirmos qual método HTTP nosso handler vai responder, devemos usar um dos decorators que estão disponíveis abaixo de <code class="docutils literal notranslate"><span class="pre">app.http.*</span></code>. Atualmente temos:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">&#64;app.http.get()</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">&#64;app.http.post()</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">&#64;app.http.put()</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">&#64;app.http.patch()</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">&#64;app.http.delete()</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">&#64;app.http.head()</span></code></p></li>
 </ul>
-</div></blockquote>
+<p>Esses decorators recebem como parametro uma lista de paths que serão respondidos pelo handler decorado. Exemplo:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">aiohttp</span> <span class="kn">import</span> <span class="n">web</span>
+
+<span class="kn">from</span> <span class="nn">asyncworker</span> <span class="kn">import</span> <span class="n">App</span>
+<span class="kn">from</span> <span class="nn">asyncworker.http.decorators</span> <span class="kn">import</span> <span class="n">parse_path</span>
+<span class="kn">from</span> <span class="nn">asyncworker.http.wrapper</span> <span class="kn">import</span> <span class="n">RequestWrapper</span>
+
+<span class="n">app</span> <span class="o">=</span> <span class="n">App</span><span class="p">()</span>
+
+
+<span class="nd">@app</span><span class="o">.</span><span class="n">http</span><span class="o">.</span><span class="n">get</span><span class="p">([</span><span class="s2">&quot;/&quot;</span><span class="p">,</span> <span class="s2">&quot;/other&quot;</span><span class="p">])</span>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">handler</span><span class="p">():</span>
+    <span class="k">return</span> <span class="n">web</span><span class="o">.</span><span class="n">json_response</span><span class="p">({})</span>
+</pre></div>
+</div>
 <p>Parametros no path podem ser definidos cercando com <code class="docutils literal notranslate"><span class="pre">{}</span></code>, ex: <code class="docutils literal notranslate"><span class="pre">/users/{user_id}</span></code>. Mais delathes em como receber esses valores em seu handler <a class="reference internal" href="#handler-path-param"><span class="std std-ref">aqui</span></a>.</p>
+</div>
+<div class="section" id="usando-metodos-nao-suportados-pelo-asyncworker">
+<h1>Usando métodos não suportados pelo asyncworker<a class="headerlink" href="#usando-metodos-nao-suportados-pelo-asyncworker" title="Link permanente para este título">¶</a></h1>
+<p>Eventualmente você pode precisar registrar um handler que responde por um método HTTP que não possui um decorator específico. Nesse caso você pode usar o decorator <code class="docutils literal notranslate"><span class="pre">&#64;app.http._route()</span></code> para regisgtrar esse handler.</p>
+<p>Mas lembre-se que você está usando uma API interna do asyncworker e que não há garantias de que essa inteface seja mantida estável. O ideal é que o método que você precisa seja adicionado ao projeto.</p>
+<p>Um exemplo de handler que usa um método HTTP qualquer:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@app</span><span class="o">.</span><span class="n">http</span><span class="o">.</span><span class="n">_route</span><span class="p">([</span><span class="s2">&quot;/bla&quot;</span><span class="p">],</span> <span class="n">method</span><span class="o">=</span><span class="s2">&quot;CONTINUE&quot;</span><span class="p">)</span>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">handler</span><span class="p">(</span><span class="o">...</span><span class="p">):</span>
+  <span class="k">pass</span>
+</pre></div>
+</div>
 </div>
 <div class="section" id="envs-para-escolher-a-porta-e-o-ip-onde-o-server-http-estara-escutando">
 <h1>ENVs para escolher a porta e o IP onde o server http estará escutando<a class="headerlink" href="#envs-para-escolher-a-porta-e-o-ip-onde-o-server-http-estara-escutando" title="Link permanente para este título">¶</a></h1>
@@ -86,7 +116,7 @@
 
 <span class="n">h</span> <span class="o">=</span> <span class="n">Handler</span><span class="p">()</span>
 
-<span class="nd">@app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>
+<span class="nd">@app</span><span class="o">.</span><span class="n">http</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>
 <span class="n">h</span>
 </pre></div>
 </div>
@@ -97,7 +127,7 @@
 
 <span class="n">h</span> <span class="o">=</span> <span class="n">Handler</span><span class="p">()</span>
 
-<span class="n">app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="o">...</span><span class="p">)(</span><span class="n">h</span><span class="p">)</span>
+<span class="n">app</span><span class="o">.</span><span class="n">http</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="o">...</span><span class="p">)(</span><span class="n">h</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -127,7 +157,7 @@
 
     <span class="k">return</span> <span class="n">_wrapper</span>
 
-<span class="nd">@app</span><span class="o">.</span><span class="n">route</span><span class="p">([</span><span class="s2">&quot;/&quot;</span><span class="p">],</span> <span class="nb">type</span><span class="o">=</span><span class="n">RouteTypes</span><span class="o">.</span><span class="n">HTTP</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;GET&quot;</span><span class="p">])</span>
+<span class="nd">@app</span><span class="o">.</span><span class="n">http</span><span class="o">.</span><span class="n">get</span><span class="p">([</span><span class="s2">&quot;/&quot;</span><span class="p">])</span>
 <span class="nd">@auth_required</span>
 <span class="k">async</span> <span class="k">def</span> <span class="nf">handler</span><span class="p">(</span><span class="n">user</span><span class="p">:</span> <span class="n">User</span><span class="p">):</span>
     <span class="k">return</span> <span class="n">web</span><span class="o">.</span><span class="n">json_response</span><span class="p">({})</span>
@@ -143,7 +173,7 @@
 <p>É possível receber em seu handler parametros definidos no path da requisição. Isso é feito través do decorator <a class="reference internal" href="../../../src/asyncworker/asyncworker.http.html#asyncworker.http.decorators.parse_path" title="asyncworker.http.decorators.parse_path"><code class="xref py py-func docutils literal notranslate"><span class="pre">asyncworker.http.decorators.parse_path()</span></code></a>.</p>
 <p>Quando decoramos nosso handler com esse decorator instruímos o asyncworker a tentar extrair parametros do path e passar para nosso handler.</p>
 <p>Importante notar que, primeiro o asyncworker vai procurar nosso parametro pelo nome e só depois tentará procurar o tipo.  Exemplo:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@app</span><span class="o">.</span><span class="n">route</span><span class="p">([</span><span class="s2">&quot;/by_id/</span><span class="si">{_id}</span><span class="s2">&quot;</span><span class="p">],</span> <span class="nb">type</span><span class="o">=</span><span class="n">RouteTypes</span><span class="o">.</span><span class="n">HTTP</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;GET&quot;</span><span class="p">])</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@app</span><span class="o">.</span><span class="n">http</span><span class="o">.</span><span class="n">get</span><span class="p">([</span><span class="s2">&quot;/by_id/</span><span class="si">{_id}</span><span class="s2">&quot;</span><span class="p">])</span>
 <span class="nd">@parse_path</span>
 <span class="k">async</span> <span class="k">def</span> <span class="nf">by_id</span><span class="p">(</span><span class="n">_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
     <span class="k">return</span> <span class="n">web</span><span class="o">.</span><span class="n">json_response</span><span class="p">({})</span>

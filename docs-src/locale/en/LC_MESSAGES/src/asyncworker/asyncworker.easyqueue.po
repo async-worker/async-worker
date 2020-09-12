@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Asyncworker \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-10-09 09:15-0300\n"
+"POT-Creation-Date: 2020-09-12 15:53-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -80,6 +80,14 @@ msgstr ""
 
 #: asyncworker.easyqueue.queue.BaseJsonQueue:1 of
 msgid "Base: :class:`asyncworker.easyqueue.queue.BaseQueue`"
+msgstr ""
+
+#: asyncworker.easyqueue.queue.ConnType:1 of
+msgid "Base: :class:`enum.Enum`"
+msgstr ""
+
+#: asyncworker.easyqueue.queue.ConnType:1 of
+msgid "An enumeration."
 msgstr ""
 
 #: asyncworker.easyqueue.queue.JsonQueue:1 of

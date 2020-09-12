@@ -72,13 +72,19 @@
 </li>
       <li><a href="src/asyncworker/asyncworker.html#asyncworker.connections.ConnectionsMapping.add">add() (asyncworker.connections.ConnectionsMapping method)</a>
 </li>
+      <li><a href="src/asyncworker/asyncworker.html#asyncworker.routes.RoutesRegistry.add_amqp_route">add_amqp_route() (asyncworker.routes.RoutesRegistry method)</a>
+</li>
       <li><a href="src/asyncworker/asyncworker.html#asyncworker.routes.SSERoute.add_default_headers">add_default_headers() (asyncworker.routes.SSERoute class method)</a>
+</li>
+      <li><a href="src/asyncworker/asyncworker.html#asyncworker.routes.RoutesRegistry.add_http_route">add_http_route() (asyncworker.routes.RoutesRegistry method)</a>
 </li>
       <li><a href="src/asyncworker/asyncworker.html#asyncworker.routes.RoutesRegistry.add_route">add_route() (asyncworker.routes.RoutesRegistry method)</a>
 </li>
       <li><a href="src/asyncworker/asyncworker.html#asyncworker.routes.HTTPRoute.aiohttp_routes">aiohttp_routes() (asyncworker.routes.HTTPRoute method)</a>
 </li>
       <li><a href="src/asyncworker/asyncworker.html#asyncworker.conf.Settings.Config.allow_mutation">allow_mutation (asyncworker.conf.Settings.Config attribute)</a>
+</li>
+      <li><a href="src/asyncworker/asyncworker.html#asyncworker.app.App.amqp">amqp() (asyncworker.app.App property)</a>
 </li>
       <li><a href="src/asyncworker/asyncworker.html#asyncworker.options.RouteTypes.AMQP_RABBITMQ">AMQP_RABBITMQ (asyncworker.options.RouteTypes attribute)</a>
 </li>
@@ -96,10 +102,18 @@
 </li>
       <li><a href="src/asyncworker/asyncworker.html#asyncworker.routes.AMQPRoute">AMQPRoute (class in asyncworker.routes)</a>
 </li>
+      <li><a href="src/asyncworker/asyncworker.html#asyncworker.routes.AMQPRouteOptions">AMQPRouteOptions (class in asyncworker.routes)</a>
+</li>
+      <li><a href="src/asyncworker/asyncworker.html#asyncworker.routes.AMQPRouteOptions.Config">AMQPRouteOptions.Config (class in asyncworker.routes)</a>
+</li>
       <li><a href="src/asyncworker/asyncworker.html#asyncworker.app.App">App (class in asyncworker.app)</a>
 </li>
       <li><a href="src/asyncworker/asyncworker.html#asyncworker.connections.AMQPConnection.Config.arbitrary_types_allowed">arbitrary_types_allowed (asyncworker.connections.AMQPConnection.Config attribute)</a>
+
+      <ul>
+        <li><a href="src/asyncworker/asyncworker.html#asyncworker.routes.AMQPRouteOptions.Config.arbitrary_types_allowed">(asyncworker.routes.AMQPRouteOptions.Config attribute)</a>
 </li>
+      </ul></li>
       <li><a href="src/asyncworker/asyncworker.types.html#asyncworker.types.resolver.ArgResolver">ArgResolver (class in asyncworker.types.resolver)</a>
 </li>
       <li><a href="src/asyncworker/asyncworker.html#module-asyncworker">asyncworker (module)</a>
@@ -126,14 +140,14 @@
 </li>
       <li><a href="src/asyncworker/asyncworker.html#module-asyncworker.exceptions">asyncworker.exceptions (module)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="src/asyncworker/asyncworker.http.html#module-asyncworker.http">asyncworker.http (module)</a>
 </li>
       <li><a href="src/asyncworker/asyncworker.http.html#module-asyncworker.http.decorators">asyncworker.http.decorators (module)</a>
 </li>
       <li><a href="src/asyncworker/asyncworker.http.html#module-asyncworker.http.wrapper">asyncworker.http.wrapper (module)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="src/asyncworker/asyncworker.metrics.html#module-asyncworker.metrics">asyncworker.metrics (module)</a>
 </li>
       <li><a href="src/asyncworker/asyncworker.metrics.html#module-asyncworker.metrics.aiohttp_resources">asyncworker.metrics.aiohttp_resources (module)</a>
@@ -258,6 +272,8 @@
         <li><a href="src/asyncworker/asyncworker.metrics.collectors.html#asyncworker.metrics.collectors.platform.PlatformCollector.collect">(asyncworker.metrics.collectors.platform.PlatformCollector method)</a>
 </li>
       </ul></li>
+      <li><a href="src/asyncworker/asyncworker.easyqueue.html#asyncworker.easyqueue.queue.JsonQueue.conn_for">conn_for() (asyncworker.easyqueue.queue.JsonQueue method)</a>
+</li>
       <li><a href="src/asyncworker/asyncworker.easyqueue.html#asyncworker.easyqueue.message.AMQPMessage.connection">connection (asyncworker.easyqueue.message.AMQPMessage attribute)</a>
 </li>
   </ul></td>
@@ -269,6 +285,10 @@
       <li><a href="src/asyncworker/asyncworker.easyqueue.html#asyncworker.easyqueue.connection.AMQPConnection.connection_parameters">connection_parameters() (asyncworker.easyqueue.connection.AMQPConnection property)</a>
 </li>
       <li><a href="src/asyncworker/asyncworker.html#asyncworker.connections.ConnectionsMapping">ConnectionsMapping (class in asyncworker.connections)</a>
+</li>
+      <li><a href="src/asyncworker/asyncworker.easyqueue.html#asyncworker.easyqueue.queue.ConnType">ConnType (class in asyncworker.easyqueue.queue)</a>
+</li>
+      <li><a href="src/asyncworker/asyncworker.easyqueue.html#asyncworker.easyqueue.queue.ConnType.CONSUME">CONSUME (asyncworker.easyqueue.queue.ConnType attribute)</a>
 </li>
       <li><a href="src/asyncworker/asyncworker.easyqueue.html#asyncworker.easyqueue.queue.JsonQueue.consume">consume() (asyncworker.easyqueue.queue.JsonQueue method)</a>
 </li>
@@ -324,6 +344,8 @@
 </li>
       <li><a href="src/asyncworker/asyncworker.html#asyncworker.options.Events">Events (class in asyncworker.options)</a>
 </li>
+      <li><a href="src/asyncworker/asyncworker.html#asyncworker.routes.AMQPRouteOptions.Config.extra">extra (asyncworker.routes.AMQPRouteOptions.Config attribute)</a>
+</li>
   </ul></td>
 </tr></table>
 
@@ -374,16 +396,20 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="src/asyncworker/asyncworker.html#asyncworker.app.App.handlers">handlers (asyncworker.app.App attribute)</a>
 </li>
+      <li><a href="src/asyncworker/asyncworker.easyqueue.html#asyncworker.easyqueue.connection.AMQPConnection.has_channel_ready">has_channel_ready() (asyncworker.easyqueue.connection.AMQPConnection method)</a>
+</li>
       <li><a href="src/asyncworker/asyncworker.metrics.html#asyncworker.metrics.types.Histogram">Histogram (class in asyncworker.metrics.types)</a>
 </li>
       <li><a href="src/asyncworker/asyncworker.html#asyncworker.options.RouteTypes.HTTP">HTTP (asyncworker.options.RouteTypes attribute)</a>
 </li>
-      <li><a href="src/asyncworker/asyncworker.testing.html#asyncworker.testing.http_client">http_client() (in module asyncworker.testing)</a>
+      <li><a href="src/asyncworker/asyncworker.html#asyncworker.app.App.http">http() (asyncworker.app.App property)</a>
 </li>
-      <li><a href="src/asyncworker/asyncworker.html#asyncworker.routes.http_handler_wrapper">http_handler_wrapper() (in module asyncworker.routes)</a>
+      <li><a href="src/asyncworker/asyncworker.testing.html#asyncworker.testing.http_client">http_client() (in module asyncworker.testing)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="src/asyncworker/asyncworker.html#asyncworker.routes.http_handler_wrapper">http_handler_wrapper() (in module asyncworker.routes)</a>
+</li>
       <li><a href="src/asyncworker/asyncworker.metrics.html#asyncworker.metrics.aiohttp_resources.http_metrics_middleware">http_metrics_middleware() (in module asyncworker.metrics.aiohttp_resources)</a>
 </li>
       <li><a href="src/asyncworker/asyncworker.html#asyncworker.routes.RoutesRegistry.http_routes">http_routes (asyncworker.routes.RoutesRegistry attribute)</a>
@@ -674,14 +700,14 @@
 </li>
       <li><a href="src/asyncworker/asyncworker.signals.handlers.html#asyncworker.signals.handlers.base.SignalHandler">SignalHandler (class in asyncworker.signals.handlers.base)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="src/asyncworker/asyncworker.html#asyncworker.options.RouteTypes.SSE">SSE (asyncworker.options.RouteTypes attribute)</a>
 
       <ul>
         <li><a href="src/asyncworker/asyncworker.signals.handlers.html#asyncworker.signals.handlers.sse.SSE">(class in asyncworker.signals.handlers.sse)</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="src/asyncworker/asyncworker.html#asyncworker.routes.RoutesRegistry.sse_routes">sse_routes (asyncworker.routes.RoutesRegistry attribute)</a>
 </li>
       <li><a href="src/asyncworker/asyncworker.html#asyncworker.connections.SSEConnection">SSEConnection (class in asyncworker.connections)</a>
@@ -720,8 +746,6 @@
         <li><a href="src/asyncworker/asyncworker.html#asyncworker.time.ClockTicker.stop">(asyncworker.time.ClockTicker method)</a>
 </li>
       </ul></li>
-      <li><a href="src/asyncworker/asyncworker.easyqueue.html#asyncworker.easyqueue.queue.JsonQueue.stop_consumer">stop_consumer() (asyncworker.easyqueue.queue.JsonQueue method)</a>
-</li>
   </ul></td>
 </tr></table>
 
@@ -768,11 +792,13 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="src/asyncworker/asyncworker.sse.html#asyncworker.sse.consumer.State.WAIT_FOR_DATA">WAIT_FOR_DATA (asyncworker.sse.consumer.State attribute)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="src/asyncworker/asyncworker.html#asyncworker.connections.ConnectionsMapping.with_type">with_type() (asyncworker.connections.ConnectionsMapping method)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="src/asyncworker/asyncworker.types.html#asyncworker.types.resolver.ArgResolver.wrap">wrap() (asyncworker.types.resolver.ArgResolver method)</a>
+</li>
+      <li><a href="src/asyncworker/asyncworker.easyqueue.html#asyncworker.easyqueue.queue.ConnType.WRITE">WRITE (asyncworker.easyqueue.queue.ConnType attribute)</a>
 </li>
   </ul></td>
 </tr></table>
