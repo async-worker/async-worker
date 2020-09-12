@@ -27,12 +27,12 @@ Abaixo estão alguns exemplos bem simples que dão uma ideia do projeto e de com
 ```python
 from aiohttp import web
 
-from asyncworker import App, RouteTypes
+from asyncworker import App
 
 app = App()
 
 
-@app.route(["/", "/other"], type=RouteTypes.HTTP, methods=["GET"])
+@app.http.get(["/", "/other"])
 async def handler():
     return web.json_response({})
 
@@ -49,8 +49,8 @@ from typing import List
 
 from asyncworker import App
 from asyncworker.connections import AMQPConnection
-from asyncworker.options import RouteTypes, Options
-from asyncworker.rabbitmq import RabbitMQMessage
+from asyncworker.options import Options
+from asyncworker.rabbitmq import RabbitMQMessage, AMQPRouteOptions
 
 amqp_conn = AMQPConnection(
     hostname="127.0.0.1",
@@ -62,8 +62,8 @@ amqp_conn = AMQPConnection(
 app = App(connections=[amqp_conn])
 
 
-@app.route(
-    ["queue", "queue-2"], type=RouteTypes.AMQP_RABBITMQ, options={Options.BULK_SIZE: 512}
+@app.amqp.consume(
+    ["queue", "queue-2"], options=AMQPRouteOptions(bulk_size=512)
 )
 async def handler(messages: List[RabbitMQMessage]):
     print(f"Received {len(messages)} messages")

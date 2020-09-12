@@ -11,7 +11,7 @@ from asyncworker.testing import http_client, HttpClientContext
 global_app = App()
 
 
-@global_app.route(["/"], type=RouteTypes.HTTP, methods=["GET"])
+@global_app.http.get(["/"])
 async def _h():
     return web.json_response({})
 
@@ -34,7 +34,7 @@ class HttpClientTestCaseDecoratorTest(TestCase):
         self.assertEqual(HTTPStatus.OK, resp.status)
 
     async def test_client_can_perform_http_requests(self):
-        @self.app.route(["/"], type=RouteTypes.HTTP, methods=["GET"])
+        @self.app.http.get(["/"])
         async def index(request):
             return web.json_response({"OK": True})
 
@@ -59,7 +59,7 @@ class HttpClientTestCaseDecoratorTest(TestCase):
         self.assertEqual([42, 10], [rv[1], rv[2]])
 
     async def test_server_is_closed_if_handler_raises_exception(self):
-        @self.app.route(["/"], type=RouteTypes.HTTP, methods=["GET"])
+        @self.app.http.get(["/"])
         async def index(request):
             return web.json_response({"OK": True})
 
@@ -83,7 +83,7 @@ class HttpClientContextManagerTest(TestCase):
         self.app = App()
 
     async def test_client_can_perform_requests(self):
-        @self.app.route(["/"], type=RouteTypes.HTTP, methods=["GET"])
+        @self.app.http.get(["/"])
         async def index(request):
             return web.json_response({"OK": True})
 
@@ -100,7 +100,7 @@ class HttpClientContextManagerTest(TestCase):
         fazê-lo passar de forma consistente.
         """
 
-        @self.app.route(["/"], type=RouteTypes.HTTP, methods=["GET"])
+        @self.app.http.get(["/"])
         async def index(request):
             return web.json_response({"OK": True})
 

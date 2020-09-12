@@ -12,6 +12,7 @@ from asyncworker.consumer import Consumer
 from asyncworker.easyqueue.message import AMQPMessage
 from asyncworker.easyqueue.queue import JsonQueue
 from asyncworker.options import Actions, Events, RouteTypes
+from asyncworker.rabbitmq import AMQPRouteOptions
 
 
 async def _handler(message):
@@ -164,10 +165,8 @@ class ConsumerTest(asynctest.TestCase):
         Confirma que em caso de exceção, será feito `message.reject(requeue=True)`
         """
 
-        @self.app.route(
-            ["queue"],
-            type=RouteTypes.AMQP_RABBITMQ,
-            options={Events.ON_EXCEPTION: Actions.REQUEUE},
+        @self.app.amqp.consume(
+            ["queue"], options=AMQPRouteOptions(on_exception=Actions.REQUEUE)
         )
         async def _handler(messages):
             raise Exception("BOOM!")
@@ -180,10 +179,8 @@ class ConsumerTest(asynctest.TestCase):
         self.mock_message.reject.assert_awaited_once_with(requeue=True)
 
     async def test_on_exception_reject_message(self):
-        @self.app.route(
-            ["queue"],
-            type=RouteTypes.AMQP_RABBITMQ,
-            options={Events.ON_EXCEPTION: Actions.REJECT},
+        @self.app.amqp.consume(
+            ["queue"], options=AMQPRouteOptions(on_exception=Actions.REJECT)
         )
         async def _handler(messages):
             raise Exception("BOOM!")
@@ -196,10 +193,8 @@ class ConsumerTest(asynctest.TestCase):
         self.mock_message.reject.assert_awaited_once_with(requeue=False)
 
     async def test_on_exception_ack_message(self):
-        @self.app.route(
-            ["queue"],
-            type=RouteTypes.AMQP_RABBITMQ,
-            options={Events.ON_EXCEPTION: Actions.ACK},
+        @self.app.amqp.consume(
+            ["queue"], options=AMQPRouteOptions(on_exception=Actions.ACK)
         )
         async def _handler(messages):
             raise Exception("BOOM!")
@@ -212,10 +207,8 @@ class ConsumerTest(asynctest.TestCase):
         self.mock_message.ack.assert_awaited_once()
 
     async def test_on_success_ack(self):
-        @self.app.route(
-            ["queue"],
-            type=RouteTypes.AMQP_RABBITMQ,
-            options={Events.ON_SUCCESS: Actions.ACK},
+        @self.app.amqp.consume(
+            ["queue"], options=AMQPRouteOptions(on_success=Actions.ACK)
         )
         async def _handler(messages):
             return 42
@@ -227,10 +220,8 @@ class ConsumerTest(asynctest.TestCase):
         self.mock_message.ack.assert_awaited_once()
 
     async def test_on_success_reject(self):
-        @self.app.route(
-            ["queue"],
-            type=RouteTypes.AMQP_RABBITMQ,
-            options={Events.ON_SUCCESS: Actions.REJECT},
+        @self.app.amqp.consume(
+            ["queue"], options=AMQPRouteOptions(on_success=Actions.REJECT)
         )
         async def _handler(messages):
             return 42
@@ -242,10 +233,8 @@ class ConsumerTest(asynctest.TestCase):
         self.mock_message.reject.assert_awaited_once_with(requeue=False)
 
     async def test_on_success_requeue(self):
-        @self.app.route(
-            ["queue"],
-            type=RouteTypes.AMQP_RABBITMQ,
-            options={Events.ON_SUCCESS: Actions.REQUEUE},
+        @self.app.amqp.consume(
+            ["queue"], options=AMQPRouteOptions(on_success=Actions.REQUEUE)
         )
         async def _handler(messages):
             return 42
@@ -258,7 +247,7 @@ class ConsumerTest(asynctest.TestCase):
 
     async def test_on_queue_message_auto_ack_on_success(self):
         """
-        Se o handler registrado no @app.route() rodar com sucesso,
+        Se o handler registrado no @app.amqp.consume() rodar com sucesso,
         devemos fazer o ack da mensagem
         """
         consumer = Consumer(self.one_route_fixture, *self.connection_parameters)

@@ -22,10 +22,8 @@ class HTTPMetricsTests(TestCase):
             "asyncworker.metrics.aiohttp_resources.metrics"
         ).start()
 
-        @self.app.route(
-            routes=[self.route_path],
-            type=RouteTypes.HTTP,
-            methods=[self.route_method],
+        @self.app.http._route(
+            routes=[self.route_path], method=self.route_method
         )
         async def handler(request):
             metrics.requests_in_progress.labels.assert_called_once_with(
