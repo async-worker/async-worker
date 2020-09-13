@@ -13,13 +13,15 @@ from asyncworker.routes import RoutesRegistry, Route
 from asyncworker.signals.base import Signal, Freezable
 from asyncworker.signals.handlers.http import HTTPServer
 from asyncworker.signals.handlers.rabbitmq import RabbitMQ
+from asyncworker.signals.handlers.sqs import SQS
 from asyncworker.signals.handlers.sse import SSE
+from asyncworker.sqs.entrypoint import SQSRouteEntryPointImpl
 from asyncworker.task_runners import ScheduledTaskRunner
 from asyncworker.utils import entrypoint
 
 
 class App(MutableMapping, Freezable):
-    handlers = (RabbitMQ(), HTTPServer(), SSE())
+    handlers = (RabbitMQ(), HTTPServer(), SSE(), SQS())
     shutdown_os_signals = (Signals.SIGINT, Signals.SIGTERM)
 
     def __init__(
@@ -116,6 +118,9 @@ class App(MutableMapping, Freezable):
     @property
     def amqp(self) -> AMQPRouteEntryPointImpl:
         return AMQPRouteEntryPointImpl(self)
+
+    def sqs(self) -> SQSRouteEntryPointImpl:
+        return SQSRouteEntryPointImplt(self)
 
     def route(
         self,

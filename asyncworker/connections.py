@@ -1,6 +1,7 @@
 import abc
 import collections
 from collections import KeysView, ValuesView
+from os import getenv
 from typing import (
     Optional,
     Union,
@@ -14,7 +15,7 @@ from typing import (
     ItemsView,
 )
 
-from pydantic import BaseModel, validator
+from pydantic import BaseModel, validator, Field
 
 from asyncworker.conf import settings
 from asyncworker.easyqueue.queue import JsonQueue
@@ -183,3 +184,27 @@ class AMQPConnection(Connection):
             mandatory=mandatory,
             immediate=immediate,
         )
+
+
+class SQSConnection(Connection):
+    """
+    A representation of a SQS connection producer that continuously polls
+    messages from a SQS queue and acknowledge them after being successfully
+    processed.
+
+    Attributes:
+        access_key_id   Specifies an AWS access key associated with an IAM user or role.
+        secret_access_key   Specifies the secret key associated with the access key. This is essentially the "password" for the access key.
+        region  Specifies the AWS Region to send the request to.
+
+    The following AWS CLI environment variables are used as the default values:
+
+        * AWS_ACCESS_KEY_ID
+        * AWS_SECRET_ACCESS_KEY
+        * AWS_DEFAULT_REGION
+    """
+
+    route_type = RouteTypes.SQS
+    access_key_id: str = getenv("AWS_ACCESS_KEY_ID")
+    secret_access_key: str = getenv("AWS_SECRET_ACCESS_KEY")
+    region: str = getenv("AWS_DEFAULT_REGION")

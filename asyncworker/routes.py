@@ -16,10 +16,10 @@ from aiohttp import web
 from aiohttp.hdrs import METH_ALL
 from aiohttp.web_routedef import RouteDef
 from cached_property import cached_property
-from pydantic import Extra, BaseModel, validator, root_validator
+from pydantic import Extra, BaseModel, validator, root_validator, Field
 
 from asyncworker import conf
-from asyncworker.connections import Connection, AMQPConnection
+from asyncworker.connections import Connection, AMQPConnection, SQSConnection
 from asyncworker.http.wrapper import RequestWrapper
 from asyncworker.options import DefaultValues, RouteTypes, Actions
 from asyncworker.types.registry import TypesRegistry
@@ -165,6 +165,27 @@ class AMQPRoute(Route):
     vhost: str = conf.settings.AMQP_DEFAULT_VHOST
     connection: Optional[AMQPConnection]
     options: AMQPRouteOptions
+
+
+class SQSRouteOptions(AMQPConnection):
+    bulk_size: int = DefaultValues.BULK_SIZE
+    bulk_flush_interval: int = DefaultValues.BULK_FLUSH_INTERVAL
+    on_success: Actions = Actions.NOOP
+    on_exception: Actions = Actions.NOOP
+    max_number_of_messages: int = Field(
+        default=10,
+        gt=1,
+        le=10,
+        description="Optional. The maximum number of messages to be fetched "
+        "per request. This value must be between `1` and `10`, "
+        "which is the maximum number allowed by AWS. Default is `10`.",
+    )
+
+
+class SQSRoute(Route):
+    type: RouteTypes = RouteTypes.SQS
+    connection: SQSConnection
+    options: SQSRouteOptions
 
 
 class _SSERouteOptions(_RouteOptions):

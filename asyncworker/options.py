@@ -20,6 +20,7 @@ class Actions(AutoNameEnum):
     ACK = auto()
     REJECT = auto()
     REQUEUE = auto()
+    NOOP = auto()
 
 
 class Events(AutoNameEnum):
@@ -39,3 +40,4 @@ class RouteTypes(AutoNameEnum):
     AMQP_RABBITMQ = auto()
     SSE = auto()
     HTTP = auto()
+    SQS = auto()
