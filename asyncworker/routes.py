@@ -10,13 +10,14 @@ from typing import (
     Iterable,
     Type,
     Optional,
+    NewType,
 )
 
 from aiohttp import web
 from aiohttp.hdrs import METH_ALL
 from aiohttp.web_routedef import RouteDef
 from cached_property import cached_property
-from pydantic import Extra, BaseModel, validator, root_validator, Field
+from pydantic import Extra, BaseModel, validator, root_validator, Field, HttpUrl
 
 from asyncworker import conf
 from asyncworker.connections import Connection, AMQPConnection, SQSConnection
@@ -167,7 +168,7 @@ class AMQPRoute(Route):
     options: AMQPRouteOptions
 
 
-class SQSRouteOptions(AMQPConnection):
+class SQSRouteOptions(_RouteOptions):
     bulk_size: int = DefaultValues.BULK_SIZE
     bulk_flush_interval: int = DefaultValues.BULK_FLUSH_INTERVAL
     on_success: Actions = Actions.NOOP
@@ -182,9 +183,13 @@ class SQSRouteOptions(AMQPConnection):
     )
 
 
+QueueName = NewType("QueueName", str)
+
+
 class SQSRoute(Route):
     type: RouteTypes = RouteTypes.SQS
-    connection: SQSConnection
+    connection: Optional[SQSConnection]
+    routes: List[Union[HttpUrl, QueueName]]
     options: SQSRouteOptions
 
 
@@ -257,6 +262,10 @@ class RoutesRegistry(UserDict):
     def sse_routes(self) -> Iterable[SSERoute]:
         return self._get_routes_for_type(SSERoute)
 
+    @cached_property
+    def sqs_routes(self) -> Iterable[SQSRoute]:
+        return self._get_routes_for_type(SQSRoute)
+
     def __setitem__(self, key: RouteHandler, value: Union[Dict, Route]):
 
         if not isinstance(value, Route):
@@ -276,6 +285,9 @@ class RoutesRegistry(UserDict):
         self[route.handler] = route
 
     def add_amqp_route(self, route: AMQPRoute) -> None:
+        self[route.handler] = route
+
+    def add_sqs_route(self, route: SQSRoute) -> None:
         self[route.handler] = route
 
     def route_for(self, handler: RouteHandler) -> Route:
