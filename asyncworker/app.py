@@ -119,8 +119,9 @@ class App(MutableMapping, Freezable):
     def amqp(self) -> AMQPRouteEntryPointImpl:
         return AMQPRouteEntryPointImpl(self)
 
+    @property
     def sqs(self) -> SQSRouteEntryPointImpl:
-        return SQSRouteEntryPointImplt(self)
+        return SQSRouteEntryPointImpl(self)
 
     def route(
         self,
