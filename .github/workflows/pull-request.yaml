@@ -22,6 +22,8 @@ jobs:
           - 5672:5672
           - 15672:15672
     steps:
+      - name: install libxml2-dev
+        run: sudo apt-get install libxml2-dev libxslt-dev
       - name: checkout
         uses: actions/checkout@v2
 
