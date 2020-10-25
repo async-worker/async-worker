@@ -1,8 +1,11 @@
 import asyncio
+import sys
+from importlib import reload
 
 import asynctest
-from asynctest import CoroutineMock, patch, call, Mock, MagicMock
+from asynctest import CoroutineMock, patch, call, Mock
 
+from asyncworker import task_runners
 from asyncworker.app import App
 from asyncworker.task_runners import ScheduledTaskRunner
 
@@ -99,7 +102,7 @@ class ScheduledTaskRunnerTests(asynctest.TestCase):
     async def test_stop_awaits_for_the_currently_running_tasks_to_end(self):
         t1, t2 = CoroutineMock(), CoroutineMock()
         self.task_runner.running_tasks = {t1(), t2()}
-        with patch.object(self.task_runner.clock, "stop") as clock_stop:
+        with patch.object(self.task_runner.clock, "stop"):
             await self.task_runner.stop(self.app)
 
             t1.assert_awaited_once()
@@ -135,8 +138,31 @@ class ScheduledTaskRunnerTests(asynctest.TestCase):
 
         with patch.object(
             asyncio, "current_task", _current_task, create=True
-        ), patch.object(asyncio, "Task", MagicMock()) as Task_mock:
-            Task_mock.current_task.side_effect = AttributeError()
+        ), patch.object(sys, "version_info", (3, 8)):
+            reload(task_runners)
+            task_runner.running_tasks.add(_task)
+            await task_runner._wrapped_task()
+            self.assertTrue(_task not in task_runner.running_tasks)
+
+    async def test_current_task_compatiple_with_py36(self):
+        async def _task(app: App):
+            return None
+
+        task_runner = ScheduledTaskRunner(
+            seconds=self.seconds,
+            task=_task,
+            app=self.app,
+            max_concurrency=self.max_concurrency,
+        )
+
+        def _current_task():
+            return _task
+
+        with patch.object(
+            asyncio, "Task", _current_task
+        ) as Task_mock, patch.object(sys, "version_info", (3, 6)):
+            Task_mock.current_task = _current_task
+            reload(task_runners)
             task_runner.running_tasks.add(_task)
             await task_runner._wrapped_task()
             self.assertTrue(_task not in task_runner.running_tasks)
@@ -174,9 +200,7 @@ class ScheduledTaskRunnerTests(asynctest.TestCase):
             _wrapped_task=wrapped_task,
             task_is_done_event=Mock(),
             can_dispatch_task=CoroutineMock(side_effect=[True, False, True]),
-        ), patch(
-            "asyncworker.task_runners.asyncio.ensure_future"
-        ) as ensure_future:
+        ), patch("asyncworker.task_runners.asyncio.ensure_future"):
             await self.task_runner._run()
 
             self.task_runner.task_is_done_event.clear.assert_has_calls(

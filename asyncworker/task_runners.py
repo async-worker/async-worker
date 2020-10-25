@@ -1,10 +1,18 @@
 import asyncio
+import sys
 from typing import Callable, Coroutine, Set, TYPE_CHECKING
 
 from asyncworker.time import ClockTicker
 
 if TYPE_CHECKING:
     from asyncworker.app import App  # pragma: nocover
+
+BEFORE_PY_37 = sys.version_info[0:2] < (3, 7)
+
+if BEFORE_PY_37:
+    _current_task_func = asyncio.Task.current_task
+else:
+    _current_task_func = asyncio.current_task  # type: ignore
 
 
 class ScheduledTaskRunner:
@@ -41,14 +49,7 @@ class ScheduledTaskRunner:
             await self.task(self.app)
         finally:
             self.task_is_done_event.set()
-            try:
-                # python 3.6
-                self.running_tasks.remove(asyncio.Task.current_task())
-            except AttributeError:
-                # Python 3.7, 3.8, 3.9+
-                self.running_tasks.remove(
-                    asyncio.current_task()
-                )  # type: ignore
+            self.running_tasks.remove(_current_task_func())
 
     async def start(self, app: "App") -> asyncio.Future:
         self._started = True
