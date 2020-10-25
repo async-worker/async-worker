@@ -1,7 +1,7 @@
 import asyncio
 
 import asynctest
-from asynctest import CoroutineMock, patch, call, Mock
+from asynctest import CoroutineMock, patch, call, Mock, MagicMock
 
 from asyncworker.app import App
 from asyncworker.task_runners import ScheduledTaskRunner
@@ -118,6 +118,20 @@ class ScheduledTaskRunnerTests(asynctest.TestCase):
             self.task_runner.can_dispatch_task.assert_has_awaits(
                 [call(), call(), call()]
             )
+
+    async def test_current_task_compatiple_with_py36_plus(self):
+        clock = asynctest.MagicMock()
+        clock.__aiter__.return_value = range(3)
+
+        def _current_task():
+            return self.task
+
+        with patch.multiple(self.task_runner, clock=clock), patch.object(
+            asyncio, "current_task", _current_task, create=True
+        ), patch.object(asyncio, "Task", MagicMock()) as Task_mock:
+            Task_mock.current_task.side_effect = AttributeError()
+            await self.task_runner._run()
+            self.assertTrue(self.task not in self.task_runner.running_tasks)
 
     async def test_run_dispatches_a_new_task_for_each_valid_clock_tick(self):
         clock = asynctest.MagicMock()
