@@ -3,7 +3,7 @@ import sys
 from importlib import reload
 
 import asynctest
-from asynctest import CoroutineMock, patch, call, Mock
+from asynctest import CoroutineMock, patch, call, Mock, skip
 
 from asyncworker import task_runners
 from asyncworker.app import App
@@ -12,6 +12,7 @@ from asyncworker.task_runners import ScheduledTaskRunner
 
 class ScheduledTaskRunnerTests(asynctest.TestCase):
     async def setUp(self):
+        reload(task_runners)
         self.task = CoroutineMock()
         self.app = asynctest.Mock(spec=App)
         self.seconds = 10
