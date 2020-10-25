@@ -46,7 +46,9 @@ class ScheduledTaskRunner:
                 self.running_tasks.remove(asyncio.Task.current_task())
             except AttributeError:
                 # Python 3.7, 3.8, 3.9+
-                self.running_tasks.remove(asyncio.current_task())
+                self.running_tasks.remove(
+                    asyncio.current_task()
+                )  # type: ignore
 
     async def start(self, app: "App") -> asyncio.Future:
         self._started = True
