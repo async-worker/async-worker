@@ -1,3 +1,4 @@
+tag-template: '$RESOLVED_VERSION'
 categories:
   - title: 'Mudanças incompatíveis'
     label: 'breaking-change'
@@ -17,7 +18,7 @@ version-resolver:
       - 'feature'
       - 'bug'
 template: |
-  ## Changelog
+  ## Changelog for #RESOLVED_VERSION
 
   $CHANGES
 
