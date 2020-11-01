@@ -1,3 +1,4 @@
+tag-template: '$RESOLVED_VERSION'
 categories:
   - title: 'Mudanças incompatíveis'
     label: 'breaking-change'
