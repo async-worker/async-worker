@@ -18,7 +18,7 @@ version-resolver:
       - 'feature'
       - 'bug'
 template: |
-  ## Changelog for #RESOLVED_VERSION
+  ## Changelog for $RESOLVED_VERSION
 
   $CHANGES
 
