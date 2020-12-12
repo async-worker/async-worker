@@ -16,10 +16,10 @@ from aiohttp import web
 from aiohttp.hdrs import METH_ALL
 from aiohttp.web_routedef import RouteDef
 from cached_property import cached_property
-from pydantic import BaseModel, validator
+from pydantic import Extra, BaseModel, validator, root_validator
 
-from asyncworker.conf import settings
-from asyncworker.connections import AMQPConnection
+from asyncworker import conf
+from asyncworker.connections import Connection, AMQPConnection
 from asyncworker.http.wrapper import RequestWrapper
 from asyncworker.options import DefaultValues, RouteTypes, Actions
 from asyncworker.types.registry import TypesRegistry
@@ -75,6 +75,7 @@ class Route(Model, abc.ABC):
     type: RouteTypes
     handler: Any
     routes: List[str]
+    connection: Optional[Connection]
     options: _RouteOptions = _RouteOptions()
 
     @staticmethod
@@ -113,6 +114,25 @@ class HTTPRoute(Route):
 
         return [cls._validate_method(method) for method in v]
 
+    @root_validator
+    def _validate_metrics_route(cls, values: dict) -> dict:
+        if not conf.settings.METRICS_ROUTE_ENABLED:
+            return values
+        if "methods" not in values:
+            return values
+        if "GET" not in values["methods"]:
+            return values
+        if conf.settings.METRICS_ROUTE_PATH in values["routes"]:
+            raise ValueError(
+                f"Conflicting HTTP routes."
+                f"Defining a `{conf.settings.METRICS_ROUTE_PATH}` "
+                f"conflicts with asyncworker's metrics path. Consider the "
+                f"following options: a) Remove your route and use asyncworker "
+                f"metrics; b) disable asyncworker's metrics route "
+            )
+
+        return values
+
     def aiohttp_routes(self) -> Iterable[RouteDef]:
         for route in self.routes:
             for method in self.methods:
@@ -125,7 +145,7 @@ class HTTPRoute(Route):
                 )
 
 
-class _AMQPRouteOptions(_RouteOptions):
+class AMQPRouteOptions(_RouteOptions):
     bulk_size: int = DefaultValues.BULK_SIZE
     bulk_flush_interval: int = DefaultValues.BULK_FLUSH_INTERVAL
     on_success: Actions = DefaultValues.ON_SUCCESS
@@ -136,13 +156,15 @@ class _AMQPRouteOptions(_RouteOptions):
     connection: Optional[Union[AMQPConnection, str]]
 
     class Config:
-        arbitrary_types_allowed = True
+        arbitrary_types_allowed = False
+        extra = Extra.forbid
 
 
 class AMQPRoute(Route):
     type: RouteTypes = RouteTypes.AMQP_RABBITMQ
-    vhost: str = settings.AMQP_DEFAULT_VHOST
-    options: _AMQPRouteOptions
+    vhost: str = conf.settings.AMQP_DEFAULT_VHOST
+    connection: Optional[AMQPConnection]
+    options: AMQPRouteOptions
 
 
 class _SSERouteOptions(_RouteOptions):
@@ -227,6 +249,12 @@ class RoutesRegistry(UserDict):
         super(RoutesRegistry, self).__setitem__(key, route)
 
     def add_route(self, route: Route) -> None:
+        self[route.handler] = route
+
+    def add_http_route(self, route: HTTPRoute) -> None:
+        self[route.handler] = route
+
+    def add_amqp_route(self, route: AMQPRoute) -> None:
         self[route.handler] = route
 
     def route_for(self, handler: RouteHandler) -> Route:

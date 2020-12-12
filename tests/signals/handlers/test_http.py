@@ -1,10 +1,14 @@
+import os
+from http import HTTPStatus
+from importlib import reload
 from random import randint
 
 import asynctest
 from aiohttp import web
-from asynctest import skip, mock, CoroutineMock, Mock, patch
+from aiohttp.client import ClientSession
+from asynctest import mock, CoroutineMock, Mock, patch
 
-from asyncworker import App
+from asyncworker import App, conf
 from asyncworker.conf import settings, Settings
 from asyncworker.http.wrapper import RequestWrapper
 from asyncworker.routes import call_http_handler, RouteTypes, RoutesRegistry
@@ -36,6 +40,9 @@ class HTTPServerTests(asynctest.TestCase):
         )
         self.app = App(connections=[])
 
+    async def tearDown(self):
+        await self.app.shutdown()
+
     @asynctest.patch("asyncworker.signals.handlers.http.web.TCPSite.start")
     async def test_startup_initializes_an_web_application(self, start):
         self.app.routes_registry = self.routes_registry
@@ -46,31 +53,23 @@ class HTTPServerTests(asynctest.TestCase):
         self.assertIsInstance(
             self.app[RouteTypes.HTTP]["runner"], web.AppRunner
         )
-        self.assertIsInstance(self.app[RouteTypes.HTTP]["site"], web.TCPSite)
+        site: web.TCPSite = self.app[RouteTypes.HTTP]["site"]
+        self.assertIsInstance(site, web.TCPSite)
 
-        self.assertEqual(
-            len(self.app[RouteTypes.HTTP]["app"]._router.routes()), 3
-        )
-
-        self.assertEqual(
-            self.app[RouteTypes.HTTP]["site"]._port, settings.HTTP_PORT
-        )
-        self.assertEqual(
-            self.app[RouteTypes.HTTP]["site"]._host, settings.HTTP_HOST
-        )
+        self.assertEqual(site._port, settings.HTTP_PORT)
+        self.assertEqual(site._host, settings.HTTP_HOST)
 
         start.assert_awaited_once()
 
-    @asynctest.patch("asyncworker.signals.handlers.http.web.TCPSite.start")
-    async def test_startup_doesnt_initializes_an_web_application_if_there_are_no_http_routes(
-        self, start
-    ):
+    @asynctest.patch("asyncworker.signals.handlers.http.web.AppRunner.cleanup")
+    async def test_add_handler_for_metrics_endpoint(self, cleanup):
         await self.signal_handler.startup(self.app)
 
-        start.assert_not_awaited()
-        self.assertNotIn("http_app", self.app[RouteTypes.HTTP])
-        self.assertNotIn("http_runner", self.app[RouteTypes.HTTP])
-        self.assertNotIn("http_site", self.app[RouteTypes.HTTP])
+        async with ClientSession() as client:
+            async with client.get(
+                f"http://{settings.HTTP_HOST}:{settings.HTTP_PORT}{settings.METRICS_ROUTE_PATH}"
+            ) as resp:
+                self.assertEqual(200, resp.status)
 
     @asynctest.patch("asyncworker.signals.handlers.http.web.AppRunner.cleanup")
     async def test_shutdown_closes_the_running_http_server(self, cleanup):
@@ -103,7 +102,7 @@ class HTTPServerTests(asynctest.TestCase):
         Tests if a response is correctly handled, Starts a real aiohttp server
         """
 
-        @self.app.route(["/"], type=RouteTypes.HTTP, methods=["GET"])
+        @self.app.http.get(["/"])
         async def index():
             return web.json_response({"OK": True})
 
@@ -117,15 +116,61 @@ class HTTPServerTests(asynctest.TestCase):
                 data = await resp.json()
                 self.assertDictEqual({"OK": True}, data)
 
+    async def test_user_can_use_metrics_endpoint_if_default_is_renamed(self):
+        """
+        Se estivermos com o endpoint de métricas habilitado mas o path foi trocado
+        então devemos poder registrar um endpoint com o valor default do path de metricas
+
+        Não é o melhor jeito de fazer o teste mas como o settings é instanciado no nível do módulo
+        não temos muito com controlar o desencadear dos imports então por isso preciso ficar substiuindo
+        os módulos para que o "novo" settings (após reload()) surta efeito.
+        """
+        from asyncworker import routes
+
+        app = App()
+
+        with mock.patch.dict(
+            os.environ, ASYNCWORKER_METRICS_ROUTE_PATH="/asyncworker-metrics"
+        ):
+
+            reload(conf)
+            with mock.patch.object(routes, "conf", conf):
+
+                @app.http.get(["/metrics"])
+                async def _h():
+                    return web.json_response({})
+
+                async with HttpClientContext(app) as client:
+                    resp = await client.get("/metrics")
+                    self.assertEqual(HTTPStatus.OK, resp.status)
+
+    async def test_user_can_use_metrics_if_method_is_not_get(self):
+        """
+        Deve ser possível usar o endpoint de métricas se o method for diferente de GET.
+        """
+        from asyncworker import routes
+
+        app = App()
+
+        @app.http.post([settings.METRICS_ROUTE_PATH])
+        async def _h():
+            return web.json_response({"OK": True})
+
+        async with HttpClientContext(app) as client:
+            resp = await client.post(settings.METRICS_ROUTE_PATH)
+            self.assertEqual(HTTPStatus.OK, resp.status)
+
+            self.assertEqual({"OK": True}, await resp.json())
+
     async def test_can_call_handler_without_annotation(self):
         """
         For backward compatiilty, wew can call a handler that receives
         one parameter and does not have any type annotations
         """
 
-        @self.app.route(["/"], type=RouteTypes.HTTP, methods=["GET"])
+        @self.app.http.get(["/"])
         async def handler():
-            return web.json_response({})
+            return web.json_response({"OK": True})
 
         async with HttpClientContext(self.app) as client:
             settings_mock = Settings()
@@ -134,9 +179,10 @@ class HTTPServerTests(asynctest.TestCase):
             ):
                 resp = await client.get("/")
                 self.assertEqual(200, resp.status)
+                self.assertEqual({"OK": True}, await resp.json())
 
     async def test_add_registry_to_all_requests(self):
-        @self.app.route(["/"], type=RouteTypes.HTTP, methods=["GET"])
+        @self.app.http.get(["/"])
         async def handler(wrapper: RequestWrapper):
             request = wrapper.http_request
             registry: TypesRegistry = request["types_registry"]
@@ -166,7 +212,7 @@ class HTTPServerTests(asynctest.TestCase):
 
             return _wrapper
 
-        @self.app.route(["/"], type=RouteTypes.HTTP, methods=["GET"])
+        @self.app.http.get(["/"])
         @insert_user_into_type_registry
         async def handler(user: User):
             return web.json_response({"name": user.name})
@@ -207,7 +253,7 @@ class HTTPServerTests(asynctest.TestCase):
 
             return _wrapper
 
-        @self.app.route(["/"], type=RouteTypes.HTTP, methods=["GET"])
+        @self.app.http.get(["/"])
         @insert_account_into_type_registry
         @insert_user_into_type_registry
         async def handler(user: User, account: Account):
@@ -240,7 +286,7 @@ class HTTPServerTests(asynctest.TestCase):
 
             return _wrapper
 
-        @self.app.route(["/"], type=RouteTypes.HTTP, methods=["GET"])
+        @self.app.http.get(["/"])
         @my_decorator
         async def handler(wrapper: RequestWrapper):
             return web.json_response({"num": wrapper.http_request.query["num"]})
@@ -256,7 +302,7 @@ class HTTPServerTests(asynctest.TestCase):
                 self.assertEqual({"num": "42"}, resp_data)
 
     async def test_ignores_return_annotation_when_resolving_parameters(self):
-        @self.app.route(["/"], type=RouteTypes.HTTP, methods=["GET"])
+        @self.app.http.get(["/"])
         async def handler(wrapper: RequestWrapper) -> web.Response:
             return web.json_response({"num": wrapper.http_request.query["num"]})
 
@@ -271,7 +317,7 @@ class HTTPServerTests(asynctest.TestCase):
                 self.assertEqual({"num": "42"}, resp_data)
 
     async def test_handler_can_receive_aiohttp_request(self):
-        @self.app.route(["/"], type=RouteTypes.HTTP, methods=["GET"])
+        @self.app.http.get(["/"])
         async def handler(request: web.Request) -> web.Response:
             return web.json_response({"num": request.query["num"]})
 
@@ -292,7 +338,7 @@ class HTTPServerTests(asynctest.TestCase):
 
             return _wrapper
 
-        @self.app.route(["/"], type=RouteTypes.HTTP, methods=["GET"])
+        @self.app.http.get(["/"])
         @my_decorator
         async def handler(wrapper: RequestWrapper):
             return web.json_response({"num": wrapper.http_request.query["num"]})

@@ -43,18 +43,9 @@
 </div>
 <div class="section" id="definindo-handlers-em-sua-app-asyncworker">
 <span id="asyncworker-app-handler"></span><h2>Definindo handlers em sua App Asyncworker<a class="headerlink" href="#definindo-handlers-em-sua-app-asyncworker" title="Permalink to this headline">¶</a></h2>
-<p>Nesse objeto temos um método especial chamado <code class="docutils literal notranslate"><span class="pre">route()</span></code>. Esse método é o ponto central para registrar seus handlers. Esse mesmo método registra handlers de todos os tipos, por isso recebe um parametro para saber qual origem de estímulos fará esse handler ser chamado.</p>
-<p>Os tipos estão definidos no Enum <a class="reference internal" href="../../src/asyncworker/asyncworker.html#asyncworker.options.RouteTypes" title="asyncworker.options.RouteTypes"><code class="xref py py-class docutils literal notranslate"><span class="pre">asyncworker.options.RouteTypes</span></code></a>.</p>
-<p>Esse método tem a seguinte assinatura:</p>
-<dl class="method">
-<dt>
-<code class="sig-prename descclassname">App.</code><code class="sig-name descname">route</code><span class="sig-paren">(</span><em class="sig-param">routes: Iterable[str], type: asyncworker.options.RouteTypes, options: dict = None, **kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/asyncworker/app.html#App.route"><span class="viewcode-link">[source]</span></a></dt>
-<dd></dd></dl>
-
-<p>O primeiro parâmetro tem múltiplos significados, dependento do tipo de handler que você está registrando.</p>
-<p>Por exmeplo, para um handler HTTP essa lista é lista de paths do Request HTTP que farão esse handler ser chamado. Se for um handlar RabbitMQ essa lista representa a lista de filas que esse handler estará “conectado”, ou seja, a cada mensagem depositada em quaisquer uma dessas filas, esse handler será chamado.</p>
-<p>Um outro parametro obrigatório é o parametro <code class="docutils literal notranslate"><span class="pre">type</span></code>. Ele, necessariamente, deve ser uma das opções do Enum <a class="reference internal" href="../../src/asyncworker/asyncworker.html#asyncworker.options.RouteTypes" title="asyncworker.options.RouteTypes"><code class="xref py py-class docutils literal notranslate"><span class="pre">asyncworker.options.RouteTypes</span></code></a>.</p>
-<p>Esse método deve ser usado como um decorator em funções que serão registradas como handlers da sua App.</p>
+<p>A forma de definir um novo handler em sua app Asyncworker depende do backend que você estiver usando. Cada backend (HTTP, AMQP, etc) expõe
+uma interface para que esse registro seja feito.</p>
+<p>Para mais detalhes veja a documentação específica do backend que você quer usar: <a class="reference internal" href="../handlers/index.html#handler-types"><span class="std std-ref">Tipos de Handlers</span></a>.</p>
 </div>
 </div>
 
@@ -79,6 +70,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../intro.html">Introdução</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../incompat.html">Incompatibilidades</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../versions.html">Compatibilidade de Versões do asyncowker</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../update.html">Atualizando sua App Asyncworker</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../index.html">Guia de uso</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="../quickstart.html">Início rápido</a></li>
 <li class="toctree-l2 current"><a class="reference internal" href="index.html">Asyncworker App</a><ul class="current">
@@ -88,8 +80,8 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../handlers/index.html">Tipos de Handlers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../metrics/index.html">Métricas</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../utils/index.html">Utilitários</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../updates/index.html">Atualizando sua App Asyncworker</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../devguide/index.html">Guia de desenvolvimento</a></li>

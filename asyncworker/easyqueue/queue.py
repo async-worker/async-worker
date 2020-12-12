@@ -4,6 +4,7 @@ import json
 import logging
 import traceback
 from asyncio import Task, AbstractEventLoop
+from enum import Enum, auto
 from functools import wraps
 from typing import (
     Dict,
@@ -29,6 +30,11 @@ from asyncworker.easyqueue.message import AMQPMessage
 class DeliveryModes:
     NON_PERSISTENT = 1
     PERSISTENT = 2
+
+
+class ConnType(Enum):
+    CONSUME = auto()
+    WRITE = auto()
 
 
 class BaseQueue(metaclass=abc.ABCMeta):
@@ -80,32 +86,36 @@ class BaseJsonQueue(BaseQueue):
         return json.loads(body.decode())
 
 
-def _ensure_connected(coro: Callable[..., Coroutine]):
-    @wraps(coro)
-    async def wrapper(self: "JsonQueue", *args, **kwargs):
-        retries = 0
-        while self.is_running and not self.connection.is_connected:
-            try:
-                await self.connection._connect()
-                break
-            except Exception as e:
-                await asyncio.sleep(self.seconds_between_conn_retry)
-                retries += 1
-                if self.connection_fail_callback:
-                    await self.connection_fail_callback(e, retries)
-                if self.logger:
-                    self.logger.error(
-                        {
-                            "event": "reconnect-failure",
-                            "retry_count": retries,
-                            "exc_traceback": traceback.format_tb(
-                                e.__traceback__
-                            ),
-                        }
-                    )
-        return await coro(self, *args, **kwargs)
+def _ensure_conn_is_ready(conn_type: ConnType):
+    def _ensure_connected(coro: Callable[..., Coroutine]):
+        @wraps(coro)
+        async def wrapper(self: "JsonQueue", *args, **kwargs):
+            conn = self.conn_types[conn_type]
+            retries = 0
+            while self.is_running and not conn.has_channel_ready():
+                try:
+                    await conn._connect()
+                    break
+                except Exception as e:
+                    await asyncio.sleep(self.seconds_between_conn_retry)
+                    retries += 1
+                    if self.connection_fail_callback:
+                        await self.connection_fail_callback(e, retries)
+                    if self.logger:
+                        self.logger.error(
+                            {
+                                "event": "reconnect-failure",
+                                "retry_count": retries,
+                                "exc_traceback": traceback.format_tb(
+                                    e.__traceback__
+                                ),
+                            }
+                        )
+            return await coro(self, *args, **kwargs)
 
-    return wrapper
+        return wrapper
+
+    return _ensure_connected
 
 
 T = TypeVar("T")
@@ -179,7 +189,6 @@ class JsonQueue(BaseQueue, Generic[T]):
         virtual_host: str = "/",
         heartbeat: int = 60,
         prefetch_count: int = 100,
-        max_message_length=0,
         loop: AbstractEventLoop = None,
         seconds_between_conn_retry: int = 1,
         logger: logging.Logger = None,
@@ -201,11 +210,6 @@ class JsonQueue(BaseQueue, Generic[T]):
 
         self.prefetch_count = prefetch_count
 
-        if max_message_length < 0:
-            raise ValueError("max_message_length must be a positive integer")
-
-        self.max_message_length = max_message_length
-
         on_error = self.delegate.on_connection_error if self.delegate else None
 
         self.connection = AMQPConnection(
@@ -218,6 +222,21 @@ class JsonQueue(BaseQueue, Generic[T]):
             loop=loop,
         )
 
+        self._write_connection = AMQPConnection(
+            host=host,
+            username=username,
+            password=password,
+            virtual_host=virtual_host,
+            heartbeat=heartbeat,
+            on_error=on_error,
+            loop=loop,
+        )
+
+        self.conn_types = {
+            ConnType.CONSUME: self.connection,
+            ConnType.WRITE: self._write_connection,
+        }
+
         self.seconds_between_conn_retry = seconds_between_conn_retry
         self.is_running = True
         self.logger = logger
@@ -229,7 +248,10 @@ class JsonQueue(BaseQueue, Generic[T]):
     def deserialize(self, body: bytes) -> T:
         return json.loads(body.decode())
 
-    @_ensure_connected
+    def conn_for(self, type: ConnType) -> AMQPConnection:
+        return self.conn_types[type]
+
+    @_ensure_conn_is_ready(ConnType.WRITE)
     async def put(
         self,
         routing_key: str,
@@ -256,7 +278,7 @@ class JsonQueue(BaseQueue, Generic[T]):
         if not isinstance(serialized_data, bytes):
             serialized_data = serialized_data.encode()
 
-        return await self.connection.channel.publish(
+        return await self._write_connection.channel.publish(
             payload=serialized_data,
             exchange_name=exchange,
             routing_key=routing_key,
@@ -265,7 +287,7 @@ class JsonQueue(BaseQueue, Generic[T]):
             immediate=immediate,
         )
 
-    @_ensure_connected
+    @_ensure_conn_is_ready(ConnType.CONSUME)
     async def consume(
         self,
         queue_name: str,
@@ -307,15 +329,6 @@ class JsonQueue(BaseQueue, Generic[T]):
         )
         handler.consumer_tag = consumer_tag
         return consumer_tag
-
-    async def stop_consumer(self, consumer_tag: str):
-        if self.connection.channel is None:
-            raise ConnectionError(
-                "Queue isn't connected. "
-                "Did you forgot to wait for `connect()`?"
-            )
-
-        return await self.connection.channel.basic_cancel(consumer_tag)
 
 
 class QueueConsumerDelegate(metaclass=abc.ABCMeta):

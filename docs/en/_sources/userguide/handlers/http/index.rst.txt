@@ -6,7 +6,7 @@ HTTP
 Aqui mostraremos como escrever um handler que é estimulado através de requisições HTTP.
 
 
-Um handler é simplesmete uma corotina que recebe um request wrapper (:py:class:`asyncworker.http.wrapper.RequestWrapper`) e retorna uma response (``aiohttp.web.Response``). Essa corotina passa a ser um handler "asyncworker" quando é decorada com ``@app.route()``, onde ``app`` é uma instância de ``asyncworker.App``.
+Um handler é simplesmete uma corotina que recebe um request wrapper (:py:class:`asyncworker.http.wrapper.RequestWrapper`) e retorna uma response (``aiohttp.web.Response``). Essa corotina passa a ser um handler "asyncworker" quando é decorada com :ref:`@app.http.*() <supported-methods>`, onde ``app`` é uma instância de ``asyncworker.App``.
 
 Vejamos um handler bem simples que apenas retorna ``HTTP 200 OK``.
 
@@ -15,12 +15,12 @@ Vejamos um handler bem simples que apenas retorna ``HTTP 200 OK``.
   from aiohttp import web
 
   from asyncworker.http.wrapper import RequestWrapper
-  from asyncworker import App, RouteTypes
+  from asyncworker import App
 
   app = App()
 
 
-  @app.route(["/"], type=RouteTypes.HTTP, methods=["GET"])
+  @app.http.get(["/"])
   async def one_param(wrapper: RequestWrapper):
       return web.json_response({})
 
@@ -34,3 +34,4 @@ Podemos fazer o que for preciso para extrair dele as informações que precisarm
    :titlesonly:
 
    doc.rst
+   exposed-metrics.rst

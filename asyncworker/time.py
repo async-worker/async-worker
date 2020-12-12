@@ -61,3 +61,14 @@ class ClockTicker(AsyncIterator):
         self._running = False
         if self._main_task:
             await self._main_task
+
+
+def perf_counter_ms() -> float:
+    """
+    Return the value (in fractional milliseconds) of a performance counter,
+    i.e. a clock with the highest available resolution to measure a short
+    duration. It does include time elapsed during sleep and is system-wide.
+    The reference point of the returned value is undefined, so that only the
+    difference between the results of consecutive calls is valid.
+    """
+    return time.perf_counter() * 1000

@@ -1,0 +1,27 @@
+tag-template: '$RESOLVED_VERSION'
+categories:
+  - title: 'Mudanças incompatíveis'
+    label: 'breaking-change'
+  - title: 'Bugs Resolvidos'
+    label: 'bug'
+  - title: 'Novas Features'
+    label: 'feature'
+  - title: 'Documentação'
+    label: 'docs'
+change-template: '- #$NUMBER $TITLE (@$AUTHOR)'
+version-resolver:
+  minor:
+    labels:
+      - 'breaking-change'
+  patch:
+    labels:
+      - 'feature'
+      - 'bug'
+template: |
+  ## Changelog for $RESOLVED_VERSION
+
+  $CHANGES
+
+  Docs: https://b2wdigital.github.io/async-worker/
+  Commits: https://github.com/b2wdigital/async-worker/compare/$PREVIOUS_TAG...$RESOLVED_VERSION
+  Tag: https://github.com/b2wdigital/async-worker/releases/tag/$RESOLVED_VERSION

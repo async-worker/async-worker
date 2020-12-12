@@ -1,8 +1,9 @@
 from typing import Optional
+from unittest import TestCase
+from unittest.mock import patch
 
-from asynctest import TestCase
-
-from asyncworker.routes import Model
+from asyncworker.conf import settings
+from asyncworker.routes import Model, HTTPRoute
 
 
 class MyModel(Model):
@@ -10,29 +11,51 @@ class MyModel(Model):
 
 
 class RouteModelTest(TestCase):
-    async def test_set_item_field_exist(self):
+    def test_set_item_field_exist(self):
 
         model = MyModel()
         model["field"] = 42
         self.assertEqual(42, model["field"])
 
-    async def test_set_item_field_does_not_exist(self):
+    def test_set_item_field_does_not_exist(self):
         model = MyModel()
         with self.assertRaises(KeyError):
             model["not_found"] = 10
 
-    async def test_eq_compare_with_dict(self):
+    def test_eq_compare_with_dict(self):
         model = MyModel(field=55)
         self.assertTrue(model == {"field": 55})
 
-    async def test_eq_compare_with_other_model(self):
+    def test_eq_compare_with_other_model(self):
         model = MyModel(field=99)
         self.assertTrue(model == model)
 
-    async def test_len(self):
+    def test_len(self):
         model = MyModel(field=100)
         self.assertEqual(1, len(model))
 
-    async def test_keys(self):
+    def test_keys(self):
         model = MyModel()
         self.assertEqual(["field"], list(model.keys()))
+
+
+class HTTPRouteTests(TestCase):
+    def test_it_raises_an_error_if_user_declares_a_conflicting_metrics_route(
+        self
+    ):
+        with self.assertRaises(ValueError):
+            HTTPRoute(methods=["GET"], routes=[settings.METRICS_ROUTE_PATH])
+
+    def test_it_doesnt_raises_an_error_if_user_declares_a_metrics_route_with_asyncworker_metrics_disabled(
+        self
+    ):
+
+        with patch(
+            "asyncworker.routes.conf.settings",
+            METRICS_ROUTE_ENABLED=False,
+            METRICS_ROUTE_PATH=settings.METRICS_ROUTE_PATH,
+        ):
+            route = HTTPRoute(
+                methods=["GET"], routes=[settings.METRICS_ROUTE_PATH]
+            )
+            self.assertIsInstance(route, HTTPRoute)

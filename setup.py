@@ -1,4 +1,3 @@
-# Always prefer setuptools over distutils
 from os import path
 
 from setuptools import setup, find_packages
@@ -7,9 +6,10 @@ here = path.abspath(path.dirname(__file__))
 
 setup(
     name="async-worker",
-    version="0.14.0",
+    version="0.15.2",
     description="Microframework para escrever workers assíncronos em Python",
-    long_description="Microframework para escrever workers assíncronos em Python",
+    long_description=open(f"{here}/README.md").read(),
+    long_description_content_type="text/markdown",
     url="https://github.com/b2wdigital/async-worker",
     # Author details
     author="Dalton Barreto",
@@ -27,6 +27,7 @@ setup(
         "pydantic>=0.32.2, <2.0",
         "cached-property==1.5.1",
         "aiohttp==3.6.2",
+        "prometheus_client==0.7.1",
     ],
     entry_points={},
 )

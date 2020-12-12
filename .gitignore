@@ -74,3 +74,5 @@ debug.log
 .mypy_cache/
 .dmypy.json
 dmypy.json
+
+coverage.xml

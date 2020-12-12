@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Asyncworker \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-03-26 14:49-0300\n"
+"POT-Creation-Date: 2020-09-12 15:53-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -36,56 +36,69 @@ msgstr ""
 msgid "Consumindo de uma fila no RabbitMQ"
 msgstr ""
 
-#: ../../userguide/quickstart.rst:44
+#: ../../userguide/quickstart.rst:43
 msgid ""
 "Nesse exemplo, o handler ``drain_handler()`` recebe mensagens de ambas as"
-" filas: ``asgard/counts`` e ``asgard/counts/errors``."
+" filas: ``asgard/counts`` e ``asgard/counts/errors``, que estão no "
+"virtualhost ``fluentd``."
 msgstr ""
 
-#: ../../userguide/quickstart.rst:47
+#: ../../userguide/quickstart.rst:46
 msgid ""
 "Se o handler lançar alguma exception, a mensagem é automaticamente "
 "devolvida para a fila (reject com requeue=True); Se o handler rodar sem "
 "erros, a mensagem é automaticamente confirmada (ack)."
 msgstr ""
 
-#: ../../userguide/quickstart.rst:53
+#: ../../userguide/quickstart.rst:52
 msgid "Lendo dados de um endpoint Server Side Events"
 msgstr ""
 
-#: ../../userguide/quickstart.rst:80
+#: ../../userguide/quickstart.rst:79
 msgid ""
 "Nesse exemplo, o handler ``_on_event()`` recebe os eventos enviados pelo "
 "servidor. O objeto ``events`` é sempre uma lista, mesmo quando estamos "
 "usando ``BULK_SIZE=1`` (Falaremos sobre isso mais a frente)"
 msgstr ""
 
-#: ../../userguide/quickstart.rst:86
+#: ../../userguide/quickstart.rst:85
 msgid "Recebendo dados através de requisições HTTP"
 msgstr ""
 
-#: ../../userguide/quickstart.rst:99
+#: ../../userguide/quickstart.rst:98
 msgid ""
 "Nesse exemplo, declaramos um handler ``index``, que receberá uma "
 "instância de :py:class:`asyncworker.http.wrapper.RequestWrapper` para "
 "cada acesso às rotas ``GET /`` e ``GET /hello``."
 msgstr ""
 
-#: ../../userguide/quickstart.rst:105
+#: ../../userguide/quickstart.rst:104
 msgid "Rodando seu worker"
 msgstr ""
 
-#: ../../userguide/quickstart.rst:107
+#: ../../userguide/quickstart.rst:106
 msgid ""
 "Ambos os exemplos precisam de um ``main()`` para poderem rodar. Um "
 "exemplo de ``main`` seria o seguinte, assumindo que o objeto ``app`` está"
 " no módulo ``myworker``:"
 msgstr ""
 
-#: ../../userguide/quickstart.rst:118
+#: ../../userguide/quickstart.rst:117
 msgid ""
 "Nesse ponto sua app já estará rodando e caso você seja desconectado, um "
 "loop ficará tentanto reconectar. A cada erro de conexão um log de "
 "exception é gerado."
 msgstr ""
+
+#: ../../userguide/quickstart.rst:121
+msgid ""
+"No momento que você roda esse código (``app.run()``) todos os seus "
+"handlers registrados começam a funcionar."
+msgstr ""
+
+#~ msgid ""
+#~ "Nesse exemplo, o handler ``drain_handler()``"
+#~ " recebe mensagens de ambas as filas:"
+#~ " ``asgard/counts`` e ``asgard/counts/errors``."
+#~ msgstr ""
 

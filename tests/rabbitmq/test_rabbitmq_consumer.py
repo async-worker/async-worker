@@ -12,6 +12,7 @@ from asyncworker.consumer import Consumer
 from asyncworker.easyqueue.message import AMQPMessage
 from asyncworker.easyqueue.queue import JsonQueue
 from asyncworker.options import Actions, Events, RouteTypes
+from asyncworker.rabbitmq import AMQPRouteOptions
 
 
 async def _handler(message):
@@ -23,7 +24,8 @@ class ConsumerTest(asynctest.TestCase):
 
     def setUp(self):
         self.queue_mock = Mock(
-            connection=Mock(is_connected=True), spec=JsonQueue
+            connection=Mock(has_channel_ready=Mock(return_value=True)),
+            spec=JsonQueue,
         )
         self.logger_mock = CoroutineMock(
             info=CoroutineMock(), debug=CoroutineMock(), error=CoroutineMock()
@@ -163,10 +165,8 @@ class ConsumerTest(asynctest.TestCase):
         Confirma que em caso de exceção, será feito `message.reject(requeue=True)`
         """
 
-        @self.app.route(
-            ["queue"],
-            type=RouteTypes.AMQP_RABBITMQ,
-            options={Events.ON_EXCEPTION: Actions.REQUEUE},
+        @self.app.amqp.consume(
+            ["queue"], options=AMQPRouteOptions(on_exception=Actions.REQUEUE)
         )
         async def _handler(messages):
             raise Exception("BOOM!")
@@ -179,10 +179,8 @@ class ConsumerTest(asynctest.TestCase):
         self.mock_message.reject.assert_awaited_once_with(requeue=True)
 
     async def test_on_exception_reject_message(self):
-        @self.app.route(
-            ["queue"],
-            type=RouteTypes.AMQP_RABBITMQ,
-            options={Events.ON_EXCEPTION: Actions.REJECT},
+        @self.app.amqp.consume(
+            ["queue"], options=AMQPRouteOptions(on_exception=Actions.REJECT)
         )
         async def _handler(messages):
             raise Exception("BOOM!")
@@ -195,10 +193,8 @@ class ConsumerTest(asynctest.TestCase):
         self.mock_message.reject.assert_awaited_once_with(requeue=False)
 
     async def test_on_exception_ack_message(self):
-        @self.app.route(
-            ["queue"],
-            type=RouteTypes.AMQP_RABBITMQ,
-            options={Events.ON_EXCEPTION: Actions.ACK},
+        @self.app.amqp.consume(
+            ["queue"], options=AMQPRouteOptions(on_exception=Actions.ACK)
         )
         async def _handler(messages):
             raise Exception("BOOM!")
@@ -211,10 +207,8 @@ class ConsumerTest(asynctest.TestCase):
         self.mock_message.ack.assert_awaited_once()
 
     async def test_on_success_ack(self):
-        @self.app.route(
-            ["queue"],
-            type=RouteTypes.AMQP_RABBITMQ,
-            options={Events.ON_SUCCESS: Actions.ACK},
+        @self.app.amqp.consume(
+            ["queue"], options=AMQPRouteOptions(on_success=Actions.ACK)
         )
         async def _handler(messages):
             return 42
@@ -226,10 +220,8 @@ class ConsumerTest(asynctest.TestCase):
         self.mock_message.ack.assert_awaited_once()
 
     async def test_on_success_reject(self):
-        @self.app.route(
-            ["queue"],
-            type=RouteTypes.AMQP_RABBITMQ,
-            options={Events.ON_SUCCESS: Actions.REJECT},
+        @self.app.amqp.consume(
+            ["queue"], options=AMQPRouteOptions(on_success=Actions.REJECT)
         )
         async def _handler(messages):
             return 42
@@ -241,10 +233,8 @@ class ConsumerTest(asynctest.TestCase):
         self.mock_message.reject.assert_awaited_once_with(requeue=False)
 
     async def test_on_success_requeue(self):
-        @self.app.route(
-            ["queue"],
-            type=RouteTypes.AMQP_RABBITMQ,
-            options={Events.ON_SUCCESS: Actions.REQUEUE},
+        @self.app.amqp.consume(
+            ["queue"], options=AMQPRouteOptions(on_success=Actions.REQUEUE)
         )
         async def _handler(messages):
             return 42
@@ -257,7 +247,7 @@ class ConsumerTest(asynctest.TestCase):
 
     async def test_on_queue_message_auto_ack_on_success(self):
         """
-        Se o handler registrado no @app.route() rodar com sucesso,
+        Se o handler registrado no @app.amqp.consume() rodar com sucesso,
         devemos fazer o ack da mensagem
         """
         consumer = Consumer(self.one_route_fixture, *self.connection_parameters)
@@ -321,7 +311,7 @@ class ConsumerTest(asynctest.TestCase):
         msg.ack.assert_awaited_once()
         msg.reject.assert_not_awaited()
 
-    async def test_on_queue_message_bulk_size_bigger_that_one(self):
+    async def test_on_queue_message_bulk_size_bigger_than_one(self):
         """
         Confere que o handler real só é chamado quando o bucket atinge o limite máximo de
         tamanho. E que o handler é chamado com a lista de mensagens.
@@ -590,6 +580,47 @@ class ConsumerTest(asynctest.TestCase):
             any_order=True,
         )
 
+    async def test_restart_all_consumers_if_channel_is_closed(self):
+        """
+        Se detectamos que o channel está fechado, devemos reiniciar todos os
+        consumers. Isso vale pois atualmente todos eles compartilham o mesmo channel.
+        """
+        self.one_route_fixture["routes"] = [
+            "asgard/counts",
+            "asgard/counts/errors",
+        ]
+        consumer = Consumer(self.one_route_fixture, *self.connection_parameters)
+        queue_mock = CoroutineMock(consume=CoroutineMock())
+
+        with asynctest.patch.object(
+            consumer, "queue", queue_mock
+        ), unittest.mock.patch.object(
+            consumer, "keep_runnig", side_effect=[True, True, True, False]
+        ), asynctest.patch.object(
+            asyncio, "sleep"
+        ) as sleep_mock, asynctest.patch.object(
+            consumer, "clock_task", side_effect=[True, True]
+        ), asynctest.patch.object(
+            consumer.queue.connection,
+            "has_channel_ready",
+            Mock(side_effect=[False, True, False]),
+        ):
+            await consumer.start()
+
+            queue_mock.consume.assert_has_awaits(
+                [
+                    mock.call(queue_name="asgard/counts", delegate=consumer),
+                    mock.call(
+                        queue_name="asgard/counts/errors", delegate=consumer
+                    ),
+                    mock.call(queue_name="asgard/counts", delegate=consumer),
+                    mock.call(
+                        queue_name="asgard/counts/errors", delegate=consumer
+                    ),
+                ],
+                any_order=True,
+            )
+
     async def test_start_always_calls_sleep(self):
         """
         Regression:
@@ -609,13 +640,9 @@ class ConsumerTest(asynctest.TestCase):
         ) as sleep_mock, asynctest.patch.object(
             consumer, "clock_task", side_effect=[True, True]
         ):
-            is_connected_mock = mock.PropertyMock(
-                side_effect=[False, True, True, True]
-            )
             queue_mock = CoroutineMock(
                 consume=CoroutineMock(), connect=CoroutineMock()
             )
-            type(queue_mock).is_connected = is_connected_mock
             consumer.queue = queue_mock
 
             await consumer.start()
@@ -630,14 +657,10 @@ class ConsumerTest(asynctest.TestCase):
         with unittest.mock.patch.object(
             consumer, "keep_runnig", side_effect=[True, True, True, False]
         ):
-            is_connected_mock = mock.PropertyMock(
-                side_effect=[True, False, True]
-            )
             queue_mock = CoroutineMock(
                 consume=CoroutineMock(),
                 connect=CoroutineMock(side_effect=[AioamqpException, True]),
             )
-            type(queue_mock).is_connected = is_connected_mock
             consumer.queue = queue_mock
 
             await consumer.start()
@@ -656,16 +679,13 @@ class ConsumerTest(asynctest.TestCase):
         with unittest.mock.patch.object(
             consumer, "keep_runnig", side_effect=[True, True, True, False]
         ):
-            is_connected_mock = mock.PropertyMock(
-                side_effect=[True, False, False]
-            )
             queue_mock = CoroutineMock(
                 consume=CoroutineMock(),
                 connection=Mock(
-                    connect=CoroutineMock(side_effect=[AioamqpException, True])
+                    connect=CoroutineMock(side_effect=[AioamqpException, True]),
+                    has_channel_ready=Mock(side_effect=[True, False, False]),
                 ),
             )
-            type(queue_mock.connection).is_connected = is_connected_mock
             consumer.queue = queue_mock
 
             await consumer.start()
@@ -689,8 +709,6 @@ class ConsumerTest(asynctest.TestCase):
         with unittest.mock.patch.object(
             consumer, "keep_runnig", side_effect=[True, False, True, False]
         ):
-            is_connected_mock = mock.PropertyMock(side_effect=[False, False])
-            type(queue_mock).is_connected = is_connected_mock
             consumer.queue = queue_mock
 
             await consumer.start()

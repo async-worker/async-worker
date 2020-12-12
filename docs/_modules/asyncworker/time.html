@@ -95,6 +95,17 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_running</span> <span class="o">=</span> <span class="kc">False</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_main_task</span><span class="p">:</span>
             <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">_main_task</span></div></div>
+
+
+<div class="viewcode-block" id="perf_counter_ms"><a class="viewcode-back" href="../../src/asyncworker/asyncworker.html#asyncworker.time.perf_counter_ms">[documentos]</a><span class="k">def</span> <span class="nf">perf_counter_ms</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Return the value (in fractional milliseconds) of a performance counter,</span>
+<span class="sd">    i.e. a clock with the highest available resolution to measure a short</span>
+<span class="sd">    duration. It does include time elapsed during sleep and is system-wide.</span>
+<span class="sd">    The reference point of the returned value is undefined, so that only the</span>
+<span class="sd">    difference between the results of consecutive calls is valid.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">time</span><span class="o">.</span><span class="n">perf_counter</span><span class="p">()</span> <span class="o">*</span> <span class="mi">1000</span></div>
 </pre></div>
 
           </div>
@@ -117,6 +128,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../intro.html">Introdução</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../incompat.html">Incompatibilidades</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../versions.html">Compatibilidade de Versões do asyncowker</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../update.html">Atualizando sua App Asyncworker</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../userguide/index.html">Guia de uso</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../devguide/index.html">Guia de desenvolvimento</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../changelog/index.html">Changelog</a></li>

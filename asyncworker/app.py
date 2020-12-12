@@ -1,5 +1,4 @@
 import asyncio
-import builtins
 from collections import MutableMapping
 from signal import Signals
 from typing import Iterable, Callable, Coroutine, Dict, Any, Optional
@@ -7,7 +6,9 @@ from typing import Iterable, Callable, Coroutine, Dict, Any, Optional
 from asyncworker.conf import logger
 from asyncworker.connections import ConnectionsMapping, Connection
 from asyncworker.exceptions import InvalidRoute, InvalidConnection
+from asyncworker.http.entrypoints import HTTPEntryPointImpl
 from asyncworker.options import RouteTypes, Options, DefaultValues
+from asyncworker.rabbitmq.entrypoints import AMQPRouteEntryPointImpl
 from asyncworker.routes import RoutesRegistry, Route
 from asyncworker.signals.base import Signal, Freezable
 from asyncworker.signals.handlers.http import HTTPServer
@@ -108,6 +109,14 @@ class App(MutableMapping, Freezable):
         """
         return asyncio.ensure_future(self._on_shutdown.send(self))
 
+    @property
+    def http(self) -> HTTPEntryPointImpl:
+        return HTTPEntryPointImpl(self)
+
+    @property
+    def amqp(self) -> AMQPRouteEntryPointImpl:
+        return AMQPRouteEntryPointImpl(self)
+
     def route(
         self,
         routes: Iterable[str],
@@ -127,6 +136,10 @@ class App(MutableMapping, Freezable):
             if not asyncio.iscoroutinefunction(handler):
                 try:
                     handler = f.__call__
+                    if not asyncio.iscoroutinefunction(handler):
+                        raise TypeError(
+                            f"handler must be a coroutine: {handler}"
+                        )
                 except AttributeError:
                     raise TypeError(
                         f"Object passed as handler is not callable: {f}"
@@ -186,7 +199,10 @@ class App(MutableMapping, Freezable):
         return wrapper
 
     def get_connection_for_route(self, route_info: Route):
-        route_connection = route_info.options.get("connection")
+        route_connection = route_info.connection
+        if route_connection is None:
+            route_connection = route_info.options.get("connection")
+
         connections = self.connections.with_type(route_info.type)
         if route_connection is not None:
             if isinstance(route_connection, Connection):

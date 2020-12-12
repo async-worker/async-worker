@@ -20,22 +20,7 @@ As instâncias dessas conexões podem ser usadas dentro do handlers, se necessá
 Definindo handlers em sua App Asyncworker
 -----------------------------------------
 
+A forma de definir um novo handler em sua app Asyncworker depende do backend que você estiver usando. Cada backend (HTTP, AMQP, etc) expõe
+uma interface para que esse registro seja feito.
 
-Nesse objeto temos um método especial chamado ``route()``. Esse método é o ponto central para registrar seus handlers. Esse mesmo método registra handlers de todos os tipos, por isso recebe um parametro para saber qual origem de estímulos fará esse handler ser chamado.
-
-Os tipos estão definidos no Enum :py:class:`asyncworker.options.RouteTypes`.
-
-
-Esse método tem a seguinte assinatura:
-
-
-.. automethod:: asyncworker.app.App.route
-  :noindex:
-
-O primeiro parâmetro tem múltiplos significados, dependento do tipo de handler que você está registrando.
-
-Por exmeplo, para um handler HTTP essa lista é lista de paths do Request HTTP que farão esse handler ser chamado. Se for um handlar RabbitMQ essa lista representa a lista de filas que esse handler estará "conectado", ou seja, a cada mensagem depositada em quaisquer uma dessas filas, esse handler será chamado.
-
-Um outro parametro obrigatório é o parametro ``type``. Ele, necessariamente, deve ser uma das opções do Enum :py:class:`asyncworker.options.RouteTypes`.
-
-Esse método deve ser usado como um decorator em funções que serão registradas como handlers da sua App.
+Para mais detalhes veja a documentação específica do backend que você quer usar: :ref:`Tipos de Handlers <handler-types>`.

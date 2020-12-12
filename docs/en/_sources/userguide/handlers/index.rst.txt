@@ -2,6 +2,7 @@
 Tipos de Handlers
 =================
 
+.. _handler-types:
 
 O asyncworker suporta alguns tipos de handlers diferentes. Por handler entende-se a
 função que será chamada quando um estímulo externo chegar. Cada Handler pode ser registrado
@@ -17,4 +18,10 @@ Abaixo você poderá ver em detalhes cada um desses handlers e como criar cada u
    :titlesonly:
 
    http/index.rst
-   rabbitmq.rst
+   rabbitmq/index.rst
+
+
+Métricas
+--------
+
+Mais detalhes em como expor suas próprias métricas você poderá ver na documentação sobre :ref:`métricas <handler-metrics>`.
