@@ -25,7 +25,7 @@ Um handler declarado assim:
   app = App()
 
 
-  @app.route(["/one-param"], type=RouteTypes.HTTP, methods=["GET"])
+  @app.http.get(["/one-param"], type=RouteTypes.HTTP, methods=["GET"])
   async def one_param(r):
       return web.json_response(dict(r.query))
 
@@ -44,6 +44,6 @@ sendo :py:class:`asyncworker.http.wrapper.RequestWrapper`. Ficando assim:
   app = App()
 
 
-  @app.route(["/one-param"], type=RouteTypes.HTTP, methods=["GET"])
+  @app.http.get(["/one-param"], type=RouteTypes.HTTP, methods=["GET"])
   async def one_param(r: RequestWrapper):
       return web.json_response(dict(r.http_request.query))
