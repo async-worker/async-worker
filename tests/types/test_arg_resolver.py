@@ -132,6 +132,17 @@ class ArgResolverTest(TestCase):
         with self.assertRaises(MissingTypeAnnotationError):
             await resolver.wrap(my_coro)
 
+    async def test_calls_corotine_with_no_arguments(self):
+        async def my_coro():
+            return 42
+
+        registry = TypesRegistry()
+        registry.set([42, 42])
+        registry.set("value")
+
+        resolver = ArgResolver(registry)
+        self.assertEqual(42, await resolver.wrap(my_coro))
+
     async def test_prefer_named_paramteres_before_typed_parameters(self):
         """
         Primeiro sempre tentamos pegar o paramtero pelo nome, só depois
