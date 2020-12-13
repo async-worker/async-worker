@@ -6,8 +6,9 @@ from aiohttp.web_exceptions import HTTPNotFound
 from aiohttp.web_response import Response
 from asynctest import TestCase, patch, CoroutineMock
 
-from asyncworker import App, RouteTypes
+from asyncworker import App
 from asyncworker.conf import settings
+from asyncworker.http.wrapper import RequestWrapper
 
 
 class HTTPMetricsTests(TestCase):
@@ -25,7 +26,8 @@ class HTTPMetricsTests(TestCase):
         @self.app.http._route(
             routes=[self.route_path], method=self.route_method
         )
-        async def handler(request):
+        async def handler(wrapper: RequestWrapper):
+            request = wrapper.http_request
             metrics.requests_in_progress.labels.assert_called_once_with(
                 method=request.method, path=request.path
             )

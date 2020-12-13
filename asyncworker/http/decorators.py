@@ -29,6 +29,6 @@ def parse_path(handler):
                     )
                     raise
 
-        return await call_http_handler(req, handler)
+        return await call_http_handler(wrapper, handler)
 
     return _wrap

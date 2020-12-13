@@ -189,23 +189,18 @@ class SSERoute(Route):
         return v
 
 
-async def call_http_handler(request: web.Request, handler: RouteHandler):
-    """
-    Quando o RequestWrapper estiver mais sólido, esse método deve receber `asyncworker.http.wrapper.RequestWrapper` e não `web.Request`.
-    Primeiro vamos documentar que essa chamada será depreciada e função de chamada onde
-    recebemos `RequestWrapper`.
-    """
-    arg_resolver = ArgResolver(registry=request["types_registry"])
+async def call_http_handler(request: RequestWrapper, handler: RouteHandler):
+    arg_resolver = ArgResolver(registry=request.types_registry)
     try:
         return await arg_resolver.wrap(handler)
     except MissingTypeAnnotationError:
-        return await handler(request)
+        raise
 
 
 def http_handler_wrapper(handler):
     async def _insert_types_registry(request: web.Request):
         """
-        Esse é o único ponto que tem contato direto com o aiohttp. É essa corotina que é efetivament registrada nas rotas do aiohttp. Daqui pra frente tudo é chamado através do ccall_http_handler() e pode receber `RequestWrapper` como parametro.
+        Esse é o único ponto que tem contato direto com o aiohttp. É essa corotina que é efetivament registrada nas rotas do aiohttp. Daqui pra frente tudo é chamado através do ccall_http_handler().
         """
         registry = TypesRegistry()
         request["types_registry"] = registry
@@ -215,7 +210,7 @@ def http_handler_wrapper(handler):
             http_request=request, types_registry=registry
         )
         registry.set(r_wrapper)
-        return await call_http_handler(request, handler)
+        return await call_http_handler(r_wrapper, handler)
 
     return _insert_types_registry
 
