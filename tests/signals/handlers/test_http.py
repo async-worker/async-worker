@@ -208,7 +208,7 @@ class HTTPServerTests(asynctest.TestCase):
         def insert_user_into_type_registry(handler):
             async def _wrapper(wrapper: RequestWrapper):
                 wrapper.types_registry.set(User(name=expected_user_name))
-                return await call_http_handler(wrapper.http_request, handler)
+                return await call_http_handler(wrapper, handler)
 
             return _wrapper
 
@@ -242,14 +242,14 @@ class HTTPServerTests(asynctest.TestCase):
         def insert_user_into_type_registry(handler):
             async def _wrapper(wrapper: RequestWrapper):
                 wrapper.types_registry.set(User(name=expected_user_name))
-                return await call_http_handler(wrapper.http_request, handler)
+                return await call_http_handler(wrapper, handler)
 
             return _wrapper
 
         def insert_account_into_type_registry(handler):
             async def _wrapper(wrapper: RequestWrapper):
                 wrapper.types_registry.set(Account(name=expected_account_name))
-                return await call_http_handler(wrapper.http_request, handler)
+                return await call_http_handler(wrapper, handler)
 
             return _wrapper
 
@@ -282,7 +282,7 @@ class HTTPServerTests(asynctest.TestCase):
     ):
         def my_decorator(handler):
             async def _wrapper(wrapper: RequestWrapper):
-                return await call_http_handler(wrapper.http_request, handler)
+                return await call_http_handler(wrapper, handler)
 
             return _wrapper
 
@@ -334,7 +334,11 @@ class HTTPServerTests(asynctest.TestCase):
     async def test_handler_decorator_can_receive_aiohttp_request(self):
         def my_decorator(handler):
             async def _wrapper(request: web.Request):
-                return await call_http_handler(request, handler)
+                r_wrapper = RequestWrapper(
+                    http_request=request,
+                    types_registry=request["types_registry"],
+                )
+                return await call_http_handler(r_wrapper, handler)
 
             return _wrapper
 

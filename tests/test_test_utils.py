@@ -35,7 +35,7 @@ class HttpClientTestCaseDecoratorTest(TestCase):
 
     async def test_client_can_perform_http_requests(self):
         @self.app.http.get(["/"])
-        async def index(request):
+        async def index():
             return web.json_response({"OK": True})
 
         @http_client(self.app)
@@ -60,7 +60,7 @@ class HttpClientTestCaseDecoratorTest(TestCase):
 
     async def test_server_is_closed_if_handler_raises_exception(self):
         @self.app.http.get(["/"])
-        async def index(request):
+        async def index():
             return web.json_response({"OK": True})
 
         @http_client(self.app)
@@ -84,7 +84,7 @@ class HttpClientContextManagerTest(TestCase):
 
     async def test_client_can_perform_requests(self):
         @self.app.http.get(["/"])
-        async def index(request):
+        async def index():
             return web.json_response({"OK": True})
 
         async with HttpClientContext(self.app) as http_client:

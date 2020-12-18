@@ -1,5 +1,5 @@
 from aiohttp import web
-from asynctest import CoroutineMock, TestCase
+from asynctest import CoroutineMock, TestCase, MagicMock
 
 from asyncworker import conf, RouteTypes, App
 from asyncworker.connections import AMQPConnection
@@ -13,6 +13,20 @@ from asyncworker.routes import (
     AMQPRouteOptions,
 )
 from asyncworker.testing import HttpClientContext
+from asyncworker.types.registry import TypesRegistry
+from asyncworker.types.resolver import MissingTypeAnnotationError
+
+
+class HTTPHandlerWrapperTest(TestCase):
+    async def test_raises_if_handler_has_any_missing_annotation(self):
+        async def handler(other):
+            return other
+
+        wrapper = RequestWrapper(
+            http_request=MagicMock(), types_registry=TypesRegistry()
+        )
+        with self.assertRaises(MissingTypeAnnotationError):
+            await call_http_handler(wrapper, handler)
 
 
 class RoutesRegistryTests(TestCase):
@@ -253,7 +267,7 @@ class HTTPRouteRegisterTest(TestCase):
         app = App()
 
         def _deco(handler):
-            async def _wrap(req: web.Request):
+            async def _wrap(req: RequestWrapper):
                 return await call_http_handler(req, handler)
 
             return _wrap
@@ -278,7 +292,7 @@ class HTTPRouteRegisterTest(TestCase):
 
         def _deco(handler):
             async def _wrap(req: RequestWrapper):
-                return await call_http_handler(req.http_request, handler)
+                return await call_http_handler(req, handler)
 
             return _wrap
 
