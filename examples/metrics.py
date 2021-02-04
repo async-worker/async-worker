@@ -16,6 +16,11 @@ g = Gauge("duration", "Duration")
 g_label = Gauge("with_label", "Gauge with label", labelnames=["label"])
 
 
+@app.run_on_startup
+async def startup(app):
+    print("app started")
+
+
 @app.route(["/count"], type=RouteTypes.HTTP, methods=["GET"])
 async def handler():
     c.inc()
