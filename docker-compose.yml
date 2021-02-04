@@ -1,0 +1,22 @@
+version: '3'
+
+services:
+  prometheus:
+    image: prom/prometheus:v2.21.0 # Tem autalizacao ?
+    ports:
+      - 9000:9090
+    volumes:
+      - ./docker/prometheus:/etc/prometheus
+      - ./docker/data/:/prometheus
+    command: --web.enable-lifecycle  --config.file=/etc/prometheus/prometheus.yml
+  asyncworker:
+    build:
+      context: .
+      dockerfile: ./docker/Dockerfile
+    ports:
+      - 8080:8080
+  grafana:
+    image: grafana/grafana
+    ports:
+      - 3000:3000
+#      todo: adicionar volumes
