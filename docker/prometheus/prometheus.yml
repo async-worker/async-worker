@@ -9,3 +9,4 @@ scrape_configs:
       - targets:
           - 'prometheus:9090'
           - 'asyncworker:8080'
+          - 'host.docker.internal:8080'
