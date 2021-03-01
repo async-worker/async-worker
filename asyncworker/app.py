@@ -13,13 +13,12 @@ from asyncworker.routes import RoutesRegistry, Route
 from asyncworker.signals.base import Signal, Freezable
 from asyncworker.signals.handlers.http import HTTPServer
 from asyncworker.signals.handlers.rabbitmq import RabbitMQ
-from asyncworker.signals.handlers.sse import SSE
 from asyncworker.task_runners import ScheduledTaskRunner
 from asyncworker.utils import entrypoint
 
 
 class App(MutableMapping, Freezable):
-    handlers = (RabbitMQ(), HTTPServer(), SSE())
+    handlers = (RabbitMQ(), HTTPServer())
     shutdown_os_signals = (Signals.SIGINT, Signals.SIGTERM)
 
     def __init__(
