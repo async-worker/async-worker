@@ -26,7 +26,7 @@ setup(
         "aiologger==0.5.0",
         "pydantic >= 0.32.2, <= 1.8",
         "cached-property==1.5.1",
-        "aiohttp==3.6.2",
+        "aiohttp==3.7.4",
         "prometheus_client==0.7.1",
     ],
     entry_points={},
