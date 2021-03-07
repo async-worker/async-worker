@@ -12,3 +12,4 @@ Notas de atualização
 --------------------
 
 - Nessa versão removemos o suporte a Server Sent Events (SSE). Esse código já não estava sendo mantido e nem participou da refatoração que aconteceu no `#224 <https://github.com/b2wdigital/async-worker/pull/224>`_
+- Atualização do aiohttp para versão `3.7.4`. Verifique se seu projeto funciona corretamente com essa nova versão antes de atualizar para o asyncworker `0.17.0`.
