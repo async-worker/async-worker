@@ -51,10 +51,10 @@ class Model(BaseModel, abc.ABC):
         return super(Model, self).__eq__(other)
 
     def __len__(self):
-        return len(self.fields)
+        return len(self.__fields__)
 
     def keys(self):
-        return self.fields.keys()
+        return self.__fields__.keys()
 
     def get(self, key, default=None):
         try:
