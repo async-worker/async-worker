@@ -1,4 +1,4 @@
-from typing import Optional, Tuple, Any, Type
+from typing import Optional, Tuple, Type
 
 
 def get_args(_type: Type) -> Optional[Tuple]:

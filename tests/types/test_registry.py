@@ -1,4 +1,4 @@
-from typing import List
+from typing import Generic, TypeVar
 
 from asynctest import TestCase
 
@@ -59,3 +59,53 @@ class TypesRegistryTest(TestCase):
 
         self.registry.set(42, param_name="obj_id")
         self.assertEqual(None, self.registry.get(str, param_name="obj_id"))
+
+    async def test_aceita_tipo_generico_um_arg_tipo_simples(self):
+        T = TypeVar("T")
+
+        class MyGeneric(Generic[T]):
+            def __init__(self, val: T) -> None:
+                self._val: T = val
+
+        v: MyGeneric[int] = MyGeneric(10)
+        self.registry.set(v, MyGeneric[int])
+        self.assertEqual(v, self.registry.get(MyGeneric[int]))
+
+    async def test_aceita_generico_dois_args(self):
+        T = TypeVar("T")
+        P = TypeVar("P")
+
+        class MyGenericDoisArgs(Generic[T, P]):
+            def __init__(self, val: T) -> None:
+                self._val: T = val
+
+        v: MyGenericDoisArgs[int, str] = MyGenericDoisArgs(10)
+        self.registry.set(v, MyGenericDoisArgs[int, str])
+        self.assertEquals(v, self.registry.get(MyGenericDoisArgs[int, str]))
+
+    async def test_generico_dois_args_ordem_importa(self):
+        T = TypeVar("T")
+        P = TypeVar("P")
+
+        class MyGenericDoisArgs(Generic[T, P]):
+            def __init__(self, val: T) -> None:
+                self._val: T = val
+
+        v: MyGenericDoisArgs[int, str] = MyGenericDoisArgs(10)
+        self.registry.set(v, MyGenericDoisArgs[int, str])
+        self.assertIsNone(self.registry.get(MyGenericDoisArgs[str, int]))
+
+    async def test_generico_um_arg_tipo_complexo(self):
+
+        T = TypeVar("T")
+
+        class MyGeneric(Generic[T]):
+            def __init__(self, val: T) -> None:
+                self._val: T = val
+
+        class OtherObject:
+            pass
+
+        v: MyGeneric[OtherObject] = MyGeneric(OtherObject())
+        self.registry.set(v, MyGeneric[OtherObject])
+        self.assertEquals(v, self.registry.get(MyGeneric[OtherObject]))
