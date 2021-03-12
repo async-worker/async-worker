@@ -15,7 +15,7 @@ class TimeitTests(asynctest.TestCase):
     async def test_it_marks_starting_times(self):
         coro = asynctest.CoroutineMock()
         async with Timeit(name="Xablau", callback=coro) as timeit:
-            self.assertEqual(timeit.start, 1_149_573_966.0)
+            self.assertEqual(timeit.start, 1_149_573_966.1)
 
     @freeze_time("2006-06-06 06:06:07")
     async def test_it_marks_finishing_times(self):

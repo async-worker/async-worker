@@ -1,17 +1,7 @@
 import inspect
 import typing
 from asyncio import Task
-from typing import (
-    List,
-    Type,
-    Coroutine,
-    Dict,
-    Any,
-    Union,
-    Callable,
-    Iterable,
-    Tuple,
-)
+from typing import List, Type, Coroutine, Dict, Any, Union, Callable, Iterable
 
 from asyncworker.types.registry import TypesRegistry
 
@@ -45,6 +35,7 @@ class ArgResolver:
         return None
 
     async def _coro_executor(self, coro_ref: Callable[..., Coroutine]):
+        __import__("pdb").set_trace()
         params: Dict[str, Any] = {}
         unresolved_params = []
         coro_arguments = inspect.signature(coro_ref).parameters
@@ -63,8 +54,8 @@ class ArgResolver:
                     params[param_name] = param_value
                 else:
                     unresolved_params.append((param_name, param_type))
-            if unresolved_params:
-                raise TypeError(
-                    f"Unresolved params for coroutine {coro_ref}: {unresolved_params}"
-                )
+        #            if unresolved_params:
+        #                raise TypeError(
+        #                    f"Unresolved params for coroutine {coro_ref}: {unresolved_params}"
+        #                )
         return await coro_ref(**params)

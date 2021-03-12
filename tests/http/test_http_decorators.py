@@ -3,9 +3,11 @@ from http import HTTPStatus
 from aiohttp import web
 from asynctest import mock, TestCase
 
-from asyncworker import App
+from asyncworker import wraps, App
 from asyncworker.http import decorators
 from asyncworker.http.decorators import parse_path
+from asyncworker.http.wrapper import RequestWrapper
+from asyncworker.routes import call_http_handler
 from asyncworker.testing import HttpClientContext
 
 
@@ -57,3 +59,62 @@ class HTTPDecoratorsTest(TestCase):
                         "arg-value": "abc",
                     }
                 )
+
+    async def test_can_be_the_second_decorator(self):
+        """
+        Valida que o parse_path pode não ser o deorator mais próximo do handler
+        original
+        """
+
+        def other_deco(handler):
+            @wraps(handler)
+            async def _h(req: RequestWrapper, **_):
+                return await call_http_handler(req, handler)
+
+            __import__("pdb").set_trace()
+            return _h
+
+        @self.app.http.get(["/parse_path/{p}"])
+        @parse_path
+        @other_deco
+        async def _parse_path_handler(r: RequestWrapper, p: int):
+            return web.json_response({"p": p})
+
+        async with HttpClientContext(self.app) as client:
+            resp = await client.get("/parse_path/42")
+            self.assertEqual(HTTPStatus.OK, resp.status)
+            data = await resp.json()
+            self.assertEqual({"p": 42}, data)
+
+    async def test_can_be_away_from_handler_and_away_from_http_entrypoint(self):
+        """
+        Valida que o @parse_path pode estar longe do handler *e* longe do @app.http.*
+        Dessa forma:
+
+        @app.http.get(...)
+        @one_deco
+        @parse_path
+        @other_deco
+        async def _handler(...):
+        """
+        self.fail()
+
+    async def test_can_have_a_param_with_same_name_of_handler(self):
+        """
+        Valida que os decorators pelo caminho podem receber parametros que possuem o mesmo
+        nome de parametros do handler original, e isso não interfere na chamada do handler.
+
+        def deco_1(handler):
+            @wraps(handler)
+            async def wrap(r: RequestWrapper, **_):
+                return await call_http_handler(r, handler)
+
+            return wrap
+
+        @app.http.get(["/path/{r}"])
+        @parse_path
+        @deco_1
+        async def _handler(r: int, wrapper: RequestWrapper):
+            return web.json_response({})
+        """
+        self.fail()

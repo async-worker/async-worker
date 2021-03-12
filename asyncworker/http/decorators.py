@@ -1,4 +1,5 @@
 import typing
+from asyncworker import wraps
 
 from asyncworker.conf import logger
 from asyncworker.http.wrapper import RequestWrapper
@@ -9,7 +10,8 @@ def parse_path(handler):
     handler_types_args = typing.get_type_hints(handler)
     handler_args_names = list(handler_types_args.keys())
 
-    async def _wrap(wrapper: RequestWrapper):
+    @wraps(handler)
+    async def _wrap(wrapper: RequestWrapper, **_):
         req = wrapper.http_request
 
         for param_name in handler_args_names:
@@ -31,4 +33,5 @@ def parse_path(handler):
 
         return await call_http_handler(wrapper, handler)
 
+    __import__("pdb").set_trace()
     return _wrap
