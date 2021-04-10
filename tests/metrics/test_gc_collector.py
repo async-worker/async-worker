@@ -31,7 +31,7 @@ class GCCollectorest(TestCase):
                 "asyncworker_myapp_python_gc_objects_collected_total",
             ]
             samples_names_collected = [s.name for s in metrics[0].samples]
-            self.assertEquals(
+            self.assertEqual(
                 expected_samples_names_collected, samples_names_collected
             )
 
@@ -41,7 +41,7 @@ class GCCollectorest(TestCase):
                 "asyncworker_myapp_python_gc_objects_uncollectable_total",
             ]
             samples_names_uncollectable = [s.name for s in metrics[1].samples]
-            self.assertEquals(
+            self.assertEqual(
                 expected_samples_names_uncollectable,
                 samples_names_uncollectable,
             )
@@ -52,7 +52,7 @@ class GCCollectorest(TestCase):
                 "asyncworker_myapp_python_gc_collections_total",
             ]
             samples_names_collections = [s.name for s in metrics[2].samples]
-            self.assertEquals(
+            self.assertEqual(
                 expected_samples_names_collections, samples_names_collections
             )
 
