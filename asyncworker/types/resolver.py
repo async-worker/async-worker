@@ -53,8 +53,8 @@ class ArgResolver:
                     params[param_name] = param_value
                 else:
                     unresolved_params.append((param_name, param_type))
-        #            if unresolved_params:
-        #                raise TypeError(
-        #                    f"Unresolved params for coroutine {coro_ref}: {unresolved_params}"
-        #                )
+            if unresolved_params:
+                raise TypeError(
+                    f"Unresolved params for coroutine {coro_ref}: {unresolved_params}"
+                )
         return await coro_ref(**params)

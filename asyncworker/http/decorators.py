@@ -1,13 +1,28 @@
 import typing
-from asyncworker import wraps
 
 from asyncworker.conf import logger
+from asyncworker.decorators import wraps
 from asyncworker.http.wrapper import RequestWrapper
 from asyncworker.routes import call_http_handler
 
 
 def parse_path(handler):
-    handler_types_args = typing.get_type_hints(handler)
+    """
+    Aqui usamos essa função `_dummy` apenas para aproveitar a implementação
+    já existente em `typing.get_type_hints()`. 
+    Como essa implementação exige que passamos uma function, mas temos nesse momento
+    apenas um dict.
+    Então criamos essa função "vazia" e colocmos nela as anotações do handler
+    original.
+    """
+
+    def _dummy():
+        pass
+
+    _dummy.__annotations__ = getattr(
+        handler, "__original_annotations__", handler.__annotations__
+    )
+    handler_types_args = typing.get_type_hints(_dummy)
     handler_args_names = list(handler_types_args.keys())
 
     @wraps(handler)

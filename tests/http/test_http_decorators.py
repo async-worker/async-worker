@@ -1,9 +1,11 @@
 from http import HTTPStatus
+from typing import List
 
 from aiohttp import web
 from asynctest import mock, TestCase
 
-from asyncworker import wraps, App
+from asyncworker import App
+from asyncworker.decorators import wraps
 from asyncworker.http import decorators
 from asyncworker.http.decorators import parse_path
 from asyncworker.http.wrapper import RequestWrapper
@@ -71,13 +73,12 @@ class HTTPDecoratorsTest(TestCase):
             async def _h(req: RequestWrapper, **_):
                 return await call_http_handler(req, handler)
 
-            __import__("pdb").set_trace()
             return _h
 
         @self.app.http.get(["/parse_path/{p}"])
         @parse_path
         @other_deco
-        async def _parse_path_handler(r: RequestWrapper, p: int):
+        async def _parse_path_handler(req_wrapper: RequestWrapper, p: int):
             return web.json_response({"p": p})
 
         async with HttpClientContext(self.app) as client:
@@ -88,7 +89,8 @@ class HTTPDecoratorsTest(TestCase):
 
     async def test_can_be_away_from_handler_and_away_from_http_entrypoint(self):
         """
-        Valida que o @parse_path pode estar longe do handler *e* longe do @app.http.*
+        Valida que o @parse_path pode estar longe do handler 
+        *e* longe do @app.http.*
         Dessa forma:
 
         @app.http.get(...)
@@ -97,12 +99,39 @@ class HTTPDecoratorsTest(TestCase):
         @other_deco
         async def _handler(...):
         """
-        self.fail()
+
+        def other_deco(handler):
+            @wraps(handler)
+            async def _h(req: RequestWrapper):
+                return await call_http_handler(req, handler)
+
+            return _h
+
+        def one_deco(handler):
+            @wraps(handler)
+            async def _h(req: RequestWrapper):
+                return await call_http_handler(req, handler)
+
+            return _h
+
+        @self.app.http.get(["/parse_path_again/{p}"])
+        @one_deco
+        @parse_path
+        @other_deco
+        async def _parse_path_handler(p: int):
+            return web.json_response({"p": p})
+
+        async with HttpClientContext(self.app) as client:
+            resp = await client.get("/parse_path_again/42")
+            self.assertEqual(HTTPStatus.OK, resp.status)
+            data = await resp.json()
+            self.assertEqual({"p": 42}, data)
 
     async def test_can_have_a_param_with_same_name_of_handler(self):
         """
-        Valida que os decorators pelo caminho podem receber parametros que possuem o mesmo
-        nome de parametros do handler original, e isso não interfere na chamada do handler.
+        Valida que os decorators pelo caminho podem receber parametros 
+        que possuem o mesmo nome de parametros do handler original, e isso 
+        não interfere na chamada do handler.
 
         def deco_1(handler):
             @wraps(handler)
@@ -117,4 +146,49 @@ class HTTPDecoratorsTest(TestCase):
         async def _handler(r: int, wrapper: RequestWrapper):
             return web.json_response({})
         """
-        self.fail()
+
+        def one_deco(handler):
+            @wraps(handler)
+            async def _h(r: RequestWrapper):
+                return await call_http_handler(r, handler)
+
+            return _h
+
+        @self.app.http.get(["/parse_path_again/{p}"])
+        @parse_path
+        @one_deco
+        async def _parse_path_handler(r: RequestWrapper, p: int):
+            return web.json_response({"p": p})
+
+        async with HttpClientContext(self.app) as client:
+            resp = await client.get("/parse_path_again/42")
+            self.assertEqual(HTTPStatus.OK, resp.status)
+            data = await resp.json()
+            self.assertEqual({"p": 42}, data)
+
+    async def test_intermediate_deco_can_add_available_handler_arguments(self):
+        """
+        Um decorator intemediário pode adicionar novos parametros no
+        types_registry do request. E esse parametro será corretamente
+        passado ao handler
+        """
+
+        def one_deco(handler):
+            @wraps(handler)
+            async def _h(r: RequestWrapper):
+                r.types_registry.set("String")
+                return await call_http_handler(r, handler)
+
+            return _h
+
+        @self.app.http.get(["/parse_path_again/{p}"])
+        @parse_path
+        @one_deco
+        async def _parse_path_handler(r: RequestWrapper, p: int, s: str):
+            return web.json_response({"p": p})
+
+        async with HttpClientContext(self.app) as client:
+            resp = await client.get("/parse_path_again/42")
+            self.assertEqual(HTTPStatus.OK, resp.status)
+            data = await resp.json()
+            self.assertEqual({"p": 42}, data)
