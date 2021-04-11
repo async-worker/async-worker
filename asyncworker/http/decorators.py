@@ -33,5 +33,4 @@ def parse_path(handler):
 
         return await call_http_handler(wrapper, handler)
 
-    __import__("pdb").set_trace()
     return _wrap
