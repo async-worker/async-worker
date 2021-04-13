@@ -26,7 +26,7 @@ def parse_path(handler):
     handler_args_names = list(handler_types_args.keys())
 
     @wraps(handler)
-    async def _wrap(wrapper: RequestWrapper, **_):
+    async def _wrap(wrapper: RequestWrapper):
         req = wrapper.http_request
 
         for param_name in handler_args_names:

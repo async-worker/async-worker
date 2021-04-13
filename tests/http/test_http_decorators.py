@@ -70,7 +70,7 @@ class HTTPDecoratorsTest(TestCase):
 
         def other_deco(handler):
             @wraps(handler)
-            async def _h(req: RequestWrapper, **_):
+            async def _h(req: RequestWrapper):
                 return await call_http_handler(req, handler)
 
             return _h
@@ -129,13 +129,13 @@ class HTTPDecoratorsTest(TestCase):
 
     async def test_can_have_a_param_with_same_name_of_handler(self):
         """
-        Valida que os decorators pelo caminho podem receber parametros 
-        que possuem o mesmo nome de parametros do handler original, e isso 
+        Valida que os decorators pelo caminho podem receber parametros
+        que possuem o mesmo nome de parametros do handler original, e isso
         não interfere na chamada do handler.
 
         def deco_1(handler):
             @wraps(handler)
-            async def wrap(r: RequestWrapper, **_):
+            async def wrap(r: RequestWrapper):
                 return await call_http_handler(r, handler)
 
             return wrap

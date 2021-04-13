@@ -14,7 +14,7 @@ def handler_register(func):
 
 def _deco(handler):
     @wraps(handler)
-    async def _wrapper(s: str, **_):
+    async def _wrapper(s: str):
         pass
 
     return _wrapper
@@ -22,7 +22,7 @@ def _deco(handler):
 
 def _deco2(handler):
     @wraps(handler)
-    async def _wrapper(param: bool, i: int, **_):
+    async def _wrapper(param: bool, i: int):
         pass
 
     return _wrapper
@@ -30,7 +30,7 @@ def _deco2(handler):
 
 def _deco3(handler):
     @wraps(handler)
-    async def _wrapper(other: str, flag: bool, **_):
+    async def _wrapper(other: str, flag: bool):
         pass
 
     return _wrapper
@@ -88,7 +88,7 @@ class TestWrapsDecorator(TestCase):
         def _deco_with_params(a: int):
             def _wrap1(handler):
                 @wraps(handler)
-                async def _final_wrap(param: bool, **_):
+                async def _final_wrap(param: bool):
                     pass
 
                 return _final_wrap
