@@ -7,6 +7,5 @@ scrape_configs:
     metrics_path: /metrics
     static_configs:
       - targets:
-          - 'prometheus:9090'
-          - 'asyncworker:8080'
-          - 'host.docker.internal:8080'
+          - 'prometheus:9000'
+          - 'asyncworker:9001'

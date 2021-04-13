@@ -2,24 +2,30 @@ version: '3'
 
 services:
   prometheus:
-    image: prom/prometheus
+    build:
+      context: ./docker/prometheus/
     hostname: prometheus
     ports:
-      - 9000:9090
+      - 9090:9090
     volumes:
-      - ./docker/prometheus:/etc/prometheus
-      - ./docker/data/:/prometheus
+      - asyncworker-prometheus:/prometheus
     command: --web.enable-lifecycle  --config.file=/etc/prometheus/prometheus.yml
   asyncworker:
     hostname: asyncworker
-    build:
-      context: .
-      dockerfile: ./docker/Dockerfile
+    build: .
     ports:
       - 8080:8080
+    command: python ./metrics.py
+    environment:
+      - ASYNCWORKER_HTTP_HOST=0.0.0.0
   grafana:
     image: grafana/grafana
     hostname: grafana
     ports:
       - 3000:3000
-#      todo: adicionar volumes
+    volumes:
+      - asyncworker-grafana:/var/lib/grafana
+
+volumes:
+  asyncworker-grafana:
+  asyncworker-prometheus:
