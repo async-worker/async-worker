@@ -1,7 +1,7 @@
 def wraps(original_handler):
     """
-    A ideia desse decorator que fazer com que a assinatura da função original
-    "suba" até o último decorator, que deverá ser sempre um registrador do 
+    Esse decorator faz com que a assinatura da função original
+    "suba" até o último decorator, que deverá ser sempre um registrador do
     próprio asyncworker. ex:
     @app.http.get(...)
     @deco1
@@ -9,7 +9,7 @@ def wraps(original_handler):
     async def handler(...)
         pass
 
-    Nesse caso, os decorators `@deco1` e `@deco2` devem, *necessariamente* 
+    Nesse caso, os decorators `@deco1` e `@deco2` devem, *necessariamente*
     fazer uso desse `@wraps()`
     """
 
