@@ -1,5 +1,4 @@
 from http import HTTPStatus
-from typing import List
 
 from aiohttp import web
 from asynctest import mock, TestCase

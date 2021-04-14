@@ -14,9 +14,9 @@ def wraps(original_handler):
     """
 
     def _wrap(deco):
-        deco.__original_annotations__ = getattr(
+        deco.asyncworker_original_annotations = getattr(
             original_handler,
-            "__original_annotations__",
+            "asyncworker_original_annotations",
             original_handler.__annotations__,
         )
         return deco

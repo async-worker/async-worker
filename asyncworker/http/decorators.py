@@ -20,8 +20,9 @@ def parse_path(handler):
         pass
 
     _dummy.__annotations__ = getattr(
-        handler, "__original_annotations__", handler.__annotations__
+        handler, "asyncworker_original_annotations", handler.__annotations__
     )
+
     handler_types_args = typing.get_type_hints(_dummy)
     handler_args_names = list(handler_types_args.keys())
 

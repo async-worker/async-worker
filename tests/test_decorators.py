@@ -50,7 +50,7 @@ class TestWrapsDecorator(TestCase):
         final_func = await _func()
         self.assertEqual(final_func.__annotations__, {"s": str})
         self.assertEqual(
-            final_func.__original_annotations__, {"q": int, "b": bool}
+            final_func.asyncworker_original_annotations, {"q": int, "b": bool}
         )
 
     async def test_with_two_second_decorators(self):
@@ -63,7 +63,7 @@ class TestWrapsDecorator(TestCase):
         final_func = await _func()
         self.assertEqual(final_func.__annotations__, {"param": bool, "i": int})
         self.assertEqual(
-            final_func.__original_annotations__,
+            final_func.asyncworker_original_annotations,
             {"other": int, "integer": int, "feature": bool},
         )
 
@@ -80,7 +80,7 @@ class TestWrapsDecorator(TestCase):
             final_func.__annotations__, {"flag": bool, "other": str}
         )
         self.assertEqual(
-            final_func.__original_annotations__,
+            final_func.asyncworker_original_annotations,
             {"other": int, "integer": int, "feature": bool},
         )
 
@@ -103,7 +103,7 @@ class TestWrapsDecorator(TestCase):
         final_func = await _func()
         self.assertEqual(final_func.__annotations__, {"param": bool})
         self.assertEqual(
-            final_func.__original_annotations__, {"x": bool, "y": int}
+            final_func.asyncworker_original_annotations, {"x": bool, "y": int}
         )
 
     async def test_call_chain_one_decorator(self):
