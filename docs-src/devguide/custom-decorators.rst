@@ -11,6 +11,7 @@ Aplicando decorators customizados a um handler HTTP
 - A inner function deve receber apenas :py:class:`asyncworker.http.wrapper.RequestWrapper`; Esse parametro **deve estar tipado**.
 - Essa inner function **deve ser** decorada com :py:func:`asyncworker.decorators.wraps()`.
 
+Importante: Não é necessário declarar seu decorator com `(*args, **kwargs)`. O asyncworker vai perceber o parametro que seu decorator precisa e chamará sempre passando apenas os parametros declarados na assinatura.
 
 Um exemplo simples de decorator:
 
@@ -38,3 +39,10 @@ Esse decorator poderia ser aplicado a um handler assim:
   @my_handler_decorator
   async def handler():
     return web.json_response({})
+
+
+Escrevendo um decorator que precisa conhece a assinatura original do handler
+============================================================================
+
+
+Caso o seu decorator precise saber a assinatura original do handler que está sendo decorado, ele pode ser descoberta acessando o atributo `asyncworker_original_annotations` da função que seu decorator está decorando. Essa funcão é o mesmo parametro que o `@wraps()` recebe.
