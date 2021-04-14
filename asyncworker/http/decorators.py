@@ -1,5 +1,3 @@
-import typing
-
 from asyncworker.conf import logger
 from asyncworker.decorators import wraps
 from asyncworker.http.wrapper import RequestWrapper
@@ -8,6 +6,12 @@ from asyncworker.utils import get_handler_original_typehints
 
 
 def parse_path(handler):
+    """
+    Decorator que permite receber dinamicamente parametros do Request Path
+    Basta que o nome do parametro na assinatura do handler seja igual ao nome do parametro
+    declarado no Path HTTP.
+    """
+
     """
     Aqui usamos essa função `_dummy` apenas para aproveitar a implementação
     já existente em `typing.get_type_hints()`. 
