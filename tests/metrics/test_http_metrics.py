@@ -145,3 +145,26 @@ class HTTPMetricsTests(TestCase):
         )
         self.metrics.request_duration.labels.return_value.observe.assert_called_once()
         self.metrics.requests_in_progress.labels.return_value.dec.assert_called_once()
+
+    async def test_request_to_route_with_404_path(self):
+        request_path = f"/{uuid4().hex}"
+
+        url = f"{self.app_url}{request_path}"
+        async with self.client.get(url) as response:
+            content = await response.text()
+            self.assertEqual(response.status, HTTPStatus.NOT_FOUND)
+
+        self.metrics.response_size.labels.assert_called_once_with(
+            method="GET", path="unregistered_path"
+        )
+        self.metrics.request_duration.labels.assert_called_once_with(
+            method="GET", path="unregistered_path", status=response.status
+        )
+        self.metrics.requests_in_progress.labels.assert_called_with(
+            method="GET", path="unregistered_path"
+        )
+        self.metrics.response_size.labels.return_value.observe.assert_called_once_with(
+            len(content)
+        )
+        self.metrics.request_duration.labels.return_value.observe.assert_called_once()
+        self.metrics.requests_in_progress.labels.return_value.dec.assert_called_once()

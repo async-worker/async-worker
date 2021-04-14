@@ -12,10 +12,16 @@ from asyncworker.time import perf_counter_ms as now
 _Handler = Callable[[web.Request], Awaitable[web.Response]]
 
 
+def route_path_for_request(request: web.Request) -> str:
+    if request.match_info.route.resource:
+        return request.match_info.route.resource.canonical
+    return "unregistered_path"
+
+
 @middleware
 async def http_metrics_middleware(request: web.Request, handler: _Handler):
     start = now()
-    route_path = request.match_info.route.resource.canonical
+    route_path = route_path_for_request(request)
 
     try:
         metrics.requests_in_progress.labels(
