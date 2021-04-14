@@ -4,6 +4,7 @@ from asyncworker.conf import logger
 from asyncworker.decorators import wraps
 from asyncworker.http.wrapper import RequestWrapper
 from asyncworker.routes import call_http_handler
+from asyncworker.utils import get_handler_original_typehints
 
 
 def parse_path(handler):
@@ -16,14 +17,7 @@ def parse_path(handler):
     original.
     """
 
-    def _dummy():
-        pass
-
-    _dummy.__annotations__ = getattr(
-        handler, "asyncworker_original_annotations", handler.__annotations__
-    )
-
-    handler_types_args = typing.get_type_hints(_dummy)
+    handler_types_args = get_handler_original_typehints(handler)
     handler_args_names = list(handler_types_args.keys())
 
     @wraps(handler)

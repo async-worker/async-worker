@@ -45,4 +45,30 @@ Escrevendo um decorator que precisa conhece a assinatura original do handler
 ============================================================================
 
 
-Caso o seu decorator precise saber a assinatura original do handler que está sendo decorado, ele pode ser descoberta acessando o atributo `asyncworker_original_annotations` da função que seu decorator está decorando. Essa funcão é o mesmo parametro que o `@wraps()` recebe.
+Caso o seu decorator precise saber a assinatura original do handler que está sendo decorado, ela pode ser descoberta usando :py:func:`asyncworker.utils.get_handler_original_typehints()`. Essa função deve receber o mesmo parmetro que o ``@wraps()`` recebe. O retorno dessa chamada é o dicionário original que estava no atributo ``__annotations__`` do handler original.
+
+Um exemplo:
+
+.. code-block:: python
+
+    def simple_deco(handler):
+        @wraps(handler)
+        async def _wrapper():
+            return await handler()
+
+        return _wrapper
+
+    def other_deco(handler):
+        @wraps(handler)
+        async def _wrap():
+            return get_handler_original_typehints(handler)
+
+        return _wrap
+
+    @other_deco
+    @simple_deco
+    async def handler(a: bool, s: str):
+          pass
+
+
+Nesse caso, mesmo o decorator ``@other_deco()`` sendo o decorator no topo da lista de decorators, ele é capaz de retornar a assinatura original.
