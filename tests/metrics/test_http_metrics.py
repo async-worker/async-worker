@@ -1,6 +1,6 @@
 import asyncio
-from uuid import uuid4
 from http import HTTPStatus
+from uuid import uuid4
 
 from aiohttp import ClientSession
 from aiohttp.web_exceptions import HTTPNotFound
