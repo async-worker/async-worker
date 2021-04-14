@@ -1,5 +1,5 @@
 import asyncio
-from collections import MutableMapping
+from collections.abc import MutableMapping
 from signal import Signals
 from typing import Iterable, Callable, Coroutine, Dict, Any, Optional
 
