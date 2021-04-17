@@ -3,7 +3,8 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en">
   <head>
-    <meta charset="utf-8" />
+    <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17: http://docutils.sourceforge.net/" />
+
     <title>Compatibilidade de Versões do asyncowker &#8212; Asyncworker  documentation</title>
     <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -32,19 +33,19 @@
 
           <div class="body" role="main">
             
-  <div class="section" id="compatibilidade-de-versoes-do-asyncowker">
+  <section id="compatibilidade-de-versoes-do-asyncowker">
 <h1>Compatibilidade de Versões do asyncowker<a class="headerlink" href="#compatibilidade-de-versoes-do-asyncowker" title="Permalink to this headline">¶</a></h1>
 <p>O versionamento do projeto segue a mesma linha do <a class="reference external" href="https://semver.org/">Semver</a> mas com uma peculiaridade. Como esse é um projeto que ainda está em pleno desenvolvimento ainda falta um longo caminho até chegarmos a uma versão <code class="docutils literal notranslate"><span class="pre">1.0</span></code>.</p>
 <p>Por isso que fazemos é o seguinte: Mudamos apenas os valores da <code class="docutils literal notranslate"><span class="pre">MINOR</span></code> e <code class="docutils literal notranslate"><span class="pre">PATCH</span></code>.</p>
 <p>Quando mudamos apenas a <code class="docutils literal notranslate"><span class="pre">PATCH</span></code> version significa que o código novo é retro-compatível com o antigo, ou seja, pode ser atualizado sem problemas. Sem precisar olhar changelogs.</p>
 <p>Quando mudamos a <code class="docutils literal notranslate"><span class="pre">MINOR</span></code> version significa que o changelog requer atenção. Seja um mudança simples ou uma mudança mais complexa que vai demandar ajuster no seu código é recomendado que você olhe o changelog da nova versão para saber se você precisa ajustar alguma coisa.</p>
 <p>Lembrando que a formação da versão é <code class="docutils literal notranslate"><span class="pre">0.MINOR.PATCH</span></code>.</p>
-<div class="section" id="atualizacao-de-dependencias">
+<section id="atualizacao-de-dependencias">
 <h2>Atualização de dependências<a class="headerlink" href="#atualizacao-de-dependencias" title="Permalink to this headline">¶</a></h2>
 <p>O asyncworker depende basicamente de dois outros projetos: <a class="reference external" href="https://docs.aiohttp.org/en/stable/">aiohttp</a> e <a class="reference external" href="https://pydantic-docs.helpmanual.io/">Pydantic</a>.</p>
 <p>Sempre que quaisquer dessas duas dependências precisarem ser atualizadas isso será considerado uma mudança (potencialmente) retro-incompatível e por isso o asyncworker terá sua minor version aumentada.</p>
-</div>
-</div>
+</section>
+</section>
 
 
           </div>

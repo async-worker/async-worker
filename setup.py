@@ -6,7 +6,7 @@ here = path.abspath(path.dirname(__file__))
 
 setup(
     name="async-worker",
-    version="0.16.0",
+    version="0.18.0",
     description="Microframework para escrever workers assíncronos em Python",
     long_description=open(f"{here}/README.md").read(),
     long_description_content_type="text/markdown",
@@ -24,9 +24,9 @@ setup(
     install_requires=[
         "aioamqp==0.14.0",
         "aiologger==0.5.0",
-        "pydantic>=0.32.2, <2.0",
+        "pydantic >= 0.32.2, <= 1.8",
         "cached-property==1.5.1",
-        "aiohttp==3.6.2",
+        "aiohttp==3.7.4",
         "prometheus_client==0.7.1",
     ],
     entry_points={},

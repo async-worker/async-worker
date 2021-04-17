@@ -3,7 +3,8 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en">
   <head>
-    <meta charset="utf-8" />
+    <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17: http://docutils.sourceforge.net/" />
+
     <title>asyncworker.rabbitmq package &#8212; Asyncworker  documentation</title>
     <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
@@ -30,12 +31,26 @@
 
           <div class="body" role="main">
             
-  <div class="section" id="asyncworker-rabbitmq-package">
+  <section id="asyncworker-rabbitmq-package">
 <h1>asyncworker.rabbitmq package<a class="headerlink" href="#asyncworker-rabbitmq-package" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="submodules">
+<section id="submodules">
 <h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
-</div>
-<div class="section" id="module-asyncworker.rabbitmq.message">
+</section>
+<section id="module-asyncworker.rabbitmq.entrypoints">
+<span id="asyncworker-rabbitmq-entrypoints-module"></span><h2>asyncworker.rabbitmq.entrypoints module<a class="headerlink" href="#module-asyncworker.rabbitmq.entrypoints" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="asyncworker.rabbitmq.entrypoints.AMQPRouteEntryPointImpl">
+<em class="property">class </em><code class="sig-prename descclassname">asyncworker.rabbitmq.entrypoints.</code><code class="sig-name descname">AMQPRouteEntryPointImpl</code><span class="sig-paren">(</span><em class="sig-param">app: asyncworker.app.App</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/asyncworker/rabbitmq/entrypoints.html#AMQPRouteEntryPointImpl"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#asyncworker.rabbitmq.entrypoints.AMQPRouteEntryPointImpl" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="asyncworker.html#asyncworker.entrypoints.EntrypointInterface" title="asyncworker.entrypoints.EntrypointInterface"><code class="xref py py-class docutils literal notranslate"><span class="pre">asyncworker.entrypoints.EntrypointInterface</span></code></a></p>
+<dl class="method">
+<dt id="asyncworker.rabbitmq.entrypoints.AMQPRouteEntryPointImpl.consume">
+<code class="sig-name descname">consume</code><span class="sig-paren">(</span><em class="sig-param">routes: List[str], vhost: str = '/', connection: Optional[asyncworker.connections.AMQPConnection] = None, options: Optional[asyncworker.routes.AMQPRouteOptions] = AMQPRouteOptions(bulk_size=1, bulk_flush_interval=60, on_success=&lt;Actions.ACK: 'ack'&gt;, on_exception=&lt;Actions.REQUEUE: 'requeue'&gt;, connection_fail_callback=None, connection=None)</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/asyncworker/rabbitmq/entrypoints.html#AMQPRouteEntryPointImpl.consume"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#asyncworker.rabbitmq.entrypoints.AMQPRouteEntryPointImpl.consume" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-asyncworker.rabbitmq.message">
 <span id="asyncworker-rabbitmq-message-module"></span><h2>asyncworker.rabbitmq.message module<a class="headerlink" href="#module-asyncworker.rabbitmq.message" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="asyncworker.rabbitmq.message.RabbitMQMessage">
@@ -75,11 +90,11 @@
 
 </dd></dl>
 
-</div>
-<div class="section" id="module-asyncworker.rabbitmq">
+</section>
+<section id="module-asyncworker.rabbitmq">
 <span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-asyncworker.rabbitmq" title="Permalink to this headline">¶</a></h2>
-</div>
-</div>
+</section>
+</section>
 
 
           </div>

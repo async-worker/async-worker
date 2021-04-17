@@ -1,6 +1,6 @@
 import abc
 import collections
-from collections import KeysView, ValuesView
+from collections.abc import KeysView, ValuesView
 from typing import (
     Optional,
     Union,
@@ -95,15 +95,6 @@ class ConnectionsMapping(Mapping[str, Connection], Freezable):
 
 
 _TYPE_COUNTER: Counter[Type[Connection]] = collections.Counter()
-
-
-class SSEConnection(Connection):
-    url: str
-    user: Optional[str] = None
-    password: Optional[str] = None
-    route_type = RouteTypes.SSE
-    name: Optional[str] = None
-
 
 Message = Union[List, Dict]
 

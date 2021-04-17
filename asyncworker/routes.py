@@ -51,10 +51,10 @@ class Model(BaseModel, abc.ABC):
         return super(Model, self).__eq__(other)
 
     def __len__(self):
-        return len(self.fields)
+        return len(self.__fields__)
 
     def keys(self):
-        return self.fields.keys()
+        return self.__fields__.keys()
 
     def get(self, key, default=None):
         try:
@@ -89,8 +89,6 @@ class Route(Model, abc.ABC):
             return HTTPRoute(**data)
         if type_ == RouteTypes.AMQP_RABBITMQ:
             return AMQPRoute(**data)
-        if type_ == RouteTypes.SSE:
-            return SSERoute(**data)
         raise ValueError(f"'{type_}' is an invalid RouteType.")
 
 
@@ -167,28 +165,6 @@ class AMQPRoute(Route):
     options: AMQPRouteOptions
 
 
-class _SSERouteOptions(_RouteOptions):
-    bulk_size: int = DefaultValues.BULK_SIZE
-    bulk_flush_interval: int = DefaultValues.BULK_FLUSH_INTERVAL
-    headers: Dict[str, str] = {}
-
-
-class SSERoute(Route):
-    type: RouteTypes = RouteTypes.SSE
-    headers: Dict[str, str] = {}
-    options: _SSERouteOptions = _SSERouteOptions()
-
-    @validator("options", pre=True, whole=True, always=True)
-    def add_default_headers(cls, v, values, **kwargs):
-        headers = {
-            **values.pop("headers", {}),
-            **values.pop("default_options", {}).get("headers", {}),
-        }
-        v["headers"] = headers
-
-        return v
-
-
 async def call_http_handler(request: RequestWrapper, handler: RouteHandler):
     arg_resolver = ArgResolver(registry=request.types_registry)
     try:
@@ -226,10 +202,6 @@ class RoutesRegistry(UserDict):
     @cached_property
     def amqp_routes(self) -> Iterable[AMQPRoute]:
         return self._get_routes_for_type(AMQPRoute)
-
-    @cached_property
-    def sse_routes(self) -> Iterable[SSERoute]:
-        return self._get_routes_for_type(SSERoute)
 
     def __setitem__(self, key: RouteHandler, value: Union[Dict, Route]):
 

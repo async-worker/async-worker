@@ -3,7 +3,8 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en">
   <head>
-    <meta charset="utf-8" />
+    <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17: http://docutils.sourceforge.net/" />
+
     <title>Configurando exposição de Métricas &#8212; Asyncworker  documentation</title>
     <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
@@ -32,12 +33,12 @@
 
           <div class="body" role="main">
             
-  <div class="section" id="configurando-exposicao-de-metricas">
+  <section id="configurando-exposicao-de-metricas">
 <h1>Configurando exposição de Métricas<a class="headerlink" href="#configurando-exposicao-de-metricas" title="Permalink to this headline">¶</a></h1>
 <p id="metrics-config">Todas as métricas expostas por uma aplicação asyncworker podem ser lidas através de um endpoint HTTP. A porta onde esse endpoint é servido é a mesma porta da sua app HTTP (caso esteja usando uma) e por padrão é o valor da config <a class="reference internal" href="../../src/asyncworker/asyncworker.html#asyncworker.conf.Settings" title="asyncworker.conf.Settings"><code class="xref py py-class docutils literal notranslate"><span class="pre">settings.HTTP_PORT</span></code></a></p>
 <p>O path padrão desse endpoint é <a class="reference internal" href="../../src/asyncworker/asyncworker.html#asyncworker.conf.Settings" title="asyncworker.conf.Settings"><code class="xref py py-class docutils literal notranslate"><span class="pre">settings.METRICS_ROUTE_PATH</span></code></a>.</p>
 <p><a class="reference internal" href="autoexposed-metrics.html#asyncworker-auto-metrics"><span class="std std-ref">Por padrão o endpoint que expõe as métricas já é ativado</span></a>. Caso queira desligar esse endpoint isso pode ser feito pela envvar <code class="docutils literal notranslate"><span class="pre">ASYNCWORKER_METRICS_ROUTE_ENABLED=0</span></code>.</p>
-<div class="section" id="formacao-do-nome-das-metricas">
+<section id="formacao-do-nome-das-metricas">
 <h2>Formação do nome das métricas<a class="headerlink" href="#formacao-do-nome-das-metricas" title="Permalink to this headline">¶</a></h2>
 <p>Todas as métricas expostas por uma aplicação asyncworker possuem um prefixo. Esse prefixo é <code class="docutils literal notranslate"><span class="pre">asyncworker_</span></code>. Isso significa que se sua métrica é declarada com o nome <code class="docutils literal notranslate"><span class="pre">users_total</span></code> ela será exposta com nome <code class="docutils literal notranslate"><span class="pre">asyncworker_users_total</span></code>.</p>
 <p>Isso é útil para que suas métricas não se confundam com todas as outras métricas do seu sistema, incluindo métricas de outras aplicações.</p>
@@ -45,8 +46,8 @@
 <p>Para isso basta usar a ENV <code class="docutils literal notranslate"><span class="pre">ASYNCWORKER_METRICS_APPPREFIX</span></code> e colocar nela o valor que você quiser. Exemplo:</p>
 <p>Se no seu código você declarou uma métrica de nome <code class="docutils literal notranslate"><span class="pre">msg_processed</span></code> e rodou sua app com a ENV <code class="docutils literal notranslate"><span class="pre">ASYNCWORKER_METRICS_APPPREFIX=myapp</span></code>. Essa métrica será exposta com o nome <code class="docutils literal notranslate"><span class="pre">asyncworker_myapp_msg_processed</span></code>.</p>
 <p>Por padrão esse prefixo tem valor vazio.</p>
-</div>
-</div>
+</section>
+</section>
 
 
           </div>

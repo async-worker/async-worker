@@ -3,7 +3,8 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en">
   <head>
-    <meta charset="utf-8" />
+    <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17: http://docutils.sourceforge.net/" />
+
     <title>Gauge &#8212; Asyncworker  documentation</title>
     <link rel="stylesheet" href="../../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
@@ -32,11 +33,11 @@
 
           <div class="body" role="main">
             
-  <div class="section" id="gauge">
+  <section id="gauge">
 <h1>Gauge<a class="headerlink" href="#gauge" title="Permalink to this headline">¶</a></h1>
 <p id="metric-type-gauge">O tipo Gauge é usado para acompanhar a “velocidde instantânea” de uma métrica, ou seja, seu valor atual. Esse valor pode variar tanto pra cima como pra baixo.</p>
 <p>É útil também para acompanhar duração de execução de tarefas.</p>
-<div class="section" id="interface-principal">
+<section id="interface-principal">
 <h2>Interface principal<a class="headerlink" href="#interface-principal" title="Permalink to this headline">¶</a></h2>
 <p>A interface principal são os métodos <code class="docutils literal notranslate"><span class="pre">inc()</span></code>, <code class="docutils literal notranslate"><span class="pre">dec()</span></code> e <code class="docutils literal notranslate"><span class="pre">set()</span></code>.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">asyncworker.metrics</span> <span class="kn">import</span> <span class="n">Gauge</span>
@@ -48,11 +49,11 @@
 <span class="n">g</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="mf">8.9</span><span class="p">)</span> <span class="c1"># Força o valor a ser 8.9</span>
 </pre></div>
 </div>
-</div>
-<div class="section" id="interfaces-adicionais">
+</section>
+<section id="interfaces-adicionais">
 <h2>Interfaces adicionais<a class="headerlink" href="#interfaces-adicionais" title="Permalink to this headline">¶</a></h2>
 <p>Algumas interfaces adicionais também são expostas para facilitar o uso, são elas:</p>
-<div class="section" id="track-inprogress">
+<section id="track-inprogress">
 <h3>track_inprogress()<a class="headerlink" href="#track-inprogress" title="Permalink to this headline">¶</a></h3>
 <p>Essa interface serve para já incrementar e decrementar de forma automática. Pode ser usada como um decorator ou como context manager. Útil para controlar contagens que só fazem sentido durante a execução de algum código.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">asyncworker.metrics</span> <span class="kn">import</span> <span class="n">Gauge</span>
@@ -75,8 +76,8 @@
 </pre></div>
 </div>
 <p>Nesse caso a métrica será incrementada no início do context e decrementada quando o context terminar.</p>
-</div>
-<div class="section" id="time">
+</section>
+<section id="time">
 <h3>time()<a class="headerlink" href="#time" title="Permalink to this headline">¶</a></h3>
 <p>Essa interface é útil para contar tempo, duração de alguma coisa.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">asyncworker.metrics</span> <span class="kn">import</span> <span class="n">Gauge</span>
@@ -92,9 +93,9 @@
 </pre></div>
 </div>
 <p>Nesses dois exemplos a métrica <code class="docutils literal notranslate"><span class="pre">query_duration</span></code> marcará o tempo de execução da função <code class="docutils literal notranslate"><span class="pre">run_query()</span></code>.</p>
-</div>
-</div>
-</div>
+</section>
+</section>
+</section>
 
 
           </div>

@@ -3,7 +3,8 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en">
   <head>
-    <meta charset="utf-8" />
+    <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17: http://docutils.sourceforge.net/" />
+
     <title>Histograma &#8212; Asyncworker  documentation</title>
     <link rel="stylesheet" href="../../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
@@ -32,7 +33,7 @@
 
           <div class="body" role="main">
             
-  <div class="section" id="histograma">
+  <section id="histograma">
 <h1>Histograma<a class="headerlink" href="#histograma" title="Permalink to this headline">¶</a></h1>
 <p>O tipo Histigrama serve para observar a quantidade de vezes que um evento ocorreu e categorizar essa quantidade em intervalos chamados <cite>buckets</cite>.</p>
 <p>Um métrica histograma sempre tem buckets definidos. O valor padrão para essa métrica em aplicações asyncworker é <a class="reference internal" href="../../../src/asyncworker/asyncworker.html#asyncworker.conf.Settings" title="asyncworker.conf.Settings"><code class="xref py py-class docutils literal notranslate"><span class="pre">settings.METRICS_DEFAULT_HISTOGRAM_BUCKETS_IN_MS</span></code></a>.</p>
@@ -62,18 +63,18 @@ asyncworker_users_age_created 1589816720.090581
 <li><p>Dois valores são ao mesmo tempo menores que <code class="docutils literal notranslate"><span class="pre">20</span></code> e <code class="docutils literal notranslate"><span class="pre">30</span></code>. São eles: <code class="docutils literal notranslate"><span class="pre">19</span></code> e <code class="docutils literal notranslate"><span class="pre">25</span></code>. Por isso as métricas possuem valor <code class="docutils literal notranslate"><span class="pre">2.0</span></code></p></li>
 <li><p>Todos os valores observados são menores que <code class="docutils literal notranslate"><span class="pre">+Inf</span></code> e por isso essa merica possui valor <code class="docutils literal notranslate"><span class="pre">3.0</span></code>.</p></li>
 </ul>
-<div class="section" id="interface-principal">
+<section id="interface-principal">
 <h2>Interface principal<a class="headerlink" href="#interface-principal" title="Permalink to this headline">¶</a></h2>
 <p>A interface principal dessa métrica é o método <code class="docutils literal notranslate"><span class="pre">observe()</span></code>. Esse método pode receber qualquer valor.</p>
-</div>
-<div class="section" id="interfaces-adicionais">
+</section>
+<section id="interfaces-adicionais">
 <h2>Interfaces adicionais<a class="headerlink" href="#interfaces-adicionais" title="Permalink to this headline">¶</a></h2>
-<div class="section" id="time">
+<section id="time">
 <h3>time()<a class="headerlink" href="#time" title="Permalink to this headline">¶</a></h3>
 <p>O método <code class="docutils literal notranslate"><span class="pre">time()</span></code> serve para marcar o tempo de algo e passar esse tempo para o <code class="docutils literal notranslate"><span class="pre">observe()</span></code>. Ele pode ser usado tanto como decorator como contextmanager.</p>
-</div>
-</div>
-</div>
+</section>
+</section>
+</section>
 
 
           </div>

@@ -9,14 +9,14 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Asyncworker \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-06-01 17:03-0300\n"
+"POT-Creation-Date: 2021-04-17 14:19-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.8.0\n"
+"Generated-By: Babel 2.9.0\n"
 
 #: ../../src/asyncworker/asyncworker.metrics.rst:2
 msgid "asyncworker.metrics package"
@@ -35,10 +35,31 @@ msgid "asyncworker.metrics.aiohttp\\_resources module"
 msgstr ""
 
 #: ../../src/asyncworker/asyncworker.metrics.rst:24
-msgid "asyncworker.metrics.registry module"
+msgid "asyncworker.metrics.buckets module"
+msgstr ""
+
+#: asyncworker.metrics.buckets.exponential_buckets:1 of
+msgid ""
+"Creates 'count' buckets, where the lowest bucket has an upper bound of "
+"'start' and each following bucket's upper bound is 'factor' times the "
+"previous bucket's upper bound. The final +Inf bucket is not counted and "
+"is included in the returned slice. The returned list is meant to be used "
+"for the buckets field of Histogram."
+msgstr ""
+
+#: asyncworker.metrics.buckets.linear_buckets:1 of
+msgid ""
+"Creates 'count' buckets, each 'width' wide, where the lowest bucket has "
+"an upper bound of 'start'. The final +Inf bucket is not counted and is "
+"included in the returned slice. The returned list is meant to be used for"
+" the buckets field of Histograms."
 msgstr ""
 
 #: ../../src/asyncworker/asyncworker.metrics.rst:32
+msgid "asyncworker.metrics.registry module"
+msgstr ""
+
+#: ../../src/asyncworker/asyncworker.metrics.rst:40
 msgid "asyncworker.metrics.types module"
 msgstr ""
 
@@ -64,7 +85,7 @@ msgstr ""
 msgid "Base: :class:`object`"
 msgstr ""
 
-#: ../../src/asyncworker/asyncworker.metrics.rst:41
+#: ../../src/asyncworker/asyncworker.metrics.rst:49
 msgid "Module contents"
 msgstr ""
 

@@ -12,6 +12,22 @@ asyncworker.http.decorators module
    :undoc-members:
    :show-inheritance:
 
+asyncworker.http.entrypoints module
+-----------------------------------
+
+.. automodule:: asyncworker.http.entrypoints
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+asyncworker.http.methods module
+-------------------------------
+
+.. automodule:: asyncworker.http.methods
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 asyncworker.http.wrapper module
 -------------------------------
 
