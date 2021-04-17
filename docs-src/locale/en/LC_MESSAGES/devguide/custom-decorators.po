@@ -9,14 +9,14 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Asyncworker \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-03-18 11:28-0300\n"
+"POT-Creation-Date: 2021-04-17 14:19-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.8.0\n"
+"Generated-By: Babel 2.9.0\n"
 
 #: ../../devguide/custom-decorators.rst:4
 msgid "Aplicando decorators customizados a um handler HTTP"
@@ -25,13 +25,13 @@ msgstr ""
 #: ../../devguide/custom-decorators.rst:6
 msgid ""
 "É possível escrever seus próprios decorators e aplicá-los a seus "
-"handlers, junto com o decorator ``@app.route``. No entando temos algumas "
-"regras:"
+"handlers, junto com os decorators ``@app.http.*``. No entando temos "
+"algumas regras:"
 msgstr ""
 
 #: ../../devguide/custom-decorators.rst:8
 msgid ""
-"O decorator ``@app.route()`` deve estar sempre no topo da lista de "
+"O decorator ``@app.http.*()`` deve estar sempre no topo da lista de "
 "decorators de um handler;"
 msgstr ""
 
@@ -49,18 +49,29 @@ msgstr ""
 #: ../../devguide/custom-decorators.rst:11
 msgid ""
 "A inner function deve receber apenas "
-":py:class:`asyncworker.http.wrapper.RequestWrapper`;"
+":py:class:`asyncworker.http.wrapper.RequestWrapper`; Esse parametro "
+"**deve estar tipado**."
 msgstr ""
 
 #: ../../devguide/custom-decorators.rst:12
-msgid "Essa inner function não deve ser decorada com ``@functools.wraps()``."
+msgid ""
+"Essa inner function **deve ser** decorada com "
+":py:func:`asyncworker.decorators.wraps()`."
 msgstr ""
 
-#: ../../devguide/custom-decorators.rst:15
+#: ../../devguide/custom-decorators.rst:14
+msgid ""
+"Importante: Não é necessário declarar seu decorator com `(*args, "
+"**kwargs)`. O asyncworker vai perceber o parametro que seu decorator "
+"precisa e chamará sempre passando apenas os parametros declarados na "
+"assinatura."
+msgstr ""
+
+#: ../../devguide/custom-decorators.rst:16
 msgid "Um exemplo simples de decorator:"
 msgstr ""
 
-#: ../../devguide/custom-decorators.rst:28
+#: ../../devguide/custom-decorators.rst:31
 msgid ""
 "A razão para isso é que o asyncworker permite que um handler receba "
 "parametros dinâmicos (:ref:`typed-handlers`) e a função "
@@ -69,7 +80,59 @@ msgid ""
 "corretamente chamado."
 msgstr ""
 
-#: ../../devguide/custom-decorators.rst:30
+#: ../../devguide/custom-decorators.rst:33
 msgid "Esse decorator poderia ser aplicado a um handler assim:"
 msgstr ""
+
+#: ../../devguide/custom-decorators.rst:45
+msgid ""
+"Escrevendo um decorator que precisa conhecer a assinatura original do "
+"handler"
+msgstr ""
+
+#: ../../devguide/custom-decorators.rst:48
+msgid ""
+"Caso o seu decorator precise saber a assinatura original do handler que "
+"está sendo decorado, ela pode ser descoberta usando "
+":py:func:`asyncworker.utils.get_handler_original_typehints()`. Essa "
+"função deve receber o mesmo parmetro que o ``@wraps()`` recebe. O retorno"
+" dessa chamada é o dicionário original que estava no atributo "
+"``__annotations__`` do handler original."
+msgstr ""
+
+#: ../../devguide/custom-decorators.rst:50
+msgid "Um exemplo:"
+msgstr ""
+
+#: ../../devguide/custom-decorators.rst:74
+msgid ""
+"Nesse caso, mesmo o decorator ``@other_deco()`` sendo o decorator no topo"
+" da lista de decorators, ele é capaz de retornar a assinatura original."
+msgstr ""
+
+#~ msgid ""
+#~ "É possível escrever seus próprios "
+#~ "decorators e aplicá-los a seus handlers,"
+#~ " junto com o decorator ``@app.route``. "
+#~ "No entando temos algumas regras:"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "O decorator ``@app.route()`` deve estar "
+#~ "sempre no topo da lista de "
+#~ "decorators de um handler;"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "A inner function deve receber apenas "
+#~ ":py:class:`asyncworker.http.wrapper.RequestWrapper`;"
+#~ msgstr ""
+
+#~ msgid "Essa inner function não deve ser decorada com ``@functools.wraps()``."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Escrevendo um decorator que precisa "
+#~ "conhece a assinatura original do handler"
+#~ msgstr ""
 

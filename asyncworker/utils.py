@@ -1,5 +1,6 @@
 import asyncio
 import functools
+import typing
 from functools import wraps
 from time import time as now
 from typing import Callable, Coroutine, Dict, Union, Optional
@@ -66,3 +67,35 @@ def entrypoint(f):
         return loop.run_until_complete(f(*args, **kwargs))
 
     return _
+
+
+def get_handler_original_typehints(handler):
+    """
+    Retorna a assinatura do handler asyncworker que está sendo decorado.
+    O retorno dessa chamada é equivalente a:
+    typing.get_type_hints(original_handler)
+    Onde `original_handler` é o handler asyncworker original.
+
+    Ideal para ser usado na pilha de decorators de um handler, ex:
+
+    .. code-block:: python
+
+        @deco1
+        @deco2
+        @deco3
+        async def handler(...):
+            pass
+
+    Nesse caso, se qualquer um dos 3 decorators precisar saber a assinatura
+    original, deve usar essa função passando a função recebida do decorator anterior.
+
+    """
+
+    def _dummy():
+        pass
+
+    _dummy.__annotations__ = getattr(
+        handler, "asyncworker_original_annotations", handler.__annotations__
+    )
+
+    return typing.get_type_hints(_dummy)

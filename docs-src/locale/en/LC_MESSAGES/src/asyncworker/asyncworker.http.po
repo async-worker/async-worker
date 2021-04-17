@@ -9,14 +9,14 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Asyncworker \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-03-26 14:53-0300\n"
+"POT-Creation-Date: 2021-04-17 14:19-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.8.0\n"
+"Generated-By: Babel 2.9.0\n"
 
 #: ../../src/asyncworker/asyncworker.http.rst:2
 msgid "asyncworker.http package"
@@ -30,7 +30,34 @@ msgstr ""
 msgid "asyncworker.http.decorators module"
 msgstr ""
 
+#: asyncworker.http.decorators.parse_path:1 of
+msgid ""
+"Decorator que permite receber dinamicamente parametros do Request Path "
+"Basta que o nome do parametro na assinatura do handler seja igual ao nome"
+" do parametro declarado no Path HTTP."
+msgstr ""
+
 #: ../../src/asyncworker/asyncworker.http.rst:16
+msgid "asyncworker.http.entrypoints module"
+msgstr ""
+
+#: asyncworker.http.entrypoints.HTTPEntryPointImpl:1 of
+msgid "Base: :class:`asyncworker.entrypoints.EntrypointInterface`"
+msgstr ""
+
+#: ../../src/asyncworker/asyncworker.http.rst:24
+msgid "asyncworker.http.methods module"
+msgstr ""
+
+#: asyncworker.http.methods.HTTPMethods:1 of
+msgid "Base: :class:`asyncworker.options.AutoNameEnum`"
+msgstr ""
+
+#: asyncworker.http.methods.HTTPMethods:1 of
+msgid "An enumeration."
+msgstr ""
+
+#: ../../src/asyncworker/asyncworker.http.rst:32
 msgid "asyncworker.http.wrapper module"
 msgstr ""
 
@@ -38,7 +65,7 @@ msgstr ""
 msgid "Base: :class:`object`"
 msgstr ""
 
-#: ../../src/asyncworker/asyncworker.http.rst:25
+#: ../../src/asyncworker/asyncworker.http.rst:41
 msgid "Module contents"
 msgstr ""
 

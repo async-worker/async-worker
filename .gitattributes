@@ -1,3 +1,4 @@
 Pipfile.lock linguist-generated=true
-docs/* linguist-generated=true
-docs-src/locale/* linguist-generated=true
+docs/** linguist-generated=true
+docs-src/locale/** linguist-generated=true
+docs-src/src/** linguist-generated=true
