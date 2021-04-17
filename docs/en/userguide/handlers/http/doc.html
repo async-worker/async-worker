@@ -142,10 +142,12 @@
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">aiohttp</span> <span class="kn">import</span> <span class="n">web</span>
 <span class="kn">from</span> <span class="nn">myproject.models.user</span> <span class="kn">import</span> <span class="n">User</span>
 <span class="kn">from</span> <span class="nn">http</span> <span class="kn">import</span> <span class="n">HTTPStatus</span>
+<span class="kn">from</span> <span class="nn">asyncworker.decorators</span> <span class="kn">import</span> <span class="n">wraps</span>
 <span class="kn">from</span> <span class="nn">asyncworker.http.wrapper</span> <span class="kn">import</span> <span class="n">RequestWrapper</span>
 
 
 <span class="k">def</span> <span class="nf">auth_required</span><span class="p">(</span><span class="n">handler</span><span class="p">):</span>
+    <span class="nd">@wraps</span><span class="p">(</span><span class="n">handler</span><span class="p">)</span>
     <span class="k">async</span> <span class="k">def</span> <span class="nf">_wrapper</span><span class="p">(</span><span class="n">wrapper</span><span class="p">:</span> <span class="n">RequestWrapper</span><span class="p">):</span>
         <span class="n">basic_auth</span> <span class="o">=</span> <span class="n">wrapper</span><span class="o">.</span><span class="n">http_request</span><span class="o">.</span><span class="n">headers</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;Authorization&quot;</span><span class="p">)</span>
         <span class="n">user</span> <span class="o">=</span> <span class="n">get_authenticated_user</span><span class="p">(</span><span class="n">basic_auth</span><span class="p">)</span>

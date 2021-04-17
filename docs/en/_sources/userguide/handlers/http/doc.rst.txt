@@ -140,10 +140,12 @@ Um exemplo de como popular esse registry é através de um decorator aplicado di
   from aiohttp import web
   from myproject.models.user import User
   from http import HTTPStatus
+  from asyncworker.decorators import wraps
   from asyncworker.http.wrapper import RequestWrapper
 
 
   def auth_required(handler):
+      @wraps(handler)
       async def _wrapper(wrapper: RequestWrapper):
           basic_auth = wrapper.http_request.headers.get("Authorization")
           user = get_authenticated_user(basic_auth)

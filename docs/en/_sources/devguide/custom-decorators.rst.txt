@@ -42,7 +42,7 @@ Esse decorator poderia ser aplicado a um handler assim:
 
 
 Escrevendo um decorator que precisa conhecer a assinatura original do handler
-============================================================================
+=============================================================================
 
 
 Caso o seu decorator precise saber a assinatura original do handler que está sendo decorado, ela pode ser descoberta usando :py:func:`asyncworker.utils.get_handler_original_typehints()`. Essa função deve receber o mesmo parmetro que o ``@wraps()`` recebe. O retorno dessa chamada é o dicionário original que estava no atributo ``__annotations__`` do handler original.
