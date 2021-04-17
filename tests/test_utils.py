@@ -4,7 +4,8 @@ from unittest.mock import patch, Mock
 import asynctest as asynctest
 from freezegun import freeze_time
 
-from asyncworker.utils import Timeit
+from asyncworker.decorators import wraps
+from asyncworker.utils import get_handler_original_typehints, Timeit
 from tests.utils import typed_any
 
 
@@ -151,3 +152,38 @@ class TypedAnyTests(unittest.TestCase):
         self.assertNotEqual(5, typed_any(str))
         self.assertNotEqual("abc", typed_any(int))
         self.assertNotEqual(ValueError(), typed_any(Exception))
+
+
+class TestGetOriginalHandlerTypeHints(asynctest.TestCase):
+    async def test_does_not_have_attribute(self):
+        def func(a: int, b: bool):
+            pass
+
+        self.assertEqual(
+            get_handler_original_typehints(func), {"a": int, "b": bool}
+        )
+        self.assertFalse(hasattr(func, "asyncworker_original_annotations"))
+
+    async def test_has_attribute(self):
+        def simple_deco(handler):
+            @wraps(handler)
+            async def _wrapper():
+                return await handler()
+
+            return _wrapper
+
+        def other_deco(handler):
+            @wraps(handler)
+            async def _wrap():
+                return get_handler_original_typehints(handler)
+
+            return _wrap
+
+        @other_deco
+        @simple_deco
+        async def handler(a: bool, s: str):
+            return 42
+
+        result = await handler()
+        self.assertEqual(result, {"a": bool, "s": str})
+        self.assertTrue(hasattr(handler, "asyncworker_original_annotations"))

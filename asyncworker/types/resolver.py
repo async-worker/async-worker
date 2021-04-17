@@ -1,17 +1,7 @@
 import inspect
 import typing
 from asyncio import Task
-from typing import (
-    List,
-    Type,
-    Coroutine,
-    Dict,
-    Any,
-    Union,
-    Callable,
-    Iterable,
-    Tuple,
-)
+from typing import List, Type, Coroutine, Dict, Any, Union, Callable
 
 from asyncworker.types.registry import TypesRegistry
 
