@@ -3,7 +3,8 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml" lang="pt_BR">
   <head>
-    <meta charset="utf-8" />
+    <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17: http://docutils.sourceforge.net/" />
+
     <title>Counter &#8212; documentação Asyncworker </title>
     <link rel="stylesheet" href="../../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
@@ -33,10 +34,10 @@
 
           <div class="body" role="main">
             
-  <div class="section" id="counter">
+  <section id="counter">
 <h1>Counter<a class="headerlink" href="#counter" title="Link permanente para este título">¶</a></h1>
 <p>Tipo contador serve para acompanhar contagens de itens. Esse tipo só pode ser incrementado com valores <strong>positivos</strong>. Caso você precise acompanhar um valor que pode aumentar e diminuir use o tipo <a class="reference internal" href="type_gauge.html#metric-type-gauge"><span class="std std-ref">Gauge</span></a>.</p>
-<div class="section" id="exemplo-de-uso">
+<section id="exemplo-de-uso">
 <h2>Exemplo de uso<a class="headerlink" href="#exemplo-de-uso" title="Link permanente para este título">¶</a></h2>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">asyncworker.metrics</span> <span class="kn">import</span> <span class="n">Counter</span>
 
@@ -45,8 +46,8 @@
 <span class="n">c</span><span class="o">.</span><span class="n">inc</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span> <span class="c1"># Incrementa o contados em 3</span>
 </pre></div>
 </div>
-</div>
-<div class="section" id="interface-principal">
+</section>
+<section id="interface-principal">
 <h2>Interface principal<a class="headerlink" href="#interface-principal" title="Link permanente para este título">¶</a></h2>
 <p>A interface principal desse tipo de Métrica é o método <code class="docutils literal notranslate"><span class="pre">inc()</span></code>. Através dele é que mudamos o valor interno de uma métrica.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">inc</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
@@ -54,7 +55,7 @@
 </pre></div>
 </div>
 <p>O método <code class="docutils literal notranslate"><span class="pre">inc()</span></code> não pode receber valores negativos.</p>
-<div class="section" id="interfaces-adicionais">
+<section id="interfaces-adicionais">
 <h3>Interfaces adicionais<a class="headerlink" href="#interfaces-adicionais" title="Link permanente para este título">¶</a></h3>
 <p>Esse tipo de métrica expõe uma interface adicional que é o método <code class="docutils literal notranslate"><span class="pre">count_exceptions()</span></code>. Esse método pode ser usado com decorator ou como context manager.</p>
 <p>Por padrão conta todas as exceções, exemplo:</p>
@@ -75,9 +76,9 @@
   <span class="k">pass</span>
 </pre></div>
 </div>
-</div>
-</div>
-</div>
+</section>
+</section>
+</section>
 
 
           </div>

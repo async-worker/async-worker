@@ -8,9 +8,9 @@ Subpackages
 
    asyncworker.easyqueue
    asyncworker.http
+   asyncworker.metrics
    asyncworker.rabbitmq
    asyncworker.signals
-   asyncworker.sse
    asyncworker.testing
    asyncworker.types
 
@@ -53,6 +53,22 @@ asyncworker.consumer module
 ---------------------------
 
 .. automodule:: asyncworker.consumer
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+asyncworker.decorators module
+-----------------------------
+
+.. automodule:: asyncworker.decorators
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+asyncworker.entrypoints module
+------------------------------
+
+.. automodule:: asyncworker.entrypoints
    :members:
    :undoc-members:
    :show-inheritance:

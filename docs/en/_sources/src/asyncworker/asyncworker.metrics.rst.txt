@@ -20,6 +20,14 @@ asyncworker.metrics.aiohttp\_resources module
    :undoc-members:
    :show-inheritance:
 
+asyncworker.metrics.buckets module
+----------------------------------
+
+.. automodule:: asyncworker.metrics.buckets
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 asyncworker.metrics.registry module
 -----------------------------------
 

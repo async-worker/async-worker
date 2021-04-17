@@ -4,7 +4,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en">
   <head>
     <meta charset="utf-8" />
-    <title>asyncworker.sse package &#8212; Asyncworker  documentation</title>
+    <title>asyncworker.decorators &#8212; Asyncworker  documentation</title>
     <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
@@ -30,22 +30,32 @@
 
           <div class="body" role="main">
             
-  <div class="section" id="asyncworker-sse-package">
-<h1>asyncworker.sse package<a class="headerlink" href="#asyncworker-sse-package" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="submodules">
-<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
-</div>
-<div class="section" id="asyncworker-sse-consumer-module">
-<h2>asyncworker.sse.consumer module<a class="headerlink" href="#asyncworker-sse-consumer-module" title="Permalink to this headline">¶</a></h2>
-</div>
-<div class="section" id="asyncworker-sse-message-module">
-<h2>asyncworker.sse.message module<a class="headerlink" href="#asyncworker-sse-message-module" title="Permalink to this headline">¶</a></h2>
-</div>
-<div class="section" id="module-contents">
-<h2>Module contents<a class="headerlink" href="#module-contents" title="Permalink to this headline">¶</a></h2>
-</div>
-</div>
+  <h1>Source code for asyncworker.decorators</h1><div class="highlight"><pre>
+<div class="viewcode-block" id="wraps"><a class="viewcode-back" href="../../src/asyncworker/asyncworker.html#asyncworker.decorators.wraps">[docs]</a><span></span><span class="k">def</span> <span class="nf">wraps</span><span class="p">(</span><span class="n">original_handler</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Esse decorator faz com que a assinatura da função original</span>
+<span class="sd">    &quot;suba&quot; até o último decorator, que deverá ser sempre um registrador do</span>
+<span class="sd">    próprio asyncworker. ex:</span>
+<span class="sd">    @app.http.get(...)</span>
+<span class="sd">    @deco1</span>
+<span class="sd">    @deco2</span>
+<span class="sd">    async def handler(...)</span>
+<span class="sd">        pass</span>
 
+<span class="sd">    Nesse caso, os decorators `@deco1` e `@deco2` devem, *necessariamente*</span>
+<span class="sd">    fazer uso desse `@wraps()`</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">_wrap</span><span class="p">(</span><span class="n">deco</span><span class="p">):</span>
+        <span class="n">deco</span><span class="o">.</span><span class="n">asyncworker_original_annotations</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span>
+            <span class="n">original_handler</span><span class="p">,</span>
+            <span class="s2">&quot;asyncworker_original_annotations&quot;</span><span class="p">,</span>
+            <span class="n">original_handler</span><span class="o">.</span><span class="vm">__annotations__</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="n">deco</span>
+
+    <span class="k">return</span> <span class="n">_wrap</span></div>
+</pre></div>
 
           </div>
           
@@ -77,6 +87,8 @@
 <h3>Related Topics</h3>
 <ul>
   <li><a href="../../index.html">Documentation overview</a><ul>
+  <li><a href="../index.html">Module code</a><ul>
+  </ul></li>
   </ul></li>
 </ul>
 </div>
@@ -109,9 +121,6 @@
       Powered by <a href="http://sphinx-doc.org/">Sphinx 2.1.2</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
-      |
-      <a href="../../_sources/src/asyncworker/asyncworker.sse.rst.txt"
-          rel="nofollow">Page source</a>
     </div>
 
     

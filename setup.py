@@ -6,7 +6,7 @@ here = path.abspath(path.dirname(__file__))
 
 setup(
     name="async-worker",
-    version="0.17.0",
+    version="0.18.0",
     description="Microframework para escrever workers assíncronos em Python",
     long_description=open(f"{here}/README.md").read(),
     long_description_content_type="text/markdown",
