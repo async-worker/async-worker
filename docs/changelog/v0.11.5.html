@@ -3,7 +3,8 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml" lang="pt_BR">
   <head>
-    <meta charset="utf-8" />
+    <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17: http://docutils.sourceforge.net/" />
+
     <title>0.11.5 &#8212; documentação Asyncworker </title>
     <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
@@ -33,7 +34,7 @@
 
           <div class="body" role="main">
             
-  <div class="section" id="v0-11-5">
+  <section id="v0-11-5">
 <span id="id1"></span><h1>0.11.5<a class="headerlink" href="#v0-11-5" title="Link permanente para este título">¶</a></h1>
 <p>Data de release: 2020-03-01</p>
 <p>Tag: <a class="reference external" href="https://github.com/b2wdigital/async-worker/releases/tag/0.11.5">0.11.5</a></p>
@@ -51,14 +52,14 @@
 </ul>
 </div></blockquote>
 <p>Raw Commits: <a class="reference external" href="https://github.com/b2wdigital/async-worker/compare/0.11.4...0.11.5">0.11.5</a></p>
-<div class="section" id="notas-de-atualizacao">
+<section id="notas-de-atualizacao">
 <h2>Notas de atualização<a class="headerlink" href="#notas-de-atualizacao" title="Link permanente para este título">¶</a></h2>
 <p>Nessa versão, as implementações de decorators customizados passam a receber uma instância de <a class="reference internal" href="../src/asyncworker/asyncworker.http.html#asyncworker.http.wrapper.RequestWrapper" title="asyncworker.http.wrapper.RequestWrapper"><code class="xref py py-class docutils literal notranslate"><span class="pre">asyncworker.http.wrapper.RequestWrapper</span></code></a> e não mais o Request do aiohttp.
 A chamada a esses decorators ainda funciona recebendo <code class="docutils literal notranslate"><span class="pre">aiohttp.web.Request</span></code> mas é considerada depreciada e será removida no futuro.</p>
 <p>A recomendação é que você primeiro atualize para essa versão e ajuste todos os seus handlers e decorators de handlers para passarem a receber <a class="reference internal" href="../src/asyncworker/asyncworker.http.html#asyncworker.http.wrapper.RequestWrapper" title="asyncworker.http.wrapper.RequestWrapper"><code class="xref py py-class docutils literal notranslate"><span class="pre">asyncworker.http.wrapper.RequestWrapper</span></code></a>. Fazendo isso seu código já estará bem melhor preparado para futuras versões do asyncworker.</p>
 <p>Mais detalhes <a class="reference internal" href="../devguide/custom-decorators.html#custom-decorators"><span class="std std-ref">Aplicando decorators customizados a um handler HTTP</span></a>.</p>
-</div>
-</div>
+</section>
+</section>
 
 
           </div>
@@ -105,6 +106,7 @@ A chamada a esses decorators ainda funciona recebendo <code class="docutils lite
 <li class="toctree-l2"><a class="reference internal" href="v0.15.2.html">0.15.2</a></li>
 <li class="toctree-l2"><a class="reference internal" href="v0.16.0.html">0.16.0</a></li>
 <li class="toctree-l2"><a class="reference internal" href="v0.17.0.html">0.17.0</a></li>
+<li class="toctree-l2"><a class="reference internal" href="v0.18.0.html">0.18.0</a></li>
 </ul>
 </li>
 </ul>

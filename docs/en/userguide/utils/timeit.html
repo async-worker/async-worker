@@ -3,7 +3,8 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en">
   <head>
-    <meta charset="utf-8" />
+    <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17: http://docutils.sourceforge.net/" />
+
     <title>Timeit &#8212; Asyncworker  documentation</title>
     <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
@@ -32,12 +33,12 @@
 
           <div class="body" role="main">
             
-  <div class="section" id="timeit">
+  <section id="timeit">
 <h1>Timeit<a class="headerlink" href="#timeit" title="Permalink to this headline">¶</a></h1>
 <div class="versionadded">
 <p><span class="versionmodified added">New in version 0.3.0.</span></p>
 </div>
-<div class="section" id="gerenciador-de-contexto">
+<section id="gerenciador-de-contexto">
 <h2>Gerenciador de contexto<a class="headerlink" href="#gerenciador-de-contexto" title="Permalink to this headline">¶</a></h2>
 <p>Um gerenciador de contexto para marcar o tempo de execução de código e chamar um callback <code class="docutils literal notranslate"><span class="pre">Callable[...,</span> <span class="pre">Coroutine]</span></code> assíncrono ao final, com o tempo total de execução.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">asyncio</span>
@@ -75,8 +76,8 @@
 <span class="n">loop</span><span class="o">.</span><span class="n">run_until_complete</span><span class="p">(</span><span class="n">main</span><span class="p">())</span>
 </pre></div>
 </div>
-</div>
-<div class="section" id="decorator">
+</section>
+<section id="decorator">
 <h2>Decorator<a class="headerlink" href="#decorator" title="Permalink to this headline">¶</a></h2>
 <p>Também é possível utilizar <cite>Timeit</cite> como um decorator:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># ...</span>
@@ -87,8 +88,8 @@
     <span class="k">await</span> <span class="n">access_some_remote_content</span><span class="p">()</span>
 </pre></div>
 </div>
-</div>
-<div class="section" id="multiplas-transacoes">
+</section>
+<section id="multiplas-transacoes">
 <h2>Múltiplas transações<a class="headerlink" href="#multiplas-transacoes" title="Permalink to this headline">¶</a></h2>
 <div class="versionadded">
 <p><span class="versionmodified added">New in version 0.4.0.</span></p>
@@ -110,8 +111,8 @@ receber múltiplas chamadas.</p>
                 <span class="k">await</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="o">.</span><span class="mi">1</span><span class="p">)</span>
 </pre></div>
 </div>
-</div>
-</div>
+</section>
+</section>
 
 
           </div>

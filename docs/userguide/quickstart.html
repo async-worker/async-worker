@@ -3,7 +3,8 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml" lang="pt_BR">
   <head>
-    <meta charset="utf-8" />
+    <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17: http://docutils.sourceforge.net/" />
+
     <title>Início rápido &#8212; documentação Asyncworker </title>
     <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
@@ -33,7 +34,7 @@
 
           <div class="body" role="main">
             
-  <div class="section" id="inicio-rapido">
+  <section id="inicio-rapido">
 <h1>Início rápido<a class="headerlink" href="#inicio-rapido" title="Link permanente para este título">¶</a></h1>
 <p>Um exemplo rápido para mostrar a ideia geral do asynworker.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">asyncworker</span> <span class="kn">import</span> <span class="n">App</span>
@@ -51,7 +52,7 @@
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>curl http://127.0.0.1:8080/
 </pre></div>
 </div>
-<div class="section" id="consumindo-de-uma-fila-no-rabbitmq">
+<section id="consumindo-de-uma-fila-no-rabbitmq">
 <h2>Consumindo de uma fila no RabbitMQ<a class="headerlink" href="#consumindo-de-uma-fila-no-rabbitmq" title="Link permanente para este título">¶</a></h2>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">asyncworker</span> <span class="kn">import</span> <span class="n">App</span>
 <span class="kn">from</span> <span class="nn">asyncworker.connections</span> <span class="kn">import</span> <span class="n">AMQPConnection</span>
@@ -71,8 +72,8 @@ as filas: <code class="docutils literal notranslate"><span class="pre">asgard/co
 <p>Se o handler lançar alguma exception, a mensagem é automaticamente
 devolvida para a fila (reject com requeue=True); Se o handler rodar sem
 erros, a mensagem é automaticamente confirmada (ack).</p>
-</div>
-<div class="section" id="lendo-dados-de-um-endpoint-server-side-events">
+</section>
+<section id="lendo-dados-de-um-endpoint-server-side-events">
 <h2>Lendo dados de um endpoint Server Side Events<a class="headerlink" href="#lendo-dados-de-um-endpoint-server-side-events" title="Link permanente para este título">¶</a></h2>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">json</span>
 <span class="kn">from</span> <span class="nn">asyncworker</span> <span class="kn">import</span> <span class="n">App</span><span class="p">,</span> <span class="n">RouteTypes</span><span class="p">,</span> <span class="n">Options</span>
@@ -101,8 +102,8 @@ erros, a mensagem é automaticamente confirmada (ack).</p>
 <p>Nesse exemplo, o handler <code class="docutils literal notranslate"><span class="pre">_on_event()</span></code> recebe os eventos enviados pelo
 servidor. O objeto <code class="docutils literal notranslate"><span class="pre">events</span></code> é sempre uma lista, mesmo quando estamos
 usando <code class="docutils literal notranslate"><span class="pre">BULK_SIZE=1</span></code> (Falaremos sobre isso mais a frente)</p>
-</div>
-<div class="section" id="recebendo-dados-atraves-de-requisicoes-http">
+</section>
+<section id="recebendo-dados-atraves-de-requisicoes-http">
 <h2>Recebendo dados através de requisições HTTP<a class="headerlink" href="#recebendo-dados-atraves-de-requisicoes-http" title="Link permanente para este título">¶</a></h2>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">asyncworker</span> <span class="kn">import</span> <span class="n">App</span>
 <span class="kn">from</span> <span class="nn">asynworker.http.wrapper</span> <span class="kn">import</span> <span class="n">RequestWrapper</span>
@@ -117,8 +118,8 @@ usando <code class="docutils literal notranslate"><span class="pre">BULK_SIZE=1<
 <p>Nesse exemplo, declaramos um handler <code class="docutils literal notranslate"><span class="pre">index</span></code>, que receberá uma
 instância de <a class="reference internal" href="../src/asyncworker/asyncworker.http.html#asyncworker.http.wrapper.RequestWrapper" title="asyncworker.http.wrapper.RequestWrapper"><code class="xref py py-class docutils literal notranslate"><span class="pre">asyncworker.http.wrapper.RequestWrapper</span></code></a> para cada acesso às rotas <code class="docutils literal notranslate"><span class="pre">GET</span> <span class="pre">/</span></code>
 e <code class="docutils literal notranslate"><span class="pre">GET</span> <span class="pre">/hello</span></code>.</p>
-</div>
-<div class="section" id="rodando-seu-worker">
+</section>
+<section id="rodando-seu-worker">
 <h2>Rodando seu worker<a class="headerlink" href="#rodando-seu-worker" title="Link permanente para este título">¶</a></h2>
 <p>Ambos os exemplos precisam de um <code class="docutils literal notranslate"><span class="pre">main()</span></code> para poderem rodar. Um
 exemplo de <code class="docutils literal notranslate"><span class="pre">main</span></code> seria o seguinte, assumindo que o objeto <code class="docutils literal notranslate"><span class="pre">app</span></code>
@@ -132,8 +133,8 @@ está no módulo <code class="docutils literal notranslate"><span class="pre">my
 loop ficará tentanto reconectar. A cada erro de conexão um log de
 exception é gerado.</p>
 <p>No momento que você roda esse código (<code class="docutils literal notranslate"><span class="pre">app.run()</span></code>) todos os seus handlers registrados começam a funcionar.</p>
-</div>
-</div>
+</section>
+</section>
 
 
           </div>

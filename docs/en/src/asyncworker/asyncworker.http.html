@@ -3,7 +3,8 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en">
   <head>
-    <meta charset="utf-8" />
+    <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17: http://docutils.sourceforge.net/" />
+
     <title>asyncworker.http package &#8212; Asyncworker  documentation</title>
     <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
@@ -30,20 +31,102 @@
 
           <div class="body" role="main">
             
-  <div class="section" id="asyncworker-http-package">
+  <section id="asyncworker-http-package">
 <h1>asyncworker.http package<a class="headerlink" href="#asyncworker-http-package" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="submodules">
+<section id="submodules">
 <h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
-</div>
-<div class="section" id="module-asyncworker.http.decorators">
+</section>
+<section id="module-asyncworker.http.decorators">
 <span id="asyncworker-http-decorators-module"></span><h2>asyncworker.http.decorators module<a class="headerlink" href="#module-asyncworker.http.decorators" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
 <dt id="asyncworker.http.decorators.parse_path">
 <code class="sig-prename descclassname">asyncworker.http.decorators.</code><code class="sig-name descname">parse_path</code><span class="sig-paren">(</span><em class="sig-param">handler</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/asyncworker/http/decorators.html#parse_path"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#asyncworker.http.decorators.parse_path" title="Permalink to this definition">¶</a></dt>
+<dd><p>Decorator que permite receber dinamicamente parametros do Request Path
+Basta que o nome do parametro na assinatura do handler seja igual ao nome do parametro
+declarado no Path HTTP.</p>
+</dd></dl>
+
+</section>
+<section id="module-asyncworker.http.entrypoints">
+<span id="asyncworker-http-entrypoints-module"></span><h2>asyncworker.http.entrypoints module<a class="headerlink" href="#module-asyncworker.http.entrypoints" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="asyncworker.http.entrypoints.HTTPEntryPointImpl">
+<em class="property">class </em><code class="sig-prename descclassname">asyncworker.http.entrypoints.</code><code class="sig-name descname">HTTPEntryPointImpl</code><span class="sig-paren">(</span><em class="sig-param">app: asyncworker.app.App</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/asyncworker/http/entrypoints.html#HTTPEntryPointImpl"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#asyncworker.http.entrypoints.HTTPEntryPointImpl" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="asyncworker.html#asyncworker.entrypoints.EntrypointInterface" title="asyncworker.entrypoints.EntrypointInterface"><code class="xref py py-class docutils literal notranslate"><span class="pre">asyncworker.entrypoints.EntrypointInterface</span></code></a></p>
+<dl class="method">
+<dt id="asyncworker.http.entrypoints.HTTPEntryPointImpl.delete">
+<code class="sig-name descname">delete</code><span class="sig-paren">(</span><em class="sig-param">routes: List[str]</em><span class="sig-paren">)</span> &#x2192; Callable<a class="reference internal" href="../../_modules/asyncworker/http/entrypoints.html#HTTPEntryPointImpl.delete"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#asyncworker.http.entrypoints.HTTPEntryPointImpl.delete" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-</div>
-<div class="section" id="module-asyncworker.http.wrapper">
+<dl class="method">
+<dt id="asyncworker.http.entrypoints.HTTPEntryPointImpl.get">
+<code class="sig-name descname">get</code><span class="sig-paren">(</span><em class="sig-param">routes: List[str]</em><span class="sig-paren">)</span> &#x2192; Callable<a class="reference internal" href="../../_modules/asyncworker/http/entrypoints.html#HTTPEntryPointImpl.get"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#asyncworker.http.entrypoints.HTTPEntryPointImpl.get" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="asyncworker.http.entrypoints.HTTPEntryPointImpl.head">
+<code class="sig-name descname">head</code><span class="sig-paren">(</span><em class="sig-param">routes: List[str]</em><span class="sig-paren">)</span> &#x2192; Callable<a class="reference internal" href="../../_modules/asyncworker/http/entrypoints.html#HTTPEntryPointImpl.head"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#asyncworker.http.entrypoints.HTTPEntryPointImpl.head" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="asyncworker.http.entrypoints.HTTPEntryPointImpl.patch">
+<code class="sig-name descname">patch</code><span class="sig-paren">(</span><em class="sig-param">routes: List[str]</em><span class="sig-paren">)</span> &#x2192; Callable<a class="reference internal" href="../../_modules/asyncworker/http/entrypoints.html#HTTPEntryPointImpl.patch"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#asyncworker.http.entrypoints.HTTPEntryPointImpl.patch" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="asyncworker.http.entrypoints.HTTPEntryPointImpl.post">
+<code class="sig-name descname">post</code><span class="sig-paren">(</span><em class="sig-param">routes: List[str]</em><span class="sig-paren">)</span> &#x2192; Callable<a class="reference internal" href="../../_modules/asyncworker/http/entrypoints.html#HTTPEntryPointImpl.post"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#asyncworker.http.entrypoints.HTTPEntryPointImpl.post" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="asyncworker.http.entrypoints.HTTPEntryPointImpl.put">
+<code class="sig-name descname">put</code><span class="sig-paren">(</span><em class="sig-param">routes: List[str]</em><span class="sig-paren">)</span> &#x2192; Callable<a class="reference internal" href="../../_modules/asyncworker/http/entrypoints.html#HTTPEntryPointImpl.put"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#asyncworker.http.entrypoints.HTTPEntryPointImpl.put" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-asyncworker.http.methods">
+<span id="asyncworker-http-methods-module"></span><h2>asyncworker.http.methods module<a class="headerlink" href="#module-asyncworker.http.methods" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="asyncworker.http.methods.HTTPMethods">
+<em class="property">class </em><code class="sig-prename descclassname">asyncworker.http.methods.</code><code class="sig-name descname">HTTPMethods</code><a class="reference internal" href="../../_modules/asyncworker/http/methods.html#HTTPMethods"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#asyncworker.http.methods.HTTPMethods" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="asyncworker.html#asyncworker.options.AutoNameEnum" title="asyncworker.options.AutoNameEnum"><code class="xref py py-class docutils literal notranslate"><span class="pre">asyncworker.options.AutoNameEnum</span></code></a></p>
+<p>An enumeration.</p>
+<dl class="attribute">
+<dt id="asyncworker.http.methods.HTTPMethods.DELETE">
+<code class="sig-name descname">DELETE</code><em class="property"> = 'delete'</em><a class="headerlink" href="#asyncworker.http.methods.HTTPMethods.DELETE" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="asyncworker.http.methods.HTTPMethods.GET">
+<code class="sig-name descname">GET</code><em class="property"> = 'get'</em><a class="headerlink" href="#asyncworker.http.methods.HTTPMethods.GET" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="asyncworker.http.methods.HTTPMethods.HEAD">
+<code class="sig-name descname">HEAD</code><em class="property"> = 'head'</em><a class="headerlink" href="#asyncworker.http.methods.HTTPMethods.HEAD" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="asyncworker.http.methods.HTTPMethods.PATCH">
+<code class="sig-name descname">PATCH</code><em class="property"> = 'patch'</em><a class="headerlink" href="#asyncworker.http.methods.HTTPMethods.PATCH" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="asyncworker.http.methods.HTTPMethods.POST">
+<code class="sig-name descname">POST</code><em class="property"> = 'post'</em><a class="headerlink" href="#asyncworker.http.methods.HTTPMethods.POST" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="asyncworker.http.methods.HTTPMethods.PUT">
+<code class="sig-name descname">PUT</code><em class="property"> = 'put'</em><a class="headerlink" href="#asyncworker.http.methods.HTTPMethods.PUT" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-asyncworker.http.wrapper">
 <span id="asyncworker-http-wrapper-module"></span><h2>asyncworker.http.wrapper module<a class="headerlink" href="#module-asyncworker.http.wrapper" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="asyncworker.http.wrapper.RequestWrapper">
@@ -51,11 +134,11 @@
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 </dd></dl>
 
-</div>
-<div class="section" id="module-asyncworker.http">
+</section>
+<section id="module-asyncworker.http">
 <span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-asyncworker.http" title="Permalink to this headline">¶</a></h2>
-</div>
-</div>
+</section>
+</section>
 
 
           </div>

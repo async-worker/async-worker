@@ -28,14 +28,6 @@ asyncworker.signals.handlers.rabbitmq module
    :undoc-members:
    :show-inheritance:
 
-asyncworker.signals.handlers.sse module
----------------------------------------
-
-.. automodule:: asyncworker.signals.handlers.sse
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
 
 Module contents
 ---------------

@@ -3,7 +3,8 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en">
   <head>
-    <meta charset="utf-8" />
+    <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17: http://docutils.sourceforge.net/" />
+
     <title>Registrando um novo handler HTTP &#8212; Asyncworker  documentation</title>
     <link rel="stylesheet" href="../../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
@@ -32,7 +33,7 @@
 
           <div class="body" role="main">
             
-  <div class="section" id="registrando-um-novo-handler-http">
+  <section id="registrando-um-novo-handler-http">
 <h1>Registrando um novo handler HTTP<a class="headerlink" href="#registrando-um-novo-handler-http" title="Permalink to this headline">¶</a></h1>
 <p>Todo handler HTTP deve seguir algumas regras:</p>
 <blockquote>
@@ -48,8 +49,8 @@
 <li><p>Uma instância de <a class="reference internal" href="../../../src/asyncworker/asyncworker.http.html#asyncworker.http.wrapper.RequestWrapper" title="asyncworker.http.wrapper.RequestWrapper"><code class="xref py py-class docutils literal notranslate"><span class="pre">asyncworker.http.wrapper.RequestWrapper</span></code></a>.</p></li>
 </ul>
 </div></blockquote>
-</div>
-<div class="section" id="metodos-http-suportados">
+</section>
+<section id="metodos-http-suportados">
 <h1>Métodos HTTP suportados<a class="headerlink" href="#metodos-http-suportados" title="Permalink to this headline">¶</a></h1>
 <div class="versionadded" id="supported-methods">
 <p><span class="versionmodified added">New in version 0.15.2.</span></p>
@@ -79,8 +80,8 @@
 </pre></div>
 </div>
 <p>Parametros no path podem ser definidos cercando com <code class="docutils literal notranslate"><span class="pre">{}</span></code>, ex: <code class="docutils literal notranslate"><span class="pre">/users/{user_id}</span></code>. Mais delathes em como receber esses valores em seu handler <a class="reference internal" href="#handler-path-param"><span class="std std-ref">aqui</span></a>.</p>
-</div>
-<div class="section" id="usando-metodos-nao-suportados-pelo-asyncworker">
+</section>
+<section id="usando-metodos-nao-suportados-pelo-asyncworker">
 <h1>Usando métodos não suportados pelo asyncworker<a class="headerlink" href="#usando-metodos-nao-suportados-pelo-asyncworker" title="Permalink to this headline">¶</a></h1>
 <p>Eventualmente você pode precisar registrar um handler que responde por um método HTTP que não possui um decorator específico. Nesse caso você pode usar o decorator <code class="docutils literal notranslate"><span class="pre">&#64;app.http._route()</span></code> para regisgtrar esse handler.</p>
 <p>Mas lembre-se que você está usando uma API interna do asyncworker e que não há garantias de que essa inteface seja mantida estável. O ideal é que o método que você precisa seja adicionado ao projeto.</p>
@@ -90,12 +91,12 @@
   <span class="k">pass</span>
 </pre></div>
 </div>
-</div>
-<div class="section" id="envs-para-escolher-a-porta-e-o-ip-onde-o-server-http-estara-escutando">
+</section>
+<section id="envs-para-escolher-a-porta-e-o-ip-onde-o-server-http-estara-escutando">
 <h1>ENVs para escolher a porta e o IP onde o server http estará escutando<a class="headerlink" href="#envs-para-escolher-a-porta-e-o-ip-onde-o-server-http-estara-escutando" title="Permalink to this headline">¶</a></h1>
 <p>Por padrão, fazemos o binding em <code class="docutils literal notranslate"><span class="pre">127.0.0.1</span></code>, porta <code class="docutils literal notranslate"><span class="pre">8080</span></code>, mas isso pode ser alterado com as envvars <code class="docutils literal notranslate"><span class="pre">ASYNCWORKER_HTTP_HOST</span></code> e <code class="docutils literal notranslate"><span class="pre">ASYNCWORKER_HTTP_PORT</span></code>, respectivamente.</p>
-</div>
-<div class="section" id="handlers-que-sao-objetos-callable">
+</section>
+<section id="handlers-que-sao-objetos-callable">
 <h1>Handlers que são objetos callable<a class="headerlink" href="#handlers-que-sao-objetos-callable" title="Permalink to this headline">¶</a></h1>
 <div class="versionadded">
 <p><span class="versionmodified added">New in version 0.11.4.</span></p>
@@ -129,8 +130,8 @@
 <span class="n">app</span><span class="o">.</span><span class="n">http</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="o">...</span><span class="p">)(</span><span class="n">h</span><span class="p">)</span>
 </pre></div>
 </div>
-</div>
-<div class="section" id="handlers-que-recebem-mais-do-que-apenas-request">
+</section>
+<section id="handlers-que-recebem-mais-do-que-apenas-request">
 <span id="typed-handlers"></span><h1>Handlers que recebem mais do que apenas Request<a class="headerlink" href="#handlers-que-recebem-mais-do-que-apenas-request" title="Permalink to this headline">¶</a></h1>
 <div class="versionadded">
 <p><span class="versionmodified added">New in version 0.11.0.</span></p>
@@ -163,8 +164,8 @@
 </pre></div>
 </div>
 <p>Aqui o decorator <code class="docutils literal notranslate"><span class="pre">auth_required()</span></code> é responsável por fazer a autenticação, pegando dados do Request e encontrando um usuário válido. Se um usuário não puder ser encontrado, retorna <code class="docutils literal notranslate"><span class="pre">HTTPStatus.UNAUTHORIZED</span></code>. Se um usuário autenticar com sucesso, apenas adiciona o objeto user (que é do tipo <code class="docutils literal notranslate"><span class="pre">User</span></code>) no registry que está no <code class="docutils literal notranslate"><span class="pre">RequestWrapper</span></code>. Isso é o suficiente para que o handler, quando for chamado, receba diretamente esse user já autenticado.</p>
-</div>
-<div class="section" id="recebendo-parametros-vindos-do-path-do-request">
+</section>
+<section id="recebendo-parametros-vindos-do-path-do-request">
 <h1>Recebendo parâmetros vindos do path do Request<a class="headerlink" href="#recebendo-parametros-vindos-do-path-do-request" title="Permalink to this headline">¶</a></h1>
 <div class="versionadded" id="handler-path-param">
 <p><span class="versionmodified added">New in version 0.11.5.</span></p>
@@ -183,7 +184,7 @@
 <p>Importante notar que só serão passados ao handler os parametros que estão definidos na assinatura. Então se seu path recebe dois parametros e seu handler só se interessa por um deles, basta declarar na assinatura do handler o parametro que você quer receber.</p>
 <p>Essa implementação ainda é experimental e servirá de fundação para uma implementação mais complexa, talvez com tipos mais complexos e sem a necessidade de passar o decorator explicitamente.</p>
 <p><strong>Impotante</strong>: Esse decorator deve sempre ser o decorator “mais próximo” da função real, ou seja, deve ser sempre o primeiro decorator, logo acima da função sendo decorada. Isso porque o <code class="docutils literal notranslate"><span class="pre">parse_path</span></code> olha para a assinatura do handler sendo decorado. Se ele não for o primeiro decorator ele não vai receber o handler real como parâmetro e sim receberá o retorno de outro decorator, que já não reflete assinatura original do handler.</p>
-</div>
+</section>
 
 
           </div>

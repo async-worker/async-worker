@@ -1,10 +1,10 @@
 
 <!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml" lang="pt_BR">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
   <head>
     <meta charset="utf-8" />
-    <title>asyncworker.sse.message &#8212; documentação Asyncworker </title>
+    <title>asyncworker.http.methods &#8212; Asyncworker  documentation</title>
     <link rel="stylesheet" href="../../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
     <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
@@ -12,9 +12,8 @@
     <script type="text/javascript" src="../../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../../_static/doctools.js"></script>
     <script type="text/javascript" src="../../../_static/language_data.js"></script>
-    <script type="text/javascript" src="../../../_static/translations.js"></script>
-    <link rel="index" title="Índice" href="../../../genindex.html" />
-    <link rel="search" title="Buscar" href="../../../search.html" />
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
    
   <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
   
@@ -31,14 +30,19 @@
 
           <div class="body" role="main">
             
-  <h1>Código fonte para asyncworker.sse.message</h1><div class="highlight"><pre>
-<span></span><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Union</span>
+  <h1>Source code for asyncworker.http.methods</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">enum</span> <span class="kn">import</span> <span class="n">auto</span>
+
+<span class="kn">from</span> <span class="nn">asyncworker.options</span> <span class="kn">import</span> <span class="n">AutoNameEnum</span>
 
 
-<div class="viewcode-block" id="SSEMessage"><a class="viewcode-back" href="../../../src/asyncworker/asyncworker.sse.html#asyncworker.sse.message.SSEMessage">[documentos]</a><span class="k">class</span> <span class="nc">SSEMessage</span><span class="p">:</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">event_body</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">event_name</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">body</span> <span class="o">=</span> <span class="n">event_body</span></div>
+<div class="viewcode-block" id="HTTPMethods"><a class="viewcode-back" href="../../../src/asyncworker/asyncworker.http.html#asyncworker.http.methods.HTTPMethods">[docs]</a><span class="k">class</span> <span class="nc">HTTPMethods</span><span class="p">(</span><span class="n">AutoNameEnum</span><span class="p">):</span>
+    <span class="n">GET</span> <span class="o">=</span> <span class="n">auto</span><span class="p">()</span>
+    <span class="n">POST</span> <span class="o">=</span> <span class="n">auto</span><span class="p">()</span>
+    <span class="n">PUT</span> <span class="o">=</span> <span class="n">auto</span><span class="p">()</span>
+    <span class="n">DELETE</span> <span class="o">=</span> <span class="n">auto</span><span class="p">()</span>
+    <span class="n">PATCH</span> <span class="o">=</span> <span class="n">auto</span><span class="p">()</span>
+    <span class="n">HEAD</span> <span class="o">=</span> <span class="n">auto</span><span class="p">()</span></div>
 </pre></div>
 
           </div>
@@ -56,7 +60,7 @@
 
 
 
-<h3>Navegação</h3>
+<h3>Navigation</h3>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../intro.html">Introdução</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../incompat.html">Incompatibilidades</a></li>
@@ -71,17 +75,17 @@
 <h3>Related Topics</h3>
 <ul>
   <li><a href="../../../index.html">Documentation overview</a><ul>
-  <li><a href="../../index.html">Código do módulo</a><ul>
+  <li><a href="../../index.html">Module code</a><ul>
   </ul></li>
   </ul></li>
 </ul>
 </div>
 <div id="searchbox" style="display: none" role="search">
-  <h3 id="searchlabel">Busca rápida</h3>
+  <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="../../../search.html" method="get">
       <input type="text" name="q" aria-labelledby="searchlabel" />
-      <input type="submit" value="Ir" />
+      <input type="submit" value="Go" />
     </form>
     </div>
 </div>

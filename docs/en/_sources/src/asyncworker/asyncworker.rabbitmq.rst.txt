@@ -4,6 +4,14 @@ asyncworker.rabbitmq package
 Submodules
 ----------
 
+asyncworker.rabbitmq.entrypoints module
+---------------------------------------
+
+.. automodule:: asyncworker.rabbitmq.entrypoints
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 asyncworker.rabbitmq.message module
 -----------------------------------
 

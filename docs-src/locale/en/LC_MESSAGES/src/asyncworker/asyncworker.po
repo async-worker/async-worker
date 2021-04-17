@@ -9,14 +9,14 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Asyncworker \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-12-18 19:19-0300\n"
+"POT-Creation-Date: 2021-04-17 14:19-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.8.0\n"
+"Generated-By: Babel 2.9.0\n"
 
 #: ../../src/asyncworker/asyncworker.rst:2
 msgid "asyncworker package"
@@ -100,8 +100,7 @@ msgstr ""
 msgid "asyncworker.connections module"
 msgstr ""
 
-#: asyncworker.connections.AMQPConnection:1
-#: asyncworker.connections.SSEConnection:1 of
+#: asyncworker.connections.AMQPConnection:1 of
 msgid "Base: :class:`asyncworker.connections.Connection`"
 msgstr ""
 
@@ -215,6 +214,35 @@ msgid ""
 msgstr ""
 
 #: ../../src/asyncworker/asyncworker.rst:61
+msgid "asyncworker.decorators module"
+msgstr ""
+
+#: asyncworker.decorators.wraps:1 of
+msgid ""
+"Esse decorator faz com que a assinatura da função original \"suba\" até o"
+" último decorator, que deverá ser sempre um registrador do próprio "
+"asyncworker. ex: @app.http.get(...) @deco1 @deco2 async def handler(...)"
+msgstr ""
+
+#: asyncworker.decorators.wraps:8 of
+msgid "pass"
+msgstr ""
+
+#: asyncworker.decorators.wraps:10 of
+msgid ""
+"Nesse caso, os decorators `@deco1` e `@deco2` devem, *necessariamente* "
+"fazer uso desse `@wraps()`"
+msgstr ""
+
+#: ../../src/asyncworker/asyncworker.rst:69
+msgid "asyncworker.entrypoints module"
+msgstr ""
+
+#: asyncworker.entrypoints.EntrypointInterface:1 of
+msgid "Base: :class:`abc.ABC`, :class:`typing.Generic`"
+msgstr ""
+
+#: ../../src/asyncworker/asyncworker.rst:77
 msgid "asyncworker.exceptions module"
 msgstr ""
 
@@ -231,7 +259,7 @@ msgstr ""
 msgid "Defines an invalid route definition condition."
 msgstr ""
 
-#: ../../src/asyncworker/asyncworker.rst:69
+#: ../../src/asyncworker/asyncworker.rst:85
 msgid "asyncworker.options module"
 msgstr ""
 
@@ -250,12 +278,11 @@ msgstr ""
 msgid "Base: :class:`str`, :class:`enum.Enum`"
 msgstr ""
 
-#: ../../src/asyncworker/asyncworker.rst:77
+#: ../../src/asyncworker/asyncworker.rst:93
 msgid "asyncworker.routes module"
 msgstr ""
 
-#: asyncworker.routes.AMQPRoute:1 asyncworker.routes.HTTPRoute:1
-#: asyncworker.routes.SSERoute:1 of
+#: asyncworker.routes.AMQPRoute:1 asyncworker.routes.HTTPRoute:1 of
 msgid "Base: :class:`asyncworker.routes.Route`"
 msgstr ""
 
@@ -279,11 +306,11 @@ msgstr ""
 msgid "Base: :class:`collections.UserDict`"
 msgstr ""
 
-#: ../../src/asyncworker/asyncworker.rst:85
+#: ../../src/asyncworker/asyncworker.rst:101
 msgid "asyncworker.task\\_runners module"
 msgstr ""
 
-#: ../../src/asyncworker/asyncworker.rst:93
+#: ../../src/asyncworker/asyncworker.rst:109
 msgid "asyncworker.time module"
 msgstr ""
 
@@ -325,11 +352,30 @@ msgid ""
 "difference between the results of consecutive calls is valid."
 msgstr ""
 
-#: ../../src/asyncworker/asyncworker.rst:101
+#: ../../src/asyncworker/asyncworker.rst:117
 msgid "asyncworker.utils module"
 msgstr ""
 
-#: ../../src/asyncworker/asyncworker.rst:110
+#: asyncworker.utils.get_handler_original_typehints:1 of
+msgid ""
+"Retorna a assinatura do handler asyncworker que está sendo decorado. O "
+"retorno dessa chamada é equivalente a: "
+"typing.get_type_hints(original_handler) Onde `original_handler` é o "
+"handler asyncworker original."
+msgstr ""
+
+#: asyncworker.utils.get_handler_original_typehints:6 of
+msgid "Ideal para ser usado na pilha de decorators de um handler, ex:"
+msgstr ""
+
+#: asyncworker.utils.get_handler_original_typehints:16 of
+msgid ""
+"Nesse caso, se qualquer um dos 3 decorators precisar saber a assinatura "
+"original, deve usar essa função passando a função recebida do decorator "
+"anterior."
+msgstr ""
+
+#: ../../src/asyncworker/asyncworker.rst:126
 msgid "Module contents"
 msgstr ""
 

@@ -3,7 +3,8 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml" lang="pt_BR">
   <head>
-    <meta charset="utf-8" />
+    <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17: http://docutils.sourceforge.net/" />
+
     <title>Compartilhamento de dados e inicializações assíncronas &#8212; documentação Asyncworker </title>
     <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
@@ -33,7 +34,7 @@
 
           <div class="body" role="main">
             
-  <div class="section" id="compartilhamento-de-dados-e-inicializacoes-assincronas">
+  <section id="compartilhamento-de-dados-e-inicializacoes-assincronas">
 <h1>Compartilhamento de dados e inicializações assíncronas<a class="headerlink" href="#compartilhamento-de-dados-e-inicializacoes-assincronas" title="Link permanente para este título">¶</a></h1>
 <p>Recomendamos que com o <code class="docutils literal notranslate"><span class="pre">asyncworker</span></code> você não utilize variáveis globais e que
 utilize o estado do <code class="docutils literal notranslate"><span class="pre">asyncworker.App</span></code> para manter os seus
@@ -41,7 +42,7 @@ utilize o estado do <code class="docutils literal notranslate"><span class="pre"
 disponibiliza _hooks_ para que códigos sejam injetados ao longo ciclo de vida
 da aplicação, tornando possível a manutenção, manipulação e compartilhamento de
 estado pelos handlers.</p>
-<div class="section" id="armazenando-na-app">
+<section id="armazenando-na-app">
 <h2>Armazenando na App<a class="headerlink" href="#armazenando-na-app" title="Link permanente para este título">¶</a></h2>
 <p>Para armazenar estados globais da aplicação, podemos utilizar a instância de
 <code class="docutils literal notranslate"><span class="pre">asyncworker.App</span></code>, que age como um dicionário.</p>
@@ -57,8 +58,8 @@ estado pelos handlers.</p>
 <p><strong>Obs.:</strong> Vale lembrar que esse dicionário é compartilhado ao longo de toda app
 e utilizado inclusive pelo próprio asyncworker, então uma boa prática é escolher
 nomes únicos para evitar conflitos.</p>
-</div>
-</div>
+</section>
+</section>
 
 
           </div>

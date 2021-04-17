@@ -3,7 +3,8 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en">
   <head>
-    <meta charset="utf-8" />
+    <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17: http://docutils.sourceforge.net/" />
+
     <title>Parametros adicionais para o decorator app.amqp.consume() &#8212; Asyncworker  documentation</title>
     <link rel="stylesheet" href="../../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
@@ -32,7 +33,7 @@
 
           <div class="body" role="main">
             
-  <div class="section" id="parametros-adicionais-para-o-decorator-app-amqp-consume">
+  <section id="parametros-adicionais-para-o-decorator-app-amqp-consume">
 <h1>Parametros adicionais para o decorator app.amqp.consume()<a class="headerlink" href="#parametros-adicionais-para-o-decorator-app-amqp-consume" title="Permalink to this headline">¶</a></h1>
 <p>Para um handler RabbitMQ o decorator <code class="docutils literal notranslate"><span class="pre">&#64;app.amqp.consume()</span></code> pode receber alguns parametros adicionais.</p>
 <blockquote>
@@ -43,7 +44,7 @@
 <li><p><code class="docutils literal notranslate"><span class="pre">options</span></code>: É uma instância do objeto <a class="reference internal" href="../../../src/asyncworker/asyncworker.html#asyncworker.routes.AMQPRouteOptions" title="asyncworker.routes.AMQPRouteOptions"><code class="xref py py-class docutils literal notranslate"><span class="pre">asyncworker.rabbitmq.AMQPRouteOptions</span></code></a>.</p></li>
 </ul>
 </div></blockquote>
-<div class="section" id="exemplo-de-valores-para-o-campo-options">
+<section id="exemplo-de-valores-para-o-campo-options">
 <h2>Exemplo de valores para o campo options<a class="headerlink" href="#exemplo-de-valores-para-o-campo-options" title="Permalink to this headline">¶</a></h2>
 <p id="rabbitmq-options">O objeto <a class="reference internal" href="../../../src/asyncworker/asyncworker.html#asyncworker.routes.AMQPRouteOptions" title="asyncworker.routes.AMQPRouteOptions"><code class="xref py py-class docutils literal notranslate"><span class="pre">AMQPRouteOptions</span></code></a> pode ter os seguintes atributos:</p>
 <blockquote>
@@ -76,8 +77,8 @@
     <span class="k">pass</span>
 </pre></div>
 </div>
-</div>
-<div class="section" id="consumindo-de-filas-de-outros-virtualhosts">
+</section>
+<section id="consumindo-de-filas-de-outros-virtualhosts">
 <h2>Consumindo de filas de outros virtualhosts<a class="headerlink" href="#consumindo-de-filas-de-outros-virtualhosts" title="Permalink to this headline">¶</a></h2>
 <p>É possível consumir de filas que estão em outros vistualhosts do mesmo broker. Para isso basta passar o parametro <code class="docutils literal notranslate"><span class="pre">vhost</span></code> para do decorator <code class="docutils literal notranslate"><span class="pre">&#64;app.amqp.consume()</span></code>. Exemplo:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">asyncworker</span> <span class="kn">import</span> <span class="n">App</span>
@@ -102,8 +103,8 @@
 </pre></div>
 </div>
 <p>Nesse caso esse handler consome a fila <code class="docutils literal notranslate"><span class="pre">queue</span></code> do virtualhost <code class="docutils literal notranslate"><span class="pre">logs</span></code>.</p>
-</div>
-<div class="section" id="consumindo-de-filas-de-brokers-diferentes">
+</section>
+<section id="consumindo-de-filas-de-brokers-diferentes">
 <h2>Consumindo de filas de brokers diferentes<a class="headerlink" href="#consumindo-de-filas-de-brokers-diferentes" title="Permalink to this headline">¶</a></h2>
 <p>É possível consumir, de forma concorrente, de brokers diferentes. Basta que pra isso tenhamos duas conexões distintas e que passemos uma das conexões na hora de regisgtrar nossos handlers. Assim:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
@@ -145,12 +146,12 @@
 <span class="n">app</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
 </pre></div>
 </div>
-</div>
-<div class="section" id="uma-nota-sobre-bulk-size-e-prefetch">
+</section>
+<section id="uma-nota-sobre-bulk-size-e-prefetch">
 <h2>Uma nota sobre bulk_size e prefetch<a class="headerlink" href="#uma-nota-sobre-bulk-size-e-prefetch" title="Permalink to this headline">¶</a></h2>
 <p>O valor do <code class="docutils literal notranslate"><span class="pre">BULK_SIZE</span></code> sempre é escolhido com a fórmula: <code class="docutils literal notranslate"><span class="pre">min(BULK_SIZE,</span> <span class="pre">PREFRETCH)</span></code>. Isso para evitar que o código fique em um deadlock, onde ao mesmo tempo que ele aguarda o bulk encher para poder pegar mais mensagens da fila, ele está aguardando o bulk esvaziar para pegar mais mensagens da fila.</p>
-</div>
-<div class="section" id="flush-timeout">
+</section>
+<section id="flush-timeout">
 <h2>Flush timeout<a class="headerlink" href="#flush-timeout" title="Permalink to this headline">¶</a></h2>
 <p>Com o flush timeout a <code class="docutils literal notranslate"><span class="pre">app</span></code> não necessita ficar presa esperando o bucket encher para conseguir processar as mensagens.
 Após o tempo do <code class="docutils literal notranslate"><span class="pre">FLUSH_TIMEOUT</span></code> (que são <a class="reference internal" href="../../../src/asyncworker/asyncworker.html#asyncworker.options.DefaultValues.BULK_FLUSH_INTERVAL" title="asyncworker.options.DefaultValues.BULK_FLUSH_INTERVAL"><code class="xref py py-attr docutils literal notranslate"><span class="pre">DefaultValues.BULK_FLUSH_INTERVAL</span></code></a> segundos por default) a <code class="docutils literal notranslate"><span class="pre">app</span></code> irá enviar todas as mensagens que já possui para o <code class="docutils literal notranslate"><span class="pre">_handler</span></code>.
@@ -166,8 +167,8 @@ Por exemplo, se tivermos um <code class="docutils literal notranslate"><span cla
 <p>Caso queira alterar o tempo default do timeout do flush basta definir env <code class="docutils literal notranslate"><span class="pre">ASYNCWORKER_FLUSH_TIMEOUT</span></code> com um número que representará os segundos em que a app irá esperar para realizar o flush.</p>
 <p>Também é possível alterar o tempo do timeout do flush definindo o campo <code class="docutils literal notranslate"><span class="pre">Options.BULK_FLUSH_INTERVAL</span></code> do dicionário <code class="docutils literal notranslate"><span class="pre">options</span></code> passado como parâmetro na criação da rota.
 O valor passado para o parametro <code class="docutils literal notranslate"><span class="pre">options</span></code> tem precedência sobre a variável de ambiente <code class="docutils literal notranslate"><span class="pre">ASYNCWORKER_FLUSH_TIMEOUT</span></code>.</p>
-</div>
-<div class="section" id="exemplo-de-um-codigo-mais-completo">
+</section>
+<section id="exemplo-de-um-codigo-mais-completo">
 <h2>Exemplo de um código mais completo<a class="headerlink" href="#exemplo-de-um-codigo-mais-completo" title="Permalink to this headline">¶</a></h2>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span>
 <span class="kn">from</span> <span class="nn">asyncworker</span> <span class="kn">import</span> <span class="n">App</span>
@@ -198,9 +199,9 @@ O valor passado para o parametro <code class="docutils literal notranslate"><spa
 <p>Nesse exemplo, o handler <code class="docutils literal notranslate"><span class="pre">drain_handler()</span></code> recebe mensagens de ambas as filas: <code class="docutils literal notranslate"><span class="pre">asgard/counts</span></code> e <code class="docutils literal notranslate"><span class="pre">asgard/counts/errors</span></code>, que estão no virtualhost <code class="docutils literal notranslate"><span class="pre">fluentd</span></code>.</p>
 <p>Se o handler lançar alguma exception, a mensagem é automaticamente devolvida para a fila (reject com requeue=True);
 Se o handler rodar sem erros, a mensagem é automaticamente confirmada (ack).</p>
-</div>
-</div>
-<div class="section" id="escolhendo-individualmente-qual-acao-sera-dada-a-cada-mensgem-recebida">
+</section>
+</section>
+<section id="escolhendo-individualmente-qual-acao-sera-dada-a-cada-mensgem-recebida">
 <h1>Escolhendo, individualmente, qual ação será dada a cada mensgem recebida<a class="headerlink" href="#escolhendo-individualmente-qual-acao-sera-dada-a-cada-mensgem-recebida" title="Permalink to this headline">¶</a></h1>
 <p>Existem situações onde você precisa que algumas as mensagens recebidas pelo handler teham tratamentos <strong>diferentes</strong> das outras mensagens. Ou seja, nem sempre você quer que todas recebam <code class="docutils literal notranslate"><span class="pre">ack</span></code> ou <code class="docutils literal notranslate"><span class="pre">requeue</span></code>.</p>
 <p>Para isso o objeto recebido por um handler (<a class="reference internal" href="../../../src/asyncworker/asyncworker.rabbitmq.html#asyncworker.rabbitmq.message.RabbitMQMessage" title="asyncworker.rabbitmq.message.RabbitMQMessage"><code class="xref py py-class docutils literal notranslate"><span class="pre">RabbitMQMessage</span></code></a>) possui alguns métodos:</p>
@@ -223,12 +224,12 @@ Se o handler rodar sem erros, a mensagem é automaticamente confirmada (ack).</p
 
 <p>Opcionalmente, caso seja necessário rejeitar uma mensagem e ao mesmo tempo <strong>não</strong> devolver essa mensagem pra fila,
 podemos chamar <code class="docutils literal notranslate"><span class="pre">message.reject(requeue=False)</span></code>. O valor default do <code class="docutils literal notranslate"><span class="pre">requeue</span></code> é <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p>
-</div>
-<div class="section" id="sobre-amqpconnection">
+</section>
+<section id="sobre-amqpconnection">
 <h1>Sobre AMQPConnection<a class="headerlink" href="#sobre-amqpconnection" title="Permalink to this headline">¶</a></h1>
 <p>Esse objeto é o ponto de comunicação principal com um broker RabbitMQ. Aqui temos um método <code class="docutils literal notranslate"><span class="pre">put</span></code> onde podemos enviar novas mensagens ao broker.</p>
 <p>Essa classe é um modelo pydantic e pode receber alguns parametros no construtor. Esses parametros estão na declaração dessa classe. <a class="reference internal" href="../../../src/asyncworker/asyncworker.html#asyncworker.connections.AMQPConnection" title="asyncworker.connections.AMQPConnection"><code class="xref py py-class docutils literal notranslate"><span class="pre">asyncworker.connections.AMQPConnection</span></code></a>.</p>
-</div>
+</section>
 
 
           </div>

@@ -41,7 +41,7 @@ Esse decorator poderia ser aplicado a um handler assim:
     return web.json_response({})
 
 
-Escrevendo um decorator que precisa conhece a assinatura original do handler
+Escrevendo um decorator que precisa conhecer a assinatura original do handler
 ============================================================================
 
 

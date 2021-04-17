@@ -3,7 +3,8 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml" lang="pt_BR">
   <head>
-    <meta charset="utf-8" />
+    <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17: http://docutils.sourceforge.net/" />
+
     <title>Sobre a classe principal App &#8212; documentação Asyncworker </title>
     <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
@@ -33,22 +34,22 @@
 
           <div class="body" role="main">
             
-  <div class="section" id="sobre-a-classe-principal-app">
+  <section id="sobre-a-classe-principal-app">
 <span id="asyncworker-app"></span><h1>Sobre a classe principal App<a class="headerlink" href="#sobre-a-classe-principal-app" title="Link permanente para este título">¶</a></h1>
 <p>Todo código do asyncworker começa com uma instância de <a class="reference internal" href="../../src/asyncworker/asyncworker.html#asyncworker.app.App" title="asyncworker.app.App"><code class="xref py py-class docutils literal notranslate"><span class="pre">asyncworker.app.App</span></code></a>. Esse é o objeto onde declaramos as “rotas” da sua aplicação e é também onde chamamos o método <code class="docutils literal notranslate"><span class="pre">run()</span></code>, que é quem efetivamente dá boot em nossa aplicação.</p>
-<div class="section" id="criando-uma-nova-app">
+<section id="criando-uma-nova-app">
 <h2>Criando uma nova App<a class="headerlink" href="#criando-uma-nova-app" title="Link permanente para este título">¶</a></h2>
 <p>O objeto App recebe em seu construtor uma lista de conexões. As conexões são a forma de dizer ao asyncowker como falar com as origens dos estímulos. São esses estímulos que farão com que seus handler sejam executados.</p>
 <p>As conexões possíveis estão mo módulo <a class="reference internal" href="../../src/asyncworker/asyncworker.html#module-asyncworker.connections" title="asyncworker.connections"><code class="xref py py-mod docutils literal notranslate"><span class="pre">asyncworker.connections</span></code></a>.</p>
 <p>As instâncias dessas conexões podem ser usadas dentro do handlers, se necessário.</p>
-</div>
-<div class="section" id="definindo-handlers-em-sua-app-asyncworker">
+</section>
+<section id="definindo-handlers-em-sua-app-asyncworker">
 <span id="asyncworker-app-handler"></span><h2>Definindo handlers em sua App Asyncworker<a class="headerlink" href="#definindo-handlers-em-sua-app-asyncworker" title="Link permanente para este título">¶</a></h2>
 <p>A forma de definir um novo handler em sua app Asyncworker depende do backend que você estiver usando. Cada backend (HTTP, AMQP, etc) expõe
 uma interface para que esse registro seja feito.</p>
 <p>Para mais detalhes veja a documentação específica do backend que você quer usar: <a class="reference internal" href="../handlers/index.html#handler-types"><span class="std std-ref">Tipos de Handlers</span></a>.</p>
-</div>
-</div>
+</section>
+</section>
 
 
           </div>
