@@ -23,7 +23,7 @@ class TestPathParamTypeHint(TestCase):
     async def test_parse_simple_int(self):
         @self.app.http.get(["/num/{n}"])
         async def _get(n: PathParam[int]):
-            return json_response({"n": n.unpack()})
+            return json_response({"n": await n.unpack()})
 
         async with HttpClientContext(self.app) as client:
             resp = await client.get("/num/42")
@@ -34,7 +34,7 @@ class TestPathParamTypeHint(TestCase):
     async def test_one_param_mismatched_type(self):
         @self.app.http.get(["/num/{n}"])
         async def _get(n: PathParam[int]):
-            return json_response({"n": n.unpack()})
+            return json_response({"n": await n.unpack()})
 
         async with HttpClientContext(self.app) as client:
             resp = await client.get("/num/abc")
@@ -43,7 +43,9 @@ class TestPathParamTypeHint(TestCase):
     async def test_multiple_params(self):
         @self.app.http.get(["/num/{n}/{other}"])
         async def _get(other: PathParam[str], n: PathParam[int]):
-            return json_response({"n": n.unpack(), "other": other.unpack()})
+            return json_response(
+                {"n": await n.unpack(), "other": await other.unpack()}
+            )
 
         async with HttpClientContext(self.app) as client:
             resp = await client.get("/num/42/name")
@@ -59,8 +61,8 @@ class TestPathParamTypeHint(TestCase):
         ):
             return json_response(
                 {
-                    "n": n.unpack(),
-                    "other": other.unpack(),
+                    "n": await n.unpack(),
+                    "other": await other.unpack(),
                     "path": wrapper.http_request.path,
                 }
             )
@@ -81,7 +83,7 @@ class TestPathParamTypeHint(TestCase):
 
         @self.app.http.get(["/num/{other}"])
         async def _get(other: PathParam[MyObject]):
-            name = other.unpack().value
+            name = (await other.unpack()).value
             return json_response({"name": name})
 
         async with HttpClientContext(self.app) as client:
@@ -99,11 +101,11 @@ class TestPathParamTypeHint(TestCase):
         path_param_instance = await PathParam.from_request(
             wrapper, arg_name="n", arg_type=int
         )
-        self.assertEqual(42, path_param_instance.unpack())
+        self.assertEqual(42, await path_param_instance.unpack())
 
     async def test_aiohttp_fake_request(self):
         async def _get(n: PathParam[int]):
-            return n.unpack()
+            return await n.unpack()
 
         request = make_mocked_request("GET", "/num/42", match_info={"n": "42"})
         request_wrapper = RequestWrapper(
@@ -130,7 +132,7 @@ class TestPathParamTypeHint(TestCase):
         @self.app.http.get(["/path/{n}"])
         @_deco
         async def _path(r: RequestWrapper, n: PathParam[int], p: int):
-            return json_response({"n": n.unpack(), "p": p})
+            return json_response({"n": await n.unpack(), "p": p})
 
         async with HttpClientContext(self.app) as client:
             resp = await client.get("/path/10")
@@ -159,7 +161,7 @@ class TestPathParamTypeHint(TestCase):
         @_deco_2
         @_deco_1
         async def _path(r: RequestWrapper, n: PathParam[int], p: int, v: str):
-            return json_response({"n": n.unpack(), "p": p, "v": "value"})
+            return json_response({"n": await n.unpack(), "p": p, "v": "value"})
 
         async with HttpClientContext(self.app) as client:
             resp = await client.get("/path/10")
@@ -169,7 +171,7 @@ class TestPathParamTypeHint(TestCase):
 
     async def test_path_param_decorator_must_be_generic(self):
         async def _path(n: PathParam, p: PathParam[int]):
-            return json_response({"n": n.unpack()})
+            return json_response({"n": await n.unpack()})
 
         original_qualname = _path.__qualname__
 
