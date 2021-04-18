@@ -45,3 +45,13 @@ def get_handler_original_typehints(handler):
     )
 
     return get_type_hints(_dummy)
+
+
+def is_base_type(_type, base_type):
+    """
+    Retorna True para argumentos de um tipo base `base_type`.
+    Ex:
+    (a: MyGeneric[int]) -> True
+    (b: MyGeneric) -> True
+    """
+    return get_origin(_type) is base_type or issubclass(_type, base_type)

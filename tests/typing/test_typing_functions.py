@@ -4,6 +4,7 @@ from asynctest import TestCase
 
 from asyncworker.decorators import wraps
 from asyncworker.typing import (
+    is_base_type,
     get_args,
     get_origin,
     get_handler_original_typehints,
@@ -82,3 +83,19 @@ class TestGetOriginalHandlerTypeHints(TestCase):
         result = await handler()
         self.assertEqual(result, {"a": bool, "s": str})
         self.assertTrue(hasattr(handler, "asyncworker_original_annotations"))
+
+
+class TestIsBaseType(TestCase):
+    async def test_is_base_when_generic(self):
+        def _func(b: MyGeneric[int]):
+            pass
+
+        _type = get_handler_original_typehints(_func)
+        self.assertTrue(is_base_type(_type["b"], MyGeneric))
+
+    async def test_is_base_when_not_generic(self):
+        def _func(b: MyGeneric):
+            pass
+
+        _type = get_handler_original_typehints(_func)
+        self.assertTrue(is_base_type(_type["b"], MyGeneric))
