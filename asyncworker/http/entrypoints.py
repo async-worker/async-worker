@@ -13,29 +13,35 @@ from asyncworker.typing import (
 )
 
 
-class PathParamSpec:
-    def __init__(self, name, base: Type):
+class RequestParserAnnotationSpec:
+    def __init__(self, name: str, base: Type, arg_type: Type) -> None:
         self.name = name
         self.base = base
+        self.arg_type = arg_type
 
 
-def _parse_path(f):
+def _parse_path(f, base_generic_type: Type):
     handler_type_hints = get_handler_original_typehints(f)
-    path_params = [
-        PathParamSpec(name=name, base=_type)
-        for name, _type in handler_type_hints.items()
-        if is_base_type(_type, PathParam)
-    ]
-    all_are_generic = all([get_args(p.base) for p in path_params])
-    if not all_are_generic:
-        raise TypeError(
-            f"PathParam must be Generic Type. Your handler {get_handler_original_qualname(f)} declares a parametrer that's not PathParam[T]"
-        )
+    path_params: List[RequestParserAnnotationSpec] = []
+
+    for name, _type in handler_type_hints.items():
+        if is_base_type(_type, base_generic_type):
+            generic_type_args = get_args(_type)
+            if not generic_type_args:
+                raise TypeError(
+                    f"{base_generic_type} must be Generic Type. Your handler {get_handler_original_qualname(f)} declares a parametrer that's not {base_generic_type}[T]"
+                )
+            if generic_type_args:
+                path_params.append(
+                    RequestParserAnnotationSpec(
+                        name=name, base=_type, arg_type=generic_type_args[0]
+                    )
+                )
 
     async def _wrap(wrapper: RequestWrapper):
         for p in path_params:
             typed_val = await p.base.from_request(
-                request=wrapper, arg_name=p.name, arg_type=get_args(p.base)[0]
+                request=wrapper, arg_name=p.name, arg_type=p.arg_type
             )
             wrapper.types_registry.set(typed_val, p.base, param_name=p.name)
         return await call_http_handler(wrapper, f)
@@ -50,7 +56,7 @@ def _register_http_handler(
 
         cb = _extract_async_callable(f)
 
-        cb_with_parse_path = _parse_path(cb)
+        cb_with_parse_path = _parse_path(cb, PathParam)
         route = HTTPRoute(
             handler=cb_with_parse_path, routes=routes, methods=[method]
         )

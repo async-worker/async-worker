@@ -38,7 +38,7 @@ class TestPathParamTypeHint(TestCase):
 
         async with HttpClientContext(self.app) as client:
             resp = await client.get("/num/abc")
-            self.assertEqual(HTTPStatus.NOT_FOUND, resp.status)
+            self.assertEqual(HTTPStatus.BAD_REQUEST, resp.status)
 
     async def test_multiple_params(self):
         @self.app.http.get(["/num/{n}/{other}"])
@@ -183,7 +183,13 @@ class TestPathParamTypeHint(TestCase):
 
         self.assertTrue(original_qualname in exc.exception.args[0])
         self.assertTrue(
-            "PathParam must be Generic Type" in exc.exception.args[0]
+            "<class 'asyncworker.http.types.PathParam'> must be Generic Type"
+            in exc.exception.args[0]
+        )
+
+        self.assertTrue(
+            "<class 'asyncworker.http.types.PathParam'>[T]"
+            in exc.exception.args[0]
         )
 
     async def test_exceptions_must_show_original_handler_name(self):
@@ -210,6 +216,3 @@ class TestPathParamTypeHint(TestCase):
             self.app.http.get(["/path/{n}"])(_deco_2(my_handler))
 
         self.assertTrue(original_qualname in exc.exception.args[0])
-        self.assertTrue(
-            "PathParam must be Generic Type" in exc.exception.args[0]
-        )
