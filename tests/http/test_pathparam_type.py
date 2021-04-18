@@ -54,6 +54,20 @@ class TestPathParamTypeHint(TestCase):
             data = await resp.json()
             self.assertEqual({"n": 42, "other": "name"}, data)
 
+    async def test_multiple_params_of_the_same_type(self):
+        @self.app.http.get(["/num/{n}/{other}"])
+        async def _get(other: PathParam[int], n: PathParam[int]):
+            return json_response(
+                {"n": await n.unpack(), "other": await other.unpack()}
+            )
+
+        async with HttpClientContext(self.app) as client:
+            resp = await client.get("/num/42/99")
+            self.assertEqual(HTTPStatus.OK, resp.status)
+
+            data = await resp.json()
+            self.assertEqual({"n": 42, "other": 99}, data)
+
     async def test_handler_receives_path_param_and_request_wrapper(self):
         @self.app.http.get(["/num/{n}/{other}"])
         async def _get(
