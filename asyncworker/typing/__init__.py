@@ -55,3 +55,9 @@ def is_base_type(_type, base_type):
     (b: MyGeneric) -> True
     """
     return get_origin(_type) is base_type or issubclass(_type, base_type)
+
+
+def get_handler_original_qualname(handler):
+    return getattr(
+        handler, "asyncworker_original_qualname", handler.__qualname__
+    )

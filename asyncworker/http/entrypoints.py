@@ -1,4 +1,4 @@
-from typing import Callable, List, Type, get_type_hints
+from typing import Callable, List, Type
 
 from asyncworker.entrypoints import _extract_async_callable, EntrypointInterface
 from asyncworker.http import HTTPMethods
@@ -6,9 +6,10 @@ from asyncworker.http.types import PathParam
 from asyncworker.http.wrapper import RequestWrapper
 from asyncworker.routes import RoutesRegistry, HTTPRoute, call_http_handler
 from asyncworker.typing import (
-    get_origin,
+    is_base_type,
     get_args,
     get_handler_original_typehints,
+    get_handler_original_qualname,
 )
 
 
@@ -23,8 +24,13 @@ def _parse_path(f):
     path_params = [
         PathParamSpec(name=name, base=_type)
         for name, _type in handler_type_hints.items()
-        if get_origin(handler_type_hints[name]) is PathParam
+        if is_base_type(_type, PathParam)
     ]
+    all_are_generic = all([get_args(p.base) for p in path_params])
+    if not all_are_generic:
+        raise TypeError(
+            f"PathParam must be Generic Type. Your handler {get_handler_original_qualname(f)} declares a parametrer that's not PathParam[T]"
+        )
 
     async def _wrap(wrapper: RequestWrapper):
         for p in path_params:

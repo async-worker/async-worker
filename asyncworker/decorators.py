@@ -19,6 +19,11 @@ def wraps(original_handler):
             "asyncworker_original_annotations",
             original_handler.__annotations__,
         )
+        deco.asyncworker_original_qualname = getattr(
+            original_handler,
+            "asyncworker_original_qualname",
+            original_handler.__qualname__,
+        )
         return deco
 
     return _wrap

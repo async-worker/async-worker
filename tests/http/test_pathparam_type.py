@@ -15,6 +15,8 @@ from asyncworker.types.resolver import ArgResolver
 
 
 class TestPathParamTypeHint(TestCase):
+    maxDiff = None
+
     async def setUp(self):
         self.app = App()
 
@@ -164,3 +166,48 @@ class TestPathParamTypeHint(TestCase):
             self.assertEqual(HTTPStatus.OK, resp.status)
             data = await resp.json()
             self.assertEqual({"n": 10, "p": 42, "v": "value"}, data)
+
+    async def test_path_param_decorator_must_be_generic(self):
+        async def _path(n: PathParam, p: PathParam[int]):
+            return json_response({"n": n.unpack()})
+
+        original_qualname = _path.__qualname__
+
+        with self.assertRaises(TypeError) as exc:
+
+            app = App()
+
+            app.http.get(["/path/{n}"])(_path)
+
+        self.assertTrue(original_qualname in exc.exception.args[0])
+        self.assertTrue(
+            "PathParam must be Generic Type" in exc.exception.args[0]
+        )
+
+    async def test_exceptions_must_show_original_handler_name(self):
+        """
+        Mesmo que um handler esteja decorado o nome original deve ser mencionado na mensagem de exception.
+        Isso vai ajudar a encontrar onde está o problema.
+        """
+
+        def _deco_2(handler):
+            @wraps(handler)
+            async def _wrap(r: RequestWrapper, **_):
+                r.types_registry.set("value", type_definition=str)
+                return await call_http_handler(r, handler)
+
+            return _wrap
+
+        async def my_handler(n: PathParam):
+            return json_response({})
+
+        original_qualname = my_handler.__qualname__
+
+        with self.assertRaises(TypeError) as exc:
+
+            self.app.http.get(["/path/{n}"])(_deco_2(my_handler))
+
+        self.assertTrue(original_qualname in exc.exception.args[0])
+        self.assertTrue(
+            "PathParam must be Generic Type" in exc.exception.args[0]
+        )

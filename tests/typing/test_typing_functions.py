@@ -4,6 +4,7 @@ from asynctest import TestCase
 
 from asyncworker.decorators import wraps
 from asyncworker.typing import (
+    get_handler_original_qualname,
     is_base_type,
     get_args,
     get_origin,
@@ -99,3 +100,33 @@ class TestIsBaseType(TestCase):
 
         _type = get_handler_original_typehints(_func)
         self.assertTrue(is_base_type(_type["b"], MyGeneric))
+
+
+class TestHandlerGetOriginalQualname(TestCase):
+    async def test_get_qualname_no_decorators(self):
+        async def handler(a: bool, s: str):
+            return 42
+
+        self.assertEqual(
+            "TestHandlerGetOriginalQualname.test_get_qualname_no_decorators.<locals>.handler",
+            get_handler_original_qualname(handler),
+        )
+        self.assertFalse(hasattr(handler, "asyncworker_original_qualname"))
+
+    async def test_get_qualname_with_decorators(self):
+        def other_deco(handler):
+            @wraps(handler)
+            async def _wrap():
+                return get_handler_original_typehints(handler)
+
+            return _wrap
+
+        @other_deco
+        async def handler(a: bool, s: str):
+            return 42
+
+        self.assertEqual(
+            "TestHandlerGetOriginalQualname.test_get_qualname_with_decorators.<locals>.handler",
+            get_handler_original_qualname(handler),
+        )
+        self.assertTrue(hasattr(handler, "asyncworker_original_qualname"))
