@@ -16,8 +16,8 @@
   "editable": true,
   "gnetId": null,
   "graphTooltip": 0,
-  "id": 1,
-  "iteration": 1618750596538,
+  "id": 2,
+  "iteration": 1618769644112,
   "links": [],
   "panels": [
     {
@@ -90,7 +90,7 @@
           "expr": "rate(asyncworker_http_request_duration_ms_sum{path=~\"$path\", instance=~\"$instance\"}[$__interval]) / rate(asyncworker_http_request_duration_ms_count{path=~\"$path\", instance=~\"$instance\"}[$__interval])\n",
           "hide": false,
           "interval": "1m",
-          "legendFormat": "{{path}} - avg",
+          "legendFormat": "{{method}} {{path}}",
           "refId": "B"
         }
       ],
@@ -176,7 +176,7 @@
       "targets": [
         {
           "exemplar": true,
-          "expr": "sum(increase(asyncworker_http_request_duration_ms_bucket{path=~\"$path\",instance=~\"$instance\"}[$__interval])) by (le)",
+          "expr": "sum(increase(asyncworker_http_request_duration_ms_bucket{path=~\"$path\",instance=~\"$instance\", method=~\"$method\", status=~\"$status\"}[$__interval])) by (le)",
           "format": "heatmap",
           "interval": "1m",
           "legendFormat": "{{le}}",
@@ -262,10 +262,10 @@
       "targets": [
         {
           "exemplar": true,
-          "expr": "histogram_quantile(0.99, sum(rate(asyncworker_http_request_duration_ms_bucket{path=~\"$path\",instance=~\"$instance\",method=~\"$method\",status=~\"$status\"}[$__interval])) by (le, path))\n\n",
+          "expr": "histogram_quantile(0.99, sum(rate(asyncworker_http_request_duration_ms_bucket{path=~\"$path\",instance=~\"$instance\",method=~\"$method\",status=~\"$status\"}[$__interval])) by (le, path, method))\n\n",
           "hide": false,
           "interval": "1m",
-          "legendFormat": "{{path}}",
+          "legendFormat": "{{method}} {{path}}",
           "refId": "B"
         }
       ],
@@ -368,9 +368,9 @@
       "targets": [
         {
           "exemplar": true,
-          "expr": "sum(rate(asyncworker_http_request_duration_ms_bucket{le=\"100.0\",path=~\"$path\",instance=~\"$instance\",status=~\"$status\"}[$__interval])) by (path)\n/\nsum(rate(asyncworker_http_request_duration_ms_count{path=~\"$path\",instance=~\"$instance\",status=~\"$status\"}[$__interval])) by (path)",
+          "expr": "sum(rate(asyncworker_http_request_duration_ms_bucket{le=\"100.0\",path=~\"$path\",instance=~\"$instance\",status=~\"$status\"}[$__interval])) by (method, path)\n/\nsum(rate(asyncworker_http_request_duration_ms_count{path=~\"$path\",instance=~\"$instance\",status=~\"$status\"}[$__interval])) by (method, path)",
           "interval": "1m",
-          "legendFormat": "{{path}}",
+          "legendFormat": "{{method}} {{path}}",
           "refId": "A"
         }
       ],
@@ -487,7 +487,7 @@
           "exemplar": true,
           "expr": "increase(asyncworker_http_request_duration_ms_count{path=~\"$path\",instance=~\"$instance\",status=~\"$status\"}[$__interval])",
           "interval": "1m",
-          "legendFormat": "{{path}}",
+          "legendFormat": "{{method}} {{path}}",
           "refId": "A"
         }
       ],
@@ -590,9 +590,9 @@
       "targets": [
         {
           "exemplar": true,
-          "expr": "increase(asyncworker_http_request_duration_ms_count{path=~\"$path\",instance=~\"$instance\",status=~\"$error_code\"}[$__interval])",
+          "expr": "increase(asyncworker_http_request_duration_ms_count{path=~\"$path\",instance=~\"$instance\",method=~\"$method\",status=~\"$error_code\"}[$__interval])",
           "interval": "1m",
-          "legendFormat": "{{status}} {{path}}",
+          "legendFormat": "{{method}} {{path}} - {{status}}",
           "refId": "A"
         }
       ],
@@ -692,7 +692,7 @@
       "targets": [
         {
           "exemplar": true,
-          "expr": "rate(asyncworker_http_requests_in_progress{path=~\"$path\", method=~\"$method\",instance=~\"$instance\"}[$__interval])\n",
+          "expr": "rate(asyncworker_http_requests_in_progress{path=~\"$path\",instance=~\"$instance\", method=~\"$method\"}[$__interval])\n",
           "interval": "1m",
           "legendFormat": "{{method}} {{path}}",
           "refId": "A"
@@ -811,10 +811,10 @@
       "targets": [
         {
           "exemplar": true,
-          "expr": "rate(asyncworker_http_response_size_bytes_sum{path=~\"$path\", instance=~\"$instance\"}[$__interval]) / rate(asyncworker_http_response_size_bytes_count{path=~\"$path\", instance=~\"$instance\"}[$__interval])\n",
+          "expr": "rate(asyncworker_http_response_size_bytes_sum{path=~\"$path\",instance=~\"$instance\", method=~\"$method\"}[$__interval]) / rate(asyncworker_http_response_size_bytes_count{path=~\"$path\",instance=~\"$instance\", method=~\"$method\"}[$__interval])\n",
           "hide": false,
           "interval": "1m",
-          "legendFormat": "{{path}}",
+          "legendFormat": "{{method}} {{path}}",
           "refId": "B"
         }
       ],
@@ -900,7 +900,7 @@
       "targets": [
         {
           "exemplar": true,
-          "expr": "sum(increase(asyncworker_http_response_size_bytes_bucket{path=~\"$path\",instance=~\"$instance\"}[$__interval])) by (le)",
+          "expr": "sum(increase(asyncworker_http_response_size_bytes_bucket{path=~\"$path\",instance=~\"$instance\", method=~\"$method\"}[$__interval])) by (le)",
           "format": "heatmap",
           "interval": "1m",
           "legendFormat": "{{le}}",
@@ -1015,10 +1015,10 @@
         "current": {
           "selected": true,
           "text": [
-            "GET"
+            "All"
           ],
           "value": [
-            "GET"
+            "$__all"
           ]
         },
         "datasource": null,
@@ -1118,12 +1118,12 @@
     ]
   },
   "time": {
-    "from": "now-15m",
+    "from": "now-5m",
     "to": "now"
   },
   "timepicker": {},
   "timezone": "",
-  "title": "Asyncworker HTTP Routes",
-  "uid": "wz3Unx_Gz",
-  "version": 16
+  "title": "HTTP Routes",
+  "uid": "asyncworker-http-routes",
+  "version": 2
 }
