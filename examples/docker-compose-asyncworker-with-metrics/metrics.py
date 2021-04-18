@@ -1,36 +1,55 @@
 import asyncio
+from dataclasses import dataclass
+from urllib.parse import urljoin
 
+from aiohttp import ClientSession, web
 from aiologger import Logger
-
-from aiohttp import web, ClientSession
 
 from asyncworker import App
 from asyncworker.http.decorators import parse_path
 from asyncworker.http.wrapper import RequestWrapper
 from asyncworker.metrics import Counter, Gauge
 
-
 app = App()
 logger = Logger.with_default_handlers()
 
-c = Counter("count", "Contagem")
+a_counter = Counter("a_counter", "A counter metric example")
+request_couter = Counter(
+    "request_counter", "Performed requests counter", labelnames=["url"]
+)
 g = Gauge("duration", "Duration")
 g_label = Gauge("with_label", "Gauge with label", labelnames=["label"])
 
+
+@dataclass
+class Request:
+    path: str
+    number_of_requests: int
+    method: str = "GET"
+
+    @property
+    def url(self):
+        return urljoin("http://asyncworker", self.path)
+
+
 REQUESTS = [
-    ("http://asyncworker:8080/count", 1000),
-    ("http://asyncworker:8080/metrics", 1000),
-    ("http://asyncworker:8080/gauge-with-label/A", 1000),
-    ("http://asyncworker:8080/gauge-with-label/B", 1000),
-    ("http://asyncworker:8080/sleep/1", 10),
-    ("http://asyncworker:8080/sleep/5", 10),
+    Request(path="/count", number_of_requests=1000),
+    Request(path="/metrics", number_of_requests=1000),
+    Request(path="/gauge-with-label/A", number_of_requests=1000),
+    Request(path="/gauge-with-label/B", number_of_requests=1000),
+    Request(path="/sleep/1", number_of_requests=10),
+    Request(path="/sleep/5", number_of_requests=10),
+    Request(path="/not_an_app_route", number_of_requests=10),
+    Request(path="/not_an_app_route/1/2/3", number_of_requests=10),
+    Request(path="/not_an_app_route", method="POST", number_of_requests=10),
+    Request(path="/not_an_app_route", method="DELETE", number_of_requests=10),
 ]
 REQUESTS_INTERVAL_IN_SECONDS = 15
 
 
 @app.http.get(["/count"])
 async def handler():
-    c.inc()
+    a_counter.inc()
     return web.json_response({})
 
 
@@ -53,27 +72,31 @@ async def one_param(label: str):
 @app.run_on_startup
 async def startup(app):
     app["client_session"] = ClientSession()
-    print("app started")
+    await logger.info("app started")
 
 
 @app.run_on_shutdown
 async def shutdown(app):
     await app["client_session"].close()
+    await logger.info("app shutdown")
 
 
 @app.run_every(seconds=REQUESTS_INTERVAL_IN_SECONDS)
 async def make_requests(app):
     session: ClientSession = app["client_session"]
 
-    async def do_get(url: str):
-        async with session.get(url) as response:
+    async def perform_request(request: Request):
+        async with session.request(
+            method=request.method, url=request.url
+        ) as response:
             await response.read()
+            request_couter.labels(url=request.url).inc()
 
-    await logger.info(f"Generating requests.")
+    await logger.info("Generating requests.")
 
-    for (url, number_of_requests) in REQUESTS:
-        for _ in range(number_of_requests):
-            asyncio.create_task(do_get(url))
+    for request in REQUESTS:
+        for _ in range(request.number_of_requests):
+            asyncio.create_task(perform_request(request))
 
 
 app.run()
