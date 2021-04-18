@@ -3,7 +3,7 @@ from asynctest import TestCase
 from asyncworker.decorators import wraps
 from asyncworker.types.registry import TypesRegistry
 from asyncworker.types.resolver import ArgResolver
-from asyncworker.utils import get_handler_original_typehints
+from asyncworker.typing import get_handler_original_typehints
 
 
 def handler_register(func):

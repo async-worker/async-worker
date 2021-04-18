@@ -5,8 +5,11 @@ from asyncworker.http import HTTPMethods
 from asyncworker.http.types import PathParam
 from asyncworker.http.wrapper import RequestWrapper
 from asyncworker.routes import RoutesRegistry, HTTPRoute, call_http_handler
-from asyncworker.typing import get_origin, get_args
-from asyncworker.utils import get_handler_original_typehints
+from asyncworker.typing import (
+    get_origin,
+    get_args,
+    get_handler_original_typehints,
+)
 
 
 class PathParamSpec:

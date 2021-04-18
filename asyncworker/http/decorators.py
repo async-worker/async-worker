@@ -2,7 +2,7 @@ from asyncworker.conf import logger
 from asyncworker.decorators import wraps
 from asyncworker.http.wrapper import RequestWrapper
 from asyncworker.routes import call_http_handler
-from asyncworker.utils import get_handler_original_typehints
+from asyncworker.typing import get_handler_original_typehints
 
 
 def parse_path(handler):
