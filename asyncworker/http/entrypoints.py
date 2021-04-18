@@ -20,7 +20,7 @@ class RequestParserAnnotationSpec:
         self.arg_type = arg_type
 
 
-def _parse_path(f, base_generic_type: Type):
+def _install_request_parser_annotation(f, base_generic_type: Type):
     handler_type_hints = get_handler_original_typehints(f)
     path_params: List[RequestParserAnnotationSpec] = []
 
@@ -56,7 +56,7 @@ def _register_http_handler(
 
         cb = _extract_async_callable(f)
 
-        cb_with_parse_path = _parse_path(cb, PathParam)
+        cb_with_parse_path = _install_request_parser_annotation(cb, PathParam)
         route = HTTPRoute(
             handler=cb_with_parse_path, routes=routes, methods=[method]
         )
