@@ -1,8 +1,8 @@
 Integração com Grafana
 ======================
 
-Importando um dashboard no Grafana
-----------------------------------
+Importando um dashboard
+-----------------------
 
 1. No menu lateral, clique em ``+``
 2. Selecione ``Import``
@@ -18,4 +18,5 @@ Dashboards oficiais
 Exemplos
 --------
 
-- `Visualização de métricas do Asyncworker com Grafana e Prometheus <http://nao-sei-referenciar-o-README-do-exemplo.com>`_
+- `Visualização de métricas do Asyncworker com Grafana e Prometheus <https://github.com/b2wdigital/async-worker/tree/master/examples/docker-compose-asyncworker-with-metrics>`_
+
