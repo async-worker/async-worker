@@ -1,0 +1,25 @@
+version: '3'
+
+services:
+  prometheus:
+    build:
+      context: ./docker/prometheus/
+    hostname: prometheus
+    ports:
+      - 9090:9090
+    command: --web.enable-lifecycle  --config.file=/etc/prometheus/prometheus.yml
+  asyncworker:
+    hostname: asyncworker
+    build: .
+    ports:
+      - 8080:80
+    command: python ./metrics.py
+    environment:
+      - ASYNCWORKER_HTTP_HOST=0.0.0.0
+      - ASYNCWORKER_HTTP_PORT=80
+  grafana:
+    build:
+      context: ./docker/grafana
+    hostname: grafana
+    ports:
+      - 3000:3000
