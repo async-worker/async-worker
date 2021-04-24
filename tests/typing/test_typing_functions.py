@@ -101,6 +101,13 @@ class TestIsBaseType(TestCase):
         _type = get_handler_original_typehints(_func)
         self.assertTrue(is_base_type(_type["b"], MyGeneric))
 
+    async def test_is_base_when_primitive_type(self):
+        def _func(b: int):
+            pass
+
+        _type = get_handler_original_typehints(_func)
+        self.assertFalse(is_base_type(_type["b"], MyGeneric))
+
 
 class TestHandlerGetOriginalQualname(TestCase):
     async def test_get_qualname_no_decorators(self):
