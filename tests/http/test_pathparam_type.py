@@ -197,14 +197,10 @@ class TestPathParamTypeHint(TestCase):
 
         self.assertTrue(original_qualname in exc.exception.args[0])
         self.assertTrue(
-            "<class 'asyncworker.http.types.PathParam'> must be Generic Type"
-            in exc.exception.args[0]
+            "asyncworker.http.types.PathParam" in exc.exception.args[0]
         )
 
-        self.assertTrue(
-            "<class 'asyncworker.http.types.PathParam'>[T]"
-            in exc.exception.args[0]
-        )
+        self.assertTrue("must be Generic Type" in exc.exception.args[0])
 
     async def test_exceptions_must_show_original_handler_name(self):
         """
