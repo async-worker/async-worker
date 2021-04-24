@@ -6,7 +6,7 @@ here = path.abspath(path.dirname(__file__))
 
 setup(
     name="async-worker",
-    version="0.18.0",
+    version="0.19.0",
     description="Microframework para escrever workers assíncronos em Python",
     long_description=open(f"{here}/README.md").read(),
     long_description_content_type="text/markdown",
@@ -19,6 +19,7 @@ setup(
         "Programming Language :: Python :: 3.6",
         "Programming Language :: Python :: 3.7",
         "Programming Language :: Python :: 3.8",
+        "Programming Language :: Python :: 3.9",
     ],
     packages=find_packages(exclude=["contrib", "docs", "tests*"]),
     install_requires=[

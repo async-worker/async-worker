@@ -19,3 +19,4 @@ Mais detalhes em como esses valores são expostos em sua aplicação podem ser e
    config.rst
    types/index.rst
    autoexposed-metrics.rst
+   grafana.rst
