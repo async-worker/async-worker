@@ -17,9 +17,8 @@ class RequestParser(Generic[T]):
     ) -> "RequestParser[T]":
         raise NotImplementedError()
 
-    @abstractmethod
     async def unpack(self) -> T:
-        raise NotImplementedError()
+        return self._value
 
 
 class PathParam(RequestParser[T]):
@@ -29,6 +28,3 @@ class PathParam(RequestParser[T]):
     ) -> "PathParam[T]":
         val = request.http_request.match_info[arg_name]
         return cls(arg_type(val))
-
-    async def unpack(self) -> T:
-        return self._value
