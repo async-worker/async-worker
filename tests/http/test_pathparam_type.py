@@ -195,7 +195,7 @@ class TestPathParamTypeHint(TestCase):
 
             app.http.get(["/path/{n}"])(_path)
 
-        self.assertTrue(original_qualname in exc.exception.args[0])
+        self.assertIn(original_qualname, exc.exception.args[0])
         self.assertTrue(
             "asyncworker.http.types.PathParam" in exc.exception.args[0]
         )
@@ -225,4 +225,4 @@ class TestPathParamTypeHint(TestCase):
 
             self.app.http.get(["/path/{n}"])(_deco_2(my_handler))
 
-        self.assertTrue(original_qualname in exc.exception.args[0])
+        self.assertIn(original_qualname, exc.exception.args[0])
