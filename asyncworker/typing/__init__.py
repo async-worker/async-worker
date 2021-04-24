@@ -56,11 +56,8 @@ def is_base_type(_type, base_type):
     """
     if get_origin(_type) is base_type:
         return True
-    else:
-        try:
-            return issubclass(_type, base_type)
-        except TypeError:
-            return False
+
+    return issubclass(_type, base_type)
 
 
 def get_handler_original_qualname(handler):
