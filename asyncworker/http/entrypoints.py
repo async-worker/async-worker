@@ -1,5 +1,6 @@
 from typing import Callable, List, Type
 
+from asyncworker.decorators import wraps
 from asyncworker.entrypoints import _extract_async_callable, EntrypointInterface
 from asyncworker.http import HTTPMethods
 from asyncworker.http.types import PathParam
@@ -38,6 +39,7 @@ def _install_request_parser_annotation(f, base_generic_type: Type):
                     )
                 )
 
+    @wraps(f)
     async def _wrap(wrapper: RequestWrapper):
         for p in path_params:
             typed_val = await p.base.from_request(

@@ -13,7 +13,7 @@ class RegistryItem:
 class TypesRegistry:
     def __init__(self):
         self._data: Dict[Tuple, RegistryItem] = {}
-        self.__by_name: Dict[str, RegistryItem] = {}
+        self._by_name: Dict[str, RegistryItem] = {}
 
     def set(
         self,
@@ -24,22 +24,25 @@ class TypesRegistry:
         has_type_args = get_args(type_definition)
         origin = get_origin(obj) or obj.__class__
 
-        self._data[(origin, has_type_args)] = RegistryItem(
+        registry_item = RegistryItem(
             type=origin, value=obj, type_args=has_type_args
         )
+
+        self._data[(origin, has_type_args)] = registry_item
+
         if param_name:
-            self.__by_name[param_name] = RegistryItem(
-                type=obj.__class__, value=obj
-            )
+            self._by_name[param_name] = registry_item
 
     def get(
         self, _type: Type, param_name: str = None, type_args=None
     ) -> Optional[Any]:
         origin = get_origin(_type) or _type
+        _type_args = type_args or get_args(_type)
         if param_name:
             try:
-                if self.__by_name[param_name].type == _type:
-                    return self.__by_name[param_name].value
+                item = self._by_name[param_name]
+                if (item.type, item.type_args) == (origin, _type_args):
+                    return item.value
             except KeyError:
                 return None
 
