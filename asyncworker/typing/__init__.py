@@ -54,7 +54,13 @@ def is_base_type(_type, base_type):
     (a: MyGeneric[int]) -> True
     (b: MyGeneric) -> True
     """
-    return get_origin(_type) is base_type or issubclass(_type, base_type)
+    if get_origin(_type) is base_type:
+        return True
+    else:
+        try:
+            return issubclass(_type, base_type)
+        except TypeError:
+            return False
 
 
 def get_handler_original_qualname(handler):

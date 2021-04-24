@@ -137,7 +137,7 @@ class TestPathParamTypeHint(TestCase):
     async def test_with_custom_decorator(self):
         def _deco(handler):
             @wraps(handler)
-            async def _wrap(r: RequestWrapper, **_):
+            async def _wrap(r: RequestWrapper):
                 r.types_registry.set(42, type_definition=int)
                 return await call_http_handler(r, handler)
 
@@ -157,7 +157,7 @@ class TestPathParamTypeHint(TestCase):
     async def test_with_multiple_custom_decorator(self):
         def _deco_1(handler):
             @wraps(handler)
-            async def _wrap(r: RequestWrapper, **_):
+            async def _wrap(r: RequestWrapper):
                 r.types_registry.set(42, type_definition=int)
                 return await call_http_handler(r, handler)
 
@@ -165,7 +165,7 @@ class TestPathParamTypeHint(TestCase):
 
         def _deco_2(handler):
             @wraps(handler)
-            async def _wrap(r: RequestWrapper, **_):
+            async def _wrap(r: RequestWrapper):
                 r.types_registry.set("value", type_definition=str)
                 return await call_http_handler(r, handler)
 
@@ -214,7 +214,7 @@ class TestPathParamTypeHint(TestCase):
 
         def _deco_2(handler):
             @wraps(handler)
-            async def _wrap(r: RequestWrapper, **_):
+            async def _wrap(r: RequestWrapper):
                 r.types_registry.set("value", type_definition=str)
                 return await call_http_handler(r, handler)
 
