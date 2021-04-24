@@ -101,12 +101,19 @@ class TestIsBaseType(TestCase):
         _type = get_handler_original_typehints(_func)
         self.assertTrue(is_base_type(_type["b"], MyGeneric))
 
-    async def test_is_base_when_primitive_type(self):
+    async def test_is_base_when_arg_generic_base_primitive(self):
         def _func(b: MyGeneric):
             pass
 
         _type = get_handler_original_typehints(_func)
         self.assertFalse(is_base_type(_type["b"], int))
+
+    async def test_is_base_when_arg_primitive_base_generic(self):
+        def _func(b: int):
+            pass
+
+        _type = get_handler_original_typehints(_func)
+        self.assertFalse(is_base_type(_type["b"], MyGeneric))
 
 
 class TestHandlerGetOriginalQualname(TestCase):
