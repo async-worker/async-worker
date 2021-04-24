@@ -15,7 +15,7 @@ class RequestParser(Generic[T]):
     async def from_request(
         cls, request: RequestWrapper, arg_name: str, arg_type: Type
     ) -> "RequestParser[T]":
-        raise NotADirectoryError()
+        raise NotImplementedError()
 
     @abstractmethod
     async def unpack(self) -> T:
