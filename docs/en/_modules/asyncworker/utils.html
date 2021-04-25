@@ -100,38 +100,6 @@
         <span class="k">return</span> <span class="n">loop</span><span class="o">.</span><span class="n">run_until_complete</span><span class="p">(</span><span class="n">f</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">))</span>
 
     <span class="k">return</span> <span class="n">_</span></div>
-
-
-<div class="viewcode-block" id="get_handler_original_typehints"><a class="viewcode-back" href="../../src/asyncworker/asyncworker.html#asyncworker.utils.get_handler_original_typehints">[docs]</a><span class="k">def</span> <span class="nf">get_handler_original_typehints</span><span class="p">(</span><span class="n">handler</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Retorna a assinatura do handler asyncworker que está sendo decorado.</span>
-<span class="sd">    O retorno dessa chamada é equivalente a:</span>
-<span class="sd">    typing.get_type_hints(original_handler)</span>
-<span class="sd">    Onde `original_handler` é o handler asyncworker original.</span>
-
-<span class="sd">    Ideal para ser usado na pilha de decorators de um handler, ex:</span>
-
-<span class="sd">    .. code-block:: python</span>
-
-<span class="sd">        @deco1</span>
-<span class="sd">        @deco2</span>
-<span class="sd">        @deco3</span>
-<span class="sd">        async def handler(...):</span>
-<span class="sd">            pass</span>
-
-<span class="sd">    Nesse caso, se qualquer um dos 3 decorators precisar saber a assinatura</span>
-<span class="sd">    original, deve usar essa função passando a função recebida do decorator anterior.</span>
-
-<span class="sd">    &quot;&quot;&quot;</span>
-
-    <span class="k">def</span> <span class="nf">_dummy</span><span class="p">():</span>
-        <span class="k">pass</span>
-
-    <span class="n">_dummy</span><span class="o">.</span><span class="vm">__annotations__</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span>
-        <span class="n">handler</span><span class="p">,</span> <span class="s2">&quot;asyncworker_original_annotations&quot;</span><span class="p">,</span> <span class="n">handler</span><span class="o">.</span><span class="vm">__annotations__</span>
-    <span class="p">)</span>
-
-    <span class="k">return</span> <span class="n">typing</span><span class="o">.</span><span class="n">get_type_hints</span><span class="p">(</span><span class="n">_dummy</span><span class="p">)</span></div>
 </pre></div>
 
           </div>

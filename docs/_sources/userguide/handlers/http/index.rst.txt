@@ -31,7 +31,6 @@ Podemos fazer o que for preciso para extrair dele as informações que precisarm
 
 .. toctree::
    :maxdepth: 5
-   :titlesonly:
 
    doc.rst
    exposed-metrics.rst

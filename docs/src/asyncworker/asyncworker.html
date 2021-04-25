@@ -820,25 +820,6 @@ difference between the results of consecutive calls is valid.</p>
 <code class="sig-prename descclassname">asyncworker.utils.</code><code class="sig-name descname">entrypoint</code><span class="sig-paren">(</span><em class="sig-param">f</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/asyncworker/utils.html#entrypoint"><span class="viewcode-link">[código fonte]</span></a><a class="headerlink" href="#asyncworker.utils.entrypoint" title="Link permanente para esta definição">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="function">
-<dt id="asyncworker.utils.get_handler_original_typehints">
-<code class="sig-prename descclassname">asyncworker.utils.</code><code class="sig-name descname">get_handler_original_typehints</code><span class="sig-paren">(</span><em class="sig-param">handler</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/asyncworker/utils.html#get_handler_original_typehints"><span class="viewcode-link">[código fonte]</span></a><a class="headerlink" href="#asyncworker.utils.get_handler_original_typehints" title="Link permanente para esta definição">¶</a></dt>
-<dd><p>Retorna a assinatura do handler asyncworker que está sendo decorado.
-O retorno dessa chamada é equivalente a:
-typing.get_type_hints(original_handler)
-Onde <cite>original_handler</cite> é o handler asyncworker original.</p>
-<p>Ideal para ser usado na pilha de decorators de um handler, ex:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@deco1</span>
-<span class="nd">@deco2</span>
-<span class="nd">@deco3</span>
-<span class="k">async</span> <span class="k">def</span> <span class="nf">handler</span><span class="p">(</span><span class="o">...</span><span class="p">):</span>
-    <span class="k">pass</span>
-</pre></div>
-</div>
-<p>Nesse caso, se qualquer um dos 3 decorators precisar saber a assinatura
-original, deve usar essa função passando a função recebida do decorator anterior.</p>
-</dd></dl>
-
 </section>
 <section id="module-asyncworker">
 <span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-asyncworker" title="Link permanente para este título">¶</a></h2>

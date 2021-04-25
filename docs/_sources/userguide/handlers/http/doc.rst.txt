@@ -164,34 +164,52 @@ Um exemplo de como popular esse registry é através de um decorator aplicado di
 
 Aqui o decorator ``auth_required()`` é responsável por fazer a autenticação, pegando dados do Request e encontrando um usuário válido. Se um usuário não puder ser encontrado, retorna ``HTTPStatus.UNAUTHORIZED``. Se um usuário autenticar com sucesso, apenas adiciona o objeto user (que é do tipo ``User``) no registry que está no ``RequestWrapper``. Isso é o suficiente para que o handler, quando for chamado, receba diretamente esse user já autenticado.
 
+Typehints que extraem dados do Request
+--------------------------------------
 
+.. versionadded:: 0.19.1
+
+O Asyncworker fornece alguns typehints que são inteligentes o bastante para extrairem dados do request e passar esses dados para o handler sendo chamado.
+
+Todos os typhints são genéricos e recebem apenas **um** parametro. Os typehitns disponíveis são:
+
+- ``PathParam[T]``
+
+Onde ``T`` é o tipo do dado que será extraído do request. Para usar esses typehints basta anotar os parametros do seu handler com o tipo necessário. Como o seu handler passará a receber um argumento do tipo ``PathParam`` (ou qualquer outro typehint inteligente) será necessáio, de alguma forma, extrair o valor real de dentro desse objeto.
+
+Todos os typehints fornecidos pelo asyncworker possuem o método ``unpack()``. Esse  método serve justamente para extrair o valor que foi lido do request.
+
+Note que esse método é uma corotina. Ser corotina permite que o asyncworker faça "lazy parsing" do request. Isso significa que, em alguns casos, o request só será efetivamente lido quando você chamar ``await unpack()``. Isso é especialmente útil quando falamos de Request Bodies que são grandes.
+
+Receber uma instância da classe mencionada na assinatura do handler (em vez de receber diretamente o valor vindo do request) permite que o seu código seja validado estaticamente de forma correta.
+
+Aqui tem um exemplo simples de como usar o :ref:`PathParam[T] <handler-path-param>`.
 
 Recebendo parâmetros vindos do path do Request
-===============================================
+-----------------------------------------------
 
 .. _handler-path-param:
-.. versionadded:: 0.11.5
+.. versionadded:: 0.19.1
 
-É possível receber em seu handler parametros definidos no path da requisição. Isso é feito través do decorator :py:func:`asyncworker.http.decorators.parse_path`.
+É possível receber em seu handler parametros definidos no path da requisição. Isso é feito través do typehint :py:class:`asyncworker.http.types.PathParam`.
 
-Quando decoramos nosso handler com esse decorator instruímos o asyncworker a tentar extrair parametros do path e passar para nosso handler.
+Quando um handler menciona esse tipo em seus parametros isso faz o asyncworker tentar extrair parametros do path e passar para o handler.
 
 Importante notar que, primeiro o asyncworker vai procurar nosso parametro pelo nome e só depois tentará procurar o tipo.  Exemplo:
 
 .. code-block:: python
 
+  from asyncworker.http.types import PathParam
+
   @app.http.get(["/by_id/{_id}"])
-  @parse_path
-  async def by_id(_id: int):
-      return web.json_response({})
+  async def by_id(_id: PathParam[int]):
+      value = await _id.unpack()
+      return web.json_response({"_id": value})
 
-Nesse caso, como handler está dizendo que precisa de um parametro chamado ``_id`` temos que declarar um parametro de mesmo nome no path da Request. Depois que esse `match` for feito passaremos o valor recebido no path para o construtor do tipo definido na assinatura do handler.
+Nesse caso, como handler está dizendo que precisa de um parametro chamado ``_id`` temos que declarar um parametro de mesmo nome no path da Request. Depois que esse `match` for feito passaremos o valor recebido no path para o construtor do tipo definido na assinatura do handler, nesse caso ``PathParam``.
 
-Então nesse caso faremos um simples ``int(<valor>)``. Esse resultado será passado ao handler no parametro ``_id``, no momento da chamada.
+Para que seja possível lidar bem com linters (tipo ``mypy``) o que o asyncworker faz é de fato chamar o handler passando uma instância de ``PathParam``. Essa intância tem, internamente, o valor real que foi passdo no path do request, já convertido para o tipo correto. Nesse caso aqui um ``int``.
 
 Importante notar que só serão passados ao handler os parametros que estão definidos na assinatura. Então se seu path recebe dois parametros e seu handler só se interessa por um deles, basta declarar na assinatura do handler o parametro que você quer receber.
 
-
-Essa implementação ainda é experimental e servirá de fundação para uma implementação mais complexa, talvez com tipos mais complexos e sem a necessidade de passar o decorator explicitamente.
-
-**Impotante**: Esse decorator deve sempre ser o decorator "mais próximo" da função real, ou seja, deve ser sempre o primeiro decorator, logo acima da função sendo decorada. Isso porque o ``parse_path`` olha para a assinatura do handler sendo decorado. Se ele não for o primeiro decorator ele não vai receber o handler real como parâmetro e sim receberá o retorno de outro decorator, que já não reflete assinatura original do handler.
+Esse typehint pode receber qualquer tipo primitvo do python: ``int``, ``float``, ``bool``. Quando recebe ``bool`` valem as regras do `Pydantic <https://pydantic-docs.helpmanual.io/usage/types/#booleans>`_.

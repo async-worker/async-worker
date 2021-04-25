@@ -9,14 +9,14 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Asyncworker \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-09-12 15:53-0300\n"
+"POT-Creation-Date: 2021-04-24 22:52-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.8.0\n"
+"Generated-By: Babel 2.9.0\n"
 
 #: ../../userguide/handlers/http/doc.rst:4
 msgid "Registrando um novo handler HTTP"
@@ -199,7 +199,7 @@ msgid ""
 "aplicado diretamente ao um handler. Vejamos um exemplo:"
 msgstr ""
 
-#: ../../userguide/handlers/http/doc.rst:163
+#: ../../userguide/handlers/http/doc.rst:165
 msgid ""
 "Aqui o decorator ``auth_required()`` é responsável por fazer a "
 "autenticação, pegando dados do Request e encontrando um usuário válido. "
@@ -211,44 +211,106 @@ msgid ""
 msgstr ""
 
 #: ../../userguide/handlers/http/doc.rst:168
+msgid "Typehints que extraem dados do Request"
+msgstr ""
+
+#: ../../userguide/handlers/http/doc.rst:172
+msgid ""
+"O Asyncworker fornece alguns typehints que são inteligentes o bastante "
+"para extrairem dados do request e passar esses dados para o handler sendo"
+" chamado."
+msgstr ""
+
+#: ../../userguide/handlers/http/doc.rst:174
+msgid ""
+"Todos os typhints são genéricos e recebem apenas **um** parametro. Os "
+"typehitns disponíveis são:"
+msgstr ""
+
+#: ../../userguide/handlers/http/doc.rst:176
+msgid "``PathParam[T]``"
+msgstr ""
+
+#: ../../userguide/handlers/http/doc.rst:178
+msgid ""
+"Onde ``T`` é o tipo do dado que será extraído do request. Para usar esses"
+" typehints basta anotar os parametros do seu handler com o tipo "
+"necessário. Como o seu handler passará a receber um argumento do tipo "
+"``PathParam`` (ou qualquer outro typehint inteligente) será necessáio, de"
+" alguma forma, extrair o valor real de dentro desse objeto."
+msgstr ""
+
+#: ../../userguide/handlers/http/doc.rst:180
+msgid ""
+"Todos os typehints fornecidos pelo asyncworker possuem o método "
+"``unpack()``. Esse  método serve justamente para extrair o valor que foi "
+"lido do request."
+msgstr ""
+
+#: ../../userguide/handlers/http/doc.rst:182
+msgid ""
+"Note que esse método é uma corotina. Ser corotina permite que o "
+"asyncworker faça \"lazy parsing\" do request. Isso significa que, em "
+"alguns casos, o request só será efetivamente lido quando você chamar "
+"``await unpack()``. Isso é especialmente útil quando falamos de Request "
+"Bodies que são grandes."
+msgstr ""
+
+#: ../../userguide/handlers/http/doc.rst:184
+msgid ""
+"Receber uma instância da classe mencionada na assinatura do handler (em "
+"vez de receber diretamente o valor vindo do request) permite que o seu "
+"código seja validado estaticamente de forma correta."
+msgstr ""
+
+#: ../../userguide/handlers/http/doc.rst:186
+msgid ""
+"Aqui tem um exemplo simples de como usar o :ref:`PathParam[T] <handler-"
+"path-param>`."
+msgstr ""
+
+#: ../../userguide/handlers/http/doc.rst:189
 msgid "Recebendo parâmetros vindos do path do Request"
 msgstr ""
 
-#: ../../userguide/handlers/http/doc.rst:173
+#: ../../userguide/handlers/http/doc.rst:194
 msgid ""
 "É possível receber em seu handler parametros definidos no path da "
-"requisição. Isso é feito través do decorator "
-":py:func:`asyncworker.http.decorators.parse_path`."
+"requisição. Isso é feito través do typehint "
+":py:class:`asyncworker.http.types.PathParam`."
 msgstr ""
 
-#: ../../userguide/handlers/http/doc.rst:175
+#: ../../userguide/handlers/http/doc.rst:196
 msgid ""
-"Quando decoramos nosso handler com esse decorator instruímos o "
-"asyncworker a tentar extrair parametros do path e passar para nosso "
-"handler."
+"Quando um handler menciona esse tipo em seus parametros isso faz o "
+"asyncworker tentar extrair parametros do path e passar para o handler."
 msgstr ""
 
-#: ../../userguide/handlers/http/doc.rst:177
+#: ../../userguide/handlers/http/doc.rst:198
 msgid ""
 "Importante notar que, primeiro o asyncworker vai procurar nosso parametro"
 " pelo nome e só depois tentará procurar o tipo.  Exemplo:"
 msgstr ""
 
-#: ../../userguide/handlers/http/doc.rst:186
+#: ../../userguide/handlers/http/doc.rst:209
 msgid ""
 "Nesse caso, como handler está dizendo que precisa de um parametro chamado"
 " ``_id`` temos que declarar um parametro de mesmo nome no path da "
 "Request. Depois que esse `match` for feito passaremos o valor recebido no"
-" path para o construtor do tipo definido na assinatura do handler."
+" path para o construtor do tipo definido na assinatura do handler, nesse "
+"caso ``PathParam``."
 msgstr ""
 
-#: ../../userguide/handlers/http/doc.rst:188
+#: ../../userguide/handlers/http/doc.rst:211
 msgid ""
-"Então nesse caso faremos um simples ``int(<valor>)``. Esse resultado será"
-" passado ao handler no parametro ``_id``, no momento da chamada."
+"Para que seja possível lidar bem com linters (tipo ``mypy``) o que o "
+"asyncworker faz é de fato chamar o handler passando uma instância de "
+"``PathParam``. Essa intância tem, internamente, o valor real que foi "
+"passdo no path do request, já convertido para o tipo correto. Nesse caso "
+"aqui um ``int``."
 msgstr ""
 
-#: ../../userguide/handlers/http/doc.rst:190
+#: ../../userguide/handlers/http/doc.rst:213
 msgid ""
 "Importante notar que só serão passados ao handler os parametros que estão"
 " definidos na assinatura. Então se seu path recebe dois parametros e seu "
@@ -256,22 +318,11 @@ msgid ""
 "handler o parametro que você quer receber."
 msgstr ""
 
-#: ../../userguide/handlers/http/doc.rst:193
+#: ../../userguide/handlers/http/doc.rst:215
 msgid ""
-"Essa implementação ainda é experimental e servirá de fundação para uma "
-"implementação mais complexa, talvez com tipos mais complexos e sem a "
-"necessidade de passar o decorator explicitamente."
-msgstr ""
-
-#: ../../userguide/handlers/http/doc.rst:195
-msgid ""
-"**Impotante**: Esse decorator deve sempre ser o decorator \"mais "
-"próximo\" da função real, ou seja, deve ser sempre o primeiro decorator, "
-"logo acima da função sendo decorada. Isso porque o ``parse_path`` olha "
-"para a assinatura do handler sendo decorado. Se ele não for o primeiro "
-"decorator ele não vai receber o handler real como parâmetro e sim "
-"receberá o retorno de outro decorator, que já não reflete assinatura "
-"original do handler."
+"Esse typehint pode receber qualquer tipo primitvo do python: ``int``, "
+"``float``, ``bool``. Quando recebe ``bool`` valem as regras do `Pydantic "
+"<https://pydantic-docs.helpmanual.io/usage/types/#booleans>`_."
 msgstr ""
 
 #~ msgid "Regras para criação de um handler HTTP"
@@ -303,5 +354,62 @@ msgstr ""
 #~ msgid ""
 #~ "``methods`` sendo uma lista de métodos"
 #~ " HTTP permitidos para esse handler"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "É possível receber em seu handler "
+#~ "parametros definidos no path da "
+#~ "requisição. Isso é feito través do "
+#~ "decorator :py:func:`asyncworker.http.decorators.parse_path`."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Quando decoramos nosso handler com esse"
+#~ " decorator instruímos o asyncworker a "
+#~ "tentar extrair parametros do path e "
+#~ "passar para nosso handler."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Nesse caso, como handler está dizendo"
+#~ " que precisa de um parametro chamado"
+#~ " ``_id`` temos que declarar um "
+#~ "parametro de mesmo nome no path da"
+#~ " Request. Depois que esse `match` for"
+#~ " feito passaremos o valor recebido no"
+#~ " path para o construtor do tipo "
+#~ "definido na assinatura do handler."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Então nesse caso faremos um simples "
+#~ "``int(<valor>)``. Esse resultado será passado"
+#~ " ao handler no parametro ``_id``, no"
+#~ " momento da chamada."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Essa implementação ainda é experimental "
+#~ "e servirá de fundação para uma "
+#~ "implementação mais complexa, talvez com "
+#~ "tipos mais complexos e sem a "
+#~ "necessidade de passar o decorator "
+#~ "explicitamente."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "**Impotante**: Esse decorator deve sempre "
+#~ "ser o decorator \"mais próximo\" da "
+#~ "função real, ou seja, deve ser "
+#~ "sempre o primeiro decorator, logo acima"
+#~ " da função sendo decorada. Isso "
+#~ "porque o ``parse_path`` olha para a "
+#~ "assinatura do handler sendo decorado. Se"
+#~ " ele não for o primeiro decorator "
+#~ "ele não vai receber o handler real"
+#~ " como parâmetro e sim receberá o "
+#~ "retorno de outro decorator, que já "
+#~ "não reflete assinatura original do "
+#~ "handler."
 #~ msgstr ""
 
