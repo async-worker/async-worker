@@ -2,7 +2,7 @@
 ================
 
 
-Data de release: não lançada
+Data de release: 2021-04-25
 
 Tag: `0.19.1 <https://github.com/b2wdigital/async-worker/releases/tag/0.19.1>`_
 
