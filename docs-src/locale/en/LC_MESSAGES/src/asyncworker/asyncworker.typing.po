@@ -1,0 +1,53 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2019, B2W Digital
+# This file is distributed under the same license as the Asyncworker
+# package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2021.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: Asyncworker \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2021-04-24 21:51-0300\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.9.0\n"
+
+#: ../../src/asyncworker/asyncworker.typing.rst:2
+msgid "asyncworker.typing package"
+msgstr ""
+
+#: ../../src/asyncworker/asyncworker.typing.rst:5
+msgid "Module contents"
+msgstr ""
+
+#: asyncworker.typing.get_handler_original_typehints:1 of
+msgid ""
+"Retorna a assinatura do handler asyncworker que está sendo decorado. O "
+"retorno dessa chamada é equivalente a: "
+"typing.get_type_hints(original_handler) Onde `original_handler` é o "
+"handler asyncworker original."
+msgstr ""
+
+#: asyncworker.typing.get_handler_original_typehints:6 of
+msgid "Ideal para ser usado na pilha de decorators de um handler, ex:"
+msgstr ""
+
+#: asyncworker.typing.get_handler_original_typehints:16 of
+msgid ""
+"Nesse caso, se qualquer um dos 3 decorators precisar saber a assinatura "
+"original, deve usar essa função passando a função recebida do decorator "
+"anterior."
+msgstr ""
+
+#: asyncworker.typing.is_base_type:1 of
+msgid ""
+"Retorna True para argumentos de um tipo base `base_type`. Ex: (a: "
+"MyGeneric[int]) -> True (b: MyGeneric) -> True"
+msgstr ""
+

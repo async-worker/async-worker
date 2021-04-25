@@ -52,6 +52,11 @@
             <span class="s2">&quot;asyncworker_original_annotations&quot;</span><span class="p">,</span>
             <span class="n">original_handler</span><span class="o">.</span><span class="vm">__annotations__</span><span class="p">,</span>
         <span class="p">)</span>
+        <span class="n">deco</span><span class="o">.</span><span class="n">asyncworker_original_qualname</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span>
+            <span class="n">original_handler</span><span class="p">,</span>
+            <span class="s2">&quot;asyncworker_original_qualname&quot;</span><span class="p">,</span>
+            <span class="n">original_handler</span><span class="o">.</span><span class="vm">__qualname__</span><span class="p">,</span>
+        <span class="p">)</span>
         <span class="k">return</span> <span class="n">deco</span>
 
     <span class="k">return</span> <span class="n">_wrap</span></div>

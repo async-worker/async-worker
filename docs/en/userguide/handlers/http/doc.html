@@ -166,26 +166,43 @@
 </pre></div>
 </div>
 <p>Aqui o decorator <code class="docutils literal notranslate"><span class="pre">auth_required()</span></code> é responsável por fazer a autenticação, pegando dados do Request e encontrando um usuário válido. Se um usuário não puder ser encontrado, retorna <code class="docutils literal notranslate"><span class="pre">HTTPStatus.UNAUTHORIZED</span></code>. Se um usuário autenticar com sucesso, apenas adiciona o objeto user (que é do tipo <code class="docutils literal notranslate"><span class="pre">User</span></code>) no registry que está no <code class="docutils literal notranslate"><span class="pre">RequestWrapper</span></code>. Isso é o suficiente para que o handler, quando for chamado, receba diretamente esse user já autenticado.</p>
+<section id="typehints-que-extraem-dados-do-request">
+<h2>Typehints que extraem dados do Request<a class="headerlink" href="#typehints-que-extraem-dados-do-request" title="Permalink to this headline">¶</a></h2>
+<div class="versionadded">
+<p><span class="versionmodified added">New in version 0.19.1.</span></p>
+</div>
+<p>O Asyncworker fornece alguns typehints que são inteligentes o bastante para extrairem dados do request e passar esses dados para o handler sendo chamado.</p>
+<p>Todos os typhints são genéricos e recebem apenas <strong>um</strong> parametro. Os typehitns disponíveis são:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">PathParam[T]</span></code></p></li>
+</ul>
+<p>Onde <code class="docutils literal notranslate"><span class="pre">T</span></code> é o tipo do dado que será extraído do request. Para usar esses typehints basta anotar os parametros do seu handler com o tipo necessário. Como o seu handler passará a receber um argumento do tipo <code class="docutils literal notranslate"><span class="pre">PathParam</span></code> (ou qualquer outro typehint inteligente) será necessáio, de alguma forma, extrair o valor real de dentro desse objeto.</p>
+<p>Todos os typehints fornecidos pelo asyncworker possuem o método <code class="docutils literal notranslate"><span class="pre">unpack()</span></code>. Esse  método serve justamente para extrair o valor que foi lido do request.</p>
+<p>Note que esse método é uma corotina. Ser corotina permite que o asyncworker faça “lazy parsing” do request. Isso significa que, em alguns casos, o request só será efetivamente lido quando você chamar <code class="docutils literal notranslate"><span class="pre">await</span> <span class="pre">unpack()</span></code>. Isso é especialmente útil quando falamos de Request Bodies que são grandes.</p>
+<p>Receber uma instância da classe mencionada na assinatura do handler (em vez de receber diretamente o valor vindo do request) permite que o seu código seja validado estaticamente de forma correta.</p>
+<p>Aqui tem um exemplo simples de como usar o <a class="reference internal" href="#handler-path-param"><span class="std std-ref">PathParam[T]</span></a>.</p>
 </section>
 <section id="recebendo-parametros-vindos-do-path-do-request">
-<h1>Recebendo parâmetros vindos do path do Request<a class="headerlink" href="#recebendo-parametros-vindos-do-path-do-request" title="Permalink to this headline">¶</a></h1>
+<h2>Recebendo parâmetros vindos do path do Request<a class="headerlink" href="#recebendo-parametros-vindos-do-path-do-request" title="Permalink to this headline">¶</a></h2>
 <div class="versionadded" id="handler-path-param">
-<p><span class="versionmodified added">New in version 0.11.5.</span></p>
+<p><span class="versionmodified added">New in version 0.19.1.</span></p>
 </div>
-<p>É possível receber em seu handler parametros definidos no path da requisição. Isso é feito través do decorator <a class="reference internal" href="../../../src/asyncworker/asyncworker.http.html#asyncworker.http.decorators.parse_path" title="asyncworker.http.decorators.parse_path"><code class="xref py py-func docutils literal notranslate"><span class="pre">asyncworker.http.decorators.parse_path()</span></code></a>.</p>
-<p>Quando decoramos nosso handler com esse decorator instruímos o asyncworker a tentar extrair parametros do path e passar para nosso handler.</p>
+<p>É possível receber em seu handler parametros definidos no path da requisição. Isso é feito través do typehint <code class="xref py py-class docutils literal notranslate"><span class="pre">asyncworker.http.types.PathParam</span></code>.</p>
+<p>Quando um handler menciona esse tipo em seus parametros isso faz o asyncworker tentar extrair parametros do path e passar para o handler.</p>
 <p>Importante notar que, primeiro o asyncworker vai procurar nosso parametro pelo nome e só depois tentará procurar o tipo.  Exemplo:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@app</span><span class="o">.</span><span class="n">http</span><span class="o">.</span><span class="n">get</span><span class="p">([</span><span class="s2">&quot;/by_id/</span><span class="si">{_id}</span><span class="s2">&quot;</span><span class="p">])</span>
-<span class="nd">@parse_path</span>
-<span class="k">async</span> <span class="k">def</span> <span class="nf">by_id</span><span class="p">(</span><span class="n">_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
-    <span class="k">return</span> <span class="n">web</span><span class="o">.</span><span class="n">json_response</span><span class="p">({})</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">asyncworker.http.types</span> <span class="kn">import</span> <span class="n">PathParam</span>
+
+<span class="nd">@app</span><span class="o">.</span><span class="n">http</span><span class="o">.</span><span class="n">get</span><span class="p">([</span><span class="s2">&quot;/by_id/</span><span class="si">{_id}</span><span class="s2">&quot;</span><span class="p">])</span>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">by_id</span><span class="p">(</span><span class="n">_id</span><span class="p">:</span> <span class="n">PathParam</span><span class="p">[</span><span class="nb">int</span><span class="p">]):</span>
+    <span class="n">value</span> <span class="o">=</span> <span class="k">await</span> <span class="n">_id</span><span class="o">.</span><span class="n">unpack</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">web</span><span class="o">.</span><span class="n">json_response</span><span class="p">({</span><span class="s2">&quot;_id&quot;</span><span class="p">:</span> <span class="n">value</span><span class="p">})</span>
 </pre></div>
 </div>
-<p>Nesse caso, como handler está dizendo que precisa de um parametro chamado <code class="docutils literal notranslate"><span class="pre">_id</span></code> temos que declarar um parametro de mesmo nome no path da Request. Depois que esse <cite>match</cite> for feito passaremos o valor recebido no path para o construtor do tipo definido na assinatura do handler.</p>
-<p>Então nesse caso faremos um simples <code class="docutils literal notranslate"><span class="pre">int(&lt;valor&gt;)</span></code>. Esse resultado será passado ao handler no parametro <code class="docutils literal notranslate"><span class="pre">_id</span></code>, no momento da chamada.</p>
+<p>Nesse caso, como handler está dizendo que precisa de um parametro chamado <code class="docutils literal notranslate"><span class="pre">_id</span></code> temos que declarar um parametro de mesmo nome no path da Request. Depois que esse <cite>match</cite> for feito passaremos o valor recebido no path para o construtor do tipo definido na assinatura do handler, nesse caso <code class="docutils literal notranslate"><span class="pre">PathParam</span></code>.</p>
+<p>Para que seja possível lidar bem com linters (tipo <code class="docutils literal notranslate"><span class="pre">mypy</span></code>) o que o asyncworker faz é de fato chamar o handler passando uma instância de <code class="docutils literal notranslate"><span class="pre">PathParam</span></code>. Essa intância tem, internamente, o valor real que foi passdo no path do request, já convertido para o tipo correto. Nesse caso aqui um <code class="docutils literal notranslate"><span class="pre">int</span></code>.</p>
 <p>Importante notar que só serão passados ao handler os parametros que estão definidos na assinatura. Então se seu path recebe dois parametros e seu handler só se interessa por um deles, basta declarar na assinatura do handler o parametro que você quer receber.</p>
-<p>Essa implementação ainda é experimental e servirá de fundação para uma implementação mais complexa, talvez com tipos mais complexos e sem a necessidade de passar o decorator explicitamente.</p>
-<p><strong>Impotante</strong>: Esse decorator deve sempre ser o decorator “mais próximo” da função real, ou seja, deve ser sempre o primeiro decorator, logo acima da função sendo decorada. Isso porque o <code class="docutils literal notranslate"><span class="pre">parse_path</span></code> olha para a assinatura do handler sendo decorado. Se ele não for o primeiro decorator ele não vai receber o handler real como parâmetro e sim receberá o retorno de outro decorator, que já não reflete assinatura original do handler.</p>
+<p>Esse typehint pode receber qualquer tipo primitvo do python: <code class="docutils literal notranslate"><span class="pre">int</span></code>, <code class="docutils literal notranslate"><span class="pre">float</span></code>, <code class="docutils literal notranslate"><span class="pre">bool</span></code>. Quando recebe <code class="docutils literal notranslate"><span class="pre">bool</span></code> valem as regras do <a class="reference external" href="https://pydantic-docs.helpmanual.io/usage/types/#booleans">Pydantic</a>.</p>
+</section>
 </section>
 
 

@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Asyncworker \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-04-24 19:22-0300\n"
+"POT-Creation-Date: 2021-04-24 22:52-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -354,25 +354,6 @@ msgstr ""
 msgid "asyncworker.utils module"
 msgstr ""
 
-#: asyncworker.utils.get_handler_original_typehints:1 of
-msgid ""
-"Retorna a assinatura do handler asyncworker que está sendo decorado. O "
-"retorno dessa chamada é equivalente a: "
-"typing.get_type_hints(original_handler) Onde `original_handler` é o "
-"handler asyncworker original."
-msgstr ""
-
-#: asyncworker.utils.get_handler_original_typehints:6 of
-msgid "Ideal para ser usado na pilha de decorators de um handler, ex:"
-msgstr ""
-
-#: asyncworker.utils.get_handler_original_typehints:16 of
-msgid ""
-"Nesse caso, se qualquer um dos 3 decorators precisar saber a assinatura "
-"original, deve usar essa função passando a função recebida do decorator "
-"anterior."
-msgstr ""
-
 #: ../../src/asyncworker/asyncworker.rst:126
 msgid "Module contents"
 msgstr ""
@@ -396,5 +377,25 @@ msgstr ""
 #~ " essa chamada será depreciada e "
 #~ "função de chamada onde recebemos "
 #~ "`RequestWrapper`."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Retorna a assinatura do handler "
+#~ "asyncworker que está sendo decorado. O"
+#~ " retorno dessa chamada é equivalente "
+#~ "a: typing.get_type_hints(original_handler) Onde "
+#~ "`original_handler` é o handler asyncworker "
+#~ "original."
+#~ msgstr ""
+
+#~ msgid "Ideal para ser usado na pilha de decorators de um handler, ex:"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Nesse caso, se qualquer um dos 3"
+#~ " decorators precisar saber a assinatura "
+#~ "original, deve usar essa função passando"
+#~ " a função recebida do decorator "
+#~ "anterior."
 #~ msgstr ""
 
