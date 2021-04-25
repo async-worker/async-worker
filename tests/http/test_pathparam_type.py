@@ -230,3 +230,67 @@ class TestPathParamTypeHint(TestCase):
             self.app.http.get(["/path/{n}"])(_deco_2(my_handler))
 
         self.assertIn(original_qualname, exc.exception.args[0])
+
+    async def test_path_param_bool_true_values(self):
+        @self.app.http.get(["/bool/{on}/{true}/{yes}/{one}"])
+        async def bool_true(
+            on: PathParam[bool],
+            true: PathParam[bool],
+            yes: PathParam[bool],
+            one: PathParam[bool],
+        ):
+            return json_response(
+                {
+                    "on": await on.unpack(),
+                    "true": await true.unpack(),
+                    "yes": await yes.unpack(),
+                    "one": await one.unpack(),
+                }
+            )
+
+        async with HttpClientContext(self.app) as client:
+            resp = await client.get("/bool/oN/truE/yEs/1")
+            self.assertEqual(HTTPStatus.OK, resp.status)
+
+            data = await resp.json()
+            self.assertEqual(
+                {"on": True, "true": True, "yes": True, "one": True}, data
+            )
+
+    async def test_path_param_bool_false_values(self):
+        @self.app.http.get(["/bool/{on}/{true}/{yes}/{one}"])
+        async def bool_true(
+            on: PathParam[bool],
+            true: PathParam[bool],
+            yes: PathParam[bool],
+            one: PathParam[bool],
+        ):
+            return json_response(
+                {
+                    "on": await on.unpack(),
+                    "true": await true.unpack(),
+                    "yes": await yes.unpack(),
+                    "one": await one.unpack(),
+                }
+            )
+
+        async with HttpClientContext(self.app) as client:
+            resp = await client.get("/bool/oFf/falSe/No/0")
+            self.assertEqual(HTTPStatus.OK, resp.status)
+
+            data = await resp.json()
+            self.assertEqual(
+                {"on": False, "true": False, "yes": False, "one": False}, data
+            )
+
+    async def test_path_param_bool_invalid_values(self):
+        @self.app.http.get(["/bool/{on}"])
+        async def bool_true(on: PathParam[bool],):
+            return json_response({"on": await on.unpack()})
+
+        async with HttpClientContext(self.app) as client:
+            resp = await client.get("/bool/invalid")
+            self.assertEqual(HTTPStatus.OK, resp.status)
+
+            data = await resp.json()
+            self.assertEqual({"on": False}, data)
