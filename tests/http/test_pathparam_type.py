@@ -39,6 +39,10 @@ class TestPathParamTypeHint(TestCase):
         async with HttpClientContext(self.app) as client:
             resp = await client.get("/num/abc")
             self.assertEqual(HTTPStatus.BAD_REQUEST, resp.status)
+            data = await resp.text()
+            self.assertEqual(
+                "invalid literal for int() with base 10: 'abc'", data
+            )
 
     async def test_multiple_params(self):
         @self.app.http.get(["/num/{n}/{other}"])

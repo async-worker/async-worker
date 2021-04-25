@@ -1,5 +1,7 @@
 from typing import Callable, List, Type
 
+from aiohttp.web import HTTPBadRequest
+
 from asyncworker.decorators import wraps
 from asyncworker.entrypoints import _extract_async_callable, EntrypointInterface
 from asyncworker.http import HTTPMethods
@@ -42,10 +44,13 @@ def _install_request_parser_annotation(f, base_generic_type: Type):
     @wraps(f)
     async def _wrap(wrapper: RequestWrapper):
         for p in path_params:
-            typed_val = await p.base.from_request(
-                request=wrapper, arg_name=p.name, arg_type=p.arg_type
-            )
-            wrapper.types_registry.set(typed_val, p.base, param_name=p.name)
+            try:
+                typed_val = await p.base.from_request(
+                    request=wrapper, arg_name=p.name, arg_type=p.arg_type
+                )
+                wrapper.types_registry.set(typed_val, p.base, param_name=p.name)
+            except ValueError as e:
+                raise HTTPBadRequest(text=e.args[0])
         return await call_http_handler(wrapper, f)
 
     return _wrap

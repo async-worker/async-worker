@@ -1,8 +1,6 @@
 from abc import abstractmethod
 from typing import Generic, TypeVar, Type
 
-from aiohttp.web import HTTPBadRequest
-
 from asyncworker.http.wrapper import RequestWrapper
 
 T = TypeVar("T")
@@ -29,7 +27,4 @@ class PathParam(RequestParser[T]):
         cls, request: RequestWrapper, arg_name: str, arg_type: Type
     ) -> "PathParam[T]":
         val = request.http_request.match_info[arg_name]
-        try:
-            return cls(arg_type(val))
-        except ValueError as ve:
-            raise HTTPBadRequest(reason=ve.args[0])
+        return cls(arg_type(val))
