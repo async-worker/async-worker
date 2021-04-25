@@ -211,3 +211,5 @@ Nesse caso, como handler está dizendo que precisa de um parametro chamado ``_id
 Para que seja possível lidar bem com linters (tipo ``mypy``) o que o asyncworker faz é de fato chamar o handler passando uma instância de ``PathParam``. Essa intância tem, internamente, o valor real que foi passdo no path do request, já convertido para o tipo correto. Nesse caso aqui um ``int``.
 
 Importante notar que só serão passados ao handler os parametros que estão definidos na assinatura. Então se seu path recebe dois parametros e seu handler só se interessa por um deles, basta declarar na assinatura do handler o parametro que você quer receber.
+
+Esse typehint pode receber qualquer tipo primitvo do python: ``int``, ``float``, ``bool``. Quando recebe ``bool`` valem as regras do `Pydantic <https://pydantic-docs.helpmanual.io/usage/types/#booleans>`_.
