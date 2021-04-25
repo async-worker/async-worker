@@ -1,8 +1,7 @@
 from aiohttp import web
 
 from asyncworker import App
-from asyncworker.http.decorators import parse_path
-from asyncworker.http.wrapper import RequestWrapper
+from asyncworker.http.types import PathParam
 
 app = App()
 
@@ -12,15 +11,17 @@ async def handler():
     return web.json_response({})
 
 
-@app.http.get(["/by_id/{_id}/other/{value}"])
-@parse_path
-async def by_id(_id: int, value: int):
-    return web.json_response({"url-param-value": f"{_id}, {value}"})
+@app.http.get(["/path/{id}/accounts/{foo}"])
+async def _accounts(id: PathParam[int], foo: PathParam[str]):
+    _id: int = await id.unpack()
+    return web.json_response({"account_id": _id})
 
 
-@app.http.get(["/one-param"])
-async def one_param(r: RequestWrapper):
-    return web.json_response(dict(r.http_request.query))
+@app.http.get(["/users/{_id}/books/{shelf}"])
+async def _user_books(_id: PathParam[int], shelf: PathParam[int]):
+    _id_value: int = await _id.unpack()
+    shelf_id = await shelf.unpack()
+    return web.json_response({"user_id": _id_value, "shelf_id": shelf_id})
 
 
 app.run()

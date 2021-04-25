@@ -3,7 +3,7 @@ from asynctest import TestCase
 from asyncworker.decorators import wraps
 from asyncworker.types.registry import TypesRegistry
 from asyncworker.types.resolver import ArgResolver
-from asyncworker.utils import get_handler_original_typehints
+from asyncworker.typing import get_handler_original_typehints
 
 
 def handler_register(func):
@@ -53,6 +53,10 @@ class TestWrapsDecorator(TestCase):
         self.assertEqual(
             get_handler_original_typehints(final_func), {"q": int, "b": bool}
         )
+        self.assertEqual(
+            "TestWrapsDecorator.test_with_one_first_decorator.<locals>._func",
+            final_func.asyncworker_original_qualname,
+        )
 
     async def test_with_two_second_decorators(self):
         @handler_register
@@ -66,6 +70,11 @@ class TestWrapsDecorator(TestCase):
         self.assertEqual(
             get_handler_original_typehints(final_func),
             {"other": int, "integer": int, "feature": bool},
+        )
+
+        self.assertEqual(
+            "TestWrapsDecorator.test_with_two_second_decorators.<locals>._func",
+            final_func.asyncworker_original_qualname,
         )
 
     async def test_with_three_decorators(self):
