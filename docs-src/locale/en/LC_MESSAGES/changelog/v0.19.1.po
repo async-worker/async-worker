@@ -49,13 +49,3 @@ msgid ""
 ":ref:`PathParam[T] <handler-path-param>`."
 msgstr ""
 
-#~ msgid ""
-#~ "Tag: `0.19.1 <https://github.com/b2wdigital/async-"
-#~ "worker/releases/tag/0.19.1>`_"
-#~ msgstr ""
-
-#~ msgid ""
-#~ "Raw Commits: `0.19.1 <https://github.com/b2wdigital"
-#~ "/async-worker/compare/0.19.0...0.19.1>`_"
-#~ msgstr ""
-

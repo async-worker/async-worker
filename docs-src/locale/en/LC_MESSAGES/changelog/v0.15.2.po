@@ -2,7 +2,7 @@
 # Copyright (C) 2019, B2W Digital
 # This file is distributed under the same license as the Asyncworker
 # package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, 2020.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2021.
 #
 #, fuzzy
 msgid ""
@@ -94,26 +94,4 @@ msgid ""
 "A O registro de cada tipo de handler deve ser feito de acordo com a "
 "documentação desse handler. Mais em :ref:`Handlers <handler-types>`."
 msgstr ""
-
-#~ msgid ""
-#~ ":pr:`224` Depreciando @app.route() e criando"
-#~ " decorators específicos (:issue:`daltonmatos`)"
-#~ msgstr ""
-
-#~ msgid ""
-#~ "O registro de cada tipo de handler"
-#~ " deve ser feito de acordo com a"
-#~ " documentação desse handler. Mais em "
-#~ ":ref:`Handlers <handler-types>`."
-#~ msgstr ""
-
-#~ msgid ""
-#~ "Tag: `0.15.2 <https://github.com/b2wdigital/async-"
-#~ "worker/releases/tag/0.15.2>`_"
-#~ msgstr ""
-
-#~ msgid ""
-#~ "Raw Commits: `0.15.2 <https://github.com/b2wdigital"
-#~ "/async-worker/compare/0.15.1...0.15.2>`_"
-#~ msgstr ""
 

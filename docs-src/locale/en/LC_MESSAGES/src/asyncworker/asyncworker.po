@@ -2,14 +2,14 @@
 # Copyright (C) 2019, B2W Digital
 # This file is distributed under the same license as the Asyncworker
 # package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, 2020.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2021.
 #
 #, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: Asyncworker \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-05-02 13:04-0300\n"
+"POT-Creation-Date: 2021-05-02 14:26-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -26,11 +26,11 @@ msgstr ""
 msgid "Subpackages"
 msgstr ""
 
-#: ../../src/asyncworker/asyncworker.rst:18
+#: ../../src/asyncworker/asyncworker.rst:19
 msgid "Submodules"
 msgstr ""
 
-#: ../../src/asyncworker/asyncworker.rst:21
+#: ../../src/asyncworker/asyncworker.rst:22
 msgid "asyncworker.app module"
 msgstr ""
 
@@ -68,7 +68,7 @@ msgstr ""
 msgid "Should be called in the event loop along with the request handler."
 msgstr ""
 
-#: ../../src/asyncworker/asyncworker.rst:29
+#: ../../src/asyncworker/asyncworker.rst:30
 msgid "asyncworker.bucket module"
 msgstr ""
 
@@ -80,7 +80,7 @@ msgstr ""
 msgid "Base: :class:`Exception`"
 msgstr ""
 
-#: ../../src/asyncworker/asyncworker.rst:37
+#: ../../src/asyncworker/asyncworker.rst:38
 msgid "asyncworker.conf module"
 msgstr ""
 
@@ -96,7 +96,7 @@ msgstr ""
 msgid "Base: :class:`object`"
 msgstr ""
 
-#: ../../src/asyncworker/asyncworker.rst:45
+#: ../../src/asyncworker/asyncworker.rst:46
 msgid "asyncworker.connections module"
 msgstr ""
 
@@ -135,7 +135,7 @@ msgid ""
 " also keeps a counter for each connection type"
 msgstr ""
 
-#: ../../src/asyncworker/asyncworker.rst:53
+#: ../../src/asyncworker/asyncworker.rst:54
 msgid "asyncworker.consumer module"
 msgstr ""
 
@@ -213,7 +213,7 @@ msgid ""
 "ready to be handled."
 msgstr ""
 
-#: ../../src/asyncworker/asyncworker.rst:61
+#: ../../src/asyncworker/asyncworker.rst:62
 msgid "asyncworker.decorators module"
 msgstr ""
 
@@ -234,7 +234,7 @@ msgid ""
 "fazer uso desse `@wraps()`"
 msgstr ""
 
-#: ../../src/asyncworker/asyncworker.rst:69
+#: ../../src/asyncworker/asyncworker.rst:70
 msgid "asyncworker.entrypoints module"
 msgstr ""
 
@@ -242,7 +242,7 @@ msgstr ""
 msgid "Base: :class:`abc.ABC`, :class:`typing.Generic`"
 msgstr ""
 
-#: ../../src/asyncworker/asyncworker.rst:77
+#: ../../src/asyncworker/asyncworker.rst:78
 msgid "asyncworker.exceptions module"
 msgstr ""
 
@@ -259,7 +259,7 @@ msgstr ""
 msgid "Defines an invalid route definition condition."
 msgstr ""
 
-#: ../../src/asyncworker/asyncworker.rst:85
+#: ../../src/asyncworker/asyncworker.rst:86
 msgid "asyncworker.options module"
 msgstr ""
 
@@ -278,7 +278,7 @@ msgstr ""
 msgid "Base: :class:`str`, :class:`enum.Enum`"
 msgstr ""
 
-#: ../../src/asyncworker/asyncworker.rst:93
+#: ../../src/asyncworker/asyncworker.rst:94
 msgid "asyncworker.routes module"
 msgstr ""
 
@@ -306,11 +306,11 @@ msgstr ""
 msgid "Base: :class:`collections.UserDict`"
 msgstr ""
 
-#: ../../src/asyncworker/asyncworker.rst:101
+#: ../../src/asyncworker/asyncworker.rst:102
 msgid "asyncworker.task\\_runners module"
 msgstr ""
 
-#: ../../src/asyncworker/asyncworker.rst:109
+#: ../../src/asyncworker/asyncworker.rst:110
 msgid "asyncworker.time module"
 msgstr ""
 
@@ -352,52 +352,11 @@ msgid ""
 "difference between the results of consecutive calls is valid."
 msgstr ""
 
-#: ../../src/asyncworker/asyncworker.rst:117
+#: ../../src/asyncworker/asyncworker.rst:118
 msgid "asyncworker.utils module"
 msgstr ""
 
-#: ../../src/asyncworker/asyncworker.rst:126
+#: ../../src/asyncworker/asyncworker.rst:127
 msgid "Module contents"
 msgstr ""
-
-#~ msgid ""
-#~ "Base: :class:`collections.abc.Mapping`, "
-#~ ":class:`typing.Generic`, "
-#~ ":class:`asyncworker.signals.base.Freezable`"
-#~ msgstr ""
-
-#~ msgid ""
-#~ "Base: :class:`typing.Mapping`, "
-#~ ":class:`asyncworker.signals.base.Freezable`"
-#~ msgstr ""
-
-#~ msgid ""
-#~ "Quando o RequestWrapper estiver mais "
-#~ "sólido, esse método deve receber "
-#~ "`asyncworker.http.wrapper.RequestWrapper` e não "
-#~ "`web.Request`. Primeiro vamos documentar que"
-#~ " essa chamada será depreciada e "
-#~ "função de chamada onde recebemos "
-#~ "`RequestWrapper`."
-#~ msgstr ""
-
-#~ msgid ""
-#~ "Retorna a assinatura do handler "
-#~ "asyncworker que está sendo decorado. O"
-#~ " retorno dessa chamada é equivalente "
-#~ "a: typing.get_type_hints(original_handler) Onde "
-#~ "`original_handler` é o handler asyncworker "
-#~ "original."
-#~ msgstr ""
-
-#~ msgid "Ideal para ser usado na pilha de decorators de um handler, ex:"
-#~ msgstr ""
-
-#~ msgid ""
-#~ "Nesse caso, se qualquer um dos 3"
-#~ " decorators precisar saber a assinatura "
-#~ "original, deve usar essa função passando"
-#~ " a função recebida do decorator "
-#~ "anterior."
-#~ msgstr ""
 

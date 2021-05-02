@@ -73,13 +73,3 @@ msgstr ""
 msgid "Deve ser substituído por:"
 msgstr ""
 
-#~ msgid "Data de release: 2021-??-??"
-#~ msgstr ""
-
-#~ msgid ""
-#~ "Tag: `0.19.0 <https://github.com/b2wdigital/async-"
-#~ "worker/releases/tag/0.19.0>`_ Raw Commits: `0.19.0"
-#~ " <https://github.com/b2wdigital/async-"
-#~ "worker/compare/0.18.0...0.19.0>`_"
-#~ msgstr ""
-

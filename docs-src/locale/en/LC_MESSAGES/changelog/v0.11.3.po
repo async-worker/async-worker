@@ -2,7 +2,7 @@
 # Copyright (C) 2019, B2W Digital
 # This file is distributed under the same license as the Asyncworker
 # package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, 2020.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2021.
 #
 #, fuzzy
 msgid ""
@@ -67,43 +67,4 @@ msgid ""
 "Raw Commits: `0.11.3 <https://github.com/async-worker/async-"
 "worker/compare/0.11.2...0.11.3>`_"
 msgstr ""
-
-#~ msgid ""
-#~ "Tag: `0.11.3 <https://github.com/B2W-BIT/async-"
-#~ "worker/releases/tag/0.11.3>`_"
-#~ msgstr ""
-
-#~ msgid ""
-#~ "`PR 156 <https://github.com/B2W-BIT/async-"
-#~ "worker/pull/156>`_ Obtain bulk_flush_interval from"
-#~ " route options"
-#~ msgstr ""
-
-#~ msgid ""
-#~ "`PR 150 <https://github.com/B2W-BIT/async-"
-#~ "worker/pull/150>`_ Feature/sphinx docs structure"
-#~ msgstr ""
-
-#~ msgid ""
-#~ "`PR 152 <https://github.com/B2W-BIT/async-"
-#~ "worker/pull/152>`_ Updating aioamqp for Python"
-#~ " 3.8 compatibility"
-#~ msgstr ""
-
-#~ msgid ""
-#~ "`PR 153 <https://github.com/B2W-BIT/async-"
-#~ "worker/pull/153>`_ Adding code of conduct "
-#~ "and contributing"
-#~ msgstr ""
-
-#~ msgid ""
-#~ "`PR 154 <https://github.com/B2W-BIT/async-"
-#~ "worker/pull/154>`_ Enabling new parameters "
-#~ "from aioamqp"
-#~ msgstr ""
-
-#~ msgid ""
-#~ "Raw Commits: `0.11.3 <https://github.com/B2W-"
-#~ "BIT/async-worker/compare/0.11.2...0.11.3>`_"
-#~ msgstr ""
 

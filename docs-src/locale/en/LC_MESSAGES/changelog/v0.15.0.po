@@ -2,7 +2,7 @@
 # Copyright (C) 2019, B2W Digital
 # This file is distributed under the same license as the Asyncworker
 # package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, 2020.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2021.
 #
 #, fuzzy
 msgid ""
@@ -96,24 +96,4 @@ msgid ""
 "Dessa forma suas métricas estarão vinculadas ao MetricsRegistry do "
 "asyncworker e serão expostas no response do ``/metrics``."
 msgstr ""
-
-#~ msgid ""
-#~ "Raw Commits: `0.14.1 <https://github.com/b2wdigital"
-#~ "/async-worker/compare/0.14.1...0.15.0>`_"
-#~ msgstr ""
-
-#~ msgid ""
-#~ "Tag: `0.15.0 <https://github.com/b2wdigital/async-"
-#~ "worker/releases/tag/0.15.0>`_"
-#~ msgstr ""
-
-#~ msgid ""
-#~ "`PR #201 <https://github.com/b2wdigital/async-"
-#~ "worker/pull/201>`_ prometheus integration"
-#~ msgstr ""
-
-#~ msgid ""
-#~ "Raw Commits: `0.15.0 <https://github.com/b2wdigital"
-#~ "/async-worker/compare/0.14.1...0.15.0>`_"
-#~ msgstr ""
 

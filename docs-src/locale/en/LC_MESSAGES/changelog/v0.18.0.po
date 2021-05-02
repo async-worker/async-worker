@@ -73,13 +73,3 @@ msgid ""
 " mesmo tempo."
 msgstr ""
 
-#~ msgid ""
-#~ "Changelog: `0.18.0 <https://github.com/b2wdigital"
-#~ "/async-worker/releases/tag/0.18.0>`_"
-#~ msgstr ""
-
-#~ msgid ""
-#~ "Raw Commits: `0.18.0 <https://github.com/b2wdigital"
-#~ "/async-worker/compare/0.17.0...0.18.0>`_"
-#~ msgstr ""
-

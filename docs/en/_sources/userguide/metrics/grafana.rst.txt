@@ -23,5 +23,4 @@ Dashboards oficiais
 Exemplos
 --------
 
-- `Visualização de métricas do Asyncworker com Grafana e Prometheus <https://github.com/b2wdigital/async-worker/tree/master/examples/docker-compose-asyncworker-with-metrics>`_
-
+- `Visualização de métricas do Asyncworker com Grafana e Prometheus <https://github.com/async-worker/async-worker/tree/master/examples/docker-compose-asyncworker-with-metrics>`_

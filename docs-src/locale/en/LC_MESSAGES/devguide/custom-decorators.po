@@ -2,14 +2,14 @@
 # Copyright (C) 2019, B2W Digital
 # This file is distributed under the same license as the Asyncworker
 # package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, 2020.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2021.
 #
 #, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: Asyncworker \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-04-17 14:19-0300\n"
+"POT-Creation-Date: 2021-05-02 13:04-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -109,30 +109,4 @@ msgid ""
 "Nesse caso, mesmo o decorator ``@other_deco()`` sendo o decorator no topo"
 " da lista de decorators, ele é capaz de retornar a assinatura original."
 msgstr ""
-
-#~ msgid ""
-#~ "É possível escrever seus próprios "
-#~ "decorators e aplicá-los a seus handlers,"
-#~ " junto com o decorator ``@app.route``. "
-#~ "No entando temos algumas regras:"
-#~ msgstr ""
-
-#~ msgid ""
-#~ "O decorator ``@app.route()`` deve estar "
-#~ "sempre no topo da lista de "
-#~ "decorators de um handler;"
-#~ msgstr ""
-
-#~ msgid ""
-#~ "A inner function deve receber apenas "
-#~ ":py:class:`asyncworker.http.wrapper.RequestWrapper`;"
-#~ msgstr ""
-
-#~ msgid "Essa inner function não deve ser decorada com ``@functools.wraps()``."
-#~ msgstr ""
-
-#~ msgid ""
-#~ "Escrevendo um decorator que precisa "
-#~ "conhece a assinatura original do handler"
-#~ msgstr ""
 
