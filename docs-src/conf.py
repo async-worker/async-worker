@@ -19,8 +19,8 @@ sys.path.insert(0, os.path.abspath(".."))
 # -- Project information -----------------------------------------------------
 
 project = "Asyncworker"
-copyright = "2019, B2W Digital"
-author = "B2W Digital"
+copyright = "2019, Dalton Barreto"
+author = "Dalton Barreto"
 
 
 # -- General configuration ---------------------------------------------------
@@ -30,7 +30,7 @@ author = "B2W Digital"
 # ones.
 extensions = ["sphinx.ext.autodoc", "sphinx.ext.viewcode", "sphinx_issues"]
 
-issues_github_path = "b2wdigital/async-worker"
+issues_github_path = "async-worker/async-worker"
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ["_templates"]

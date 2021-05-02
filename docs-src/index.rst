@@ -10,11 +10,11 @@ O projeto tem como objetivo ser um framework para escrever workers assíncronos 
  - Uma requisição HTTP
  - ...
 
-O projeto está no Github: https://github.com/b2wdigital/async-worker
+O projeto está no Github: https://github.com/async-worker/async-worker
 
- .. image:: https://api.codeclimate.com/v1/badges/887336d926f34f908b32/test_coverage
-     :alt: Test Coverage
-
+ .. image:: https://github.com/async-worker/async-worker/actions/workflows/main.yaml/badge.svg?branch=main
+ .. image:: https://api.codeclimate.com/v1/badges/887336d926f34f908b32/maintainability
+ .. image:: https://api.codeclimate.com/v1/badges/3119eaf8c7fee70af417/test_coverage
 
 Abaixo você econtra mais detalhes sobre como tudo isso funciona.
 

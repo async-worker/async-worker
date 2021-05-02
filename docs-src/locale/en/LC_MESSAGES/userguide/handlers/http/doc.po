@@ -2,14 +2,14 @@
 # Copyright (C) 2019, B2W Digital
 # This file is distributed under the same license as the Asyncworker
 # package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, 2020.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2021.
 #
 #, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: Asyncworker \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-04-24 22:52-0300\n"
+"POT-Creation-Date: 2021-05-02 13:04-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -324,92 +324,4 @@ msgid ""
 "``float``, ``bool``. Quando recebe ``bool`` valem as regras do `Pydantic "
 "<https://pydantic-docs.helpmanual.io/usage/types/#booleans>`_."
 msgstr ""
-
-#~ msgid "Regras para criação de um handler HTTP"
-#~ msgstr ""
-
-#~ msgid ""
-#~ "Deve sempre ser decorato com "
-#~ ":ref:`@app.route() <asyncworker-app-handler>`"
-#~ msgstr ""
-
-#~ msgid "Parametrização do decorator route() para handlers HTTP"
-#~ msgstr ""
-
-#~ msgid ""
-#~ "Para um handler HTTP deveremos passar"
-#~ " os seguintes parametros para o "
-#~ "decorator ``route()``:"
-#~ msgstr ""
-
-#~ msgid ""
-#~ "Lista de paths que devem estar na"
-#~ " Request HTTP para que esse handler"
-#~ " seja chamado;"
-#~ msgstr ""
-
-#~ msgid "``type=RouteTypes.HTTP``"
-#~ msgstr ""
-
-#~ msgid ""
-#~ "``methods`` sendo uma lista de métodos"
-#~ " HTTP permitidos para esse handler"
-#~ msgstr ""
-
-#~ msgid ""
-#~ "É possível receber em seu handler "
-#~ "parametros definidos no path da "
-#~ "requisição. Isso é feito través do "
-#~ "decorator :py:func:`asyncworker.http.decorators.parse_path`."
-#~ msgstr ""
-
-#~ msgid ""
-#~ "Quando decoramos nosso handler com esse"
-#~ " decorator instruímos o asyncworker a "
-#~ "tentar extrair parametros do path e "
-#~ "passar para nosso handler."
-#~ msgstr ""
-
-#~ msgid ""
-#~ "Nesse caso, como handler está dizendo"
-#~ " que precisa de um parametro chamado"
-#~ " ``_id`` temos que declarar um "
-#~ "parametro de mesmo nome no path da"
-#~ " Request. Depois que esse `match` for"
-#~ " feito passaremos o valor recebido no"
-#~ " path para o construtor do tipo "
-#~ "definido na assinatura do handler."
-#~ msgstr ""
-
-#~ msgid ""
-#~ "Então nesse caso faremos um simples "
-#~ "``int(<valor>)``. Esse resultado será passado"
-#~ " ao handler no parametro ``_id``, no"
-#~ " momento da chamada."
-#~ msgstr ""
-
-#~ msgid ""
-#~ "Essa implementação ainda é experimental "
-#~ "e servirá de fundação para uma "
-#~ "implementação mais complexa, talvez com "
-#~ "tipos mais complexos e sem a "
-#~ "necessidade de passar o decorator "
-#~ "explicitamente."
-#~ msgstr ""
-
-#~ msgid ""
-#~ "**Impotante**: Esse decorator deve sempre "
-#~ "ser o decorator \"mais próximo\" da "
-#~ "função real, ou seja, deve ser "
-#~ "sempre o primeiro decorator, logo acima"
-#~ " da função sendo decorada. Isso "
-#~ "porque o ``parse_path`` olha para a "
-#~ "assinatura do handler sendo decorado. Se"
-#~ " ele não for o primeiro decorator "
-#~ "ele não vai receber o handler real"
-#~ " como parâmetro e sim receberá o "
-#~ "retorno de outro decorator, que já "
-#~ "não reflete assinatura original do "
-#~ "handler."
-#~ msgstr ""
 

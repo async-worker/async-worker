@@ -2,14 +2,14 @@
 # Copyright (C) 2019, B2W Digital
 # This file is distributed under the same license as the Asyncworker
 # package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, 2020.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2021.
 #
 #, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: Asyncworker \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-04-17 14:19-0300\n"
+"POT-Creation-Date: 2021-05-02 14:26-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -45,6 +45,11 @@ msgstr ""
 msgid "Base: :class:`asyncworker.entrypoints.EntrypointInterface`"
 msgstr ""
 
+#: asyncworker.http.entrypoints.RequestParserAnnotationSpec:1
+#: asyncworker.http.wrapper.RequestWrapper:1 of
+msgid "Base: :class:`object`"
+msgstr ""
+
 #: ../../src/asyncworker/asyncworker.http.rst:24
 msgid "asyncworker.http.methods module"
 msgstr ""
@@ -58,14 +63,26 @@ msgid "An enumeration."
 msgstr ""
 
 #: ../../src/asyncworker/asyncworker.http.rst:32
+msgid "asyncworker.http.types module"
+msgstr ""
+
+#: asyncworker.http.types.BoolModel:1 of
+msgid "Base: :class:`pydantic.main.BaseModel`"
+msgstr ""
+
+#: asyncworker.http.types.PathParam:1 of
+msgid "Base: :class:`asyncworker.http.types.RequestParser`"
+msgstr ""
+
+#: asyncworker.http.types.RequestParser:1 of
+msgid "Base: :class:`typing.Generic`"
+msgstr ""
+
+#: ../../src/asyncworker/asyncworker.http.rst:40
 msgid "asyncworker.http.wrapper module"
 msgstr ""
 
-#: asyncworker.http.wrapper.RequestWrapper:1 of
-msgid "Base: :class:`object`"
-msgstr ""
-
-#: ../../src/asyncworker/asyncworker.http.rst:41
+#: ../../src/asyncworker/asyncworker.http.rst:49
 msgid "Module contents"
 msgstr ""
 
