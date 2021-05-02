@@ -2,7 +2,7 @@
 ================
 
 
-Tag: `0.10.1 <https://github.com/B2W-BIT/async-worker/releases/tag/0.10.1>`_
+Tag: `0.10.1 <https://github.com/async-worker/async-worker/releases/tag/0.10.1>`_
 
 2019-07-11
 
