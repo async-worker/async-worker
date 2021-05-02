@@ -1,5 +1,4 @@
 
-[![Build Status](https://travis-ci.org/b2wdigital/async-worker.svg?branch=master)](https://travis-ci.org/b2wdigital/async-worker)
 [![Test Coverage](https://api.codeclimate.com/v1/badges/3119eaf8c7fee70af417/test_coverage)](https://codeclimate.com/github/async-worker/async-worker/test_coverage)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/ambv/black)
 [![PyPI version](https://badge.fury.io/py/async-worker.svg)](https://badge.fury.io/py/async-worker)
