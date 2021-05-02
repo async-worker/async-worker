@@ -63,7 +63,7 @@
 <span id="asyncworker-metrics-aiohttp-resources-module"></span><h2>asyncworker.metrics.aiohttp_resources module<a class="headerlink" href="#module-asyncworker.metrics.aiohttp_resources" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
 <dt id="asyncworker.metrics.aiohttp_resources.http_metrics_middleware">
-<em class="property">async </em><code class="sig-prename descclassname">asyncworker.metrics.aiohttp_resources.</code><code class="sig-name descname">http_metrics_middleware</code><span class="sig-paren">(</span><em class="sig-param">request: aiohttp.web_request.Request, handler: Callable[aiohttp.web_request.Request, Awaitable[aiohttp.web_response.Response]]</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/asyncworker/metrics/aiohttp_resources.html#http_metrics_middleware"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#asyncworker.metrics.aiohttp_resources.http_metrics_middleware" title="Permalink to this definition">¶</a></dt>
+<em class="property">async </em><code class="sig-prename descclassname">asyncworker.metrics.aiohttp_resources.</code><code class="sig-name descname">http_metrics_middleware</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/asyncworker/metrics/aiohttp_resources.html#http_metrics_middleware"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#asyncworker.metrics.aiohttp_resources.http_metrics_middleware" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="function">
@@ -81,7 +81,7 @@
 <span id="asyncworker-metrics-buckets-module"></span><h2>asyncworker.metrics.buckets module<a class="headerlink" href="#module-asyncworker.metrics.buckets" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
 <dt id="asyncworker.metrics.buckets.exponential_buckets">
-<code class="sig-prename descclassname">asyncworker.metrics.buckets.</code><code class="sig-name descname">exponential_buckets</code><span class="sig-paren">(</span><em class="sig-param">start: float</em>, <em class="sig-param">factor: float</em>, <em class="sig-param">count: int</em><span class="sig-paren">)</span> &#x2192; List[float]<a class="reference internal" href="../../_modules/asyncworker/metrics/buckets.html#exponential_buckets"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#asyncworker.metrics.buckets.exponential_buckets" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">asyncworker.metrics.buckets.</code><code class="sig-name descname">exponential_buckets</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/asyncworker/metrics/buckets.html#exponential_buckets"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#asyncworker.metrics.buckets.exponential_buckets" title="Permalink to this definition">¶</a></dt>
 <dd><p>Creates ‘count’ buckets, where the lowest bucket has an upper bound of
 ‘start’ and each following bucket’s upper bound is ‘factor’ times the
 previous bucket’s upper bound. The final +Inf bucket is not counted
@@ -99,7 +99,7 @@ used for the buckets field of Histogram.</p>
 
 <dl class="function">
 <dt id="asyncworker.metrics.buckets.linear_buckets">
-<code class="sig-prename descclassname">asyncworker.metrics.buckets.</code><code class="sig-name descname">linear_buckets</code><span class="sig-paren">(</span><em class="sig-param">start: float</em>, <em class="sig-param">width: float</em>, <em class="sig-param">count: int</em><span class="sig-paren">)</span> &#x2192; List[float]<a class="reference internal" href="../../_modules/asyncworker/metrics/buckets.html#linear_buckets"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#asyncworker.metrics.buckets.linear_buckets" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">asyncworker.metrics.buckets.</code><code class="sig-name descname">linear_buckets</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/asyncworker/metrics/buckets.html#linear_buckets"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#asyncworker.metrics.buckets.linear_buckets" title="Permalink to this definition">¶</a></dt>
 <dd><p>Creates ‘count’ buckets, each ‘width’ wide, where the lowest bucket has an
 upper bound of ‘start’. The final +Inf bucket is not counted and is
 included in the returned slice. The returned list is meant to be used for

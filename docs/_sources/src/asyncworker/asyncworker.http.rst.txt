@@ -28,6 +28,14 @@ asyncworker.http.methods module
    :undoc-members:
    :show-inheritance:
 
+asyncworker.http.types module
+-----------------------------
+
+.. automodule:: asyncworker.http.types
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 asyncworker.http.wrapper module
 -------------------------------
 
