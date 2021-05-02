@@ -16,7 +16,7 @@ O projeto tem como objetivo ser um framework para escrever workers assíncronos 
  - Uma requisição HTTP
  - ...
 
- Documentação: https://b2wdigital.github.io/async-worker/
+ Documentação: https://async-worker.github.io/async-worker/
 
 
 # Exemplos rápidos

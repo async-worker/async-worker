@@ -9,14 +9,14 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Asyncworker \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-05-19 23:33-0300\n"
+"POT-Creation-Date: 2021-05-02 13:04-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.8.0\n"
+"Generated-By: Babel 2.9.0\n"
 
 #: ../../changelog/v0.14.1.rst:2
 msgid "0.14.1"
@@ -28,48 +28,48 @@ msgstr ""
 
 #: ../../changelog/v0.14.1.rst:7
 msgid ""
-"Tag: `0.14.1 <https://github.com/b2wdigital/async-"
+"Tag: `0.14.1 <https://github.com/async-worker/async-"
 "worker/releases/tag/0.14.1>`_"
 msgstr ""
 
 #: ../../changelog/v0.14.1.rst:10
 msgid ""
-"`#181 <https://github.com/b2wdigital/async-worker/pull/181>`_ Ajustar o "
-"link do changelog em todas as tags já criadas (`@daltonmatos "
+"`#181 <https://github.com/async-worker/async-worker/pull/181>`_ Ajustar o"
+" link do changelog em todas as tags já criadas (`@daltonmatos "
 "<https://github.com/daltonmatos>`_)"
 msgstr ""
 
 #: ../../changelog/v0.14.1.rst:11
 msgid ""
-"`#179 <https://github.com/b2wdigital/async-worker/issues/179>`_ Mover a "
-"documentação de atualização de código para cada uma das páginas de "
+"`#179 <https://github.com/async-worker/async-worker/issues/179>`_ Mover a"
+" documentação de atualização de código para cada uma das páginas de "
 "changelog (`@daltonmatos <https://github.com/daltonmatos>`_)"
 msgstr ""
 
 #: ../../changelog/v0.14.1.rst:12
 msgid ""
-"`#198 <https://github.com/b2wdigital/async-worker/pull/198>`_ Movendo "
+"`#198 <https://github.com/async-worker/async-worker/pull/198>`_ Movendo "
 "instruções de update para fora do userguide (`@daltonmatos "
 "<https://github.com/daltonmatos>`_)"
 msgstr ""
 
 #: ../../changelog/v0.14.1.rst:13
 msgid ""
-"`#200 <https://github.com/b2wdigital/async-worker/pull/200>`_ "
+"`#200 <https://github.com/async-worker/async-worker/pull/200>`_ "
 "Documentando breaking change da versao 0.11.0 (`@daltonmatos "
 "<https://github.com/daltonmatos>`_)"
 msgstr ""
 
 #: ../../changelog/v0.14.1.rst:14
 msgid ""
-"`#205 <https://github.com/b2wdigital/async-worker/pull/205>`_ "
+"`#205 <https://github.com/async-worker/async-worker/pull/205>`_ "
 "Feature/document test client (`@daltonmatos "
 "<https://github.com/daltonmatos>`_)"
 msgstr ""
 
 #: ../../changelog/v0.14.1.rst:16
 msgid ""
-"Raw Commits: `0.14.1 <https://github.com/b2wdigital/async-"
+"Raw Commits: `0.14.1 <https://github.com/async-worker/async-"
 "worker/compare/0.14.0...0.14.1>`_"
 msgstr ""
 
@@ -186,5 +186,50 @@ msgstr ""
 #~ msgid ""
 #~ "Tag: `0.14.1 <https://github.com/b2wdigital/async-"
 #~ "worker/releases/tag/0.14.1c>`_"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Tag: `0.14.1 <https://github.com/b2wdigital/async-"
+#~ "worker/releases/tag/0.14.1>`_"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "`#181 <https://github.com/b2wdigital/async-"
+#~ "worker/pull/181>`_ Ajustar o link do "
+#~ "changelog em todas as tags já "
+#~ "criadas (`@daltonmatos <https://github.com/daltonmatos>`_)"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "`#179 <https://github.com/b2wdigital/async-"
+#~ "worker/issues/179>`_ Mover a documentação de"
+#~ " atualização de código para cada uma"
+#~ " das páginas de changelog (`@daltonmatos"
+#~ " <https://github.com/daltonmatos>`_)"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "`#198 <https://github.com/b2wdigital/async-"
+#~ "worker/pull/198>`_ Movendo instruções de "
+#~ "update para fora do userguide "
+#~ "(`@daltonmatos <https://github.com/daltonmatos>`_)"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "`#200 <https://github.com/b2wdigital/async-"
+#~ "worker/pull/200>`_ Documentando breaking change "
+#~ "da versao 0.11.0 (`@daltonmatos "
+#~ "<https://github.com/daltonmatos>`_)"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "`#205 <https://github.com/b2wdigital/async-"
+#~ "worker/pull/205>`_ Feature/document test client "
+#~ "(`@daltonmatos <https://github.com/daltonmatos>`_)"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Raw Commits: `0.14.1 <https://github.com/b2wdigital"
+#~ "/async-worker/compare/0.14.0...0.14.1>`_"
 #~ msgstr ""
 

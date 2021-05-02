@@ -144,10 +144,10 @@
 </li>
       <li><a href="src/asyncworker/asyncworker.html#module-asyncworker.entrypoints">asyncworker.entrypoints (módulo)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="src/asyncworker/asyncworker.html#module-asyncworker.exceptions">asyncworker.exceptions (módulo)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="src/asyncworker/asyncworker.http.html#module-asyncworker.http">asyncworker.http (módulo)</a>
 </li>
       <li><a href="src/asyncworker/asyncworker.http.html#module-asyncworker.http.decorators">asyncworker.http.decorators (módulo)</a>
@@ -155,6 +155,8 @@
       <li><a href="src/asyncworker/asyncworker.http.html#module-asyncworker.http.entrypoints">asyncworker.http.entrypoints (módulo)</a>
 </li>
       <li><a href="src/asyncworker/asyncworker.http.html#module-asyncworker.http.methods">asyncworker.http.methods (módulo)</a>
+</li>
+      <li><a href="src/asyncworker/asyncworker.http.html#module-asyncworker.http.types">asyncworker.http.types (módulo)</a>
 </li>
       <li><a href="src/asyncworker/asyncworker.http.html#module-asyncworker.http.wrapper">asyncworker.http.wrapper (módulo)</a>
 </li>
@@ -238,10 +240,12 @@
 </li>
       <li><a href="src/asyncworker/asyncworker.rabbitmq.html#asyncworker.rabbitmq.message.RabbitMQMessage.body">body() (asyncworker.rabbitmq.message.RabbitMQMessage property)</a>
 </li>
-      <li><a href="src/asyncworker/asyncworker.html#asyncworker.bucket.Bucket">Bucket (classe em asyncworker.bucket)</a>
+      <li><a href="src/asyncworker/asyncworker.http.html#asyncworker.http.types.BoolModel">BoolModel (classe em asyncworker.http.types)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="src/asyncworker/asyncworker.html#asyncworker.bucket.Bucket">Bucket (classe em asyncworker.bucket)</a>
+</li>
       <li><a href="src/asyncworker/asyncworker.html#asyncworker.bucket.BucketFullException">BucketFullException</a>
 </li>
       <li><a href="src/asyncworker/asyncworker.html#asyncworker.options.DefaultValues.BULK_FLUSH_INTERVAL">BULK_FLUSH_INTERVAL (atributo asyncworker.options.DefaultValues)</a>
@@ -372,12 +376,18 @@
 </li>
       <li><a href="src/asyncworker/asyncworker.signals.html#asyncworker.signals.base.Freezable">Freezable (classe em asyncworker.signals.base)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="src/asyncworker/asyncworker.html#asyncworker.app.App.freeze">freeze() (método asyncworker.app.App)</a>
 
       <ul>
         <li><a href="src/asyncworker/asyncworker.signals.html#asyncworker.signals.base.Freezable.freeze">(método asyncworker.signals.base.Freezable)</a>
+</li>
+      </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="src/asyncworker/asyncworker.http.html#asyncworker.http.types.PathParam.from_request">from_request() (método de classe asyncworker.http.types.PathParam)</a>
+
+      <ul>
+        <li><a href="src/asyncworker/asyncworker.http.html#asyncworker.http.types.RequestParser.from_request">(método de classe asyncworker.http.types.RequestParser)</a>
 </li>
       </ul></li>
       <li><a href="src/asyncworker/asyncworker.signals.html#asyncworker.signals.base.Freezable.frozen">frozen() (asyncworker.signals.base.Freezable property)</a>
@@ -606,6 +616,8 @@
 </li>
       <li><a href="src/asyncworker/asyncworker.http.html#asyncworker.http.entrypoints.HTTPEntryPointImpl.patch">patch() (método asyncworker.http.entrypoints.HTTPEntryPointImpl)</a>
 </li>
+      <li><a href="src/asyncworker/asyncworker.http.html#asyncworker.http.types.PathParam">PathParam (classe em asyncworker.http.types)</a>
+</li>
       <li><a href="src/asyncworker/asyncworker.html#asyncworker.time.perf_counter_ms">perf_counter_ms() (no módulo asyncworker.time)</a>
 </li>
       <li><a href="src/asyncworker/asyncworker.easyqueue.html#asyncworker.easyqueue.queue.DeliveryModes.PERSISTENT">PERSISTENT (atributo asyncworker.easyqueue.queue.DeliveryModes)</a>
@@ -614,10 +626,10 @@
 </li>
       <li><a href="src/asyncworker/asyncworker.html#asyncworker.bucket.Bucket.pop_all">pop_all() (método asyncworker.bucket.Bucket)</a>
 </li>
-      <li><a href="src/asyncworker/asyncworker.http.html#asyncworker.http.methods.HTTPMethods.POST">POST (atributo asyncworker.http.methods.HTTPMethods)</a>
-</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="src/asyncworker/asyncworker.http.html#asyncworker.http.methods.HTTPMethods.POST">POST (atributo asyncworker.http.methods.HTTPMethods)</a>
+</li>
       <li><a href="src/asyncworker/asyncworker.http.html#asyncworker.http.entrypoints.HTTPEntryPointImpl.post">post() (método asyncworker.http.entrypoints.HTTPEntryPointImpl)</a>
 </li>
       <li><a href="src/asyncworker/asyncworker.rabbitmq.html#asyncworker.rabbitmq.message.RabbitMQMessage.process_exception">process_exception() (método asyncworker.rabbitmq.message.RabbitMQMessage)</a>
@@ -672,16 +684,18 @@
         <li><a href="src/asyncworker/asyncworker.rabbitmq.html#asyncworker.rabbitmq.message.RabbitMQMessage.reject">(método asyncworker.rabbitmq.message.RabbitMQMessage)</a>
 </li>
       </ul></li>
+      <li><a href="src/asyncworker/asyncworker.http.html#asyncworker.http.types.RequestParser">RequestParser (classe em asyncworker.http.types)</a>
+</li>
       <li><a href="src/asyncworker/asyncworker.http.html#asyncworker.http.entrypoints.RequestParserAnnotationSpec">RequestParserAnnotationSpec (classe em asyncworker.http.entrypoints)</a>
 </li>
       <li><a href="src/asyncworker/asyncworker.http.html#asyncworker.http.wrapper.RequestWrapper">RequestWrapper (classe em asyncworker.http.wrapper)</a>
 </li>
       <li><a href="src/asyncworker/asyncworker.html#asyncworker.options.Actions.REQUEUE">REQUEUE (atributo asyncworker.options.Actions)</a>
 </li>
-      <li><a href="src/asyncworker/asyncworker.types.html#asyncworker.types.resolver.ArgResolver.resolve_param">resolve_param() (método asyncworker.types.resolver.ArgResolver)</a>
-</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="src/asyncworker/asyncworker.types.html#asyncworker.types.resolver.ArgResolver.resolve_param">resolve_param() (método asyncworker.types.resolver.ArgResolver)</a>
+</li>
       <li><a href="src/asyncworker/asyncworker.html#asyncworker.routes.Route">Route (classe em asyncworker.routes)</a>
 </li>
       <li><a href="src/asyncworker/asyncworker.html#asyncworker.app.App.route">route() (método asyncworker.app.App)</a>
@@ -796,6 +810,8 @@
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="src/asyncworker/asyncworker.http.html#asyncworker.http.types.RequestParser.unpack">unpack() (método asyncworker.http.types.RequestParser)</a>
+</li>
       <li><a href="src/asyncworker/asyncworker.html#asyncworker.bucket.Bucket.used">used() (asyncworker.bucket.Bucket property)</a>
 </li>
   </ul></td>

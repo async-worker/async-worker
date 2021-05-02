@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Asyncworker \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-04-24 22:52-0300\n"
+"POT-Creation-Date: 2021-05-02 13:04-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -124,7 +124,9 @@ msgid ""
 msgstr ""
 
 #: asyncworker.connections.ConnectionsMapping:1 of
-msgid "Base: :class:`typing.Mapping`, :class:`asyncworker.signals.base.Freezable`"
+msgid ""
+"Base: :class:`collections.abc.Mapping`, :class:`typing.Generic`, "
+":class:`asyncworker.signals.base.Freezable`"
 msgstr ""
 
 #: asyncworker.connections.ConnectionsMapping:1 of

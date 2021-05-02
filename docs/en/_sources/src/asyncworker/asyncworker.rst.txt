@@ -13,6 +13,7 @@ Subpackages
    asyncworker.signals
    asyncworker.testing
    asyncworker.types
+   asyncworker.typing
 
 Submodules
 ----------

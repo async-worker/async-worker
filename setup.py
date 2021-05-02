@@ -10,7 +10,7 @@ setup(
     description="Microframework para escrever workers assíncronos em Python",
     long_description=open(f"{here}/README.md").read(),
     long_description_content_type="text/markdown",
-    url="https://github.com/b2wdigital/async-worker",
+    url="https://github.com/async-worker/async-worker",
     # Author details
     author="Dalton Barreto",
     author_email="daltonmatos@gmail.com",

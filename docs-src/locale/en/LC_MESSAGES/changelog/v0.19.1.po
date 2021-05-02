@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Asyncworker \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-04-25 17:22-0300\n"
+"POT-Creation-Date: 2021-05-02 13:04-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -28,13 +28,13 @@ msgstr ""
 
 #: ../../changelog/v0.19.1.rst:7
 msgid ""
-"Tag: `0.19.1 <https://github.com/b2wdigital/async-"
+"Tag: `0.19.1 <https://github.com/async-worker/async-"
 "worker/releases/tag/0.19.1>`_"
 msgstr ""
 
 #: ../../changelog/v0.19.1.rst:9
 msgid ""
-"Raw Commits: `0.19.1 <https://github.com/b2wdigital/async-"
+"Raw Commits: `0.19.1 <https://github.com/async-worker/async-"
 "worker/compare/0.19.0...0.19.1>`_"
 msgstr ""
 
@@ -48,4 +48,14 @@ msgid ""
 "correta de receber parametros do path do request é usando o typehint "
 ":ref:`PathParam[T] <handler-path-param>`."
 msgstr ""
+
+#~ msgid ""
+#~ "Tag: `0.19.1 <https://github.com/b2wdigital/async-"
+#~ "worker/releases/tag/0.19.1>`_"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Raw Commits: `0.19.1 <https://github.com/b2wdigital"
+#~ "/async-worker/compare/0.19.0...0.19.1>`_"
+#~ msgstr ""
 
