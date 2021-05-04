@@ -6,9 +6,7 @@
 [![PyPI version](https://badge.fury.io/py/async-worker.svg)](https://badge.fury.io/py/async-worker)
 
 
-<img src="async-worker.svg"/>
-
-![Logo](async-worker.svg)
+![Logo](./logo.png)
 
 # async-worker
 
