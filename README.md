@@ -6,8 +6,11 @@
 [![PyPI version](https://badge.fury.io/py/async-worker.svg)](https://badge.fury.io/py/async-worker)
 
 
-![PyPI version](./logo.jpg)
-# O projeto
+<img src="async-worker.svg"/>
+
+![Logo](async-worker.svg)
+
+# async-worker
 
 O projeto tem como objetivo ser um framework para escrever workers assíncronos em python. Por worker entende-se qualquer aplicação que rode por tempo indeterminado e que receba estímulos de várias origens diferentes. Essas orignes podem ser:
 
