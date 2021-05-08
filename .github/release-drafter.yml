@@ -1,4 +1,6 @@
+name-template: '$RESOLVED_VERSION'
 tag-template: '$RESOLVED_VERSION'
+change-template: '- #$NUMBER $TITLE (@$AUTHOR)'
 categories:
   - title: 'Mudanças incompatíveis'
     label: 'breaking-change'
@@ -8,7 +10,6 @@ categories:
     label: 'feature'
   - title: 'Documentação'
     label: 'docs'
-change-template: '- #$NUMBER $TITLE (@$AUTHOR)'
 version-resolver:
   minor:
     labels:
@@ -22,6 +23,6 @@ template: |
 
   $CHANGES
 
+  **Como atualizar para $RESOLVED_VERSION**: https://async-worker.github.io/async-worker/changelog/v$RESOLVED_VERSION.html
   Docs: https://async-worker.github.io/async-worker/
   Commits: https://github.com/async-worker/async-worker/compare/$PREVIOUS_TAG...$RESOLVED_VERSION
-  Tag: https://github.com/async-worker/async-worker/releases/tag/$RESOLVED_VERSION
