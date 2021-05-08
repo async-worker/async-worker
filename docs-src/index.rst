@@ -21,7 +21,6 @@ Abaixo você econtra mais detalhes sobre como tudo isso funciona.
    :maxdepth: 3
    :titlesonly:
 
-   intro.rst
    incompat.rst
    versions.rst
    update.rst
