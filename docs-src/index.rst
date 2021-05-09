@@ -25,7 +25,7 @@ Abaixo você econtra mais detalhes sobre como tudo isso funciona.
 
    incompat.rst
    versions.rst
-   update.rst
+   updateguide/index.rst
    userguide/index.rst
    devguide/index.rst
    changelog/index.rst
