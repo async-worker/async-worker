@@ -1,5 +1,5 @@
-0.11.0
-================
+Atualizando para 0.11.0
+=======================
 
 
 Tag: `0.11.0 <https://github.com/async-worker/async-worker/releases/tag/0.11.0>`_
@@ -54,4 +54,3 @@ A nova forma de passar as credenciais do RabbitMQ para sua asyncworker App é as
 
 
 E a partir daqui o uso do ``app`` é igual ao que sempre foi.
-

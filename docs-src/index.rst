@@ -28,7 +28,6 @@ Abaixo você econtra mais detalhes sobre como tudo isso funciona.
    updateguide/index.rst
    userguide/index.rst
    devguide/index.rst
-   changelog/index.rst
 
 
 Indices and tables
