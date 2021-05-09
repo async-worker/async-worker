@@ -20,7 +20,7 @@ O projeto está no Github: https://github.com/async-worker/async-worker
 Abaixo você econtra mais detalhes sobre como tudo isso funciona.
 
 .. toctree::
-   :maxdepth: 3
+   :maxdepth: 1
    :titlesonly:
 
    incompat.rst
