@@ -1,5 +1,5 @@
 # SOME DESCRIPTIVE TITLE.
-# Copyright (C) 2019, B2W Digital
+# Copyright (C) 2019, Dalton Barreto
 # This file is distributed under the same license as the Asyncworker
 # package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, 2021.
@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Asyncworker \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-05-02 13:04-0300\n"
+"POT-Creation-Date: 2021-05-08 21:10-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -19,18 +19,30 @@ msgstr ""
 "Generated-By: Babel 2.9.0\n"
 
 #: ../../update.rst:2
-msgid "Atualizando sua App Asyncworker"
+msgid "Atualizando sua app Asyncworker"
 msgstr ""
 
 #: ../../update.rst:4
 msgid ""
-"Para atualizar o seu projeto o melhor a fazer é consultar o changelog de "
-"cada uma das vesões."
+"Essa página descreve os passos necessários para que seja possível você "
+"atualizar seu projeto async-worker para uma versão mais atual."
 msgstr ""
 
 #: ../../update.rst:6
 msgid ""
-"A lista de todas as versões com cada uma de suas mudanças está :ref:`aqui"
-" <changelog>`."
+"O primeiro ponto de atenção é entender como o async-worker é versionado e"
+" isso está descrito com detalhes :ref:`aqui <versioning>`."
+msgstr ""
+
+#: ../../update.rst:8
+msgid ""
+"Os detalhes de cada release estão no `Github <https://github.com/async-"
+"worker/async-worker/releases>`_."
+msgstr ""
+
+#: ../../update.rst:10
+msgid ""
+"Aqui estão descritos os passos necessários para atualizar para cada um "
+"das versões quem trazem mudanças incompatíveis."
 msgstr ""
 

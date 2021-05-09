@@ -1,0 +1,10 @@
+Atualizando para 0.14.0
+=======================
+
+Changelog: `0.14.0 <https://github.com/async-worker/async-worker/releases/tag/0.14.0>`_
+
+
+A dependência do pydantic foi alterada para ser ``>=0.32.2, <2.0``. Isso significa que se no seu projeto você está confiando no pydantic
+trazido pelo asyncworker, é preciso validar se a nova versão do pydantic é totalmente compatível com o seu projeto.
+
+Se o seu projeto tem o pydantic explicitamente definido nas dependências e está pinado, nada muda.

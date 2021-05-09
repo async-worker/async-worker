@@ -1,0 +1,48 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2019, Dalton Barreto
+# This file is distributed under the same license as the Asyncworker
+# package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2021.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: Asyncworker \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2021-05-08 21:23-0300\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.9.0\n"
+
+#: ../../updateguide/index.rst:4
+msgid "Atualizando sua app Asyncworker"
+msgstr ""
+
+#: ../../updateguide/index.rst:6
+msgid ""
+"Essa página descreve os passos necessários para que seja possível você "
+"atualizar seu projeto async-worker para uma versão mais atual."
+msgstr ""
+
+#: ../../updateguide/index.rst:8
+msgid ""
+"O primeiro ponto de atenção é entender como o async-worker é versionado e"
+" isso está descrito com detalhes :ref:`aqui <versioning>`."
+msgstr ""
+
+#: ../../updateguide/index.rst:10
+msgid ""
+"Os detalhes de cada release estão no `Github <https://github.com/async-"
+"worker/async-worker/releases>`_."
+msgstr ""
+
+#: ../../updateguide/index.rst:12
+msgid ""
+"Aqui estão descritos os passos necessários para atualizar para cada um "
+"das versões quem trazem mudanças incompatíveis."
+msgstr ""
+
