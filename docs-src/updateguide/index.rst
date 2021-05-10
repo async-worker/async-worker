@@ -1,6 +1,6 @@
 .. _updateguide:
 
-Atualizando sua app Asyncworker
+Atualizando sua app Async-worker
 ===============================
 
 Essa página descreve os passos necessários para que seja possível você atualizar seu projeto async-worker para uma versão mais atual.

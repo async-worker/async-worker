@@ -21,7 +21,7 @@ O projeto tem como objetivo ser um framework para escrever workers assíncronos 
 
 # Exemplos rápidos
 
-Abaixo estão alguns exemplos bem simples que dão uma ideia do projeto e de como fica um código escrito com asyncworker.
+Abaixo estão alguns exemplos bem simples que dão uma ideia do projeto e de como fica um código escrito com async-worker.
 
 ## Handler HTTP
 
