@@ -1,0 +1,60 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2019, Dalton Barreto
+# This file is distributed under the same license as the Asyncworker
+# package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2021.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: Asyncworker \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2021-05-08 21:15-0300\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.9.0\n"
+
+#: ../../updateguide/v0.19.0.rst:2
+msgid "Atualizando para 0.19.0"
+msgstr ""
+
+#: ../../updateguide/v0.19.0.rst:4
+msgid ""
+"Changelog: `0.19.0 <https://github.com/async-worker/async-"
+"worker/releases/tag/0.19.0>`_"
+msgstr ""
+
+#: ../../updateguide/v0.19.0.rst:6
+msgid ""
+"Nessa versão, corrigimos um comportamento indesejado nas métricas "
+"relacionadas a rotas HTTP."
+msgstr ""
+
+#: ../../updateguide/v0.19.0.rst:8
+msgid "Um handler dinâmico declarado assim:"
+msgstr ""
+
+#: ../../updateguide/v0.19.0.rst:26
+msgid ""
+"Ao receber chamadas como ``/person/1``, ``/person/2``, ``/person/3``, "
+"métricas eram contabilizadas considerados como paths ``/person/1``, "
+"``/person/2`` e ``/person/3``, fazendo com que não tivéssemos controle "
+"sobre a quantidade de métricas exportadas, `o que é uma má prática "
+"<https://prometheus.io/docs/practices/naming/#labels>`_."
+msgstr ""
+
+#: ../../updateguide/v0.19.0.rst:28
+msgid ""
+"A partir dessa versão, as métricas HTTP expostas em rotas dinâmicas "
+"exportam path igual a rota definida pelo usuário (nesse caso, "
+"``/person/{_id}``), garantindo uma cardinalidade previsível."
+msgstr ""
+
+#: ../../updateguide/v0.19.0.rst:34
+msgid "Deve ser substituído por:"
+msgstr ""
+

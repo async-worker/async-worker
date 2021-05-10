@@ -1,13 +1,15 @@
-Compatibilidade de Versões do asyncowker
-========================================
+.. _versioning:
+
+Compatibilidade de Versões do asyncworker
+==========================================
 
 O versionamento do projeto segue a mesma linha do `Semver <https://semver.org/>`_ mas com uma peculiaridade. Como esse é um projeto que ainda está em pleno desenvolvimento ainda falta um longo caminho até chegarmos a uma versão ``1.0``.
 
-Por isso que fazemos é o seguinte: Mudamos apenas os valores da ``MINOR`` e ``PATCH``.
+Por isso, o que fazemos é o seguinte: Mudamos apenas os valores da ``MINOR`` e ``PATCH``.
 
 Quando mudamos apenas a ``PATCH`` version significa que o código novo é retro-compatível com o antigo, ou seja, pode ser atualizado sem problemas. Sem precisar olhar changelogs.
 
-Quando mudamos a ``MINOR`` version significa que o changelog requer atenção. Seja um mudança simples ou uma mudança mais complexa que vai demandar ajuster no seu código é recomendado que você olhe o changelog da nova versão para saber se você precisa ajustar alguma coisa.
+Quando mudamos a ``MINOR`` version significa que o changelog requer atenção. Seja um mudança simples ou uma mudança mais complexa que vai demandar ajustes no seu código. É recomendado que você olhe :ref:`as instruções de atualização <updateguide>` para saber se você precisa ajustar alguma coisa.
 
 Lembrando que a formação da versão é ``0.MINOR.PATCH``.
 

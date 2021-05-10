@@ -1,0 +1,79 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2019, Dalton Barreto
+# This file is distributed under the same license as the Asyncworker
+# package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2021.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: Asyncworker \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2021-05-08 23:36-0300\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.9.0\n"
+
+#: ../../updateguide/v0.15.0.rst:2
+msgid "Atualizando para 0.15.0"
+msgstr ""
+
+#: ../../updateguide/v0.15.0.rst:4
+msgid ""
+"Changelog: `0.15.0 <https://github.com/async-worker/async-"
+"worker/releases/tag/0.15.0>`_"
+msgstr ""
+
+#: ../../updateguide/v0.15.0.rst:7
+msgid ""
+"A partir dessa versão é possível exportar métricas no formato do  "
+"`Prometheus <https://prometheus.io/docs/instrumenting/exposition_formats"
+"/#text-based-format>`_. Mais detalhes na documentação sobre "
+":ref:`Métricas <handler-metrics>`."
+msgstr ""
+
+#: ../../updateguide/v0.15.0.rst:10
+msgid ""
+"Isso significa que o asyncworker pode adicionar uma rota HTTP com path "
+"``/metrics`` (valor padão da config "
+":py:class:`settings.METRICS_ROUTE_PATH <asyncworker.conf.Settings>`. Essa"
+" configuração está ligada por padrão e pode ser desligada com a ENV VAR "
+"``ASYNCWORKER_METRICS_ROUTE_ENABLED=0``. Mais detalhes na documentação "
+"sobre :ref:`Configuração de métricas <metrics-config>`."
+msgstr ""
+
+#: ../../updateguide/v0.15.0.rst:13
+msgid ""
+"Se a usa aplicação já exporta métricas e faz isso usando as classes do "
+"``prometheus_client`` o ideal é que você ajuste seu código para que faça "
+"uso das classes expostas pelo asyncworker (``asyncworker.metrics.*``). Se"
+" seu código importa as métricas dessa forma:"
+msgstr ""
+
+#: ../../updateguide/v0.15.0.rst:19
+msgid "deve mudar para:"
+msgstr ""
+
+#: ../../updateguide/v0.15.0.rst:26
+msgid ""
+"As classes de métricas do asyncworker podem ser usadas como `drop-in "
+"replacement` para as classes expostas pelo ``prometheus_client``."
+msgstr ""
+
+#: ../../updateguide/v0.15.0.rst:29
+msgid ""
+"Se você faz uso de classes que ainda não são expostas pelo asyncworker, "
+"como por exemplo ``Enum, Summary, Info`` deve fazer a instanciação delas "
+"dessa forma:"
+msgstr ""
+
+#: ../../updateguide/v0.15.0.rst:39
+msgid ""
+"Dessa forma suas métricas estarão vinculadas ao MetricsRegistry do "
+"asyncworker e serão expostas no response do ``/metrics``."
+msgstr ""
+

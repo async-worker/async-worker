@@ -1,5 +1,5 @@
 # SOME DESCRIPTIVE TITLE.
-# Copyright (C) 2019, B2W Digital
+# Copyright (C) 2019, Dalton Barreto
 # This file is distributed under the same license as the Asyncworker
 # package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, 2021.
@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Asyncworker \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-05-02 13:04-0300\n"
+"POT-Creation-Date: 2021-05-08 20:47-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -42,7 +42,7 @@ msgstr ""
 
 #: ../../incompat.rst:14
 msgid ""
-"Essa incompatibilidade do aiologger está sendo tratada na issue `#35 "
+"Essa incompatibilidade do aiologger está descrita na issue `#35 "
 "<https://github.com/b2wdigital/aiologger/issues/35>`_. O projeto tem como"
 " objetivo ser um framework para escrever workers assíncronos em python. "
 "Por worker entende-se qualquer aplicação que rode por tempo indeterminado"

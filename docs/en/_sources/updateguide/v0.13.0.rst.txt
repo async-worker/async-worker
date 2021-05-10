@@ -1,0 +1,11 @@
+Atualizando para 0.13.0
+=======================
+
+Changelog: `0.13.0 <https://github.com/async-worker/async-worker/releases/tag/0.13.0>`_
+
+Mudança de comportamento no acesso a vhosts RabbitMQ. Antes dessa versão o async-worker fazia ``lstrip()`` no nome do vhost
+de todas as conexões. Isso fazia com que fosse impossível acessar um vhost de nome ``/foo`` pois mesmo você passando o nome
+correto do seu vhost (``/foo``) o async-worker tentava acessar ``foo``.
+
+Isso significa que: Se você estiver passando o nome do seu vhost para o async-worker **com** a ``/`` inicial você deve ajustar
+essa passagem para ser **sem** a ``/``.

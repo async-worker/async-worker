@@ -1,0 +1,11 @@
+Atualizando para 0.12.0
+=======================
+
+Changelog: `0.12.0 <https://github.com/async-worker/async-worker/releases/tag/0.12.0>`_
+
+Nessa versão atualizamos duas dependencias:
+
+- pydantic vai para versão ``0.32.2``
+- aiologger vai para versão ``0.5.0``
+
+É recomendado que você teste sua aplicação com essas novas versões.
