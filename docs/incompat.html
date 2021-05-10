@@ -17,7 +17,7 @@
     <link rel="index" title="Índice" href="genindex.html" />
     <link rel="search" title="Buscar" href="search.html" />
     <link rel="next" title="Compatibilidade de Versões do asyncowker" href="versions.html" />
-    <link rel="prev" title="Introdução" href="intro.html" />
+    <link rel="prev" title="Bem vindos à documentação oficial do projeto Asyncworker" href="index.html" />
    
   <link rel="stylesheet" href="_static/custom.css" type="text/css" />
   
@@ -40,7 +40,7 @@
 </div>
 <p>Atualmente, pelo fato o asyncworker usar o <a class="reference external" href="https://github.com/b2wdigital/aiologger">aiologger</a>, ele é incompatível com apps que usam <strong>múltiplos</strong> loops de evento. Ou seja, se sua app cria um novo loop e substitui o loop anterior isso causará um problema com os logs gerados pelo asyncworker (via aiologger).</p>
 <p>No geral, as aplicações assíncronas usam apenas um loop de evento durante todo o seu ciclo de vida. Isso significa que a não se que você esteja escrevendo um código com um comportamento muito específico (que dependa da renovação do loop de eventos) você não terá maiores problemas em usar o asyncworker.</p>
-<p>Essa incompatibilidade do aiologger está sendo tratada na issue <a class="reference external" href="https://github.com/b2wdigital/aiologger/issues/35">#35</a>.
+<p>Essa incompatibilidade do aiologger está descrita na issue <a class="reference external" href="https://github.com/b2wdigital/aiologger/issues/35">#35</a>.
 O projeto tem como objetivo ser um framework para escrever workers assíncronos em python. Por worker entende-se qualquer aplicação que rode por tempo indeterminado e que receba estímulos de várias origens diferentes. Essas orignes podem ser:</p>
 </section>
 
@@ -62,7 +62,6 @@ O projeto tem como objetivo ser um framework para escrever workers assíncronos 
 
 <h3>Navegação</h3>
 <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="intro.html">Introdução</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Incompatibilidades</a><ul class="simple">
 </ul>
 </li>
@@ -77,7 +76,7 @@ O projeto tem como objetivo ser um framework para escrever workers assíncronos 
 <h3>Related Topics</h3>
 <ul>
   <li><a href="index.html">Documentation overview</a><ul>
-      <li>Previous: <a href="intro.html" title="capítulo anterior">Introdução</a></li>
+      <li>Previous: <a href="index.html" title="capítulo anterior">Bem vindos à documentação oficial do projeto Asyncworker</a></li>
       <li>Next: <a href="versions.html" title="próximo capítulo">Compatibilidade de Versões do asyncowker</a></li>
   </ul></li>
 </ul>

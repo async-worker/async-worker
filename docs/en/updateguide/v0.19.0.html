@@ -1,0 +1,140 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+  <head>
+    <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17: http://docutils.sourceforge.net/" />
+
+    <title>Atualizando para 0.19.0 &#8212; Asyncworker  documentation</title>
+    <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/language_data.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Guia de uso" href="../userguide/index.html" />
+    <link rel="prev" title="Atualizando para 0.18.0" href="v0.18.0.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <section id="atualizando-para-0-19-0">
+<h1>Atualizando para 0.19.0<a class="headerlink" href="#atualizando-para-0-19-0" title="Permalink to this headline">¶</a></h1>
+<p>Changelog: <a class="reference external" href="https://github.com/async-worker/async-worker/releases/tag/0.19.0">0.19.0</a></p>
+<p>Nessa versão, corrigimos um comportamento indesejado nas métricas relacionadas a rotas HTTP.</p>
+<p>Um handler dinâmico declarado assim:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">aiohttp</span> <span class="kn">import</span> <span class="n">web</span>
+
+<span class="kn">from</span> <span class="nn">asyncworker</span> <span class="kn">import</span> <span class="n">App</span>
+<span class="kn">from</span> <span class="nn">asyncworker.decorators</span> <span class="kn">import</span> <span class="n">parse_path</span>
+
+<span class="n">app</span> <span class="o">=</span> <span class="n">App</span><span class="p">()</span>
+
+<span class="nd">@app</span><span class="o">.</span><span class="n">http</span><span class="o">.</span><span class="n">get</span><span class="p">([</span><span class="s2">&quot;/person/</span><span class="si">{_id}</span><span class="s2">&quot;</span><span class="p">])</span>
+<span class="nd">@parse_path</span>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">get_person_by_id</span><span class="p">(</span><span class="n">_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+    <span class="n">person</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="n">_id</span><span class="p">}</span>
+    <span class="k">return</span> <span class="n">web</span><span class="o">.</span><span class="n">json_response</span><span class="p">(</span><span class="n">person</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Ao receber chamadas como <code class="docutils literal notranslate"><span class="pre">/person/1</span></code>, <code class="docutils literal notranslate"><span class="pre">/person/2</span></code>, <code class="docutils literal notranslate"><span class="pre">/person/3</span></code>, métricas eram contabilizadas considerados como paths <code class="docutils literal notranslate"><span class="pre">/person/1</span></code>, <code class="docutils literal notranslate"><span class="pre">/person/2</span></code> e <code class="docutils literal notranslate"><span class="pre">/person/3</span></code>, fazendo com que não tivéssemos controle sobre a quantidade de métricas exportadas, <a class="reference external" href="https://prometheus.io/docs/practices/naming/#labels">o que é uma má prática</a>.</p>
+<p>A partir dessa versão, as métricas HTTP expostas em rotas dinâmicas exportam path igual a rota definida pelo usuário (nesse caso, <code class="docutils literal notranslate"><span class="pre">/person/{_id}</span></code>), garantindo uma cardinalidade previsível.</p>
+<div class="highlight-prometheus notranslate"><div class="highlight"><pre><span></span>increase(asyncworker_http_request_duration_ms_count{path=~&quot;(/person/1|/person/2|/person/3)&quot;}[1m])
+</pre></div>
+</div>
+<p>Deve ser substituído por:</p>
+<div class="highlight-prometheus notranslate"><div class="highlight"><pre><span></span>increase(asyncworker_http_request_duration_ms_count{path=~&quot;/person/{_id}&quot;}[1m])
+</pre></div>
+</div>
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../index.html">Asyncworker</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../incompat.html">Incompatibilidades</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../versions.html">Compatibilidade de Versões do asyncworker</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Atualizando sua app Asyncworker</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../userguide/index.html">Guia de uso</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../devguide/index.html">Guia de desenvolvimento</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../index.html">Documentation overview</a><ul>
+  <li><a href="index.html">Atualizando sua app Asyncworker</a><ul>
+      <li>Previous: <a href="v0.18.0.html" title="previous chapter">Atualizando para 0.18.0</a></li>
+      <li>Next: <a href="../userguide/index.html" title="next chapter">Guia de uso</a></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2019, Dalton Barreto.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 2.1.2</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="../_sources/updateguide/v0.19.0.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

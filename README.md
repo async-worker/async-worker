@@ -13,17 +13,15 @@
 O projeto tem como objetivo ser um framework para escrever workers assíncronos em python. Por worker entende-se qualquer aplicação que rode por tempo indeterminado e que receba estímulos de várias origens diferentes. Essas orignes podem ser:
 
  - Uma mensagem em um broker, como RabbitMQ;
- - Um evento vindo se um servidor HTTP, como server side events;
  - Um evento recorrente gerado em um intervalo fixo de tempo;
  - Uma requisição HTTP
  - ...
 
  Documentação: https://async-worker.github.io/async-worker/
 
-
 # Exemplos rápidos
 
-Abaixo estão alguns exemplos bem simples que dão uma ideia do projeto e de como fica um código escrito com asyncorker.
+Abaixo estão alguns exemplos bem simples que dão uma ideia do projeto e de como fica um código escrito com async-worker.
 
 ## Handler HTTP
 

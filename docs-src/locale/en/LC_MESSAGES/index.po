@@ -1,5 +1,5 @@
 # SOME DESCRIPTIVE TITLE.
-# Copyright (C) 2019, B2W Digital
+# Copyright (C) 2019, Dalton Barreto
 # This file is distributed under the same license as the Asyncworker
 # package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, 2021.
@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Asyncworker \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-05-02 14:28-0300\n"
+"POT-Creation-Date: 2021-05-08 21:10-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -22,7 +22,11 @@ msgstr ""
 msgid "Bem vindos à documentação oficial do projeto Asyncworker"
 msgstr ""
 
-#: ../../index.rst:5
+#: ../../index.rst:9
+msgid "Introdução"
+msgstr ""
+
+#: ../../index.rst:11
 msgid ""
 "O projeto tem como objetivo ser um framework para escrever workers "
 "assíncronos em python. Por worker entende-se qualquer aplicação que rode "
@@ -30,47 +34,43 @@ msgid ""
 "diferentes. Essas origens podem ser:"
 msgstr ""
 
-#: ../../index.rst:7
+#: ../../index.rst:13
 msgid "Uma mensagem em um broker, como RabbitMQ;"
 msgstr ""
 
-#: ../../index.rst:8
-msgid "Um evento vindo se um servidor HTTP, como server side events;"
-msgstr ""
-
-#: ../../index.rst:9
+#: ../../index.rst:14
 msgid "Um evento recorrente gerado em um intervalo fixo de tempo;"
 msgstr ""
 
-#: ../../index.rst:10
+#: ../../index.rst:15
 msgid "Uma requisição HTTP"
 msgstr ""
 
-#: ../../index.rst:11
+#: ../../index.rst:16
 msgid "..."
 msgstr ""
 
-#: ../../index.rst:13
+#: ../../index.rst:18
 msgid "O projeto está no Github: https://github.com/async-worker/async-worker"
 msgstr ""
 
-#: ../../index.rst:19
+#: ../../index.rst:20
 msgid "Abaixo você econtra mais detalhes sobre como tudo isso funciona."
 msgstr ""
 
-#: ../../index.rst:35
+#: ../../index.rst:34
 msgid "Indices and tables"
 msgstr ""
 
-#: ../../index.rst:37
+#: ../../index.rst:36
 msgid ":ref:`genindex`"
 msgstr ""
 
-#: ../../index.rst:38
+#: ../../index.rst:37
 msgid ":ref:`modindex`"
 msgstr ""
 
-#: ../../index.rst:39
+#: ../../index.rst:38
 msgid ":ref:`search`"
 msgstr ""
 

@@ -1,5 +1,5 @@
 # SOME DESCRIPTIVE TITLE.
-# Copyright (C) 2019, B2W Digital
+# Copyright (C) 2019, Dalton Barreto
 # This file is distributed under the same license as the Asyncworker
 # package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, 2021.
@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Asyncworker \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-05-02 13:04-0300\n"
+"POT-Creation-Date: 2021-05-08 21:23-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,11 +18,11 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.9.0\n"
 
-#: ../../versions.rst:2
-msgid "Compatibilidade de Versões do asyncowker"
+#: ../../versions.rst:4
+msgid "Compatibilidade de Versões do asyncworker"
 msgstr ""
 
-#: ../../versions.rst:4
+#: ../../versions.rst:6
 msgid ""
 "O versionamento do projeto segue a mesma linha do `Semver "
 "<https://semver.org/>`_ mas com uma peculiaridade. Como esse é um projeto"
@@ -30,43 +30,44 @@ msgid ""
 " chegarmos a uma versão ``1.0``."
 msgstr ""
 
-#: ../../versions.rst:6
+#: ../../versions.rst:8
 msgid ""
-"Por isso que fazemos é o seguinte: Mudamos apenas os valores da ``MINOR``"
-" e ``PATCH``."
+"Por isso, o que fazemos é o seguinte: Mudamos apenas os valores da "
+"``MINOR`` e ``PATCH``."
 msgstr ""
 
-#: ../../versions.rst:8
+#: ../../versions.rst:10
 msgid ""
 "Quando mudamos apenas a ``PATCH`` version significa que o código novo é "
 "retro-compatível com o antigo, ou seja, pode ser atualizado sem "
 "problemas. Sem precisar olhar changelogs."
 msgstr ""
 
-#: ../../versions.rst:10
+#: ../../versions.rst:12
 msgid ""
 "Quando mudamos a ``MINOR`` version significa que o changelog requer "
 "atenção. Seja um mudança simples ou uma mudança mais complexa que vai "
-"demandar ajuster no seu código é recomendado que você olhe o changelog da"
-" nova versão para saber se você precisa ajustar alguma coisa."
+"demandar ajustes no seu código. É recomendado que você olhe :ref:`as "
+"instruções de atualização <updateguide>` para saber se você precisa "
+"ajustar alguma coisa."
 msgstr ""
 
-#: ../../versions.rst:12
+#: ../../versions.rst:14
 msgid "Lembrando que a formação da versão é ``0.MINOR.PATCH``."
 msgstr ""
 
-#: ../../versions.rst:16
+#: ../../versions.rst:18
 msgid "Atualização de dependências"
 msgstr ""
 
-#: ../../versions.rst:18
+#: ../../versions.rst:20
 msgid ""
 "O asyncworker depende basicamente de dois outros projetos: `aiohttp "
 "<https://docs.aiohttp.org/en/stable/>`_ e `Pydantic <https://pydantic-"
 "docs.helpmanual.io/>`_."
 msgstr ""
 
-#: ../../versions.rst:20
+#: ../../versions.rst:22
 msgid ""
 "Sempre que quaisquer dessas duas dependências precisarem ser atualizadas "
 "isso será considerado uma mudança (potencialmente) retro-incompatível e "
