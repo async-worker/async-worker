@@ -28,7 +28,12 @@ author = "Dalton Barreto"
 # Add any Sphinx extension module names here, as strings. They can be
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
-extensions = ["sphinx.ext.autodoc", "sphinx.ext.viewcode", "sphinx_issues"]
+extensions = [
+    "sphinx.ext.autodoc",
+    "sphinx.ext.viewcode",
+    "sphinx_issues",
+    "myst_parser",
+]
 
 issues_github_path = "async-worker/async-worker"
 
