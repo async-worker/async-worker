@@ -1,0 +1,41 @@
+Atualizando para 0.16.0
+=======================
+
+Changelog: `0.16.0 <https://github.com/async-worker/async-worker/releases/tag/0.16.0>`_
+
+Nessa versão não é mais possível declarar um handler HTTP que recebe parametros sem tipos definidos.
+
+Um handler declarado assim:
+
+.. code-block:: python
+
+  from aiohttp import web
+
+  from asyncworker import App, RouteTypes
+  from asyncworker.http.wrapper import RequestWrapper
+
+  app = App()
+
+
+  @app.http.get(["/one-param"])
+  async def one_param(r):
+      return web.json_response(dict(r.query))
+
+Tem que ser agora migrado para **obrigatriamente** declarar o tipo do parametro ``r``. Seguindo o que foi
+depreciado na versão :ref:`v0.11.5` o melhor a ser feito nesse caso é declarar o tipo desse parametro como
+sendo :py:class:`asyncworker.http.wrapper.RequestWrapper`. Ficando assim:
+
+
+.. code-block:: python
+
+  from aiohttp import web
+
+  from asyncworker import App, RouteTypes
+  from asyncworker.http.wrapper import RequestWrapper
+
+  app = App()
+
+
+  @app.http.get(["/one-param"])
+  async def one_param(r: RequestWrapper):
+      return web.json_response(dict(r.http_request.query))
