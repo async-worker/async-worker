@@ -26,6 +26,8 @@ twine = "==3.1.1"
 sphinx-issues = "*"
 cryptography = "==3.3.2" # Required by twine. Installed manually because of https://github.com/b2wdigital/async-worker/pull/241
 typing-extensions = "==3.7.4.3"
+myst-parser = "==0.14.0"
+sphinx-book-theme = "==0.1.0"
 
 [requires]
 python_version = "3"
@@ -39,6 +41,7 @@ fmt = "black --py36 -v --line-length 80 ."
 fmt-check = "black --py36 -v --line-length 80 --check ."
 isort-fmt = "isort --apply --recursive --line-width 80 --use-parentheses --no-inline-sort --multi-line 3 --trailing-comma ."
 isort-check = "isort --check-only --recursive --line-width 80 --use-parentheses --no-inline-sort --multi-line 3 --trailing-comma ."
+make-docs = "make -C docs-src/ docs"
 
 [pipenv]
 allow_prereleases = true
