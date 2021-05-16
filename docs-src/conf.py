@@ -18,7 +18,7 @@ sys.path.insert(0, os.path.abspath(".."))
 
 # -- Project information -----------------------------------------------------
 
-project = "Asyncworker"
+project = "async-worker"
 copyright = "2019, Dalton Barreto"
 author = "Dalton Barreto"
 
@@ -58,8 +58,17 @@ exclude_patterns = ["_build", "Thumbs.db", ".DS_Store"]
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
 #
+html_title = project
 html_theme = "sphinx_book_theme"
 
+html_theme_options = {
+    "repository_url": "https://github.com/async-worker/async-worker",
+    "use_repository_button": True,
+    "use_download_button": False,
+    "use_fullscreen_button": False,
+    "home_page_in_toc": False,
+}
+html_logo = "logo.png"
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
