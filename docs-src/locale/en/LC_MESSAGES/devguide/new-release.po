@@ -1,0 +1,156 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C)
+# This file is distributed under the same license as the async-worker
+# package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2021.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: async-worker \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2021-05-16 17:33-0300\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.9.1\n"
+
+#: ../../devguide/new-release.rst:2
+msgid "Como fechar uma nova versão do async-worker"
+msgstr ""
+
+#: ../../devguide/new-release.rst:4
+msgid ""
+"Todas as release do async-worker são feitas através da `feature de "
+"Release do Github "
+"<https://docs.github.com/en/github/administering-a-repository/managing-"
+"releases-in-a-repository>`_. Mas existem alguns passos que ainda são "
+"manuais no processo de preparar o código para podermos publicar uma nova "
+"release."
+msgstr ""
+
+#: ../../devguide/new-release.rst:7
+msgid "Algumas preparações se aplicam a todas as versões, são elas:"
+msgstr ""
+
+#: ../../devguide/new-release.rst:9
+msgid ""
+"Fazer o ajuste da versão no código. A string da versão fica no arquivo "
+"``setup.py``, na raiz do projeto. Essa string é importante pois é o valor"
+" que será usado no momento de publicar o pacote do async-worker no `Pypi "
+"<https://pypi.org/project/async-worker/>`_."
+msgstr ""
+
+#: ../../devguide/new-release.rst:11
+msgid ""
+"Gerar a documentação mais atual do projeto. Isso é necessário pois, em "
+"geral, cada PR que é mergeado traz sua documentação nos arquivos ``.rst``"
+" que ficam na pasta ``docs-src/``. Mas esse é apenas o código-fonte da "
+"documentação. E a versão HTML, que é servida pelo `Github Pages "
+"<https://pages.github.com/>`_, fica em ``docs/*``."
+msgstr ""
+
+#: ../../devguide/new-release.rst:13
+msgid ""
+"Para gerar uma nova versão da documentação basta executar, na raiz do "
+"projeto: ``pipenv run make-docs`` e comitar o resultado."
+msgstr ""
+
+#: ../../devguide/new-release.rst:16
+msgid "Publicando uma minor release"
+msgstr ""
+
+#: ../../devguide/new-release.rst:18
+msgid ""
+"Para uma versão retro-compatível, após fazer os passos acima (que são "
+"comuns a todas as versões) basta ir até a página de `releases do projeto "
+"<https://github.com/async-worker/async-worker/releases>`_ e publicar o "
+"Draft que já estará lá preparado."
+msgstr ""
+
+#: ../../devguide/new-release.rst:20
+msgid ""
+"Temos apenas que lembrar de remover a linha que diz: \"Como atualizar "
+"para\". Precisamos fazer isso pois como essa é uma release retro-"
+"compatível não há documentação de \"como migrar\" pois nenhum passo é "
+"necessário."
+msgstr ""
+
+#: ../../devguide/new-release.rst:23
+msgid "Publicando uma Major release"
+msgstr ""
+
+#: ../../devguide/new-release.rst:25
+msgid ""
+"Para uma versão retro-incompatível, além de fazer os passos acima (que "
+"são comuns a todas as versões) é preciso escrever o guia de migração "
+"documentanto qual breaking change essa nova major version está trazendo e"
+" o que é necessário alterar no código de um projeto para que seja "
+"possível usar essa nova versão."
+msgstr ""
+
+#: ../../devguide/new-release.rst:27
+msgid ""
+"Essa documentação deve ficar dentro da pasta ``docs-src/updateguide/`` e "
+"deve ser um novo arquivo ``.rst`` que leva o nome da nova versão. Um "
+"exemplo para a versão ``0.19.0``, a documentação de migração está no "
+"arquivo ``docs-src/updateguide/v0.19.0.rst``."
+msgstr ""
+
+#: ../../devguide/new-release.rst:29
+msgid ""
+"Depois basta ir até a página de `releases do projeto <https://github.com"
+"/async-worker/async-worker/releases>`_ e publicar o Draft que já estará "
+"lá preparado."
+msgstr ""
+
+#~ msgid ""
+#~ "Todas as release do async-worker "
+#~ "são feitas através da feature de "
+#~ "`Release do gothub "
+#~ "<https://docs.github.com/en/github/administering-a-repository"
+#~ "/managing-releases-in-a-repository>`_. Mas "
+#~ "existem alguns passos que ainda são "
+#~ "manuais no processo de preparar o "
+#~ "código para podermos publicar uma nova"
+#~ " release."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Fazer o ajuste da versão no "
+#~ "código. A string da versão fica no"
+#~ " arquivo ``setup.py``, na riz do "
+#~ "projeto. Essa string é importante pois"
+#~ " é o valor que será usado no"
+#~ " momento de publicar o pacote do "
+#~ "async-worker no `Pypi "
+#~ "<https://pypi.org/project/async-worker/>`_."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Para uma versão retro-incompatível, após"
+#~ " fazer os passos acima (que são "
+#~ "comuns a todas as versões) é "
+#~ "preico escrever o guia de migração "
+#~ "documentanto qual breaking change essa "
+#~ "nova major version está trazendo e "
+#~ "o que é necessário alterar no "
+#~ "código de um projeto para que seja"
+#~ " possível usar essa nova versão."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Para uma versão retro-incompatível, além"
+#~ " de fazer os passos acima (que "
+#~ "são comuns a todas as versões) é"
+#~ " preico escrever o guia de migração"
+#~ " documentanto qual breaking change essa "
+#~ "nova major version está trazendo e "
+#~ "o que é necessário alterar no "
+#~ "código de um projeto para que seja"
+#~ " possível usar essa nova versão."
+#~ msgstr ""
+
