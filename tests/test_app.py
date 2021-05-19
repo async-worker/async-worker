@@ -60,7 +60,10 @@ class AppTests(asynctest.TestCase):
         self.app.update(pet="dog", name="Xablau")
 
         state = dict(**self.app)
-        self.assertDictContainsSubset({"pet": "dog", "name": "Xablau"}, state)
+        self.assertEqual(
+            {"pet": "dog", "name": "Xablau"},
+            {"pet": state["pet"], "name": state["name"]},
+        )
 
     async def test_startup_freezes_applications_and_sends_the_on_startup_signal(
         self,

@@ -59,9 +59,6 @@ supervisord.conf
 
 *.pid
 
-# vamos manter isso fora do git para que cada um possa ter suas preferências locais
-pytest.ini
-
 # Criado automaticamente no browser.quit() ¬¬
 ghostdriver.log
 #cef

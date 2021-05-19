@@ -80,7 +80,7 @@ class TypesRegistryTest(TestCase):
 
         v: MyGenericDoisArgs[int, str] = MyGenericDoisArgs(10)
         self.registry.set(v, MyGenericDoisArgs[int, str])
-        self.assertEquals(v, self.registry.get(MyGenericDoisArgs[int, str]))
+        self.assertEqual(v, self.registry.get(MyGenericDoisArgs[int, str]))
 
     async def test_generico_dois_args_ordem_importa(self):
         P = TypeVar("P")
@@ -103,7 +103,7 @@ class TypesRegistryTest(TestCase):
 
         v: MyGeneric[OtherObject] = MyGeneric(OtherObject())
         self.registry.set(v, MyGeneric[OtherObject])
-        self.assertEquals(v, self.registry.get(MyGeneric[OtherObject]))
+        self.assertEqual(v, self.registry.get(MyGeneric[OtherObject]))
 
     async def test_generico_um_arg_get_by_name(self):
         class MyGeneric(Generic[T]):
