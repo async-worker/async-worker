@@ -10,8 +10,8 @@ aiohttp = "==3.7.4"
 [dev-packages]
 aioresponses = "==0.6.0"
 asynctest = "==0.12.1"
-pytest = "==6.2.2"
-pytest-cov = "==2.8.1"
+pytest = "==6.2.5"
+pytest-cov = "==3.0.0"
 freezegun = "==0.3.10"
 async-worker = {editable = true,path = "."}
 mypy = "==0.711"
