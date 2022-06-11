@@ -9,14 +9,14 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Asyncworker \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-05-02 14:35-0300\n"
+"POT-Creation-Date: 2022-06-11 19:05-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.9.0\n"
+"Generated-By: Babel 2.10.1\n"
 
 #: ../../src/asyncworker/asyncworker.rst:2
 msgid "asyncworker package"
@@ -36,8 +36,8 @@ msgstr ""
 
 #: asyncworker.app.App:1 of
 msgid ""
-"Base: :class:`collections.abc.MutableMapping`, "
-":class:`asyncworker.signals.base.Freezable`"
+"Base: :py:class:`collections.abc.MutableMapping`, "
+":py:class:`asyncworker.signals.base.Freezable`"
 msgstr ""
 
 #: asyncworker.app.App.run_every:1 of
@@ -73,11 +73,11 @@ msgid "asyncworker.bucket module"
 msgstr ""
 
 #: asyncworker.bucket.Bucket:1 of
-msgid "Base: :class:`typing.Generic`"
+msgid "Base: :py:class:`~typing.Generic`\\ [:py:obj:`asyncworker.bucket.T`]"
 msgstr ""
 
 #: asyncworker.bucket.BucketFullException:1 of
-msgid "Base: :class:`Exception`"
+msgid "Base: :py:class:`Exception`"
 msgstr ""
 
 #: ../../src/asyncworker/asyncworker.rst:38
@@ -85,7 +85,7 @@ msgid "asyncworker.conf module"
 msgstr ""
 
 #: asyncworker.conf.Settings:1 of
-msgid "Base: :class:`pydantic.env_settings.BaseSettings`"
+msgid "Base: :py:class:`pydantic.env_settings.BaseSettings`"
 msgstr ""
 
 #: asyncworker.conf.Settings.Config:1
@@ -93,7 +93,7 @@ msgstr ""
 #: asyncworker.options.DefaultValues:1
 #: asyncworker.routes.AMQPRouteOptions.Config:1
 #: asyncworker.task_runners.ScheduledTaskRunner:1 asyncworker.utils.Timeit:1 of
-msgid "Base: :class:`object`"
+msgid "Base: :py:class:`object`"
 msgstr ""
 
 #: ../../src/asyncworker/asyncworker.rst:46
@@ -101,7 +101,7 @@ msgid "asyncworker.connections module"
 msgstr ""
 
 #: asyncworker.connections.AMQPConnection:1 of
-msgid "Base: :class:`asyncworker.connections.Connection`"
+msgid "Base: :py:class:`asyncworker.connections.Connection`"
 msgstr ""
 
 #: asyncworker.connections.AMQPConnection.register:1 of
@@ -113,7 +113,7 @@ msgid "Returns the subclass, to allow usage as a class decorator."
 msgstr ""
 
 #: asyncworker.connections.Connection:1 asyncworker.routes.Model:1 of
-msgid "Base: :class:`pydantic.main.BaseModel`, :class:`abc.ABC`"
+msgid "Base: :py:class:`pydantic.main.BaseModel`, :py:class:`abc.ABC`"
 msgstr ""
 
 #: asyncworker.connections.Connection:1 of
@@ -125,8 +125,9 @@ msgstr ""
 
 #: asyncworker.connections.ConnectionsMapping:1 of
 msgid ""
-"Base: :class:`collections.abc.Mapping`, :class:`typing.Generic`, "
-":class:`asyncworker.signals.base.Freezable`"
+"Base: :py:class:`~typing.Mapping`\\ [:py:class:`str`, "
+":py:class:`asyncworker.connections.Connection`], "
+":py:class:`asyncworker.signals.base.Freezable`"
 msgstr ""
 
 #: asyncworker.connections.ConnectionsMapping:1 of
@@ -140,7 +141,7 @@ msgid "asyncworker.consumer module"
 msgstr ""
 
 #: asyncworker.consumer.Consumer:1 of
-msgid "Base: :class:`asyncworker.easyqueue.queue.QueueConsumerDelegate`"
+msgid "Base: :py:class:`asyncworker.easyqueue.queue.QueueConsumerDelegate`"
 msgstr ""
 
 #: asyncworker.consumer.Consumer.on_before_start_consumption:1 of
@@ -239,7 +240,9 @@ msgid "asyncworker.entrypoints module"
 msgstr ""
 
 #: asyncworker.entrypoints.EntrypointInterface:1 of
-msgid "Base: :class:`abc.ABC`, :class:`typing.Generic`"
+msgid ""
+"Base: :py:class:`abc.ABC`, :py:class:`~typing.Generic`\\ "
+"[:py:obj:`asyncworker.entrypoints.T`]"
 msgstr ""
 
 #: ../../src/asyncworker/asyncworker.rst:78
@@ -248,7 +251,7 @@ msgstr ""
 
 #: asyncworker.exceptions.InvalidConnection:1
 #: asyncworker.exceptions.InvalidRoute:1 of
-msgid "Base: :class:`ValueError`"
+msgid "Base: :py:class:`ValueError`"
 msgstr ""
 
 #: asyncworker.exceptions.InvalidConnection:1 of
@@ -265,7 +268,7 @@ msgstr ""
 
 #: asyncworker.options.Actions:1 asyncworker.options.Events:1
 #: asyncworker.options.Options:1 asyncworker.options.RouteTypes:1 of
-msgid "Base: :class:`asyncworker.options.AutoNameEnum`"
+msgid "Base: :py:class:`asyncworker.options.AutoNameEnum`"
 msgstr ""
 
 #: asyncworker.options.Actions:1 asyncworker.options.AutoNameEnum:1
@@ -275,7 +278,7 @@ msgid "An enumeration."
 msgstr ""
 
 #: asyncworker.options.AutoNameEnum:1 of
-msgid "Base: :class:`str`, :class:`enum.Enum`"
+msgid "Base: :py:class:`str`, :py:class:`enum.Enum`"
 msgstr ""
 
 #: ../../src/asyncworker/asyncworker.rst:94
@@ -283,11 +286,11 @@ msgid "asyncworker.routes module"
 msgstr ""
 
 #: asyncworker.routes.AMQPRoute:1 asyncworker.routes.HTTPRoute:1 of
-msgid "Base: :class:`asyncworker.routes.Route`"
+msgid "Base: :py:class:`asyncworker.routes.Route`"
 msgstr ""
 
 #: asyncworker.routes.AMQPRouteOptions:1 of
-msgid "Base: :class:`asyncworker.routes._RouteOptions`"
+msgid "Base: :py:class:`asyncworker.routes._RouteOptions`"
 msgstr ""
 
 #: asyncworker.routes.Model:1 of
@@ -295,7 +298,7 @@ msgid "An abstract pydantic BaseModel that also behaves like a Mapping"
 msgstr ""
 
 #: asyncworker.routes.Route:1 of
-msgid "Base: :class:`asyncworker.routes.Model`, :class:`abc.ABC`"
+msgid "Base: :py:class:`asyncworker.routes.Model`, :py:class:`abc.ABC`"
 msgstr ""
 
 #: asyncworker.routes.Route:1 of
@@ -303,7 +306,7 @@ msgid "An abstract Model that acts like a route factory"
 msgstr ""
 
 #: asyncworker.routes.RoutesRegistry:1 of
-msgid "Base: :class:`collections.UserDict`"
+msgid "Base: :py:class:`collections.UserDict`"
 msgstr ""
 
 #: ../../src/asyncworker/asyncworker.rst:102
@@ -315,7 +318,7 @@ msgid "asyncworker.time module"
 msgstr ""
 
 #: asyncworker.time.ClockTicker:1 of
-msgid "Base: :class:`collections.abc.AsyncIterator`"
+msgid "Base: :py:class:`collections.abc.AsyncIterator`"
 msgstr ""
 
 #: asyncworker.time.ClockTicker:1 of
@@ -359,4 +362,230 @@ msgstr ""
 #: ../../src/asyncworker/asyncworker.rst:127
 msgid "Module contents"
 msgstr ""
+
+#~ msgid ""
+#~ "Base: :class:`collections.abc.MutableMapping`, "
+#~ ":class:`asyncworker.signals.base.Freezable`"
+#~ msgstr ""
+
+#~ msgid "Registers a coroutine to be called with a given interval"
+#~ msgstr ""
+
+#~ msgid "Registers a coroutine to be awaited for during app shutdown"
+#~ msgstr ""
+
+#~ msgid "Registers a coroutine to be awaited for during app startup"
+#~ msgstr ""
+
+#~ msgid "Schedules an on_startup signal"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Is called automatically when the "
+#~ "application receives a SIGINT or SIGTERM"
+#~ msgstr ""
+
+#~ msgid "Causes on_startup signal"
+#~ msgstr ""
+
+#~ msgid "Should be called in the event loop along with the request handler."
+#~ msgstr ""
+
+#~ msgid "Base: :class:`typing.Generic`"
+#~ msgstr ""
+
+#~ msgid "Base: :class:`Exception`"
+#~ msgstr ""
+
+#~ msgid "Base: :class:`pydantic.env_settings.BaseSettings`"
+#~ msgstr ""
+
+#~ msgid "Base: :class:`object`"
+#~ msgstr ""
+
+#~ msgid "Base: :class:`asyncworker.connections.Connection`"
+#~ msgstr ""
+
+#~ msgid "Register a virtual subclass of an ABC."
+#~ msgstr ""
+
+#~ msgid "Returns the subclass, to allow usage as a class decorator."
+#~ msgstr ""
+
+#~ msgid "Base: :class:`pydantic.main.BaseModel`, :class:`abc.ABC`"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Common ancestral for all Connection "
+#~ "classes that auto generates a connection"
+#~ " name and is responsible for keeping"
+#~ " track of new connections on the "
+#~ "ConnectionsMapping"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Base: :class:`collections.abc.Mapping`, "
+#~ ":class:`typing.Generic`, "
+#~ ":class:`asyncworker.signals.base.Freezable`"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "A mapping (Connection.name->Connection) of all"
+#~ " available connections that also keeps "
+#~ "a counter for each connection type"
+#~ msgstr ""
+
+#~ msgid "Base: :class:`asyncworker.easyqueue.queue.QueueConsumerDelegate`"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Coroutine called before queue consumption "
+#~ "starts. May be overwritten to implement"
+#~ " further custom initialization."
+#~ msgstr ""
+
+#~ msgid "Parâmetros"
+#~ msgstr ""
+
+#~ msgid "Queue name that will be consumed"
+#~ msgstr ""
+
+#~ msgid "AsynQueue instanced"
+#~ msgstr ""
+
+#~ msgid "Called when the connection fails"
+#~ msgstr ""
+
+#~ msgid "Coroutine called once consumption started."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Callback called when an uncaught "
+#~ "exception was raised during message "
+#~ "handling stage."
+#~ msgstr ""
+
+#~ msgid "The exception that triggered"
+#~ msgstr ""
+
+#~ msgid "arguments used to call the coroutine that handled"
+#~ msgstr ""
+
+#~ msgid "the message"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Callback called every time that an "
+#~ "error occurred during the validation or"
+#~ " deserialization stage."
+#~ msgstr ""
+
+#~ msgid "unparsed, raw message content"
+#~ msgstr ""
+
+#~ msgid "delivery_tag of the consumed message"
+#~ msgstr ""
+
+#~ msgid "THe error that caused the callback to be called"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Callback called every time that a "
+#~ "new, valid and deserialized message is"
+#~ " ready to be handled."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Esse decorator faz com que a "
+#~ "assinatura da função original \"suba\" "
+#~ "até o último decorator, que deverá "
+#~ "ser sempre um registrador do próprio "
+#~ "asyncworker. ex: @app.http.get(...) @deco1 "
+#~ "@deco2 async def handler(...)"
+#~ msgstr ""
+
+#~ msgid "pass"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Nesse caso, os decorators `@deco1` e "
+#~ "`@deco2` devem, *necessariamente* fazer uso"
+#~ " desse `@wraps()`"
+#~ msgstr ""
+
+#~ msgid "Base: :class:`abc.ABC`, :class:`typing.Generic`"
+#~ msgstr ""
+
+#~ msgid "Base: :class:`ValueError`"
+#~ msgstr ""
+
+#~ msgid "Defines an invalid connection definition condition."
+#~ msgstr ""
+
+#~ msgid "Defines an invalid route definition condition."
+#~ msgstr ""
+
+#~ msgid "Base: :class:`asyncworker.options.AutoNameEnum`"
+#~ msgstr ""
+
+#~ msgid "Base: :class:`str`, :class:`enum.Enum`"
+#~ msgstr ""
+
+#~ msgid "Base: :class:`asyncworker.routes.Route`"
+#~ msgstr ""
+
+#~ msgid "Base: :class:`asyncworker.routes._RouteOptions`"
+#~ msgstr ""
+
+#~ msgid "An abstract pydantic BaseModel that also behaves like a Mapping"
+#~ msgstr ""
+
+#~ msgid "Base: :class:`asyncworker.routes.Model`, :class:`abc.ABC`"
+#~ msgstr ""
+
+#~ msgid "An abstract Model that acts like a route factory"
+#~ msgstr ""
+
+#~ msgid "Base: :class:`collections.UserDict`"
+#~ msgstr ""
+
+#~ msgid "Base: :class:`collections.abc.AsyncIterator`"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "T - A clock tick F - "
+#~ "Something that happens inside an "
+#~ "iteration (\"x\" = running \"-\" = "
+#~ "waiting) I - A clock iteration"
+#~ msgstr ""
+
+#~ msgid "E.g:"
+#~ msgstr ""
+
+#~ msgid "async for tick in Clock(seconds=2):"
+#~ msgstr ""
+
+#~ msgid "await asyncio.sleep(3)"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "T: 15------17------19------21------23"
+#~ "------25------27------29------ F: "
+#~ "xxxxxxxxxxxxx---xxxxxxxxxxxxx---xxxxxxxxxxxxx---"
+#~ "xxxxxxxxxxxxx--- I: x---------------x"
+#~ "---------------x---------------x---------------"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Return the value (in fractional "
+#~ "milliseconds) of a performance counter, "
+#~ "i.e. a clock with the highest "
+#~ "available resolution to measure a short"
+#~ " duration. It does include time "
+#~ "elapsed during sleep and is system-"
+#~ "wide. The reference point of the "
+#~ "returned value is undefined, so that "
+#~ "only the difference between the results"
+#~ " of consecutive calls is valid."
+#~ msgstr ""
 
