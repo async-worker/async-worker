@@ -19,7 +19,7 @@ jobs:
           python-version: 3.8
 
       - name: Install pip
-        run: pip install -U pip==20.2.3
+        run: pip install -U pip==22.0.4
 
       - name: Install twine
         run: pip install twine==3.2.0

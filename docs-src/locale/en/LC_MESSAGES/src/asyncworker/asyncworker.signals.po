@@ -9,14 +9,14 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Asyncworker \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-05-02 14:35-0300\n"
+"POT-Creation-Date: 2022-06-11 19:05-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.9.0\n"
+"Generated-By: Babel 2.10.1\n"
 
 #: ../../src/asyncworker/asyncworker.signals.rst:2
 msgid "asyncworker.signals package"
@@ -35,11 +35,11 @@ msgid "asyncworker.signals.base module"
 msgstr ""
 
 #: asyncworker.signals.base.Freezable:1 of
-msgid "Base: :class:`object`"
+msgid "Base: :py:class:`object`"
 msgstr ""
 
 #: asyncworker.signals.base.Signal:1 of
-msgid "Base: :class:`collections.UserList`, :class:`asyncio.locks.Event`"
+msgid "Base: :py:class:`collections.UserList`, :py:class:`asyncio.locks.Event`"
 msgstr ""
 
 #: asyncworker.signals.base.Signal:1 of
@@ -61,4 +61,26 @@ msgstr ""
 #: ../../src/asyncworker/asyncworker.signals.rst:24
 msgid "Module contents"
 msgstr ""
+
+#~ msgid "Base: :class:`object`"
+#~ msgstr ""
+
+#~ msgid "Base: :class:`collections.UserList`, :class:`asyncio.locks.Event`"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Coroutine-based signal implementation tha "
+#~ "behaves as an `asyncio.Event`."
+#~ msgstr ""
+
+#~ msgid "To connect a callback to a signal, use any list method."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Signals are fired using the send() "
+#~ "coroutine, which takes named arguments."
+#~ msgstr ""
+
+#~ msgid "Sends data to all registered receivers."
+#~ msgstr ""
 

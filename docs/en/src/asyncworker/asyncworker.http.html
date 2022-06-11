@@ -1,13 +1,16 @@
 
 <!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+<html lang="en">
   <head>
     <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
     <title>asyncworker.http package &#8212; async-worker</title>
     
-  <link href="../../_static/css/theme.css" rel="stylesheet" />
-  <link href="../../_static/css/index.c5995385ac14fb8791e8eb36b4908be2.css" rel="stylesheet" />
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
 
     
   <link rel="stylesheet"
@@ -17,28 +20,41 @@
   <link rel="preload" as="font" type="font/woff2" crossorigin
     href="../../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
 
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
+    <link rel="stylesheet" href="../../_static/styles/sphinx-book-theme.css?digest=62ba249389abaaa9ffc34bf36a076bdc1d65ee18" type="text/css" />
     
-      
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf">
 
-    
-    <link rel="stylesheet" href="../../_static/sphinx-book-theme.acff12b8f9c144ce68a297486a2fa670.css" type="text/css" />
-    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
-    
-  <link rel="preload" as="script" href="../../_static/js/index.1c5a1a01449ed65a7b51.js">
-
-    <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
-    <script type="text/javascript" src="../../_static/jquery.js"></script>
-    <script type="text/javascript" src="../../_static/underscore.js"></script>
-    <script type="text/javascript" src="../../_static/doctools.js"></script>
-    <script type="text/javascript" src="../../_static/language_data.js"></script>
-    <script type="text/javascript" src="../../_static/sphinx-book-theme.12a9622fbb08dcb3a2a40b2c02b83a57.js"></script>
+    <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/jquery.js"></script>
+    <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/scripts/sphinx-book-theme.js?digest=f31d14ad54b65d19161ba51d4ffff3a77ae00456"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="docsearch:language" content="en" />
+    <meta name="docsearch:language" content="en">
+    
+
+    <!-- Google Analytics -->
     
   </head>
-  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="80">
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="60">
+<!-- Checkboxes to toggle the left sidebar -->
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation" aria-label="Toggle navigation sidebar">
+<label class="overlay overlay-navbar" for="__navigation">
+    <div class="visually-hidden">Toggle navigation sidebar</div>
+</label>
+<!-- Checkboxes to toggle the in-page toc -->
+<input type="checkbox" class="sidebar-toggle" name="__page-toc" id="__page-toc" aria-label="Toggle in-page Table of Contents">
+<label class="overlay overlay-pagetoc" for="__page-toc">
+    <div class="visually-hidden">Toggle in-page Table of Contents</div>
+</label>
+<!-- Headers at the top -->
+<div class="announcement header-item noprint"></div>
+<div class="header header-item noprint"></div>
+
     
     <div class="container-fluid" id="banner"></div>
 
@@ -47,10 +63,15 @@
     <div class="container-xl">
       <div class="row">
           
-<div class="col-12 col-md-3 bd-sidebar site-navigation show" id="site-navigation">
-    
-        <div class="navbar-brand-box">
+<!-- Sidebar -->
+<div class="bd-sidebar noprint" id="site-navigation">
+    <div class="bd-sidebar__content">
+        <div class="bd-sidebar__top"><div class="navbar-brand-box">
     <a class="navbar-brand text-wrap" href="../../index.html">
+      
+        <!-- `logo` is deprecated in Sphinx 4.0, so remove this when we stop supporting 3 -->
+        
+      
       
       <img src="../../_static/logo.png" class="logo" alt="logo">
       
@@ -61,7 +82,7 @@
 </div><form class="bd-search d-flex align-items-center" action="../../search.html" method="get">
   <i class="icon fas fa-search"></i>
   <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off" >
-</form><nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
+</form><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
     <div class="bd-toc-item active">
         <ul class="nav bd-sidenav">
  <li class="toctree-l1 has-children">
@@ -329,17 +350,27 @@
      Escrevendo Testes Unitários
     </a>
    </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../../devguide/new-release.html">
+     Como fechar uma nova versão do async-worker
+    </a>
+   </li>
   </ul>
  </li>
 </ul>
 
     </div>
-</nav> <!-- To handle the deprecated key -->
-
-<div class="navbar_extra_footer">
-  Theme by the <a href="https://ebp.jupyterbook.org">Executable Book Project</a>
-</div>
-
+</nav></div>
+        <div class="bd-sidebar__bottom">
+             <!-- To handle the deprecated key -->
+            
+            <div class="navbar_extra_footer">
+            Theme by the <a href="https://ebp.jupyterbook.org">Executable Book Project</a>
+            </div>
+            
+        </div>
+    </div>
+    <div id="rtd-footer-container"></div>
 </div>
 
 
@@ -347,52 +378,70 @@
 
 
           
-<main class="col py-md-3 pl-md-4 bd-content overflow-auto" role="main">
+<!-- A tiny helper pixel to detect if we've scrolled -->
+<div class="sbt-scroll-pixel-helper"></div>
+<!-- Main content -->
+<div class="col py-0 content-container">
     
-    <div class="topbar container-xl fixed-top">
-    <div class="topbar-contents row">
-        <div class="col-12 col-md-3 bd-topbar-whitespace site-navigation show"></div>
-        <div class="col pl-md-4 topbar-main">
-            
-            <button id="navbar-toggler" class="navbar-toggler ml-0" type="button" data-toggle="collapse"
-                data-toggle="tooltip" data-placement="bottom" data-target=".site-navigation" aria-controls="navbar-menu"
-                aria-expanded="true" aria-label="Toggle navigation" aria-controls="site-navigation"
-                title="Toggle navigation" data-toggle="tooltip" data-placement="left">
-                <i class="fas fa-bars"></i>
-                <i class="fas fa-arrow-left"></i>
-                <i class="fas fa-arrow-up"></i>
-            </button>
-            
-            
-            <!-- Source interaction buttons -->
+    <div class="header-article row sticky-top noprint">
+        
 
-<div class="dropdown-buttons-trigger">
-    <button id="dropdown-buttons-trigger" class="btn btn-secondary topbarbtn"
-        aria-label="Connect with source repository"><i class="fab fa-github"></i></button>
-    <div class="dropdown-buttons sourcebuttons">
-        <a class="repository-button"
-            href="https://github.com/async-worker/async-worker"><button type="button" class="btn btn-secondary topbarbtn"
-                data-toggle="tooltip" data-placement="left" title="Source repository"><i
-                    class="fab fa-github"></i>repository</button></a>
+
+
+<div class="col py-1 d-flex header-article-main">
+    <div class="header-article__left">
         
+        <label for="__navigation"
+  class="headerbtn"
+  data-toggle="tooltip"
+data-placement="right"
+title="Toggle navigation"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-bars"></i>
+  </span>
+
+</label>
+
         
+    </div>
+    <div class="header-article__right"><a href="https://github.com/async-worker/async-worker"
+   class="headerbtn"
+   data-toggle="tooltip"
+data-placement="bottom"
+title="Source repository"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+
+</a>
+<label for="__page-toc"
+  class="headerbtn headerbtn-page-toc"
+  
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-list"></i>
+  </span>
+
+</label>
+
     </div>
 </div>
 
-            <!-- Full screen (wrap in <a> to have style consistency -->
-
-            <!-- Launch buttons -->
-
-        </div>
-
-        <!-- Table of contents -->
-        <div class="d-none d-md-block col-md-2 bd-toc show">
-            
-            <div class="tocsection onthispage pt-5 pb-3">
-                <i class="fas fa-list"></i> Contents
-            </div>
-            <nav id="bd-toc-nav">
-                <ul class="visible nav section-nav flex-column">
+<!-- Table of contents -->
+<div class="col-md-3 bd-toc show noprint">
+    <div class="tocsection onthispage pt-5 pb-3">
+        <i class="fas fa-list"></i> Contents
+    </div>
+    <nav id="bd-toc-nav" aria-label="Page">
+        <ul class="visible nav section-nav flex-column">
  <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#submodules">
    Submodules
@@ -430,192 +479,262 @@
  </li>
 </ul>
 
-            </nav>
-        </div>
-    </div>
+    </nav>
 </div>
-    <div id="main-content" class="row">
-        <div class="col-12 col-md-9 pl-md-3 pr-md-0">
-        
+    </div>
+    <div class="article row">
+        <div class="col pl-md-3 pl-lg-5 content-container">
+            <!-- Table of contents that is only displayed when printing the page -->
+            <div id="jb-print-docs-body" class="onlyprint">
+                <h1>asyncworker.http package</h1>
+                <!-- Table of contents -->
+                <div id="print-main-content">
+                    <div id="jb-print-toc">
+                        
+                        <div>
+                            <h2> Contents </h2>
+                        </div>
+                        <nav aria-label="Page">
+                            <ul class="visible nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#submodules">
+   Submodules
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#module-asyncworker.http.decorators">
+   asyncworker.http.decorators module
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#module-asyncworker.http.entrypoints">
+   asyncworker.http.entrypoints module
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#module-asyncworker.http.methods">
+   asyncworker.http.methods module
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#module-asyncworker.http.types">
+   asyncworker.http.types module
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#module-asyncworker.http.wrapper">
+   asyncworker.http.wrapper module
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#module-asyncworker.http">
+   Module contents
+  </a>
+ </li>
+</ul>
+
+                        </nav>
+                    </div>
+                </div>
+            </div>
+            <main id="main-content" role="main">
+                
               <div>
                 
-  <div class="section" id="asyncworker-http-package">
-<h1>asyncworker.http package<a class="headerlink" href="#asyncworker-http-package" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="submodules">
-<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
-</div>
-<div class="section" id="module-asyncworker.http.decorators">
-<span id="asyncworker-http-decorators-module"></span><h2>asyncworker.http.decorators module<a class="headerlink" href="#module-asyncworker.http.decorators" title="Permalink to this headline">¶</a></h2>
-<dl class="function">
-<dt id="asyncworker.http.decorators.parse_path">
-<code class="sig-prename descclassname">asyncworker.http.decorators.</code><code class="sig-name descname">parse_path</code><span class="sig-paren">(</span><em class="sig-param">handler</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/asyncworker/http/decorators.html#parse_path"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#asyncworker.http.decorators.parse_path" title="Permalink to this definition">¶</a></dt>
+  <section id="asyncworker-http-package">
+<h1>asyncworker.http package<a class="headerlink" href="#asyncworker-http-package" title="Permalink to this headline">#</a></h1>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">#</a></h2>
+</section>
+<section id="module-asyncworker.http.decorators">
+<span id="asyncworker-http-decorators-module"></span><h2>asyncworker.http.decorators module<a class="headerlink" href="#module-asyncworker.http.decorators" title="Permalink to this headline">#</a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="asyncworker.http.decorators.parse_path">
+<span class="sig-prename descclassname"><span class="pre">asyncworker.http.decorators.</span></span><span class="sig-name descname"><span class="pre">parse_path</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">handler</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/asyncworker/http/decorators.html#parse_path"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#asyncworker.http.decorators.parse_path" title="Permalink to this definition">#</a></dt>
 <dd><p>Decorator que permite receber dinamicamente parametros do Request Path
 Basta que o nome do parametro na assinatura do handler seja igual ao nome do parametro
 declarado no Path HTTP.</p>
 </dd></dl>
 
-</div>
-<div class="section" id="module-asyncworker.http.entrypoints">
-<span id="asyncworker-http-entrypoints-module"></span><h2>asyncworker.http.entrypoints module<a class="headerlink" href="#module-asyncworker.http.entrypoints" title="Permalink to this headline">¶</a></h2>
-<dl class="class">
-<dt id="asyncworker.http.entrypoints.HTTPEntryPointImpl">
-<em class="property">class </em><code class="sig-prename descclassname">asyncworker.http.entrypoints.</code><code class="sig-name descname">HTTPEntryPointImpl</code><span class="sig-paren">(</span><em class="sig-param">app: asyncworker.app.App</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/asyncworker/http/entrypoints.html#HTTPEntryPointImpl"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#asyncworker.http.entrypoints.HTTPEntryPointImpl" title="Permalink to this definition">¶</a></dt>
+</section>
+<section id="module-asyncworker.http.entrypoints">
+<span id="asyncworker-http-entrypoints-module"></span><h2>asyncworker.http.entrypoints module<a class="headerlink" href="#module-asyncworker.http.entrypoints" title="Permalink to this headline">#</a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="asyncworker.http.entrypoints.HTTPEntryPointImpl">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">asyncworker.http.entrypoints.</span></span><span class="sig-name descname"><span class="pre">HTTPEntryPointImpl</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">app</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="asyncworker.html#asyncworker.app.App" title="asyncworker.app.App"><span class="pre">asyncworker.app.App</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/asyncworker/http/entrypoints.html#HTTPEntryPointImpl"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#asyncworker.http.entrypoints.HTTPEntryPointImpl" title="Permalink to this definition">#</a></dt>
 <dd><p>Bases: <a class="reference internal" href="asyncworker.html#asyncworker.entrypoints.EntrypointInterface" title="asyncworker.entrypoints.EntrypointInterface"><code class="xref py py-class docutils literal notranslate"><span class="pre">asyncworker.entrypoints.EntrypointInterface</span></code></a></p>
-<dl class="method">
-<dt id="asyncworker.http.entrypoints.HTTPEntryPointImpl.delete">
-<code class="sig-name descname">delete</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/asyncworker/http/entrypoints.html#HTTPEntryPointImpl.delete"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#asyncworker.http.entrypoints.HTTPEntryPointImpl.delete" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="asyncworker.http.entrypoints.HTTPEntryPointImpl.delete">
+<span class="sig-name descname"><span class="pre">delete</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">routes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Callable</span></span></span><a class="reference internal" href="../../_modules/asyncworker/http/entrypoints.html#HTTPEntryPointImpl.delete"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#asyncworker.http.entrypoints.HTTPEntryPointImpl.delete" title="Permalink to this definition">#</a></dt>
 <dd></dd></dl>
 
-<dl class="method">
-<dt id="asyncworker.http.entrypoints.HTTPEntryPointImpl.get">
-<code class="sig-name descname">get</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/asyncworker/http/entrypoints.html#HTTPEntryPointImpl.get"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#asyncworker.http.entrypoints.HTTPEntryPointImpl.get" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="asyncworker.http.entrypoints.HTTPEntryPointImpl.get">
+<span class="sig-name descname"><span class="pre">get</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">routes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Callable</span></span></span><a class="reference internal" href="../../_modules/asyncworker/http/entrypoints.html#HTTPEntryPointImpl.get"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#asyncworker.http.entrypoints.HTTPEntryPointImpl.get" title="Permalink to this definition">#</a></dt>
 <dd></dd></dl>
 
-<dl class="method">
-<dt id="asyncworker.http.entrypoints.HTTPEntryPointImpl.head">
-<code class="sig-name descname">head</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/asyncworker/http/entrypoints.html#HTTPEntryPointImpl.head"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#asyncworker.http.entrypoints.HTTPEntryPointImpl.head" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="asyncworker.http.entrypoints.HTTPEntryPointImpl.head">
+<span class="sig-name descname"><span class="pre">head</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">routes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Callable</span></span></span><a class="reference internal" href="../../_modules/asyncworker/http/entrypoints.html#HTTPEntryPointImpl.head"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#asyncworker.http.entrypoints.HTTPEntryPointImpl.head" title="Permalink to this definition">#</a></dt>
 <dd></dd></dl>
 
-<dl class="method">
-<dt id="asyncworker.http.entrypoints.HTTPEntryPointImpl.patch">
-<code class="sig-name descname">patch</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/asyncworker/http/entrypoints.html#HTTPEntryPointImpl.patch"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#asyncworker.http.entrypoints.HTTPEntryPointImpl.patch" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="asyncworker.http.entrypoints.HTTPEntryPointImpl.patch">
+<span class="sig-name descname"><span class="pre">patch</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">routes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Callable</span></span></span><a class="reference internal" href="../../_modules/asyncworker/http/entrypoints.html#HTTPEntryPointImpl.patch"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#asyncworker.http.entrypoints.HTTPEntryPointImpl.patch" title="Permalink to this definition">#</a></dt>
 <dd></dd></dl>
 
-<dl class="method">
-<dt id="asyncworker.http.entrypoints.HTTPEntryPointImpl.post">
-<code class="sig-name descname">post</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/asyncworker/http/entrypoints.html#HTTPEntryPointImpl.post"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#asyncworker.http.entrypoints.HTTPEntryPointImpl.post" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="asyncworker.http.entrypoints.HTTPEntryPointImpl.post">
+<span class="sig-name descname"><span class="pre">post</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">routes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Callable</span></span></span><a class="reference internal" href="../../_modules/asyncworker/http/entrypoints.html#HTTPEntryPointImpl.post"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#asyncworker.http.entrypoints.HTTPEntryPointImpl.post" title="Permalink to this definition">#</a></dt>
 <dd></dd></dl>
 
-<dl class="method">
-<dt id="asyncworker.http.entrypoints.HTTPEntryPointImpl.put">
-<code class="sig-name descname">put</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/asyncworker/http/entrypoints.html#HTTPEntryPointImpl.put"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#asyncworker.http.entrypoints.HTTPEntryPointImpl.put" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="asyncworker.http.entrypoints.HTTPEntryPointImpl.put">
+<span class="sig-name descname"><span class="pre">put</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">routes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Callable</span></span></span><a class="reference internal" href="../../_modules/asyncworker/http/entrypoints.html#HTTPEntryPointImpl.put"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#asyncworker.http.entrypoints.HTTPEntryPointImpl.put" title="Permalink to this definition">#</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
 
-<dl class="class">
-<dt id="asyncworker.http.entrypoints.RequestParserAnnotationSpec">
-<em class="property">class </em><code class="sig-prename descclassname">asyncworker.http.entrypoints.</code><code class="sig-name descname">RequestParserAnnotationSpec</code><span class="sig-paren">(</span><em class="sig-param">name: str</em>, <em class="sig-param">base: Type</em>, <em class="sig-param">arg_type: Type</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/asyncworker/http/entrypoints.html#RequestParserAnnotationSpec"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#asyncworker.http.entrypoints.RequestParserAnnotationSpec" title="Permalink to this definition">¶</a></dt>
+<dl class="py class">
+<dt class="sig sig-object py" id="asyncworker.http.entrypoints.RequestParserAnnotationSpec">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">asyncworker.http.entrypoints.</span></span><span class="sig-name descname"><span class="pre">RequestParserAnnotationSpec</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">base</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">arg_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Type</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/asyncworker/http/entrypoints.html#RequestParserAnnotationSpec"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#asyncworker.http.entrypoints.RequestParserAnnotationSpec" title="Permalink to this definition">#</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 </dd></dl>
 
-</div>
-<div class="section" id="module-asyncworker.http.methods">
-<span id="asyncworker-http-methods-module"></span><h2>asyncworker.http.methods module<a class="headerlink" href="#module-asyncworker.http.methods" title="Permalink to this headline">¶</a></h2>
-<dl class="class">
-<dt id="asyncworker.http.methods.HTTPMethods">
-<em class="property">class </em><code class="sig-prename descclassname">asyncworker.http.methods.</code><code class="sig-name descname">HTTPMethods</code><a class="reference internal" href="../../_modules/asyncworker/http/methods.html#HTTPMethods"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#asyncworker.http.methods.HTTPMethods" title="Permalink to this definition">¶</a></dt>
+</section>
+<section id="module-asyncworker.http.methods">
+<span id="asyncworker-http-methods-module"></span><h2>asyncworker.http.methods module<a class="headerlink" href="#module-asyncworker.http.methods" title="Permalink to this headline">#</a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="asyncworker.http.methods.HTTPMethods">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">asyncworker.http.methods.</span></span><span class="sig-name descname"><span class="pre">HTTPMethods</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/asyncworker/http/methods.html#HTTPMethods"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#asyncworker.http.methods.HTTPMethods" title="Permalink to this definition">#</a></dt>
 <dd><p>Bases: <a class="reference internal" href="asyncworker.html#asyncworker.options.AutoNameEnum" title="asyncworker.options.AutoNameEnum"><code class="xref py py-class docutils literal notranslate"><span class="pre">asyncworker.options.AutoNameEnum</span></code></a></p>
 <p>An enumeration.</p>
-<dl class="attribute">
-<dt id="asyncworker.http.methods.HTTPMethods.DELETE">
-<code class="sig-name descname">DELETE</code><em class="property"> = 'delete'</em><a class="headerlink" href="#asyncworker.http.methods.HTTPMethods.DELETE" title="Permalink to this definition">¶</a></dt>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="asyncworker.http.methods.HTTPMethods.DELETE">
+<span class="sig-name descname"><span class="pre">DELETE</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'delete'</span></em><a class="headerlink" href="#asyncworker.http.methods.HTTPMethods.DELETE" title="Permalink to this definition">#</a></dt>
 <dd></dd></dl>
 
-<dl class="attribute">
-<dt id="asyncworker.http.methods.HTTPMethods.GET">
-<code class="sig-name descname">GET</code><em class="property"> = 'get'</em><a class="headerlink" href="#asyncworker.http.methods.HTTPMethods.GET" title="Permalink to this definition">¶</a></dt>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="asyncworker.http.methods.HTTPMethods.GET">
+<span class="sig-name descname"><span class="pre">GET</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'get'</span></em><a class="headerlink" href="#asyncworker.http.methods.HTTPMethods.GET" title="Permalink to this definition">#</a></dt>
 <dd></dd></dl>
 
-<dl class="attribute">
-<dt id="asyncworker.http.methods.HTTPMethods.HEAD">
-<code class="sig-name descname">HEAD</code><em class="property"> = 'head'</em><a class="headerlink" href="#asyncworker.http.methods.HTTPMethods.HEAD" title="Permalink to this definition">¶</a></dt>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="asyncworker.http.methods.HTTPMethods.HEAD">
+<span class="sig-name descname"><span class="pre">HEAD</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'head'</span></em><a class="headerlink" href="#asyncworker.http.methods.HTTPMethods.HEAD" title="Permalink to this definition">#</a></dt>
 <dd></dd></dl>
 
-<dl class="attribute">
-<dt id="asyncworker.http.methods.HTTPMethods.PATCH">
-<code class="sig-name descname">PATCH</code><em class="property"> = 'patch'</em><a class="headerlink" href="#asyncworker.http.methods.HTTPMethods.PATCH" title="Permalink to this definition">¶</a></dt>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="asyncworker.http.methods.HTTPMethods.PATCH">
+<span class="sig-name descname"><span class="pre">PATCH</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'patch'</span></em><a class="headerlink" href="#asyncworker.http.methods.HTTPMethods.PATCH" title="Permalink to this definition">#</a></dt>
 <dd></dd></dl>
 
-<dl class="attribute">
-<dt id="asyncworker.http.methods.HTTPMethods.POST">
-<code class="sig-name descname">POST</code><em class="property"> = 'post'</em><a class="headerlink" href="#asyncworker.http.methods.HTTPMethods.POST" title="Permalink to this definition">¶</a></dt>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="asyncworker.http.methods.HTTPMethods.POST">
+<span class="sig-name descname"><span class="pre">POST</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'post'</span></em><a class="headerlink" href="#asyncworker.http.methods.HTTPMethods.POST" title="Permalink to this definition">#</a></dt>
 <dd></dd></dl>
 
-<dl class="attribute">
-<dt id="asyncworker.http.methods.HTTPMethods.PUT">
-<code class="sig-name descname">PUT</code><em class="property"> = 'put'</em><a class="headerlink" href="#asyncworker.http.methods.HTTPMethods.PUT" title="Permalink to this definition">¶</a></dt>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="asyncworker.http.methods.HTTPMethods.PUT">
+<span class="sig-name descname"><span class="pre">PUT</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'put'</span></em><a class="headerlink" href="#asyncworker.http.methods.HTTPMethods.PUT" title="Permalink to this definition">#</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
 
-</div>
-<div class="section" id="module-asyncworker.http.types">
-<span id="asyncworker-http-types-module"></span><h2>asyncworker.http.types module<a class="headerlink" href="#module-asyncworker.http.types" title="Permalink to this headline">¶</a></h2>
-<dl class="class">
-<dt id="asyncworker.http.types.BoolModel">
-<em class="property">class </em><code class="sig-prename descclassname">asyncworker.http.types.</code><code class="sig-name descname">BoolModel</code><a class="reference internal" href="../../_modules/asyncworker/http/types.html#BoolModel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#asyncworker.http.types.BoolModel" title="Permalink to this definition">¶</a></dt>
+</section>
+<section id="module-asyncworker.http.types">
+<span id="asyncworker-http-types-module"></span><h2>asyncworker.http.types module<a class="headerlink" href="#module-asyncworker.http.types" title="Permalink to this headline">#</a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="asyncworker.http.types.BoolModel">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">asyncworker.http.types.</span></span><span class="sig-name descname"><span class="pre">BoolModel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/asyncworker/http/types.html#BoolModel"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#asyncworker.http.types.BoolModel" title="Permalink to this definition">#</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">pydantic.main.BaseModel</span></code></p>
-</dd></dl>
-
-<dl class="class">
-<dt id="asyncworker.http.types.PathParam">
-<em class="property">class </em><code class="sig-prename descclassname">asyncworker.http.types.</code><code class="sig-name descname">PathParam</code><span class="sig-paren">(</span><em class="sig-param">value: T</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/asyncworker/http/types.html#PathParam"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#asyncworker.http.types.PathParam" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#asyncworker.http.types.RequestParser" title="asyncworker.http.types.RequestParser"><code class="xref py py-class docutils literal notranslate"><span class="pre">asyncworker.http.types.RequestParser</span></code></a></p>
-<dl class="method">
-<dt id="asyncworker.http.types.PathParam.from_request">
-<em class="property">classmethod </em><code class="sig-name descname">from_request</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/asyncworker/http/types.html#PathParam.from_request"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#asyncworker.http.types.PathParam.from_request" title="Permalink to this definition">¶</a></dt>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="asyncworker.http.types.BoolModel.value">
+<span class="sig-name descname"><span class="pre">value</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><a class="headerlink" href="#asyncworker.http.types.BoolModel.value" title="Permalink to this definition">#</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
 
-<dl class="class">
-<dt id="asyncworker.http.types.RequestParser">
-<em class="property">class </em><code class="sig-prename descclassname">asyncworker.http.types.</code><code class="sig-name descname">RequestParser</code><span class="sig-paren">(</span><em class="sig-param">value: T</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/asyncworker/http/types.html#RequestParser"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#asyncworker.http.types.RequestParser" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">typing.Generic</span></code></p>
-<dl class="method">
-<dt id="asyncworker.http.types.RequestParser.from_request">
-<em class="property">abstract classmethod </em><code class="sig-name descname">from_request</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/asyncworker/http/types.html#RequestParser.from_request"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#asyncworker.http.types.RequestParser.from_request" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="asyncworker.http.types.RequestParser.unpack">
-<em class="property">async </em><code class="sig-name descname">unpack</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; T<a class="reference internal" href="../../_modules/asyncworker/http/types.html#RequestParser.unpack"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#asyncworker.http.types.RequestParser.unpack" title="Permalink to this definition">¶</a></dt>
+<dl class="py class">
+<dt class="sig sig-object py" id="asyncworker.http.types.PathParam">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">asyncworker.http.types.</span></span><span class="sig-name descname"><span class="pre">PathParam</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">asyncworker.http.types.T</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/asyncworker/http/types.html#PathParam"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#asyncworker.http.types.PathParam" title="Permalink to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#asyncworker.http.types.RequestParser" title="asyncworker.http.types.RequestParser"><code class="xref py py-class docutils literal notranslate"><span class="pre">asyncworker.http.types.RequestParser</span></code></a>[<code class="xref py py-obj docutils literal notranslate"><span class="pre">asyncworker.http.types.T</span></code>]</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="asyncworker.http.types.PathParam.from_request">
+<em class="property"><span class="pre">async</span><span class="w"> </span><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_request</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">request</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#asyncworker.http.wrapper.RequestWrapper" title="asyncworker.http.wrapper.RequestWrapper"><span class="pre">asyncworker.http.wrapper.RequestWrapper</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">arg_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">arg_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Type</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#asyncworker.http.types.PathParam" title="asyncworker.http.types.PathParam"><span class="pre">asyncworker.http.types.PathParam</span></a><span class="p"><span class="pre">[</span></span><span class="pre">asyncworker.http.types.T</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../../_modules/asyncworker/http/types.html#PathParam.from_request"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#asyncworker.http.types.PathParam.from_request" title="Permalink to this definition">#</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
 
-</div>
-<div class="section" id="module-asyncworker.http.wrapper">
-<span id="asyncworker-http-wrapper-module"></span><h2>asyncworker.http.wrapper module<a class="headerlink" href="#module-asyncworker.http.wrapper" title="Permalink to this headline">¶</a></h2>
-<dl class="class">
-<dt id="asyncworker.http.wrapper.RequestWrapper">
-<em class="property">class </em><code class="sig-prename descclassname">asyncworker.http.wrapper.</code><code class="sig-name descname">RequestWrapper</code><span class="sig-paren">(</span><em class="sig-param">http_request: aiohttp.web_request.Request</em>, <em class="sig-param">types_registry: asyncworker.types.registry.TypesRegistry</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/asyncworker/http/wrapper.html#RequestWrapper"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#asyncworker.http.wrapper.RequestWrapper" title="Permalink to this definition">¶</a></dt>
+<dl class="py class">
+<dt class="sig sig-object py" id="asyncworker.http.types.RequestParser">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">asyncworker.http.types.</span></span><span class="sig-name descname"><span class="pre">RequestParser</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">asyncworker.http.types.T</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/asyncworker/http/types.html#RequestParser"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#asyncworker.http.types.RequestParser" title="Permalink to this definition">#</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Generic</span></code>[<code class="xref py py-obj docutils literal notranslate"><span class="pre">asyncworker.http.types.T</span></code>]</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="asyncworker.http.types.RequestParser.from_request">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span><span class="pre">async</span><span class="w"> </span><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_request</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">request</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#asyncworker.http.wrapper.RequestWrapper" title="asyncworker.http.wrapper.RequestWrapper"><span class="pre">asyncworker.http.wrapper.RequestWrapper</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">arg_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">arg_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Type</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#asyncworker.http.types.RequestParser" title="asyncworker.http.types.RequestParser"><span class="pre">asyncworker.http.types.RequestParser</span></a><span class="p"><span class="pre">[</span></span><span class="pre">asyncworker.http.types.T</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../../_modules/asyncworker/http/types.html#RequestParser.from_request"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#asyncworker.http.types.RequestParser.from_request" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="asyncworker.http.types.RequestParser.unpack">
+<em class="property"><span class="pre">async</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">unpack</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">asyncworker.http.types.T</span></span></span><a class="reference internal" href="../../_modules/asyncworker/http/types.html#RequestParser.unpack"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#asyncworker.http.types.RequestParser.unpack" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-asyncworker.http.wrapper">
+<span id="asyncworker-http-wrapper-module"></span><h2>asyncworker.http.wrapper module<a class="headerlink" href="#module-asyncworker.http.wrapper" title="Permalink to this headline">#</a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="asyncworker.http.wrapper.RequestWrapper">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">asyncworker.http.wrapper.</span></span><span class="sig-name descname"><span class="pre">RequestWrapper</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">http_request</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">aiohttp.web_request.Request</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">types_registry</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="asyncworker.types.html#asyncworker.types.registry.TypesRegistry" title="asyncworker.types.registry.TypesRegistry"><span class="pre">asyncworker.types.registry.TypesRegistry</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/asyncworker/http/wrapper.html#RequestWrapper"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#asyncworker.http.wrapper.RequestWrapper" title="Permalink to this definition">#</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="asyncworker.http.wrapper.RequestWrapper.http_request">
+<span class="sig-name descname"><span class="pre">http_request</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">aiohttp.web_request.Request</span></em><a class="headerlink" href="#asyncworker.http.wrapper.RequestWrapper.http_request" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="asyncworker.http.wrapper.RequestWrapper.types_registry">
+<span class="sig-name descname"><span class="pre">types_registry</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="asyncworker.types.html#asyncworker.types.registry.TypesRegistry" title="asyncworker.types.registry.TypesRegistry"><span class="pre">asyncworker.types.registry.TypesRegistry</span></a></em><a class="headerlink" href="#asyncworker.http.wrapper.RequestWrapper.types_registry" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
 </dd></dl>
 
-</div>
-<div class="section" id="module-asyncworker.http">
-<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-asyncworker.http" title="Permalink to this headline">¶</a></h2>
-</div>
-</div>
+</section>
+<section id="module-asyncworker.http">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-asyncworker.http" title="Permalink to this headline">#</a></h2>
+</section>
+</section>
 
 
               </div>
               
-        
-        <div class='prev-next-bottom'>
-            
-
-        </div>
-        
+            </main>
+            <footer class="footer-article noprint">
+                
+    <!-- Previous / next buttons -->
+<div class='prev-next-area'>
+</div>
+            </footer>
         </div>
     </div>
-    <footer class="footer mt-5 mt-md-0">
-    <div class="container">
-      <p>
-        
-      </p>
+    <div class="footer-content row">
+        <footer class="col footer"><p>
+  
+</p>
+        </footer>
     </div>
-  </footer>
-</main>
+    
+</div>
 
 
       </div>
     </div>
   
-  <script src="../../_static/js/index.1c5a1a01449ed65a7b51.js"></script>
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf"></script>
 
-  
+
   </body>
 </html>

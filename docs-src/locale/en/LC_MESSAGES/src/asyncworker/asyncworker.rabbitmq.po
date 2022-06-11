@@ -9,14 +9,14 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Asyncworker \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-05-02 14:35-0300\n"
+"POT-Creation-Date: 2022-06-11 19:05-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.9.0\n"
+"Generated-By: Babel 2.10.1\n"
 
 #: ../../src/asyncworker/asyncworker.rabbitmq.rst:2
 msgid "asyncworker.rabbitmq package"
@@ -31,7 +31,7 @@ msgid "asyncworker.rabbitmq.entrypoints module"
 msgstr ""
 
 #: asyncworker.rabbitmq.entrypoints.AMQPRouteEntryPointImpl:1 of
-msgid "Base: :class:`asyncworker.entrypoints.EntrypointInterface`"
+msgid "Base: :py:class:`asyncworker.entrypoints.EntrypointInterface`"
 msgstr ""
 
 #: ../../src/asyncworker/asyncworker.rabbitmq.rst:16
@@ -39,7 +39,7 @@ msgid "asyncworker.rabbitmq.message module"
 msgstr ""
 
 #: asyncworker.rabbitmq.message.RabbitMQMessage:1 of
-msgid "Base: :class:`object`"
+msgid "Base: :py:class:`object`"
 msgstr ""
 
 #: asyncworker.rabbitmq.message.RabbitMQMessage.accept:1 of
@@ -58,4 +58,24 @@ msgstr ""
 #: ../../src/asyncworker/asyncworker.rabbitmq.rst:25
 msgid "Module contents"
 msgstr ""
+
+#~ msgid "Base: :class:`asyncworker.entrypoints.EntrypointInterface`"
+#~ msgstr ""
+
+#~ msgid "Base: :class:`object`"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Marca essa mensagem para ser confirmada"
+#~ " (``ACK``) ao fim da execução do "
+#~ "handler."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Marca essa mensagem para ser rejeitada."
+#~ " O parametro ``requeue`` indica se a"
+#~ " mensagem será recolocada na fila "
+#~ "original (``requeue=True``) ou será descartada"
+#~ " (``requeue=False``)."
+#~ msgstr ""
 
