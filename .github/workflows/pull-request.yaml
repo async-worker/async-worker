@@ -29,7 +29,7 @@ jobs:
           python-version: ${{matrix.python}}
 
       - name: Install pip/pipenv
-        run: pip install -U pip==20.2.3 pipenv==2020.8.13
+        run: pip install -U pip==22.0.4 pipenv==2022.4.30
 
       - name: pipenv install --dev
         run: pipenv install --system --deploy --ignore-pipfile --dev
@@ -59,7 +59,7 @@ jobs:
           python-version: 3.8
 
       - name: Install pip/pipenv
-        run: pip install -U pip==20.2.3 pipenv==2020.8.13
+        run: pip install -U pip==22.0.4 pipenv==2022.4.30
 
       - name: pipenv install --dev
         run: pipenv install --system --deploy --ignore-pipfile --dev
