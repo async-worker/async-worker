@@ -9,14 +9,14 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Asyncworker \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-05-02 14:35-0300\n"
+"POT-Creation-Date: 2022-06-11 19:05-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.9.0\n"
+"Generated-By: Babel 2.10.1\n"
 
 #: ../../src/asyncworker/asyncworker.metrics.collectors.rst:2
 msgid "asyncworker.metrics.collectors package"
@@ -32,7 +32,7 @@ msgstr ""
 
 #: asyncworker.metrics.collectors.base.BaseCollector:1
 #: asyncworker.metrics.collectors.platform.PlatformCollector:1 of
-msgid "Base: :class:`object`"
+msgid "Base: :py:class:`object`"
 msgstr ""
 
 #: asyncworker.metrics.collectors.base.BaseCollector.collect:1
@@ -45,7 +45,7 @@ msgid "asyncworker.metrics.collectors.gc module"
 msgstr ""
 
 #: asyncworker.metrics.collectors.gc.GCCollector:1 of
-msgid "Base: :class:`asyncworker.metrics.collectors.base.BaseCollector`"
+msgid "Base: :py:class:`asyncworker.metrics.collectors.base.BaseCollector`"
 msgstr ""
 
 #: asyncworker.metrics.collectors.gc.GCCollector:1 of
@@ -78,4 +78,31 @@ msgstr ""
 #: ../../src/asyncworker/asyncworker.metrics.collectors.rst:41
 msgid "Module contents"
 msgstr ""
+
+#~ msgid "Base: :class:`object`"
+#~ msgstr ""
+
+#~ msgid "A method that returns a list of Metric objects"
+#~ msgstr ""
+
+#~ msgid "Base: :class:`asyncworker.metrics.collectors.base.BaseCollector`"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Collector for Garbage collection statistics."
+#~ " Esse código veio do prometheus_client "
+#~ "(https://github.com/prometheus/client_python/blob/6b091aba77db44459290808368bd4ab913ef8ba5/prometheus_client/gc_collector.py)"
+#~ " Foi modificado para que possamos ter"
+#~ " um namespace em suas métricas"
+#~ msgstr ""
+
+#~ msgid "Collector for python platform information"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Esse código veio do prometheus_client "
+#~ "(https://github.com/prometheus/client_python/blob/6b091aba77db44459290808368bd4ab913ef8ba5/prometheus_client/platform_collector.py)"
+#~ " Foi modificado para que possamos ter"
+#~ " um namespace em suas métricas"
+#~ msgstr ""
 

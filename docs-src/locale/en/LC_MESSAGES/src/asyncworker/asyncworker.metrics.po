@@ -9,14 +9,14 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Asyncworker \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-05-02 14:35-0300\n"
+"POT-Creation-Date: 2022-06-11 19:05-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.9.0\n"
+"Generated-By: Babel 2.10.1\n"
 
 #: ../../src/asyncworker/asyncworker.metrics.rst:2
 msgid "asyncworker.metrics package"
@@ -65,27 +65,69 @@ msgstr ""
 
 #: asyncworker.metrics.types.Counter:1 of
 msgid ""
-"Base: :class:`asyncworker.metrics.types.Metric`, "
-":class:`prometheus_client.metrics.Counter`"
+"Base: :py:class:`asyncworker.metrics.types.Metric`, "
+":py:class:`prometheus_client.metrics.Counter`"
 msgstr ""
 
 #: asyncworker.metrics.types.Gauge:1 of
 msgid ""
-"Base: :class:`asyncworker.metrics.types.Metric`, "
-":class:`prometheus_client.metrics.Gauge`"
+"Base: :py:class:`asyncworker.metrics.types.Metric`, "
+":py:class:`prometheus_client.metrics.Gauge`"
 msgstr ""
 
 #: asyncworker.metrics.types.Histogram:1 of
 msgid ""
-"Base: :class:`asyncworker.metrics.types.Metric`, "
-":class:`prometheus_client.metrics.Histogram`"
+"Base: :py:class:`asyncworker.metrics.types.Metric`, "
+":py:class:`prometheus_client.metrics.Histogram`"
 msgstr ""
 
 #: asyncworker.metrics.types.Metric:1 of
-msgid "Base: :class:`object`"
+msgid "Base: :py:class:`object`"
 msgstr ""
 
 #: ../../src/asyncworker/asyncworker.metrics.rst:49
 msgid "Module contents"
 msgstr ""
+
+#~ msgid ""
+#~ "Creates 'count' buckets, where the "
+#~ "lowest bucket has an upper bound "
+#~ "of 'start' and each following bucket's"
+#~ " upper bound is 'factor' times the"
+#~ " previous bucket's upper bound. The "
+#~ "final +Inf bucket is not counted "
+#~ "and is included in the returned "
+#~ "slice. The returned list is meant "
+#~ "to be used for the buckets field"
+#~ " of Histogram."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Creates 'count' buckets, each 'width' "
+#~ "wide, where the lowest bucket has "
+#~ "an upper bound of 'start'. The "
+#~ "final +Inf bucket is not counted "
+#~ "and is included in the returned "
+#~ "slice. The returned list is meant "
+#~ "to be used for the buckets field"
+#~ " of Histograms."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Base: :class:`asyncworker.metrics.types.Metric`, "
+#~ ":class:`prometheus_client.metrics.Counter`"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Base: :class:`asyncworker.metrics.types.Metric`, "
+#~ ":class:`prometheus_client.metrics.Gauge`"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Base: :class:`asyncworker.metrics.types.Metric`, "
+#~ ":class:`prometheus_client.metrics.Histogram`"
+#~ msgstr ""
+
+#~ msgid "Base: :class:`object`"
+#~ msgstr ""
 

@@ -14,9 +14,19 @@ Quando mudamos a ``MINOR`` version significa que o changelog requer atenção. S
 Lembrando que a formação da versão é ``0.MINOR.PATCH``.
 
 
+Versões do Python suportadas
+---------------------------
+
+O projeto asyncworker suporta sempre as versões ativas do Python. Por suporte entende-se que testes são rodados nessa versão e para que um Pull Request possa ser mergeado os testes devem passar nas versões suportadas do python.
+
+Seguimos esse calendário para escolher quais versões do Python são ativamente testadas no projeto: https://endoflife.date/python
+
 Atualização de dependências
 ---------------------------
 
-O asyncworker depende basicamente de dois outros projetos: `aiohttp <https://docs.aiohttp.org/en/stable/>`_ e `Pydantic <https://pydantic-docs.helpmanual.io/>`_.
+O asyncworker depende basicamente de dois outros projetos:
 
-Sempre que quaisquer dessas duas dependências precisarem ser atualizadas isso será considerado uma mudança (potencialmente) retro-incompatível e por isso o asyncworker terá sua minor version aumentada.
+- `aiohttp <https://docs.aiohttp.org/en/stable/>`_
+- `Pydantic <https://pydantic-docs.helpmanual.io/>`_
+
+Sempre uma versão do Python deixar de ser suportada pelo asyncworker ou quaisquer das dependências principais precisar ser atualizadas isso será considerado uma mudança (potencialmente) retro-incompatível e por isso o asyncworker terá sua minor version aumentada.
