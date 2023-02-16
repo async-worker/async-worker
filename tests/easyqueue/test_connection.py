@@ -8,7 +8,8 @@ from tests.easyqueue.base import AsyncBaseTestCase
 
 
 class AMQPConnectionTests(AsyncBaseTestCase, IsolatedAsyncioTestCase):
-    async def setUp(self):
+
+    def setUp(self):
         super(AMQPConnectionTests, self).setUp()
         self.connection = AMQPConnection(**self.conn_params, on_error=Mock())
 
@@ -29,7 +30,6 @@ class AMQPConnectionTests(AsyncBaseTestCase, IsolatedAsyncioTestCase):
             self.assertEqual(connect.await_count, 1)
 
     async def test_connects_with_correct_args(self):
-
         await self.connection._connect()
 
         self.assertEqual(

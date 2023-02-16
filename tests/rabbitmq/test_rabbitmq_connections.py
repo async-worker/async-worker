@@ -10,7 +10,7 @@ from asyncworker.easyqueue.queue import JsonQueue
 
 
 class AMQPConnectionTests(IsolatedAsyncioTestCase):
-    async def setUp(self):
+    def setUp(self):
         self.username = "admin"
         self.password = "123456"
         self.hostname = "127.0.0.1"
