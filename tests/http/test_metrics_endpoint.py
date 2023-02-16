@@ -2,11 +2,13 @@ from http import HTTPStatus
 from importlib import reload
 
 from aiohttp import web
-from asynctest import mock, TestCase
+
+from unittest import IsolatedAsyncioTestCase, mock
+
 from prometheus_client import CollectorRegistry, generate_latest
 from prometheus_client.parser import text_string_to_metric_families
 
-from asyncworker import App, RouteTypes
+from asyncworker import App
 from asyncworker.conf import settings
 from asyncworker.http.decorators import parse_path
 from asyncworker.metrics import Counter, Gauge, Histogram
@@ -15,7 +17,7 @@ from asyncworker.metrics.registry import REGISTRY, NAMESPACE
 from asyncworker.testing import HttpClientContext
 
 
-class MetricsEndpointTest(TestCase):
+class MetricsEndpointTest(IsolatedAsyncioTestCase):
     use_default_loop = True
     maxDiff = None
 

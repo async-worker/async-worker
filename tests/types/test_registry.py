@@ -1,13 +1,13 @@
 from typing import Generic, TypeVar
 
-from asynctest import TestCase
+from unittest import IsolatedAsyncioTestCase
 
 from asyncworker.types.registry import TypesRegistry
 
 T = TypeVar("T")
 
 
-class TypesRegistryTest(TestCase):
+class TypesRegistryTest(IsolatedAsyncioTestCase):
     async def setUp(self):
         self.registry = TypesRegistry()
 

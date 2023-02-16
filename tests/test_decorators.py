@@ -1,4 +1,4 @@
-from asynctest import TestCase
+from unittest import IsolatedAsyncioTestCase
 
 from asyncworker.decorators import wraps
 from asyncworker.types.registry import TypesRegistry
@@ -37,7 +37,7 @@ def _deco3(handler):
     return _wrapper
 
 
-class TestWrapsDecorator(TestCase):
+class TestWrapsDecorator(IsolatedAsyncioTestCase):
     async def setUp(self):
         self.registry = TypesRegistry()
         self.resolver = ArgResolver(registry=self.registry)

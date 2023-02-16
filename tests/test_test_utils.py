@@ -3,7 +3,9 @@ from http import HTTPStatus
 
 from aiohttp import web
 from aiohttp.test_utils import TestClient
-from asynctest import TestCase, mock, skip
+
+from unittest import IsolatedAsyncioTestCase, skip
+from unittest.mock import patch
 
 from asyncworker import App, RouteTypes
 from asyncworker.testing import http_client, HttpClientContext
@@ -16,7 +18,7 @@ async def _h():
     return web.json_response({})
 
 
-class HttpClientTestCaseDecoratorTest(TestCase):
+class HttpClientTestCaseDecoratorTest(IsolatedAsyncioTestCase):
     async def setUp(self):
         self.app = App()
 
@@ -78,7 +80,7 @@ class HttpClientTestCaseDecoratorTest(TestCase):
         self.assertEqual({"OK": True}, await other_method())
 
 
-class HttpClientContextManagerTest(TestCase):
+class HttpClientContextManagerTest(IsolatedAsyncioTestCase):
     async def setUp(self):
         self.app = App()
 
@@ -104,7 +106,7 @@ class HttpClientContextManagerTest(TestCase):
         async def index(request):
             return web.json_response({"OK": True})
 
-        with mock.patch.dict(os.environ, TEST_ASYNCWORKER_HTTP_PORT="10000"):
+        with patch.dict(os.environ, TEST_ASYNCWORKER_HTTP_PORT="10000"):
             async with HttpClientContext(self.app) as http_client:
                 resp = await http_client.get("/")
                 self.assertEqual({"OK": True}, await resp.json())

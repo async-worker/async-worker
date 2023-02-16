@@ -1,6 +1,6 @@
 from typing import Generic, TypeVar
 
-from asynctest import TestCase
+from unittest import IsolatedAsyncioTestCase
 
 from asyncworker.decorators import wraps
 from asyncworker.typing import (
@@ -27,7 +27,7 @@ class MyObject:
     pass
 
 
-class TestTypingFunctions(TestCase):
+class TestTypingFunctions(IsolatedAsyncioTestCase):
     async def setUp(self):
         pass
 
@@ -51,7 +51,7 @@ class TestTypingFunctions(TestCase):
         self.assertIsNone(get_origin(MyObject))
 
 
-class TestGetOriginalHandlerTypeHints(TestCase):
+class TestGetOriginalHandlerTypeHints(IsolatedAsyncioTestCase):
     async def test_does_not_have_attribute(self):
         def func(a: int, b: bool):
             pass
@@ -86,7 +86,7 @@ class TestGetOriginalHandlerTypeHints(TestCase):
         self.assertTrue(hasattr(handler, "asyncworker_original_annotations"))
 
 
-class TestIsBaseType(TestCase):
+class TestIsBaseType(IsolatedAsyncioTestCase):
     async def test_is_base_when_generic(self):
         def _func(b: MyGeneric[int]):
             pass
@@ -116,7 +116,7 @@ class TestIsBaseType(TestCase):
         self.assertFalse(is_base_type(_type["b"], MyGeneric))
 
 
-class TestHandlerGetOriginalQualname(TestCase):
+class TestHandlerGetOriginalQualname(IsolatedAsyncioTestCase):
     async def test_get_qualname_no_decorators(self):
         async def handler(a: bool, s: str):
             return 42

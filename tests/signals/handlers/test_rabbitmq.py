@@ -1,5 +1,5 @@
-import asynctest
-from asynctest import CoroutineMock, Mock, call, patch, ANY
+from unittest import IsolatedAsyncioTestCase
+from unittest.mock import AsyncMock, Mock, patch, call, ANY
 
 from asyncworker import App
 from asyncworker.connections import AMQPConnection
@@ -10,12 +10,12 @@ from asyncworker.routes import RoutesRegistry
 from asyncworker.signals.handlers.rabbitmq import RabbitMQ
 
 
-class AMQPTests(asynctest.TestCase):
+class AMQPTests(IsolatedAsyncioTestCase):
     async def setUp(self):
         self.signal_handler = RabbitMQ()
 
-        handler1 = Mock(return_value=CoroutineMock())
-        handler2 = Mock(return_value=CoroutineMock())
+        handler1 = Mock(return_value=AsyncMock())
+        handler2 = Mock(return_value=AsyncMock())
 
         self.routes_registry = RoutesRegistry(
             {
@@ -33,7 +33,7 @@ class AMQPTests(asynctest.TestCase):
             }
         )
 
-    @asynctest.patch("asyncworker.signals.handlers.rabbitmq.Consumer")
+    @patch("asyncworker.signals.handlers.rabbitmq.Consumer")
     async def test_startup_initializes_and_starts_one_consumer_per_route(
         self, Consumer
     ):
@@ -45,10 +45,10 @@ class AMQPTests(asynctest.TestCase):
         )
         app = App(connections=[connection])
         app.routes_registry = self.routes_registry
-        app.loop = Mock(create_task=CoroutineMock())
+        app.loop = Mock(create_task=AsyncMock())
         # asynctest.MagicMock(
         #     routes_registry=,
-        #     loop=Mock(create_task=CoroutineMock()),
+        #     loop=Mock(create_task=AsyncMock()),
         # )
 
         app[RouteTypes.AMQP_RABBITMQ] = {"connections": [connection]}
@@ -79,7 +79,7 @@ class AMQPTests(asynctest.TestCase):
             [Consumer.return_value, Consumer.return_value],
         )
 
-    @asynctest.patch(
+    @patch(
         "asyncworker.signals.handlers.rabbitmq.AMQPConnection.register"
     )
     async def test_startup_registers_one_connection_per_vhost_into_app_state(

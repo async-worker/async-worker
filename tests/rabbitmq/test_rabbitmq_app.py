@@ -1,10 +1,9 @@
-import asynctest
+from unittest import IsolatedAsyncioTestCase
 
 from asyncworker import App
 from asyncworker.conf import settings
 from asyncworker.connections import AMQPConnection
 from asyncworker.options import (
-    Options,
     DefaultValues,
     Events,
     Actions,
@@ -14,7 +13,7 @@ from asyncworker.rabbitmq import AMQPRouteOptions
 from asyncworker.routes import AMQPRoute
 
 
-class RabbitMQAppTest(asynctest.TestCase):
+class RabbitMQAppTest(IsolatedAsyncioTestCase):
     use_default_loop = True
 
     def setUp(self):

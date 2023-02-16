@@ -5,21 +5,23 @@ from uuid import uuid4
 from aiohttp import ClientSession
 from aiohttp.web_exceptions import HTTPNotFound
 from aiohttp.web_response import Response
-from asynctest import TestCase, patch, CoroutineMock
+
+from unittest import IsolatedAsyncioTestCase
+from unittest.mock import patch, AsyncMock
 
 from asyncworker import App
 from asyncworker.conf import settings
 from asyncworker.http.wrapper import RequestWrapper
 
 
-class HTTPMetricsTests(TestCase):
+class HTTPMetricsTests(IsolatedAsyncioTestCase):
     app_url = f"http://{settings.HTTP_HOST}:{settings.HTTP_PORT}"
 
     async def setUp(self):
         self.app = App()
         self.client = ClientSession()
 
-        self.callback = callback = CoroutineMock()
+        self.callback = callback = AsyncMock()
         self.route_path = "/mock_handler"
         self.route_method = "GET"
         self.metrics = metrics = patch(

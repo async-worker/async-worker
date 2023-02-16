@@ -1,12 +1,12 @@
-import asynctest
-from asynctest import Mock, CoroutineMock
+from unittest import IsolatedAsyncioTestCase
+from unittest.mock import AsyncMock, Mock
 
 from asyncworker.signals.base import Signal
 
 
-class SignalTests(asynctest.TestCase):
+class SignalTests(IsolatedAsyncioTestCase):
     async def setUp(self):
-        self.owner = Mock(freeze=CoroutineMock())
+        self.owner = Mock(freeze=AsyncMock())
         self.signal = Signal(self.owner)
 
     async def test_send_raises_an_error_if_signal_is_frozen(self):
@@ -15,7 +15,7 @@ class SignalTests(asynctest.TestCase):
             await self.signal.send()
 
     async def test_send_sends_data_to_all_registered_receivers(self):
-        handlers = [CoroutineMock(), CoroutineMock(), CoroutineMock()]
+        handlers = [AsyncMock(), AsyncMock(), AsyncMock()]
         self.signal.extend(handlers)
         args = [1, 2, 3]
         kwargs = {"dog": "Xablau"}

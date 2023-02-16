@@ -1,10 +1,10 @@
 import os
 from importlib import reload
 
-from asynctest import TestCase, mock
+from unittest import IsolatedAsyncioTestCase, mock
 
 
-class GCCollectorest(TestCase):
+class GCCollectorest(IsolatedAsyncioTestCase):
     async def test_use_global_namespace(self):
         from asyncworker import conf
         from asyncworker.metrics import registry

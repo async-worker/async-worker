@@ -1,10 +1,11 @@
 from aioamqp.protocol import OPEN
-from asynctest import TestCase
+
+from unittest import IsolatedAsyncioTestCase
 
 from asyncworker.easyqueue.connection import AMQPConnection
 
 
-class ConnectionTest(TestCase):
+class ConnectionTest(IsolatedAsyncioTestCase):
     async def setUp(self):
         self.conn = AMQPConnection("127.0.0.1", "guest", "guest")
 

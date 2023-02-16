@@ -1,12 +1,12 @@
 from typing import Tuple
 
-from asynctest import TestCase
+from unittest import IsolatedAsyncioTestCase
 
 from asyncworker.types.registry import TypesRegistry
 from asyncworker.types.resolver import ArgResolver, MissingTypeAnnotationError
 
 
-class ArgResolverTest(TestCase):
+class ArgResolverTest(IsolatedAsyncioTestCase):
     async def test_wraps_coroutine_reference(self):
         async def my_coro():
             return 42

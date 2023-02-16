@@ -2,9 +2,10 @@ import asyncio
 from http import HTTPStatus
 from signal import Signals
 
-import asynctest
 from aiohttp import web
-from asynctest import Mock, CoroutineMock, patch, call
+
+from unittest import IsolatedAsyncioTestCase
+from unittest.mock import AsyncMock, Mock
 
 from asyncworker.app import App
 from asyncworker.connections import AMQPConnection
@@ -16,18 +17,18 @@ from asyncworker.task_runners import ScheduledTaskRunner
 from asyncworker.testing import HttpClientContext
 
 
-class AppTests(asynctest.TestCase):
+class AppTests(IsolatedAsyncioTestCase):
     async def setUp(self):
         class MyApp(App):
             handlers = (
-                Mock(startup=CoroutineMock(), shutdown=CoroutineMock()),
+                Mock(startup=AsyncMock(), shutdown=AsyncMock()),
             )
 
         self.appCls = MyApp
         self.app = MyApp(connections=[])
 
     async def test_setitem_changes_internal_state_if_not_frozen(self):
-        self.app["foo"] = foo = asynctest.Mock()
+        self.app["foo"] = foo = Mock()
         self.assertEqual(foo, self.app._state["foo"])
 
         await self.app.freeze()
@@ -285,7 +286,7 @@ class AppTests(asynctest.TestCase):
             self.assertEqual({HTTPMethods.PUT: True}, data)
 
 
-class AppConnectionsTests(asynctest.TestCase):
+class AppConnectionsTests(IsolatedAsyncioTestCase):
     def setUp(self):
         super(AppConnectionsTests, self).setUp()
         self.connections = [

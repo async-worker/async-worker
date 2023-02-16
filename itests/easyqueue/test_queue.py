@@ -1,5 +1,6 @@
 from aioamqp.protocol import OPEN
-from asynctest import TestCase
+
+from unittest import IsolatedAsyncioTestCase
 
 from asyncworker.easyqueue.queue import (
     JsonQueue,
@@ -8,7 +9,7 @@ from asyncworker.easyqueue.queue import (
 )
 
 
-class EnsureConnectedTest(TestCase):
+class EnsureConnectedTest(IsolatedAsyncioTestCase):
     async def setUp(self):
         self.queue = JsonQueue(
             host="127.0.0.1", username="guest", password="guest"

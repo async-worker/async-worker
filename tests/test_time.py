@@ -1,12 +1,12 @@
 import asyncio
 
-import asynctest
-from asynctest import CoroutineMock, patch, Mock
+from unittest import IsolatedAsyncioTestCase
+from unittest.mock import AsyncMock, patch, Mock
 
 from asyncworker.time import ClockTicker
 
 
-class ClockTickerTests(asynctest.TestCase):
+class ClockTickerTests(IsolatedAsyncioTestCase):
     async def test_a_stoped_clock_cannot_be_reused(self):
         clock = ClockTicker(seconds=0.0001)
 
@@ -33,8 +33,8 @@ class ClockTickerTests(asynctest.TestCase):
     async def test_stop_stops_the_current_clock_ticker(self):
         clock = ClockTicker(seconds=2)
         clock._running = True
-        _main_task = CoroutineMock()
-        with asynctest.patch.object(clock, "_main_task", _main_task()):
+        _main_task = AsyncMock()
+        with patch.object(clock, "_main_task", _main_task()):
             await clock.stop()
 
             _main_task.assert_awaited_once()
@@ -52,7 +52,7 @@ class ClockTickerTests(asynctest.TestCase):
                 await clock.stop()
 
             clock = ClockTicker(seconds=2)
-            sleep = CoroutineMock(side_effect=lambda seconds: tick_check(clock))
+            sleep = AsyncMock(side_effect=lambda seconds: tick_check(clock))
 
             with patch("asyncworker.time.asyncio.sleep", sleep):
                 clock._running = True

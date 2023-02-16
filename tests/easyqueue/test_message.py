@@ -1,13 +1,11 @@
-from unittest.mock import Mock
-
-import asynctest
-from asynctest import CoroutineMock
+from unittest import IsolatedAsyncioTestCase
+from unittest.mock import AsyncMock, Mock
 
 from asyncworker.easyqueue.exceptions import UndecodableMessageException
 from asyncworker.easyqueue.message import AMQPMessage
 
 
-class AMQPMessageTests(asynctest.TestCase):
+class AMQPMessageTests(IsolatedAsyncioTestCase):
     def test_lazy_deserialization_raises_an_error_if_deserialization_fails(
         self
     ):
@@ -123,7 +121,7 @@ class AMQPMessageTests(asynctest.TestCase):
     async def test_it_acks_messages(self):
         msg = AMQPMessage(
             connection=Mock(),
-            channel=Mock(basic_client_ack=CoroutineMock()),
+            channel=Mock(basic_client_ack=AsyncMock()),
             queue_name=Mock(),
             serialized_data=Mock(),
             delivery_tag=Mock(),
@@ -139,7 +137,7 @@ class AMQPMessageTests(asynctest.TestCase):
     async def test_it_rejects_messages_without_requeue(self):
         msg = AMQPMessage(
             connection=Mock(),
-            channel=Mock(basic_reject=CoroutineMock()),
+            channel=Mock(basic_reject=AsyncMock()),
             queue_name=Mock(),
             serialized_data=Mock(),
             delivery_tag=Mock(),
@@ -158,7 +156,7 @@ class AMQPMessageTests(asynctest.TestCase):
     async def test_it_rejects_messages_with_requeue(self):
         msg = AMQPMessage(
             connection=Mock(),
-            channel=Mock(basic_reject=CoroutineMock()),
+            channel=Mock(basic_reject=AsyncMock()),
             queue_name=Mock(),
             serialized_data=Mock(),
             delivery_tag=Mock(),

@@ -2,19 +2,19 @@ import asyncio
 import sys
 from importlib import reload
 
-import asynctest
-from asynctest import CoroutineMock, patch, call, Mock, skip
+from unittest import IsolatedAsyncioTestCase
+from unittest.mock import AsyncMock, Mock, patch, call, MagicMock
 
 from asyncworker import task_runners
 from asyncworker.app import App
 from asyncworker.task_runners import ScheduledTaskRunner
 
 
-class ScheduledTaskRunnerTests(asynctest.TestCase):
+class ScheduledTaskRunnerTests(IsolatedAsyncioTestCase):
     async def setUp(self):
         reload(task_runners)
-        self.task = CoroutineMock()
-        self.app = asynctest.Mock(spec=App)
+        self.task = AsyncMock()
+        self.app = Mock(spec=App)
         self.seconds = 10
         self.max_concurrency = 2
 
@@ -28,14 +28,14 @@ class ScheduledTaskRunnerTests(asynctest.TestCase):
     async def test_it_can_dispatch_a_new_task_if_running_tasks_doesnt_exceed_max_concurrency(
         self
     ):
-        self.task_runner.running_tasks = {CoroutineMock()}
+        self.task_runner.running_tasks = {AsyncMock()}
 
         self.assertTrue(await self.task_runner.can_dispatch_task())
 
     async def test_it_waits_for_a_task_to_be_completed_before_dispatching_a_new_task_if_running_tasks_reached_max_concurrency(
         self
     ):
-        self.task_runner.running_tasks = {CoroutineMock(), CoroutineMock()}
+        self.task_runner.running_tasks = {AsyncMock(), AsyncMock()}
 
         with patch.object(self.task_runner.task_is_done_event, "wait") as wait:
             self.assertTrue(await self.task_runner.can_dispatch_task())
@@ -101,7 +101,7 @@ class ScheduledTaskRunnerTests(asynctest.TestCase):
             clock_stop.assert_awaited_once()
 
     async def test_stop_awaits_for_the_currently_running_tasks_to_end(self):
-        t1, t2 = CoroutineMock(), CoroutineMock()
+        t1, t2 = AsyncMock(), AsyncMock()
         self.task_runner.running_tasks = {t1(), t2()}
         with patch.object(self.task_runner.clock, "stop"):
             await self.task_runner.stop(self.app)
@@ -110,13 +110,13 @@ class ScheduledTaskRunnerTests(asynctest.TestCase):
             t2.assert_awaited_once()
 
     async def test_run_follows_the_clock_tick(self):
-        clock = asynctest.MagicMock()
+        clock = MagicMock()
         clock.__aiter__.return_value = range(3)
 
         with patch.multiple(
             self.task_runner,
             clock=clock,
-            can_dispatch_task=CoroutineMock(return_value=False),
+            can_dispatch_task=AsyncMock(return_value=False),
         ):
             await self.task_runner._run()
             self.task_runner.can_dispatch_task.assert_has_awaits(
@@ -169,14 +169,14 @@ class ScheduledTaskRunnerTests(asynctest.TestCase):
             self.assertTrue(_task not in task_runner.running_tasks)
 
     async def test_run_dispatches_a_new_task_for_each_valid_clock_tick(self):
-        clock = asynctest.MagicMock()
+        clock = MagicMock()
         clock.__aiter__.return_value = range(3)
         wrapped_task = Mock()
         with patch.multiple(
             self.task_runner,
             clock=clock,
             _wrapped_task=wrapped_task,
-            can_dispatch_task=CoroutineMock(side_effect=[True, False, True]),
+            can_dispatch_task=AsyncMock(side_effect=[True, False, True]),
         ), patch(
             "asyncworker.task_runners.asyncio.ensure_future"
         ) as ensure_future:
@@ -192,7 +192,7 @@ class ScheduledTaskRunnerTests(asynctest.TestCase):
     async def test_run_emits_a_task_i_done_event_for_each_valid_clock_tick(
         self
     ):
-        clock = asynctest.MagicMock()
+        clock = MagicMock()
         clock.__aiter__.return_value = range(3)
         wrapped_task = Mock()
         with patch.multiple(
@@ -200,7 +200,7 @@ class ScheduledTaskRunnerTests(asynctest.TestCase):
             clock=clock,
             _wrapped_task=wrapped_task,
             task_is_done_event=Mock(),
-            can_dispatch_task=CoroutineMock(side_effect=[True, False, True]),
+            can_dispatch_task=AsyncMock(side_effect=[True, False, True]),
         ), patch("asyncworker.task_runners.asyncio.ensure_future"):
             await self.task_runner._run()
 
@@ -209,7 +209,7 @@ class ScheduledTaskRunnerTests(asynctest.TestCase):
             )
 
     async def test_run_adds_the_new_task_for_each_valid_clock_tick(self):
-        clock = asynctest.MagicMock()
+        clock = MagicMock()
         clock.__aiter__.return_value = range(3)
         wrapped_task = Mock()
         with patch.multiple(
@@ -217,7 +217,7 @@ class ScheduledTaskRunnerTests(asynctest.TestCase):
             clock=clock,
             _wrapped_task=wrapped_task,
             running_tasks=Mock(spec=set),
-            can_dispatch_task=CoroutineMock(side_effect=[True, False, True]),
+            can_dispatch_task=AsyncMock(side_effect=[True, False, True]),
         ), patch(
             "asyncworker.task_runners.asyncio.ensure_future"
         ) as ensure_future:

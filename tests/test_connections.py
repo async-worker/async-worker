@@ -1,10 +1,10 @@
-from asynctest import TestCase
+from unittest import IsolatedAsyncioTestCase
 
 from asyncworker.connections import AMQPConnection, ConnectionsMapping
 from asyncworker.exceptions import InvalidConnection
 
 
-class ConnectionsMappingTest(TestCase):
+class ConnectionsMappingTest(IsolatedAsyncioTestCase):
     async def setUp(self):
         self.connection = AMQPConnection(
             hostname="localhost", username="guest", password="pwd"

@@ -1,9 +1,9 @@
 import asyncio
-import unittest
 
-import asynctest
 from aioamqp.exceptions import AioamqpException
-from asynctest import CoroutineMock, Mock, mock
+
+from unittest import IsolatedAsyncioTestCase
+from unittest.mock import AsyncMock, Mock, patch, call, MagicMock, ANY
 
 from asyncworker import App, conf
 from asyncworker.bucket import Bucket
@@ -19,7 +19,7 @@ async def _handler(message):
     return (42, message[0].body)
 
 
-class ConsumerTest(asynctest.TestCase):
+class ConsumerTest(IsolatedAsyncioTestCase):
     use_default_loop = True
 
     def setUp(self):
@@ -27,8 +27,8 @@ class ConsumerTest(asynctest.TestCase):
             connection=Mock(has_channel_ready=Mock(return_value=True)),
             spec=JsonQueue,
         )
-        self.logger_mock = CoroutineMock(
-            info=CoroutineMock(), debug=CoroutineMock(), error=CoroutineMock()
+        self.logger_mock = AsyncMock(
+            info=AsyncMock(), debug=AsyncMock(), error=AsyncMock()
         )
         self.connection_parameters = ("127.0.0.1", "guest", "guest", 1024)
         self.one_route_fixture = {
@@ -50,8 +50,8 @@ class ConsumerTest(asynctest.TestCase):
         )
         self.app = App(connections=[self.connection])
         self.mock_message = self._make_msg()
-        mock.patch.object(
-            conf, "settings", mock.Mock(FLUSH_TIMEOUT=0.1)
+        patch.object(
+            conf, "settings", Mock(FLUSH_TIMEOUT=0.1)
         ).start()
 
     def _make_msg(self, **kwargs) -> AMQPMessage:
@@ -69,7 +69,7 @@ class ConsumerTest(asynctest.TestCase):
         return Mock(spec=AMQPMessage, **{**default_kwargs, **kwargs})
 
     def tearDown(self):
-        mock.patch.stopall()
+        patch.stopall()
 
     def test_consumer_adjusts_bulk_size(self):
         """
@@ -295,7 +295,7 @@ class ConsumerTest(asynctest.TestCase):
             def pop_all(self):
                 return self._items
 
-        handler_mock = CoroutineMock(__name__="handler")
+        handler_mock = AsyncMock(__name__="handler")
         self.one_route_fixture["handler"] = handler_mock
         self.one_route_fixture["options"]["bulk_size"] = 1
 
@@ -322,7 +322,7 @@ class ConsumerTest(asynctest.TestCase):
             def pop_all(self):
                 return self._items
 
-        handler_mock = CoroutineMock(__name__="handler")
+        handler_mock = AsyncMock(__name__="handler")
         self.one_route_fixture["handler"] = handler_mock
         self.one_route_fixture["options"]["bulk_size"] = 2
 
@@ -407,7 +407,7 @@ class ConsumerTest(asynctest.TestCase):
                 self._items = []
                 return items
 
-        handler_mock = CoroutineMock(__name__="handler")
+        handler_mock = AsyncMock(__name__="handler")
         self.one_route_fixture["handler"] = handler_mock
         self.one_route_fixture["options"]["bulk_size"] = 3
 
@@ -449,7 +449,7 @@ class ConsumerTest(asynctest.TestCase):
                 self._items = []
                 return items
 
-        handler_mock = CoroutineMock()
+        handler_mock = AsyncMock()
         self.one_route_fixture["handler"] = handler_mock
         self.one_route_fixture["options"]["bulk_size"] = 3
 
@@ -503,7 +503,7 @@ class ConsumerTest(asynctest.TestCase):
         Aqui o try/except serve apenas para termos uma exception real, com traceback.
         """
         consumer = Consumer(self.one_route_fixture, *self.connection_parameters)
-        with mock.patch.object(conf, "logger", self.logger_mock):
+        with patch.object(conf, "logger", self.logger_mock):
             try:
                 1 / 0
             except Exception as e:
@@ -511,7 +511,7 @@ class ConsumerTest(asynctest.TestCase):
                 self.logger_mock.error.assert_awaited_with(
                     {
                         "exc_message": "division by zero",
-                        "exc_traceback": mock.ANY,
+                        "exc_traceback": ANY,
                     }
                 )
 
@@ -520,7 +520,7 @@ class ConsumerTest(asynctest.TestCase):
         Logamos qualquer erro de conexão com o Rabbit, inclusive acesso negado
         """
         consumer = Consumer(self.one_route_fixture, *self.connection_parameters)
-        with mock.patch.object(conf, "logger", self.logger_mock):
+        with patch.object(conf, "logger", self.logger_mock):
             try:
                 1 / 0
             except Exception as e:
@@ -528,7 +528,7 @@ class ConsumerTest(asynctest.TestCase):
                 self.logger_mock.error.assert_awaited_with(
                     {
                         "exc_message": "division by zero",
-                        "exc_traceback": mock.ANY,
+                        "exc_traceback": ANY,
                     }
                 )
 
@@ -538,10 +538,10 @@ class ConsumerTest(asynctest.TestCase):
         """
         delivery_tag = 42
         body = "not a JSON"
-        queue_mock = CoroutineMock(ack=CoroutineMock())
+        queue_mock = AsyncMock(ack=AsyncMock())
 
         consumer = Consumer(self.one_route_fixture, *self.connection_parameters)
-        with mock.patch.object(conf, "logger", self.logger_mock):
+        with patch.object(conf, "logger", self.logger_mock):
             await consumer.on_queue_error(
                 body, delivery_tag, "Error: not a JSON", queue_mock
             )
@@ -569,13 +569,13 @@ class ConsumerTest(asynctest.TestCase):
             "asgard/counts/errors",
         ]
         consumer = Consumer(self.one_route_fixture, *self.connection_parameters)
-        queue_mock = CoroutineMock(consume=CoroutineMock())
+        queue_mock = AsyncMock(consume=AsyncMock())
         await consumer.consume_all_queues(queue_mock)
 
         queue_mock.consume.assert_has_awaits(
             [
-                mock.call(queue_name="asgard/counts", delegate=consumer),
-                mock.call(queue_name="asgard/counts/errors", delegate=consumer),
+                call(queue_name="asgard/counts", delegate=consumer),
+                call(queue_name="asgard/counts/errors", delegate=consumer),
             ],
             any_order=True,
         )
@@ -590,17 +590,17 @@ class ConsumerTest(asynctest.TestCase):
             "asgard/counts/errors",
         ]
         consumer = Consumer(self.one_route_fixture, *self.connection_parameters)
-        queue_mock = CoroutineMock(consume=CoroutineMock())
+        queue_mock = AsyncMock(consume=AsyncMock())
 
-        with asynctest.patch.object(
+        with patch.object(
             consumer, "queue", queue_mock
-        ), unittest.mock.patch.object(
+        ), patch.object(
             consumer, "keep_runnig", side_effect=[True, True, True, False]
-        ), asynctest.patch.object(
+        ), patch.object(
             asyncio, "sleep"
-        ) as sleep_mock, asynctest.patch.object(
+        ) as sleep_mock, patch.object(
             consumer, "clock_task", side_effect=[True, True]
-        ), asynctest.patch.object(
+        ), patch.object(
             consumer.queue.connection,
             "has_channel_ready",
             Mock(side_effect=[False, True, False]),
@@ -609,12 +609,12 @@ class ConsumerTest(asynctest.TestCase):
 
             queue_mock.consume.assert_has_awaits(
                 [
-                    mock.call(queue_name="asgard/counts", delegate=consumer),
-                    mock.call(
+                    call(queue_name="asgard/counts", delegate=consumer),
+                    call(
                         queue_name="asgard/counts/errors", delegate=consumer
                     ),
-                    mock.call(queue_name="asgard/counts", delegate=consumer),
-                    mock.call(
+                    call(queue_name="asgard/counts", delegate=consumer),
+                    call(
                         queue_name="asgard/counts/errors", delegate=consumer
                     ),
                 ],
@@ -633,15 +633,15 @@ class ConsumerTest(asynctest.TestCase):
             "asgard/counts/errors",
         ]
         consumer = Consumer(self.one_route_fixture, *self.connection_parameters)
-        with unittest.mock.patch.object(
+        with patch.object(
             consumer, "keep_runnig", side_effect=[True, True, True, False]
-        ), asynctest.patch.object(
+        ), patch.object(
             asyncio, "sleep"
-        ) as sleep_mock, asynctest.patch.object(
+        ) as sleep_mock, patch.object(
             consumer, "clock_task", side_effect=[True, True]
         ):
-            queue_mock = CoroutineMock(
-                consume=CoroutineMock(), connect=CoroutineMock()
+            queue_mock = AsyncMock(
+                consume=AsyncMock(), connect=AsyncMock()
             )
             consumer.queue = queue_mock
 
@@ -654,12 +654,12 @@ class ConsumerTest(asynctest.TestCase):
             "asgard/counts/errors",
         ]
         consumer = Consumer(self.one_route_fixture, *self.connection_parameters)
-        with unittest.mock.patch.object(
+        with patch.object(
             consumer, "keep_runnig", side_effect=[True, True, True, False]
         ):
-            queue_mock = CoroutineMock(
-                consume=CoroutineMock(),
-                connect=CoroutineMock(side_effect=[AioamqpException, True]),
+            queue_mock = AsyncMock(
+                consume=AsyncMock(),
+                connect=AsyncMock(side_effect=[AioamqpException, True]),
             )
             consumer.queue = queue_mock
 
@@ -676,13 +676,13 @@ class ConsumerTest(asynctest.TestCase):
             "asgard/counts/errors",
         ]
         consumer = Consumer(self.one_route_fixture, *self.connection_parameters)
-        with unittest.mock.patch.object(
+        with patch.object(
             consumer, "keep_runnig", side_effect=[True, True, True, False]
         ):
-            queue_mock = CoroutineMock(
-                consume=CoroutineMock(),
+            queue_mock = AsyncMock(
+                consume=AsyncMock(),
                 connection=Mock(
-                    connect=CoroutineMock(side_effect=[AioamqpException, True]),
+                    connect=AsyncMock(side_effect=[AioamqpException, True]),
                     has_channel_ready=Mock(side_effect=[True, False, False]),
                 ),
             )
@@ -701,12 +701,12 @@ class ConsumerTest(asynctest.TestCase):
             "asgard/counts/errors",
         ]
         consumer = Consumer(self.one_route_fixture, *self.connection_parameters)
-        queue_mock = CoroutineMock(
-            consume=CoroutineMock(),
-            connect=CoroutineMock(side_effect=[True, True]),
+        queue_mock = AsyncMock(
+            consume=AsyncMock(),
+            connect=AsyncMock(side_effect=[True, True]),
         )
 
-        with unittest.mock.patch.object(
+        with patch.object(
             consumer, "keep_runnig", side_effect=[True, False, True, False]
         ):
             consumer.queue = queue_mock

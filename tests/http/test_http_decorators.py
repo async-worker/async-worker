@@ -1,7 +1,8 @@
 from http import HTTPStatus
 
 from aiohttp import web
-from asynctest import mock, TestCase
+
+from unittest import IsolatedAsyncioTestCase, mock
 
 from asyncworker import App
 from asyncworker.decorators import wraps
@@ -12,7 +13,7 @@ from asyncworker.routes import call_http_handler
 from asyncworker.testing import HttpClientContext
 
 
-class HTTPDecoratorsTest(TestCase):
+class HTTPDecoratorsTest(IsolatedAsyncioTestCase):
     async def setUp(self):
         self.app = App()
 

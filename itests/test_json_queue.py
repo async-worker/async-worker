@@ -1,7 +1,8 @@
 from typing import Any
 
 from aioamqp.exceptions import ChannelClosed
-from asynctest import TestCase
+
+from unittest import IsolatedAsyncioTestCase
 
 from asyncworker.easyqueue.message import AMQPMessage
 from asyncworker.easyqueue.queue import (
@@ -16,7 +17,7 @@ class DumbConsumer(QueueConsumerDelegate):
         pass
 
 
-class JsonQueueTest(TestCase):
+class JsonQueueTest(IsolatedAsyncioTestCase):
     async def setUp(self):
         self.queue = JsonQueue(
             "127.0.0.1", "guest", "guest", delegate=DumbConsumer()

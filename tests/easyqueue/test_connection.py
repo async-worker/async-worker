@@ -1,14 +1,13 @@
 import asyncio
 
-import asynctest
-from aioamqp.exceptions import AioamqpException
-from asynctest import Mock, CoroutineMock, call, ANY, mock
+from unittest import IsolatedAsyncioTestCase
+from unittest.mock import Mock, AsyncMock, call, ANY, patch
 
 from asyncworker.easyqueue.connection import AMQPConnection
 from tests.easyqueue.base import AsyncBaseTestCase
 
 
-class AMQPConnectionTests(AsyncBaseTestCase, asynctest.TestCase):
+class AMQPConnectionTests(AsyncBaseTestCase, IsolatedAsyncioTestCase):
     async def setUp(self):
         super(AMQPConnectionTests, self).setUp()
         self.connection = AMQPConnection(**self.conn_params, on_error=Mock())
@@ -17,10 +16,10 @@ class AMQPConnectionTests(AsyncBaseTestCase, asynctest.TestCase):
         self
     ):
         transport = Mock()
-        protocol = Mock(channel=CoroutineMock(is_open=True))
+        protocol = Mock(channel=AsyncMock(is_open=True))
 
         conn = (transport, protocol)
-        with asynctest.patch(
+        with patch(
             "asyncworker.easyqueue.connection.aioamqp.connect",
             return_value=conn,
         ) as connect:

@@ -1,6 +1,6 @@
 import asyncio
 
-from asynctest import TestCase
+from unittest import IsolatedAsyncioTestCase
 
 from asyncworker import App, RouteTypes
 from asyncworker.connections import AMQPConnection
@@ -14,7 +14,7 @@ message_processed_multiple_connections = False
 message_processed_other_vhost = False
 
 
-class RabbitMQConsumerTest(TestCase):
+class RabbitMQConsumerTest(IsolatedAsyncioTestCase):
     async def setUp(self):
         self.queue_name = "test"
         self.connection = AMQPConnection(
@@ -122,7 +122,7 @@ class RabbitMQConsumerTest(TestCase):
         self.assertFalse(consume_callback_shoud_not_be_called)
 
 
-class AMQPConsumerTestWithAdditionalParameters(TestCase):
+class AMQPConsumerTestWithAdditionalParameters(IsolatedAsyncioTestCase):
     maxDiff = None
 
     async def setUp(self):

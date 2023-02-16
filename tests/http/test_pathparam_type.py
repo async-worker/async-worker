@@ -2,7 +2,8 @@ from http import HTTPStatus
 
 from aiohttp.test_utils import make_mocked_request
 from aiohttp.web import json_response
-from asynctest import TestCase
+
+from unittest import IsolatedAsyncioTestCase
 
 from asyncworker import App
 from asyncworker.decorators import wraps
@@ -14,7 +15,7 @@ from asyncworker.types.registry import TypesRegistry
 from asyncworker.types.resolver import ArgResolver
 
 
-class TestPathParamTypeHint(TestCase):
+class TestPathParamTypeHint(IsolatedAsyncioTestCase):
     maxDiff = None
 
     async def setUp(self):
