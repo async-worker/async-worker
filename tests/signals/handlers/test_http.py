@@ -41,7 +41,7 @@ class HTTPServerTests(IsolatedAsyncioTestCase):
         )
         self.app = App(connections=[])
 
-    async def tearDown(self):
+    async def asyncTearDown(self):
         await self.app.shutdown()
 
     @patch("asyncworker.signals.handlers.http.web.TCPSite.start")
