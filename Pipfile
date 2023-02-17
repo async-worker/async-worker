@@ -5,7 +5,7 @@ name = "pypi"
 
 [packages]
 pydantic = "<=1.8"
-aiohttp = "==3.7.4"
+aiohttp = "==3.8.4"
 aiologger = "==0.7.0"
 aioamqp = "==0.15.0"
 
