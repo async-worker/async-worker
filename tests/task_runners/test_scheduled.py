@@ -86,14 +86,21 @@ class ScheduledTaskRunnerTests(IsolatedAsyncioTestCase):
     async def test_start_creates_a_background_task_for_run(self):
         self.assertFalse(self.task_runner._started)
 
-        with patch.object(self.task_runner, "_run") as _run, patch(
+        self.task_runner._run = AsyncMock()
+
+        with patch(
             "asyncworker.task_runners.asyncio.ensure_future"
         ) as ensure_future:
             await self.task_runner.start(self.app)
 
             self.assertTrue(self.task_runner._started)
-            _run.assert_called_once()
+            self.task_runner._run.assert_called_once()
             ensure_future.assert_called_once()
+
+            self.assertEqual(
+                self.task_runner._run.return_value,
+                await ensure_future.call_args_list[0][0][0]
+            )
 
     async def test_stop_stops_the_underlying_clock_ticker(self):
         with patch.object(self.task_runner.clock, "stop") as clock_stop:
