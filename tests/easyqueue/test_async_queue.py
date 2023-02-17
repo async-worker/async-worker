@@ -309,15 +309,19 @@ class AsyncQueueConsumerTests(AsyncBaseTestCase, IsolatedAsyncioTestCase):
             "basic_consume",
             side_effect=Exception(),
         ):
+            delegate = Mock(
+                on_before_start_consumption=AsyncMock()
+            )
 
             queue_name = Mock()
-            self.queue.delegate.on_before_start_consumption.assert_not_called()
-            with self.assertRaises(Exception):
-                await self.queue.consume(queue_name, Mock())
 
-            self.queue.delegate.on_before_start_consumption.called_once_with(
-                queue_name, queue=self.queue
+            with self.assertRaises(Exception):
+                await self.queue.consume(queue_name, delegate)
+
+            delegate.on_before_start_consumption.assert_awaited_once_with(
+                queue_name=queue_name, queue=self.queue
             )
+
 
     async def test_connect_gets_awaited_if_consume_is_called_before_connect(
         self
