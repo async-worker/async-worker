@@ -1,3 +1,4 @@
+import asyncio
 from unittest import IsolatedAsyncioTestCase
 from unittest.mock import AsyncMock, Mock, patch, call, ANY
 
@@ -52,7 +53,7 @@ class AMQPTests(IsolatedAsyncioTestCase):
         # )
 
         app[RouteTypes.AMQP_RABBITMQ] = {"connections": [connection]}
-        await self.signal_handler.startup(app)
+        tasks = await self.signal_handler.startup(app)
 
         Consumer.assert_has_calls(
             [
@@ -78,6 +79,8 @@ class AMQPTests(IsolatedAsyncioTestCase):
             app[RouteTypes.AMQP_RABBITMQ]["consumers"],
             [Consumer.return_value, Consumer.return_value],
         )
+
+        await asyncio.gather(*tasks)
 
     @patch(
         "asyncworker.signals.handlers.rabbitmq.AMQPConnection.register"

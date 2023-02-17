@@ -643,8 +643,12 @@ class ConsumerTest(IsolatedAsyncioTestCase):
         ) as sleep_mock, patch.object(
             consumer, "clock_task", side_effect=[True, True]
         ):
-            queue_mock = AsyncMock(
-                consume=AsyncMock(), connect=AsyncMock()
+            queue_mock = Mock(
+                consume=AsyncMock(),
+                connection=Mock(
+                    connect=AsyncMock(),
+                    has_channel_ready=Mock(),
+                ),
             )
             consumer.queue = queue_mock
 
@@ -682,7 +686,7 @@ class ConsumerTest(IsolatedAsyncioTestCase):
         with patch.object(
             consumer, "keep_runnig", side_effect=[True, True, True, False]
         ):
-            queue_mock = AsyncMock(
+            queue_mock = Mock(
                 consume=AsyncMock(),
                 connection=Mock(
                     connect=AsyncMock(side_effect=[AioamqpException, True]),
