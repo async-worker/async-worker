@@ -24,7 +24,7 @@ class AMQPConnectionTests(IsolatedAsyncioTestCase):
         self.routing_key = Mock()
         self.exchange = Mock()
 
-    async def tearDown(self):
+    async def asyncTearDown(self):
         patch.stopall()
 
     def test_len_returns_the_number_of_registered_connections(self):

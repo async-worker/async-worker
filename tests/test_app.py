@@ -5,7 +5,7 @@ from signal import Signals
 from aiohttp import web
 
 from unittest import IsolatedAsyncioTestCase
-from unittest.mock import AsyncMock, Mock
+from unittest.mock import AsyncMock, Mock, patch
 
 from asyncworker.app import App
 from asyncworker.connections import AMQPConnection

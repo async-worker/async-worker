@@ -22,7 +22,7 @@ class RabbitMQConsumerTest(IsolatedAsyncioTestCase):
         )
         self.app = App(connections=[self.connection])
 
-    async def tearDown(self):
+    async def asyncTearDown(self):
         await self.app.connections.with_type(RouteTypes.AMQP_RABBITMQ)[0][
             "/"
         ].connection.channel.queue_delete(self.queue_name)

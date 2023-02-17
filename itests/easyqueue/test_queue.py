@@ -20,7 +20,7 @@ class EnsureConnectedTest(IsolatedAsyncioTestCase):
     async def _func(self, arg1):
         return 42
 
-    async def tearDown(self):
+    async def asyncTearDown(self):
         await self.write_conn.close()
 
     async def test_create_new_channel_if_channel_is_closed(self):

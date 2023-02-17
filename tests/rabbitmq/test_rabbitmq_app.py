@@ -25,7 +25,7 @@ class RabbitMQAppTest(IsolatedAsyncioTestCase):
         )
         self.app = App(connections=[self.connection])
 
-    async def tearDown(self):
+    async def asyncTearDown(self):
         await self.app.shutdown()
 
     async def test_check_route_registry_full_options(self):

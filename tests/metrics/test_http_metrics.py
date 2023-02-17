@@ -54,7 +54,7 @@ class HTTPMetricsTests(IsolatedAsyncioTestCase):
 
         await self.app.startup()
 
-    async def tearDown(self):
+    async def asyncTearDown(self):
         await asyncio.gather(self.app.shutdown(), self.client.close())
         patch.stopall()
 
