@@ -6,6 +6,7 @@ from asyncworker.time import ClockTicker
 if TYPE_CHECKING:
     from asyncworker.app import App  # pragma: nocover
 
+
 class ScheduledTaskRunner:
     def __init__(
         self,

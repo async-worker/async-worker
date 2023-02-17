@@ -204,7 +204,6 @@ class RoutesRegistry(UserDict):
         return self._get_routes_for_type(AMQPRoute)
 
     def __setitem__(self, key: RouteHandler, value: Union[Dict, Route]):
-
         if not isinstance(value, Route):
             route = Route.factory({"handler": key, **value})
         else:

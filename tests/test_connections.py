@@ -28,7 +28,6 @@ class ConnectionsMappingTest(IsolatedAsyncioTestCase):
             del self.mapping["conn"]
 
     async def test_set_item_map_is_frozen(self):
-
         await self.mapping.freeze()
         with self.assertRaises(RuntimeError):
             self.mapping["conn"] = self.connection

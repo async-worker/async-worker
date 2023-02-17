@@ -7,13 +7,12 @@ from tests.easyqueue.base import AsyncBaseTestCase
 
 
 class AMQPConnectionTests(AsyncBaseTestCase, IsolatedAsyncioTestCase):
-
     def setUp(self):
         super(AMQPConnectionTests, self).setUp()
         self.connection = AMQPConnection(**self.conn_params, on_error=Mock())
 
     async def test_connection_lock_ensures_amqp_connect_is_only_called_once(
-        self
+        self,
     ):
         transport = Mock()
         protocol = Mock(channel=AsyncMock(is_open=True))

@@ -7,7 +7,7 @@ from asyncworker.easyqueue.message import AMQPMessage
 
 class AMQPMessageTests(IsolatedAsyncioTestCase):
     def test_lazy_deserialization_raises_an_error_if_deserialization_fails(
-        self
+        self,
     ):
         data = b"Xablau"
         deserializer = Mock(side_effect=ValueError)

@@ -4,7 +4,6 @@ from asyncworker.utils import entrypoint
 
 
 class EntryPointTest(IsolatedAsyncioTestCase):
-
     def test_can_call_function_passing_positional_arguments(self):
         @entrypoint
         async def main(p1, p2, p3):

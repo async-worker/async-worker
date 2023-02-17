@@ -6,7 +6,6 @@ from asyncworker.time import ClockTicker
 
 
 class ClockTickerTests(IsolatedAsyncioTestCase):
-
     @property
     def loop(self):
         return asyncio.get_running_loop()
@@ -45,11 +44,10 @@ class ClockTickerTests(IsolatedAsyncioTestCase):
             self.assertFalse(clock._running)
 
     async def test_run_should_set_the_tick_event_everytime_an_interval_is_passed(
-        self
+        self,
     ):
         event = Mock()
         with patch("asyncworker.time.asyncio.Event", return_value=event):
-
             clock = ClockTicker(seconds=2)
 
             async def tick_check(_):

@@ -132,7 +132,6 @@ class HTTPServerTests(IsolatedAsyncioTestCase):
         with patch.dict(
             os.environ, ASYNCWORKER_METRICS_ROUTE_PATH="/asyncworker-metrics"
         ):
-
             reload(conf)
             with patch.object(routes, "conf", conf):
 
@@ -278,7 +277,7 @@ class HTTPServerTests(IsolatedAsyncioTestCase):
                 )
 
     async def test_resolves_handler_parameters_when_receiving_request_wrapper(
-        self
+        self,
     ):
         def my_decorator(handler):
             async def _wrapper(wrapper: RequestWrapper):

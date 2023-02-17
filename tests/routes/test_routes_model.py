@@ -12,7 +12,6 @@ class MyModel(Model):
 
 class RouteModelTest(TestCase):
     def test_set_item_field_exist(self):
-
         model = MyModel()
         model["field"] = 42
         self.assertEqual(42, model["field"])
@@ -41,15 +40,14 @@ class RouteModelTest(TestCase):
 
 class HTTPRouteTests(TestCase):
     def test_it_raises_an_error_if_user_declares_a_conflicting_metrics_route(
-        self
+        self,
     ):
         with self.assertRaises(ValueError):
             HTTPRoute(methods=["GET"], routes=[settings.METRICS_ROUTE_PATH])
 
     def test_it_doesnt_raises_an_error_if_user_declares_a_metrics_route_with_asyncworker_metrics_disabled(
-        self
+        self,
     ):
-
         with patch(
             "asyncworker.routes.conf.settings",
             METRICS_ROUTE_ENABLED=False,

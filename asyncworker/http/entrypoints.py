@@ -60,7 +60,6 @@ def _register_http_handler(
     registry: RoutesRegistry, routes: List[str], method: HTTPMethods
 ) -> Callable:
     def _wrap(f):
-
         cb = _extract_async_callable(f)
 
         cb_with_parse_path = _install_request_parser_annotation(cb, PathParam)

@@ -67,7 +67,7 @@ class AsyncBaseTestCase:
 
 class AsynQueueTests(IsolatedAsyncioTestCase):
     async def test_it_raises_an_error_if_its_initialized_with_both_delegate_and_delegate_class(
-        self
+        self,
     ):
         with self.assertRaises(ValueError):
             JsonQueue(
@@ -89,7 +89,7 @@ class AsynQueueTests(IsolatedAsyncioTestCase):
         self.assertIsInstance(queue, JsonQueue)
 
     async def test_it_initializes_a_delegate_if_delegate_class_is_provided(
-        self
+        self,
     ):
         delegate_class = Mock()
         JsonQueue(Mock(), Mock(), Mock(), delegate_class=delegate_class)
@@ -104,7 +104,7 @@ class AsyncQueueConnectionTests(AsyncBaseTestCase, IsolatedAsyncioTestCase):
         self.assertFalse(self.queue.delegate.on_queue_message.called)
 
     async def test_it_puts_messages_into_queue_as_json_if_message_is_a_json_serializeable(
-        self
+        self,
     ):
         message = {
             "artist": "Great White",
@@ -138,7 +138,7 @@ class AsyncQueueConnectionTests(AsyncBaseTestCase, IsolatedAsyncioTestCase):
         )
 
     async def test_it_puts_messages_into_queue_as_is_if_message_is_already_a_json(
-        self
+        self,
     ):
         message = {
             "artist": "Great White",
@@ -172,7 +172,7 @@ class AsyncQueueConnectionTests(AsyncBaseTestCase, IsolatedAsyncioTestCase):
         )
 
     async def test_it_raises_an_error_if_both_data_and_json_are_passed_to_put_message(
-        self
+        self,
     ):
         message = {
             "artist": "Great White",
@@ -231,7 +231,7 @@ class AsyncQueueConnectionTests(AsyncBaseTestCase, IsolatedAsyncioTestCase):
         )
 
     async def test_it_doesnt_encodes_payload_into_bytes_if_payload_is_already_bytes(
-        self
+        self,
     ):
         payload = json.dumps({"dog": "Xablau"}).encode()
         exchange = Mock()
@@ -258,15 +258,12 @@ class AsyncQueueConnectionTests(AsyncBaseTestCase, IsolatedAsyncioTestCase):
         )
 
     async def test_connect_gets_awaited_if_put_is_called_before_connect(self):
-
         message = {
             "artist": "Great White",
             "song": "Once Bitten Twice Shy",
             "album": "Twice Shy",
         }
-        with patch.object(
-            self.write_conn, "_connect"
-        ) as connect, patch.object(
+        with patch.object(self.write_conn, "_connect") as connect, patch.object(
             self.write_conn,
             "channel",
             Mock(is_open=False, publish=AsyncMock()),
@@ -275,7 +272,7 @@ class AsyncQueueConnectionTests(AsyncBaseTestCase, IsolatedAsyncioTestCase):
             connect.assert_awaited_once()
 
     async def test_it_raises_and_error_if_put_message_isnt_json_serializeable(
-        self
+        self,
     ):
         message = Mock()
 
@@ -299,7 +296,7 @@ class AsyncQueueConsumerTests(AsyncBaseTestCase, IsolatedAsyncioTestCase):
         )
 
     async def test_it_calls_on_before_start_consumption_before_queue_consume(
-        self
+        self,
     ):
         await self.queue.connection._connect()
 
@@ -308,9 +305,7 @@ class AsyncQueueConsumerTests(AsyncBaseTestCase, IsolatedAsyncioTestCase):
             "basic_consume",
             side_effect=Exception(),
         ):
-            delegate = Mock(
-                on_before_start_consumption=AsyncMock()
-            )
+            delegate = Mock(on_before_start_consumption=AsyncMock())
 
             queue_name = Mock()
 
@@ -321,9 +316,8 @@ class AsyncQueueConsumerTests(AsyncBaseTestCase, IsolatedAsyncioTestCase):
                 queue_name=queue_name, queue=self.queue
             )
 
-
     async def test_connect_gets_awaited_if_consume_is_called_before_connect(
-        self
+        self,
     ):
         channel = Mock(
             is_open=False,
@@ -332,9 +326,7 @@ class AsyncQueueConsumerTests(AsyncBaseTestCase, IsolatedAsyncioTestCase):
         )
         with patch.object(
             self.queue.connection, "_connect"
-        ) as connect, patch.object(
-            self.queue.connection, "channel", channel
-        ):
+        ) as connect, patch.object(self.queue.connection, "channel", channel):
             queue_name = Mock()
             await self.queue.consume(
                 queue_name, delegate=Mock(spec=QueueConsumerDelegate)
@@ -468,7 +460,7 @@ class AsyncQueueConsumerHandlerMethodsTests(
         )
 
     async def test_it_calls_on_queue_message_with_the_message_body_wrapped_as_a_AMQPMessage_instance(
-        self
+        self,
     ):
         content = {
             "artist": "Caetano Veloso",
@@ -502,7 +494,7 @@ class AsyncQueueConsumerHandlerMethodsTests(
             )
 
     async def test_it_calls_on_message_handle_error_if_message_handler_raises_an_error(
-        self
+        self,
     ):
         content = {
             "artist": "Caetano Veloso",
@@ -540,7 +532,6 @@ class EnsureConnectedDecoratorTests(IsolatedAsyncioTestCase):
         )
 
     async def test_it_waits_before_trying_to_reconnect_if_connect_fails(self):
-
         coro = AsyncMock()
         with patch(
             "asyncworker.easyqueue.queue.asyncio.sleep"
@@ -559,17 +550,14 @@ class EnsureConnectedDecoratorTests(IsolatedAsyncioTestCase):
             coro.assert_awaited_once_with(self.queue, 1, dog="Xablau")
 
     async def test_it_logs_connection_retries_if_a_logger_istance_is_available(
-        self
+        self,
     ):
         coro = AsyncMock()
-        with patch(
-            "asyncworker.easyqueue.queue.asyncio.sleep"
-        ), patch.object(
+        with patch("asyncworker.easyqueue.queue.asyncio.sleep"), patch.object(
             self.queue.connection,
             "_connect",
             AsyncMock(side_effect=[ConnectionError, True]),
         ):
-
             wrapped = _ensure_conn_is_ready(ConnType.CONSUME)(coro)
             await wrapped(self.queue, 1, dog="Xablau")
 
@@ -578,9 +566,7 @@ class EnsureConnectedDecoratorTests(IsolatedAsyncioTestCase):
     async def test_it_calls_connection_fail_callback_if_connect_fails(self):
         error = ConnectionError()
         coro = AsyncMock()
-        with patch(
-            "asyncworker.easyqueue.queue.asyncio.sleep"
-        ), patch.object(
+        with patch("asyncworker.easyqueue.queue.asyncio.sleep"), patch.object(
             self.queue.connection,
             "_connect",
             AsyncMock(side_effect=[error, True]),

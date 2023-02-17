@@ -26,9 +26,7 @@ class TimeitTests(IsolatedAsyncioTestCase):
     async def test_it_calculates_time_delta(self):
         now = Mock(side_effect=[self.time, self.time + 1])
         with patch("asyncworker.utils.now", now):
-            async with Timeit(
-                name="Xablau", callback=AsyncMock()
-            ) as timeit:
+            async with Timeit(name="Xablau", callback=AsyncMock()) as timeit:
                 pass
 
         self.assertEqual(timeit._transactions["Xablau"], 1.0)
@@ -49,7 +47,7 @@ class TimeitTests(IsolatedAsyncioTestCase):
         )
 
     async def test_it_calls_callback_with_exc_parameters_if_an_exception_is_raised(
-        self
+        self,
     ):
         coro = AsyncMock()
         try:
@@ -99,7 +97,7 @@ class TimeitTests(IsolatedAsyncioTestCase):
                     )
 
     async def test_initializing_more_than_one_transation_with_the_same_name_on_the_same_scope_raises_an_error(
-        self
+        self,
     ):
         callback = AsyncMock()
         with self.assertRaises(ValueError):
@@ -122,7 +120,6 @@ class TimeitTests(IsolatedAsyncioTestCase):
         )
 
         with patch("asyncworker.utils.now", now):
-
             async with Timeit(name="a", callback=callback) as timeit:
                 # do some database access
                 async with timeit(name="b"):

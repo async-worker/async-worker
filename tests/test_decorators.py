@@ -148,7 +148,7 @@ class TestWrapsDecorator(IsolatedAsyncioTestCase):
 
     async def test_call_chain_two_decorators(self):
         """
-        Cada decorator fornece (acumula) um dos parametros necessários 
+        Cada decorator fornece (acumula) um dos parametros necessários
         para o handler ser chamado
         """
 

@@ -108,9 +108,7 @@ class RoutesRegistryTests(IsolatedAsyncioTestCase):
         self.assertEqual(route.get("Invalid key", "Default"), "Default")
 
     def test_register_http_handler(self):
-        route = HTTPRoute(
-            handler=AsyncMock(), routes=["/foo"], methods=["GET"]
-        )
+        route = HTTPRoute(handler=AsyncMock(), routes=["/foo"], methods=["GET"])
         self.routes_registry.add_http_route(route)
 
         self.assertEqual(len(self.routes_registry.http_routes), 1)
@@ -175,7 +173,7 @@ class HTTPRouteRegisterTest(IsolatedAsyncioTestCase):
             self.assertEqual({"OK": True}, data)
 
     async def test_can_registrer_a_callable_as_a_valid_handler_new_decorator(
-        self
+        self,
     ):
         app = App()
 
@@ -204,7 +202,7 @@ class HTTPRouteRegisterTest(IsolatedAsyncioTestCase):
             self.assertEqual({"OK": True}, data)
 
     async def test_can_registrer_a_coroutine_as_a_valid_handler_new_decorator(
-        self
+        self,
     ):
         app = App()
 
@@ -337,7 +335,7 @@ class AMQPRouteRegiterTest(IsolatedAsyncioTestCase):
         )
 
     async def test_can_registrer_a_callable_as_a_valid_handler_amqp_route_register(
-        self
+        self,
     ):
         app = App()
 
@@ -355,7 +353,7 @@ class AMQPRouteRegiterTest(IsolatedAsyncioTestCase):
         )
 
     async def test_raise_if_object_is_not_callable_register_with_app_amqp_consume(
-        self
+        self,
     ):
         app = App()
 
@@ -368,7 +366,7 @@ class AMQPRouteRegiterTest(IsolatedAsyncioTestCase):
             app.amqp.consume(["/"])(handler)
 
     async def test_raise_if_object_is_not_callable_register_with_amqp_route_register(
-        self
+        self,
     ):
         app = App()
 

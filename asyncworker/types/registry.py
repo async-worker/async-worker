@@ -4,7 +4,9 @@ from asyncworker.typing import get_args, get_origin
 
 
 class RegistryItem:
-    def __init__(self, type: Type, value: Any, type_args: Optional[Tuple] = None) -> None:
+    def __init__(
+        self, type: Type, value: Any, type_args: Optional[Tuple] = None
+    ) -> None:
         self.type = type
         self.value = value
         self.type_args = type_args

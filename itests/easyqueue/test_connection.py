@@ -24,7 +24,6 @@ class ConnectionTest(IsolatedAsyncioTestCase):
         self.assertNotEqual(self.conn._protocol.state, OPEN)
 
     async def test_has_channel_ready(self):
-
         await self.conn._connect()
         self.assertTrue(self.conn.has_channel_ready())
 
@@ -34,7 +33,7 @@ class ConnectionTest(IsolatedAsyncioTestCase):
         self.assertFalse(self.conn.has_channel_ready())
 
     async def test_call_connect_channel_closed_protocol_raised_aioamqp_exception(
-        self
+        self,
     ):
         await self.conn._connect()
 

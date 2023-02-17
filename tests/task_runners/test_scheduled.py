@@ -25,14 +25,14 @@ class ScheduledTaskRunnerTests(IsolatedAsyncioTestCase):
         )
 
     async def test_it_can_dispatch_a_new_task_if_running_tasks_doesnt_exceed_max_concurrency(
-        self
+        self,
     ):
         self.task_runner.running_tasks = {AsyncMock()}
 
         self.assertTrue(await self.task_runner.can_dispatch_task())
 
     async def test_it_waits_for_a_task_to_be_completed_before_dispatching_a_new_task_if_running_tasks_reached_max_concurrency(
-        self
+        self,
     ):
         self.task_runner.running_tasks = {AsyncMock(), AsyncMock()}
 
@@ -56,7 +56,7 @@ class ScheduledTaskRunnerTests(IsolatedAsyncioTestCase):
         self.assertEqual(len(self.task_runner.running_tasks), 0)
 
     async def test_wrapped_task_emits_the_task_is_done_event_if_task_finishes_successfully(
-        self
+        self,
     ):
         with patch.object(self.task_runner.task_is_done_event, "set") as set:
             wrapped_task = asyncio.ensure_future(
@@ -68,7 +68,7 @@ class ScheduledTaskRunnerTests(IsolatedAsyncioTestCase):
             set.assert_called_once()
 
     async def test_wrapped_task_emits_the_task_is_done_event_if_task_raises_an_error(
-        self
+        self,
     ):
         with patch.object(self.task_runner.task_is_done_event, "set") as set:
             self.task.side_effect = error = ConnectionError
@@ -98,7 +98,7 @@ class ScheduledTaskRunnerTests(IsolatedAsyncioTestCase):
 
             self.assertEqual(
                 self.task_runner._run.return_value,
-                await ensure_future.call_args_list[0][0][0]
+                await ensure_future.call_args_list[0][0][0],
             )
 
     async def test_stop_stops_the_underlying_clock_ticker(self):
@@ -173,7 +173,7 @@ class ScheduledTaskRunnerTests(IsolatedAsyncioTestCase):
             )
 
     async def test_run_emits_a_task_i_done_event_for_each_valid_clock_tick(
-        self
+        self,
     ):
         clock = MagicMock()
         clock.__aiter__.return_value = range(3)

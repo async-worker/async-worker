@@ -19,7 +19,6 @@ async def _handler(message):
 
 
 class ConsumerTest(IsolatedAsyncioTestCase):
-
     @property
     def loop(self):
         return asyncio.get_running_loop()
@@ -52,9 +51,7 @@ class ConsumerTest(IsolatedAsyncioTestCase):
         )
         self.app = App(connections=[self.connection])
         self.mock_message = self._make_msg()
-        patch.object(
-            conf, "settings", Mock(FLUSH_TIMEOUT=0.1)
-        ).start()
+        patch.object(conf, "settings", Mock(FLUSH_TIMEOUT=0.1)).start()
 
     def _make_msg(self, **kwargs) -> AMQPMessage:
         default_kwargs = dict(
@@ -134,7 +131,7 @@ class ConsumerTest(IsolatedAsyncioTestCase):
         self.assertEqual("fluentd", connection_parameters["virtualhost"])
 
     def test_consumer_instantiate_async_queue_other_vhost_does_not_strip_slash(
-        self
+        self,
     ):
         self.one_route_fixture["vhost"] = "/fluentd"
         consumer = Consumer(self.one_route_fixture, *self.connection_parameters)
@@ -377,7 +374,7 @@ class ConsumerTest(IsolatedAsyncioTestCase):
         msgs[2].reject.assert_awaited_once_with(requeue=True)
 
     async def test_on_queue_message_bulk_mixed_ack_and_reject_on_success_reject(
-        self
+        self,
     ):
         self.maxDiff = None
 
@@ -442,7 +439,7 @@ class ConsumerTest(IsolatedAsyncioTestCase):
         msgs[1].reject.assert_not_awaited()
 
     async def test_do_not_flush_if_bucket_is_already_empty_when_timeout_expires(
-        self
+        self,
     ):
         class MyBucket(Bucket):
             def pop_all(self):
@@ -564,8 +561,7 @@ class ConsumerTest(IsolatedAsyncioTestCase):
         self.assertEqual(self.one_route_fixture["routes"], consumer.queue_name)
 
     async def test_consume_all_queues(self):
-        """
-        """
+        """ """
         self.one_route_fixture["routes"] = [
             "asgard/counts",
             "asgard/counts/errors",
@@ -594,13 +590,9 @@ class ConsumerTest(IsolatedAsyncioTestCase):
         consumer = Consumer(self.one_route_fixture, *self.connection_parameters)
         queue_mock = AsyncMock(consume=AsyncMock())
 
-        with patch.object(
-            consumer, "queue", queue_mock
-        ), patch.object(
+        with patch.object(consumer, "queue", queue_mock), patch.object(
             consumer, "keep_runnig", side_effect=[True, True, True, False]
-        ), patch.object(
-            asyncio, "sleep"
-        ) as sleep_mock, patch.object(
+        ), patch.object(asyncio, "sleep") as sleep_mock, patch.object(
             consumer, "clock_task", side_effect=[True, True]
         ), patch.object(
             consumer.queue.connection,
@@ -612,13 +604,9 @@ class ConsumerTest(IsolatedAsyncioTestCase):
             queue_mock.consume.assert_has_awaits(
                 [
                     call(queue_name="asgard/counts", delegate=consumer),
-                    call(
-                        queue_name="asgard/counts/errors", delegate=consumer
-                    ),
+                    call(queue_name="asgard/counts/errors", delegate=consumer),
                     call(queue_name="asgard/counts", delegate=consumer),
-                    call(
-                        queue_name="asgard/counts/errors", delegate=consumer
-                    ),
+                    call(queue_name="asgard/counts/errors", delegate=consumer),
                 ],
                 any_order=True,
             )
@@ -637,9 +625,7 @@ class ConsumerTest(IsolatedAsyncioTestCase):
         consumer = Consumer(self.one_route_fixture, *self.connection_parameters)
         with patch.object(
             consumer, "keep_runnig", side_effect=[True, True, True, False]
-        ), patch.object(
-            asyncio, "sleep"
-        ) as sleep_mock, patch.object(
+        ), patch.object(asyncio, "sleep") as sleep_mock, patch.object(
             consumer, "clock_task", side_effect=[True, True]
         ):
             queue_mock = Mock(
@@ -665,9 +651,7 @@ class ConsumerTest(IsolatedAsyncioTestCase):
         ):
             queue_mock = AsyncMock(
                 consume=AsyncMock(side_effect=AioamqpException),
-                connection=Mock(
-                    has_channel_ready=Mock(return_value=False)
-                )
+                connection=Mock(has_channel_ready=Mock(return_value=False)),
             )
             consumer.queue = queue_mock
 

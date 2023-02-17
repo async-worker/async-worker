@@ -14,7 +14,6 @@ def _register_amqp_handler(
     options: Optional[AMQPRouteOptions],
 ):
     def _wrap(f):
-
         cb = _extract_async_callable(f)
         route = AMQPRoute(
             handler=cb,

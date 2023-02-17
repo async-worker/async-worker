@@ -82,9 +82,7 @@ class AMQPTests(IsolatedAsyncioTestCase):
 
         await asyncio.gather(*tasks)
 
-    @patch(
-        "asyncworker.signals.handlers.rabbitmq.AMQPConnection.register"
-    )
+    @patch("asyncworker.signals.handlers.rabbitmq.AMQPConnection.register")
     async def test_startup_registers_one_connection_per_vhost_into_app_state(
         self, register
     ):
@@ -107,7 +105,7 @@ class AMQPTests(IsolatedAsyncioTestCase):
         )
 
     async def test_it_raises_an_error_if_theres_multiple_connections_and_route_doesnt_define_a_connection(
-        self
+        self,
     ):
         conn1 = AMQPConnection(
             hostname="127.0.0.1",
@@ -131,7 +129,7 @@ class AMQPTests(IsolatedAsyncioTestCase):
             await self.signal_handler.startup(app)
 
     async def test_it_raises_an_error_if_an_amqp_route_is_registered_without_any_defined_connections(
-        self
+        self,
     ):
         app = App(connections=[])
 
@@ -143,7 +141,7 @@ class AMQPTests(IsolatedAsyncioTestCase):
             await self.signal_handler.startup(app)
 
     async def test_it_uses_the_connection_provided_by_the_route_if_one_exists(
-        self
+        self,
     ):
         conn = AMQPConnection(
             hostname="127.0.0.1",
@@ -176,7 +174,7 @@ class AMQPTests(IsolatedAsyncioTestCase):
         )
 
     async def test_it_uses_the_connection_name_provided_by_the_route_if_one_exists(
-        self
+        self,
     ):
         app = App(connections=[])
 

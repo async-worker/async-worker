@@ -194,7 +194,6 @@ class TestPathParamTypeHint(IsolatedAsyncioTestCase):
         original_qualname = _path.__qualname__
 
         with self.assertRaises(TypeError) as exc:
-
             app = App()
 
             app.http.get(["/path/{n}"])(_path)
@@ -226,7 +225,6 @@ class TestPathParamTypeHint(IsolatedAsyncioTestCase):
         original_qualname = my_handler.__qualname__
 
         with self.assertRaises(TypeError) as exc:
-
             self.app.http.get(["/path/{n}"])(_deco_2(my_handler))
 
         self.assertIn(original_qualname, exc.exception.args[0])
@@ -285,7 +283,9 @@ class TestPathParamTypeHint(IsolatedAsyncioTestCase):
 
     async def test_path_param_bool_invalid_values(self):
         @self.app.http.get(["/bool/{on}"])
-        async def bool_true(on: PathParam[bool],):
+        async def bool_true(
+            on: PathParam[bool],
+        ):
             return json_response({"on": await on.unpack()})
 
         async with HttpClientContext(self.app) as client:

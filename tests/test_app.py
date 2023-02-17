@@ -19,9 +19,7 @@ from asyncworker.testing import HttpClientContext
 class AppTests(IsolatedAsyncioTestCase):
     def setUp(self):
         class MyApp(App):
-            handlers = (
-                Mock(startup=AsyncMock(), shutdown=AsyncMock()),
-            )
+            handlers = (Mock(startup=AsyncMock(), shutdown=AsyncMock()),)
 
         self.appCls = MyApp
         self.app = MyApp(connections=[])
@@ -186,7 +184,6 @@ class AppTests(IsolatedAsyncioTestCase):
             )
 
     async def test_http_route_decorator(self):
-
         app = App()
 
         @app.http._route(["/"], method=HTTPMethods.GET)

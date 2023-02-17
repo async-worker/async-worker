@@ -103,7 +103,7 @@ class AMQPConnectionTests(IsolatedAsyncioTestCase):
         )
 
     async def test_put_initializes_a_new_connection_if_a_connection_wasnt_initialized_for_a_given_vhost(
-        self
+        self,
     ):
         connection_a = Mock(virtual_host="a", spec=JsonQueue)
 

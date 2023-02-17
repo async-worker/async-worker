@@ -46,7 +46,7 @@ class JsonQueueTest(IsolatedAsyncioTestCase):
 
     async def test_consume_doesnt_open_write_connection(self):
         """
-        Certifica que se uma queue faz apenas consume ela não 
+        Certifica que se uma queue faz apenas consume ela não
         abre a conexão que é dedicada a escrita.
         """
         self.assertFalse(self.consume_conn.is_connected)

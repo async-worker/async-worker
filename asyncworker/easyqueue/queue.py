@@ -198,7 +198,7 @@ class JsonQueue(BaseQueue, Generic[T]):
     ) -> None:
         super().__init__(host, username, password, virtual_host, heartbeat)
 
-        self.loop : AbstractEventLoop = loop or asyncio.get_event_loop()
+        self.loop: AbstractEventLoop = loop or asyncio.get_event_loop()
 
         if delegate is not None and delegate_class is not None:
             raise ValueError("Cant provide both delegate and delegate_class")

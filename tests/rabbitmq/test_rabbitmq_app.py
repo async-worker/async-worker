@@ -123,7 +123,7 @@ class RabbitMQAppTest(IsolatedAsyncioTestCase):
         self.assertEqual(42, await route["handler"](None))
 
     async def test_register_default_bulk_size_and_default_bulk_flush_timeout(
-        self
+        self,
     ):
         @self.app.amqp.consume(["my-queue"])
         async def _handler(message):
@@ -178,7 +178,7 @@ class RabbitMQAppTest(IsolatedAsyncioTestCase):
         self.assertCountEqual(self.app.connections.values(), [self.connection])
 
     async def test_instantiate_one_consumer_per_handler_one_handler_registered(
-        self
+        self,
     ):
         """
         Para cada handler registrado, teremos um Consumer. Esse Consumer conseguirá consumir múltiplas
@@ -212,7 +212,7 @@ class RabbitMQAppTest(IsolatedAsyncioTestCase):
         )
 
     async def test_instantiate_one_consumer_per_handler_multiple_handlers_registered_bla(
-        self
+        self,
     ):
         @self.app.amqp.consume(["asgard/counts"], vhost="/")
         async def _handler(message):

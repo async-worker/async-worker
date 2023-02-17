@@ -196,7 +196,6 @@ class MetricsEndpointTest(IsolatedAsyncioTestCase):
             )
 
     async def test_gc_collector_metric(self):
-
         async with HttpClientContext(self.app) as client:
             metrics = await client.get(self.METRICS_PATH)
             self.assertEqual(HTTPStatus.OK, metrics.status)
@@ -220,7 +219,6 @@ class MetricsEndpointTest(IsolatedAsyncioTestCase):
             )
 
     async def test_process_collector_metric(self):
-
         async with HttpClientContext(self.app) as client:
             metrics = await client.get(self.METRICS_PATH)
             self.assertEqual(HTTPStatus.OK, metrics.status)
@@ -247,7 +245,6 @@ class MetricsEndpointTest(IsolatedAsyncioTestCase):
             )
 
     async def test_platform_collector_metric(self):
-
         async with HttpClientContext(self.app) as client:
             metrics = await client.get(self.METRICS_PATH)
             self.assertEqual(HTTPStatus.OK, metrics.status)
