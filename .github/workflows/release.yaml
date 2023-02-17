@@ -13,13 +13,13 @@ jobs:
       - name: checkout
         uses: actions/checkout@v2
 
-      - name: Install python 3.8
+      - name: Install python 3.11
         uses: actions/setup-python@v2
         with:
-          python-version: 3.8
+          python-version: 3.11
 
       - name: Install pip
-        run: pip install -U pip==22.0.4
+        run: pip install -U pip==22.3.1
 
       - name: Install twine
         run: pip install twine==3.2.0
