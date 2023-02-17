@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "7224573cf9b5cea15664a965f85e4f87986cd22e9ce34de212e88c92f0aa4855"
+            "sha256": "b4c3b64d3181918eb69a7e6ea97b4b3579f27a300e7596850e96f8c7d96e74e1"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -643,14 +643,6 @@
             "index": "pypi",
             "version": "==0.7.0"
         },
-        "aioresponses": {
-            "hashes": [
-                "sha256:1160486b5ea96fcae6170cf2bdef029b9d3a283b7dbeabb3d7f1182769bfb6b7",
-                "sha256:9b8c108b36354c04633bad0ea752b55d956a7602fe3e3234b939fc44af96f1d8"
-            ],
-            "index": "pypi",
-            "version": "==0.7.4"
-        },
         "aiosignal": {
             "hashes": [
                 "sha256:54cd96e15e1649b75d6c87526a6ff0b6c1b0dd3459f43d9ca11d48c339b68cfc",
@@ -678,14 +670,6 @@
         "async-worker": {
             "editable": true,
             "path": "."
-        },
-        "asynctest": {
-            "hashes": [
-                "sha256:5da6118a7e6d6b54d83a8f7197769d046922a44d2a99c21382f0a6e4fadae676",
-                "sha256:c27862842d15d83e6a34eb0b2866c323880eb3a75e4485b079ea11748fd77fac"
-            ],
-            "index": "pypi",
-            "version": "==0.13.0"
         },
         "attrs": {
             "hashes": [
