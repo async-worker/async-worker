@@ -5,7 +5,7 @@ from signal import Signals
 from aiohttp import web
 
 from unittest import IsolatedAsyncioTestCase
-from unittest.mock import AsyncMock, Mock, patch
+from unittest.mock import AsyncMock, Mock, patch, call
 
 from asyncworker.app import App
 from asyncworker.connections import AMQPConnection
@@ -89,7 +89,7 @@ class AppTests(IsolatedAsyncioTestCase):
     async def test_run_on_startup_registers_a_coroutine_to_be_executed_on_startup(
         self,
     ):
-        coro = CoroutineMock()
+        coro = AsyncMock()
 
         self.app.run_on_startup(coro)
 
@@ -101,7 +101,7 @@ class AppTests(IsolatedAsyncioTestCase):
     async def test_startup_calls_user_registered_startup_routines_after_app_signal_handlers_startup(
         self,
     ):
-        coro = CoroutineMock()
+        coro = AsyncMock()
 
         self.app.run_on_startup(coro)
 
@@ -113,7 +113,7 @@ class AppTests(IsolatedAsyncioTestCase):
     async def test_run_on_shutdown_registers_a_coroutine_to_be_executed_on_shutdown(
         self,
     ):
-        coro = CoroutineMock()
+        coro = AsyncMock()
 
         self.app.run_on_shutdown(coro)
         self.assertIn(coro, self.app._on_shutdown)
@@ -123,7 +123,7 @@ class AppTests(IsolatedAsyncioTestCase):
 
     async def test_shutdown_is_registered_as_a_signal_handler(self):
         with patch.object(
-            self.loop, "add_signal_handler"
+            asyncio.get_running_loop(), "add_signal_handler"
         ) as add_signal_handler:
             app = self.appCls()
             add_signal_handler.assert_has_calls(
@@ -155,7 +155,7 @@ class AppTests(IsolatedAsyncioTestCase):
             "asyncworker.app.ScheduledTaskRunner", spec=ScheduledTaskRunner
         ) as Runner:
             seconds = 10
-            coro = Mock(start=CoroutineMock(), stop=CoroutineMock())
+            coro = Mock(start=AsyncMock(), stop=AsyncMock())
 
             self.app.run_every(seconds=seconds)(coro)
 
@@ -176,7 +176,7 @@ class AppTests(IsolatedAsyncioTestCase):
             "asyncworker.app.ScheduledTaskRunner", spec=ScheduledTaskRunner
         ) as Runner:
             seconds = 10
-            coro = Mock(start=CoroutineMock(), stop=CoroutineMock())
+            coro = Mock(start=AsyncMock(), stop=AsyncMock())
 
             self.app.run_every(
                 seconds=seconds, options={Options.MAX_CONCURRENCY: 666}

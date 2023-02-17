@@ -7,6 +7,11 @@ from asyncworker.time import ClockTicker
 
 
 class ClockTickerTests(IsolatedAsyncioTestCase):
+
+    @property
+    def loop(self):
+        return asyncio.get_running_loop()
+
     async def test_a_stoped_clock_cannot_be_reused(self):
         clock = ClockTicker(seconds=0.0001)
 
@@ -46,17 +51,17 @@ class ClockTickerTests(IsolatedAsyncioTestCase):
         event = Mock()
         with patch("asyncworker.time.asyncio.Event", return_value=event):
 
-            async def tick_check(clock: ClockTicker):
+            clock = ClockTicker(seconds=2)
+
+            async def tick_check(_):
                 event.set.assert_called_once()
                 event.clear.assert_not_called()
                 await clock.stop()
 
-            clock = ClockTicker(seconds=2)
-            sleep = AsyncMock(side_effect=lambda seconds: tick_check(clock))
+            clock._sleep = AsyncMock(side_effect=tick_check)
 
-            with patch("asyncworker.time.asyncio.sleep", sleep):
-                clock._running = True
-                task = self.loop.create_task(clock._run())
-                await task
-                event.clear.assert_called_once()
-                sleep.assert_awaited_once_with(2)
+            clock._running = True
+            await self.loop.create_task(clock._run())
+            event.clear.assert_called_once()
+
+            clock._sleep.assert_awaited_once_with(2)

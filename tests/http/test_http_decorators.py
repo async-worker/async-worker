@@ -45,8 +45,8 @@ class HTTPDecoratorsTest(IsolatedAsyncioTestCase):
         lançamos uma exceção.
         Devemos gerar um logger.exception()
         """
-        logger_mock_template = mock.CoroutineMock(
-            exception=mock.CoroutineMock()
+        logger_mock_template = mock.AsyncMock(
+            exception=mock.AsyncMock()
         )
         with mock.patch.object(
             decorators, "logger", logger_mock_template

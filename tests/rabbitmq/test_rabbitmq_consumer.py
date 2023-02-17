@@ -3,7 +3,7 @@ import asyncio
 from aioamqp.exceptions import AioamqpException
 
 from unittest import IsolatedAsyncioTestCase
-from unittest.mock import AsyncMock, Mock, patch, call, MagicMock, ANY
+from unittest.mock import AsyncMock, Mock, patch, call, ANY
 
 from asyncworker import App, conf
 from asyncworker.bucket import Bucket
@@ -11,7 +11,7 @@ from asyncworker.connections import AMQPConnection
 from asyncworker.consumer import Consumer
 from asyncworker.easyqueue.message import AMQPMessage
 from asyncworker.easyqueue.queue import JsonQueue
-from asyncworker.options import Actions, Events, RouteTypes
+from asyncworker.options import Actions, Events
 from asyncworker.rabbitmq import AMQPRouteOptions
 
 
@@ -20,7 +20,10 @@ async def _handler(message):
 
 
 class ConsumerTest(IsolatedAsyncioTestCase):
-    use_default_loop = True
+
+    @property
+    def loop(self):
+        return asyncio.get_running_loop()
 
     def setUp(self):
         self.queue_mock = Mock(

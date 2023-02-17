@@ -31,6 +31,7 @@ class ClockTicker(AsyncIterator):
         self._tick_event = asyncio.Event()
         self._running: Optional[bool] = None
         self._main_task: Optional[asyncio.Future] = None
+        self._sleep = asyncio.sleep
 
     def __aiter__(self) -> AsyncIterator:
         if self._running is not None:
@@ -54,7 +55,7 @@ class ClockTicker(AsyncIterator):
     async def _run(self) -> None:
         while self._running:
             self._tick_event.set()
-            await asyncio.sleep(self.seconds)
+            await self._sleep(self.seconds)
             self._tick_event.clear()
 
     async def stop(self) -> None:
