@@ -4,7 +4,7 @@ from asyncworker.typing import get_args, get_origin
 
 
 class RegistryItem:
-    def __init__(self, type: Type, value: Any, type_args: Tuple = None) -> None:
+    def __init__(self, type: Type, value: Any, type_args: Optional[Tuple] = None) -> None:
         self.type = type
         self.value = value
         self.type_args = type_args
@@ -18,7 +18,7 @@ class TypesRegistry:
     def set(
         self,
         obj: Any,
-        type_definition: Type = None,
+        type_definition: Optional[Type] = None,
         param_name: Optional[str] = None,
     ) -> None:
         has_type_args = get_args(type_definition)
@@ -34,7 +34,7 @@ class TypesRegistry:
             self._by_name[param_name] = registry_item
 
     def get(
-        self, _type: Type, param_name: str = None, type_args=None
+        self, _type: Type, param_name: Optional[str] = None, type_args=None
     ) -> Optional[Any]:
         origin = get_origin(_type) or _type
         _type_args = type_args or get_args(_type)

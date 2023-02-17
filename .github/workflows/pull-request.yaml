@@ -44,7 +44,7 @@ jobs:
           CC_TEST_REPORTER_ID: ${{secrets.CC_TEST_REPORTER_ID}}
       - name: Coverage Skipped
         if: ${{matrix.python != '3.11'}}
-        run: echo "Coverage uploaded only on python 3.8 run"
+        run: echo "Coverage uploaded only on python 3.11 run"
 
   lint:
     name: lint

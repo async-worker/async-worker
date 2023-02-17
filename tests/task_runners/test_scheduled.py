@@ -152,29 +152,6 @@ class ScheduledTaskRunnerTests(IsolatedAsyncioTestCase):
             await task_runner._wrapped_task()
             self.assertTrue(_task not in task_runner.running_tasks)
 
-    async def test_current_task_compatiple_with_py36(self):
-        async def _task(app: App):
-            return None
-
-        task_runner = ScheduledTaskRunner(
-            seconds=self.seconds,
-            task=_task,
-            app=self.app,
-            max_concurrency=self.max_concurrency,
-        )
-
-        def _current_task():
-            return _task
-
-        with patch.object(
-            asyncio, "Task", _current_task
-        ) as Task_mock, patch.object(sys, "version_info", (3, 6)):
-            Task_mock.current_task = _current_task
-            reload(task_runners)
-            task_runner.running_tasks.add(_task)
-            await task_runner._wrapped_task()
-            self.assertTrue(_task not in task_runner.running_tasks)
-
     async def test_run_dispatches_a_new_task_for_each_valid_clock_tick(self):
         clock = MagicMock()
         clock.__aiter__.return_value = range(3)

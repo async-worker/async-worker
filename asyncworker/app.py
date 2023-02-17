@@ -120,7 +120,7 @@ class App(MutableMapping, Freezable):
         self,
         routes: Iterable[str],
         type: RouteTypes,
-        options: dict = None,
+        options: Optional[dict] = None,
         **kwargs,
     ):
         if options is None:
@@ -169,7 +169,7 @@ class App(MutableMapping, Freezable):
         """
         self._on_shutdown.append(coro)
 
-    def run_every(self, seconds: int, options: Dict = None):
+    def run_every(self, seconds: int, options: Optional[Dict] = None):
         """
         Registers a coroutine to be called with a given interval
         """

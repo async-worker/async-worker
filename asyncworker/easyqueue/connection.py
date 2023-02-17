@@ -20,7 +20,7 @@ class AMQPConnection:
         password: str,
         heartbeat: int = 60,
         virtual_host: str = "/",
-        loop: asyncio.AbstractEventLoop = None,
+        loop: Optional[asyncio.AbstractEventLoop] = None,
         on_error: OnErrorCallback = None,
     ) -> None:
         self.host = host
