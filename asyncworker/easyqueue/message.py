@@ -1,4 +1,4 @@
-from typing import Callable, TypeVar, Generic, Optional
+from typing import Callable, Generic, Optional, TypeVar
 
 from aioamqp.channel import Channel
 from aioamqp.envelope import Envelope

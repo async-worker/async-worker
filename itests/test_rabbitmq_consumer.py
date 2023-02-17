@@ -1,5 +1,4 @@
 import asyncio
-
 from unittest import IsolatedAsyncioTestCase
 
 from asyncworker import App, RouteTypes
@@ -126,7 +125,7 @@ class AMQPConsumerTestWithAdditionalParameters(IsolatedAsyncioTestCase):
     maxDiff = None
 
     async def asyncSetUp(self):
-        from aiohttp import ClientSession, BasicAuth
+        from aiohttp import BasicAuth, ClientSession
 
         client = ClientSession()
 

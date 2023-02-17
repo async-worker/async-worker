@@ -1,14 +1,13 @@
 from typing import Generic, TypeVar
-
 from unittest import IsolatedAsyncioTestCase
 
 from asyncworker.decorators import wraps
 from asyncworker.typing import (
-    get_handler_original_qualname,
-    is_base_type,
     get_args,
-    get_origin,
+    get_handler_original_qualname,
     get_handler_original_typehints,
+    get_origin,
+    is_base_type,
 )
 
 T = TypeVar("T")

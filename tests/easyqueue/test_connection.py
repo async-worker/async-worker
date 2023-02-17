@@ -1,7 +1,6 @@
 import asyncio
-
 from unittest import IsolatedAsyncioTestCase
-from unittest.mock import Mock, AsyncMock, call, ANY, patch
+from unittest.mock import ANY, AsyncMock, Mock, call, patch
 
 from asyncworker.easyqueue.connection import AMQPConnection
 from tests.easyqueue.base import AsyncBaseTestCase

@@ -1,11 +1,11 @@
-from aioamqp.protocol import OPEN
-
 from unittest import IsolatedAsyncioTestCase
 
+from aioamqp.protocol import OPEN
+
 from asyncworker.easyqueue.queue import (
+    ConnType,
     JsonQueue,
     _ensure_conn_is_ready,
-    ConnType,
 )
 
 

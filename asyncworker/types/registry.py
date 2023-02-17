@@ -1,4 +1,4 @@
-from typing import Type, Any, Dict, Optional, Tuple
+from typing import Any, Dict, Optional, Tuple, Type
 
 from asyncworker.typing import get_args, get_origin
 

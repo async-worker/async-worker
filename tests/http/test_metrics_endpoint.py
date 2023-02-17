@@ -1,10 +1,8 @@
 from http import HTTPStatus
 from importlib import reload
-
-from aiohttp import web
-
 from unittest import IsolatedAsyncioTestCase, mock
 
+from aiohttp import web
 from prometheus_client import CollectorRegistry, generate_latest
 from prometheus_client.parser import text_string_to_metric_families
 
@@ -13,7 +11,7 @@ from asyncworker.conf import settings
 from asyncworker.http.decorators import parse_path
 from asyncworker.metrics import Counter, Gauge, Histogram
 from asyncworker.metrics.aiohttp_resources import metrics_route_handler
-from asyncworker.metrics.registry import REGISTRY, NAMESPACE
+from asyncworker.metrics.registry import NAMESPACE, REGISTRY
 from asyncworker.testing import HttpClientContext
 
 
@@ -75,8 +73,9 @@ class MetricsEndpointTest(IsolatedAsyncioTestCase):
 
     async def test_metrics_with_app_prefix(self):
         import os
-        from asyncworker.metrics import types, registry
+
         from asyncworker import conf
+        from asyncworker.metrics import registry, types
 
         with mock.patch.dict(os.environ, ASYNCWORKER_METRICS_APPPREFIX="myapp"):
             reload(conf)

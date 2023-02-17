@@ -2,17 +2,16 @@ import os
 from http import HTTPStatus
 from importlib import reload
 from random import randint
+from unittest import IsolatedAsyncioTestCase
+from unittest.mock import AsyncMock, Mock, patch
 
 from aiohttp import web
 from aiohttp.client import ClientSession
 
-from unittest import IsolatedAsyncioTestCase
-from unittest.mock import AsyncMock, Mock, patch
-
 from asyncworker import App, conf
-from asyncworker.conf import settings, Settings
+from asyncworker.conf import Settings, settings
 from asyncworker.http.wrapper import RequestWrapper
-from asyncworker.routes import call_http_handler, RouteTypes, RoutesRegistry
+from asyncworker.routes import RoutesRegistry, RouteTypes, call_http_handler
 from asyncworker.signals.handlers.http import HTTPServer
 from asyncworker.testing import HttpClientContext
 from asyncworker.types.registry import TypesRegistry

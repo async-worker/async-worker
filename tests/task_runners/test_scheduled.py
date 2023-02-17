@@ -1,9 +1,8 @@
 import asyncio
 import sys
 from importlib import reload
-
 from unittest import IsolatedAsyncioTestCase
-from unittest.mock import AsyncMock, Mock, patch, call, MagicMock
+from unittest.mock import AsyncMock, MagicMock, Mock, call, patch
 
 from asyncworker import task_runners
 from asyncworker.app import App

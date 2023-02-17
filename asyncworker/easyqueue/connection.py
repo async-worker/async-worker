@@ -1,5 +1,5 @@
 import asyncio
-from typing import Callable, Union, Coroutine, Optional
+from typing import Callable, Coroutine, Optional, Union
 
 import aioamqp
 from aioamqp import AmqpProtocol

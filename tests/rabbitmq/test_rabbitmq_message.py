@@ -1,5 +1,4 @@
 import json
-
 from unittest import IsolatedAsyncioTestCase
 from unittest.mock import AsyncMock, Mock
 

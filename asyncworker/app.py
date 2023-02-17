@@ -1,16 +1,16 @@
 import asyncio
 from collections.abc import MutableMapping
 from signal import Signals
-from typing import Iterable, Callable, Coroutine, Dict, Any, Optional
+from typing import Any, Callable, Coroutine, Dict, Iterable, Optional
 
 from asyncworker.conf import logger
-from asyncworker.connections import ConnectionsMapping, Connection
-from asyncworker.exceptions import InvalidRoute, InvalidConnection
+from asyncworker.connections import Connection, ConnectionsMapping
+from asyncworker.exceptions import InvalidConnection, InvalidRoute
 from asyncworker.http.entrypoints import HTTPEntryPointImpl
-from asyncworker.options import RouteTypes, Options, DefaultValues
+from asyncworker.options import DefaultValues, Options, RouteTypes
 from asyncworker.rabbitmq.entrypoints import AMQPRouteEntryPointImpl
-from asyncworker.routes import RoutesRegistry, Route
-from asyncworker.signals.base import Signal, Freezable
+from asyncworker.routes import Route, RoutesRegistry
+from asyncworker.signals.base import Freezable, Signal
 from asyncworker.signals.handlers.http import HTTPServer
 from asyncworker.signals.handlers.rabbitmq import RabbitMQ
 from asyncworker.task_runners import ScheduledTaskRunner

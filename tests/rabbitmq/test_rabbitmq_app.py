@@ -3,12 +3,7 @@ from unittest import IsolatedAsyncioTestCase
 from asyncworker import App
 from asyncworker.conf import settings
 from asyncworker.connections import AMQPConnection
-from asyncworker.options import (
-    DefaultValues,
-    Events,
-    Actions,
-    RouteTypes,
-)
+from asyncworker.options import Actions, DefaultValues, Events, RouteTypes
 from asyncworker.rabbitmq import AMQPRouteOptions
 from asyncworker.routes import AMQPRoute
 

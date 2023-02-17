@@ -1,9 +1,8 @@
 from http import HTTPStatus
+from unittest import IsolatedAsyncioTestCase
 
 from aiohttp.test_utils import make_mocked_request
 from aiohttp.web import json_response
-
-from unittest import IsolatedAsyncioTestCase
 
 from asyncworker import App
 from asyncworker.decorators import wraps

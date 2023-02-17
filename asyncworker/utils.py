@@ -3,7 +3,7 @@ import functools
 import typing
 from functools import wraps
 from time import time as now
-from typing import Callable, Coroutine, Dict, Union, Optional
+from typing import Callable, Coroutine, Dict, Optional, Union
 
 TimeitCallback = Callable[..., Coroutine]
 

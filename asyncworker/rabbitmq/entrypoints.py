@@ -3,7 +3,7 @@ from typing import List, Optional
 from asyncworker import conf
 from asyncworker.connections import AMQPConnection
 from asyncworker.entrypoints import EntrypointInterface, _extract_async_callable
-from asyncworker.routes import AMQPRouteOptions, RoutesRegistry, AMQPRoute
+from asyncworker.routes import AMQPRoute, AMQPRouteOptions, RoutesRegistry
 
 
 def _register_amqp_handler(

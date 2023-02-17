@@ -1,13 +1,12 @@
 import asyncio
 from http import HTTPStatus
+from unittest import IsolatedAsyncioTestCase
+from unittest.mock import AsyncMock, patch
 from uuid import uuid4
 
 from aiohttp import ClientSession
 from aiohttp.web_exceptions import HTTPNotFound
 from aiohttp.web_response import Response
-
-from unittest import IsolatedAsyncioTestCase
-from unittest.mock import patch, AsyncMock
 
 from asyncworker import App
 from asyncworker.conf import settings

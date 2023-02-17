@@ -1,18 +1,18 @@
+from unittest import IsolatedAsyncioTestCase
+from unittest.mock import AsyncMock, MagicMock
+
 from aiohttp import web
 
-from unittest import IsolatedAsyncioTestCase
-from unittest.mock import MagicMock, AsyncMock
-
-from asyncworker import conf, RouteTypes, App
+from asyncworker import App, RouteTypes, conf
 from asyncworker.connections import AMQPConnection
 from asyncworker.http.wrapper import RequestWrapper
 from asyncworker.options import Actions
 from asyncworker.routes import (
-    call_http_handler,
-    RoutesRegistry,
-    HTTPRoute,
     AMQPRoute,
     AMQPRouteOptions,
+    HTTPRoute,
+    RoutesRegistry,
+    call_http_handler,
 )
 from asyncworker.testing import HttpClientContext
 from asyncworker.types.registry import TypesRegistry

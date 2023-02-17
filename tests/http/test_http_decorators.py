@@ -1,8 +1,7 @@
 from http import HTTPStatus
+from unittest import IsolatedAsyncioTestCase, mock
 
 from aiohttp import web
-
-from unittest import IsolatedAsyncioTestCase, mock
 
 from asyncworker import App
 from asyncworker.decorators import wraps

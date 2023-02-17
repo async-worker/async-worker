@@ -1,5 +1,5 @@
 import asyncio
-from typing import Callable, Coroutine, Set, TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING, Callable, Coroutine, Optional, Set
 
 from asyncworker.time import ClockTicker
 

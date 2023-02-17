@@ -1,5 +1,4 @@
 from typing import Generic, TypeVar
-
 from unittest import IsolatedAsyncioTestCase
 
 from asyncworker.types.registry import TypesRegistry

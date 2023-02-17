@@ -3,7 +3,7 @@ from typing import List
 
 from asyncworker import App
 from asyncworker.connections import AMQPConnection
-from asyncworker.rabbitmq import RabbitMQMessage, AMQPRouteOptions
+from asyncworker.rabbitmq import AMQPRouteOptions, RabbitMQMessage
 
 amqp_conn = AMQPConnection(
     hostname="127.0.0.1", username="guest", password="guest", prefetch=1024

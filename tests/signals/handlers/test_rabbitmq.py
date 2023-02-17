@@ -1,11 +1,11 @@
 import asyncio
 from unittest import IsolatedAsyncioTestCase
-from unittest.mock import AsyncMock, Mock, patch, call, ANY
+from unittest.mock import ANY, AsyncMock, Mock, call, patch
 
 from asyncworker import App
 from asyncworker.connections import AMQPConnection
 from asyncworker.consumer import Consumer
-from asyncworker.exceptions import InvalidRoute, InvalidConnection
+from asyncworker.exceptions import InvalidConnection, InvalidRoute
 from asyncworker.options import RouteTypes
 from asyncworker.routes import RoutesRegistry
 from asyncworker.signals.handlers.rabbitmq import RabbitMQ

@@ -1,5 +1,4 @@
 from typing import Tuple
-
 from unittest import IsolatedAsyncioTestCase
 
 from asyncworker.types.registry import TypesRegistry

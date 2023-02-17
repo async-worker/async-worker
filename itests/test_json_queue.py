@@ -1,8 +1,7 @@
 from typing import Any
+from unittest import IsolatedAsyncioTestCase
 
 from aioamqp.exceptions import ChannelClosed
-
-from unittest import IsolatedAsyncioTestCase
 
 from asyncworker.easyqueue.message import AMQPMessage
 from asyncworker.easyqueue.queue import (

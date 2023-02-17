@@ -1,17 +1,16 @@
 import asyncio
 from http import HTTPStatus
 from signal import Signals
+from unittest import IsolatedAsyncioTestCase
+from unittest.mock import AsyncMock, Mock, call, patch
 
 from aiohttp import web
-
-from unittest import IsolatedAsyncioTestCase
-from unittest.mock import AsyncMock, Mock, patch, call
 
 from asyncworker.app import App
 from asyncworker.connections import AMQPConnection
 from asyncworker.exceptions import InvalidConnection
 from asyncworker.http import HTTPMethods
-from asyncworker.options import RouteTypes, DefaultValues, Options
+from asyncworker.options import DefaultValues, Options, RouteTypes
 from asyncworker.routes import AMQPRoute
 from asyncworker.task_runners import ScheduledTaskRunner
 from asyncworker.testing import HttpClientContext

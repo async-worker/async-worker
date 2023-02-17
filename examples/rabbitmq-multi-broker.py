@@ -5,7 +5,7 @@ from asyncworker import App
 from asyncworker.connections import AMQPConnection
 from asyncworker.http.methods import HTTPMethods
 from asyncworker.options import Actions, Events, Options
-from asyncworker.rabbitmq import RabbitMQMessage, AMQPRouteOptions
+from asyncworker.rabbitmq import AMQPRouteOptions, RabbitMQMessage
 
 """
 Para rodar esse exemplo precisamos de dois RabbitMQ rodando, ambos na porta default.

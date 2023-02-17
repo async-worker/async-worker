@@ -1,14 +1,13 @@
 import os
 from http import HTTPStatus
+from unittest import IsolatedAsyncioTestCase, skip
+from unittest.mock import patch
 
 from aiohttp import web
 from aiohttp.test_utils import TestClient
 
-from unittest import IsolatedAsyncioTestCase, skip
-from unittest.mock import patch
-
 from asyncworker import App, RouteTypes
-from asyncworker.testing import http_client, HttpClientContext
+from asyncworker.testing import HttpClientContext, http_client
 
 global_app = App()
 

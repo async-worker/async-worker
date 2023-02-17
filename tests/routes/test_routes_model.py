@@ -3,7 +3,7 @@ from unittest import TestCase
 from unittest.mock import patch
 
 from asyncworker.conf import settings
-from asyncworker.routes import Model, HTTPRoute
+from asyncworker.routes import HTTPRoute, Model
 
 
 class MyModel(Model):

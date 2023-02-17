@@ -1,9 +1,8 @@
 import asyncio
+from unittest import IsolatedAsyncioTestCase
+from unittest.mock import ANY, AsyncMock, Mock, call, patch
 
 from aioamqp.exceptions import AioamqpException
-
-from unittest import IsolatedAsyncioTestCase
-from unittest.mock import AsyncMock, Mock, patch, call, ANY
 
 from asyncworker import App, conf
 from asyncworker.bucket import Bucket

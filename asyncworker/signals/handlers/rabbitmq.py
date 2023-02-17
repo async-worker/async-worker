@@ -1,5 +1,5 @@
-from typing import TYPE_CHECKING, List
 from asyncio import Task
+from typing import TYPE_CHECKING, List
 
 from asyncworker.connections import AMQPConnection
 from asyncworker.consumer import Consumer

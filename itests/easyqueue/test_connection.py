@@ -1,6 +1,6 @@
-from aioamqp.protocol import OPEN
-
 from unittest import IsolatedAsyncioTestCase
+
+from aioamqp.protocol import OPEN
 
 from asyncworker.easyqueue.connection import AMQPConnection
 
