@@ -18,7 +18,7 @@ class DumbConsumer(QueueConsumerDelegate):
 
 
 class JsonQueueTest(IsolatedAsyncioTestCase):
-    async def setUp(self):
+    def setUp(self):
         self.queue = JsonQueue(
             "127.0.0.1", "guest", "guest", delegate=DumbConsumer()
         )

@@ -38,7 +38,7 @@ def _deco3(handler):
 
 
 class TestWrapsDecorator(IsolatedAsyncioTestCase):
-    async def setUp(self):
+    def setUp(self):
         self.registry = TypesRegistry()
         self.resolver = ArgResolver(registry=self.registry)
 

@@ -10,7 +10,7 @@ from asyncworker.easyqueue.queue import (
 
 
 class EnsureConnectedTest(IsolatedAsyncioTestCase):
-    async def setUp(self):
+    def setUp(self):
         self.queue = JsonQueue(
             host="127.0.0.1", username="guest", password="guest"
         )

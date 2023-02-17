@@ -15,7 +15,7 @@ message_processed_other_vhost = False
 
 
 class RabbitMQConsumerTest(IsolatedAsyncioTestCase):
-    async def setUp(self):
+    def setUp(self):
         self.queue_name = "test"
         self.connection = AMQPConnection(
             hostname="127.0.0.1", username="guest", password="guest", prefetch=1
@@ -125,7 +125,7 @@ class RabbitMQConsumerTest(IsolatedAsyncioTestCase):
 class AMQPConsumerTestWithAdditionalParameters(IsolatedAsyncioTestCase):
     maxDiff = None
 
-    async def setUp(self):
+    async def asyncSetUp(self):
         from aiohttp import ClientSession, BasicAuth
 
         client = ClientSession()

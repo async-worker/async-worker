@@ -5,7 +5,7 @@ from asyncworker.exceptions import InvalidConnection
 
 
 class ConnectionsMappingTest(IsolatedAsyncioTestCase):
-    async def setUp(self):
+    def setUp(self):
         self.connection = AMQPConnection(
             hostname="localhost", username="guest", password="pwd"
         )

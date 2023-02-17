@@ -14,7 +14,7 @@ from asyncworker.testing import HttpClientContext
 
 
 class HTTPDecoratorsTest(IsolatedAsyncioTestCase):
-    async def setUp(self):
+    def setUp(self):
         self.app = App()
 
         @self.app.http.post(["/get_by_id/{_id}"])

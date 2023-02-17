@@ -19,7 +19,7 @@ from asyncworker.types.registry import TypesRegistry
 
 
 class HTTPServerTests(IsolatedAsyncioTestCase):
-    async def setUp(self):
+    def setUp(self):
         self.signal_handler = HTTPServer()
 
         handler1 = Mock(return_value=AsyncMock())

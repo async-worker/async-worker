@@ -18,7 +18,7 @@ from asyncworker.types.resolver import ArgResolver
 class TestPathParamTypeHint(IsolatedAsyncioTestCase):
     maxDiff = None
 
-    async def setUp(self):
+    def setUp(self):
         self.app = App()
 
     async def test_parse_simple_int(self):

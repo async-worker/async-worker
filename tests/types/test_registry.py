@@ -8,7 +8,7 @@ T = TypeVar("T")
 
 
 class TypesRegistryTest(IsolatedAsyncioTestCase):
-    async def setUp(self):
+    def setUp(self):
         self.registry = TypesRegistry()
 
     async def test_simple_set_get_object(self):

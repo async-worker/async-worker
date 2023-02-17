@@ -19,7 +19,7 @@ async def _h():
 
 
 class HttpClientTestCaseDecoratorTest(IsolatedAsyncioTestCase):
-    async def setUp(self):
+    def setUp(self):
         self.app = App()
 
     async def test_client_is_passed_to_test(self):
@@ -81,7 +81,7 @@ class HttpClientTestCaseDecoratorTest(IsolatedAsyncioTestCase):
 
 
 class HttpClientContextManagerTest(IsolatedAsyncioTestCase):
-    async def setUp(self):
+    def setUp(self):
         self.app = App()
 
     async def test_client_can_perform_requests(self):

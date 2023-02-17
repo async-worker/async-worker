@@ -18,7 +18,7 @@ from asyncworker.testing import HttpClientContext
 
 
 class AppTests(IsolatedAsyncioTestCase):
-    async def setUp(self):
+    def setUp(self):
         class MyApp(App):
             handlers = (
                 Mock(startup=AsyncMock(), shutdown=AsyncMock()),

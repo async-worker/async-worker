@@ -6,10 +6,10 @@ from asyncworker.easyqueue.connection import AMQPConnection
 
 
 class ConnectionTest(IsolatedAsyncioTestCase):
-    async def setUp(self):
+    def setUp(self):
         self.conn = AMQPConnection("127.0.0.1", "guest", "guest")
 
-    async def tearDown(self):
+    async def asyncTearDown(self):
         await self.conn.close()
 
     async def test_can_call_close_multiple_times(self):

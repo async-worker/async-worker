@@ -448,7 +448,7 @@ class AsyncQueueConsumerHandlerMethodsTests(
     def get_consumer(self):
         return Mock(spec=QueueConsumerDelegate)
 
-    async def setUp(self):
+    async def asyncSetUp(self):
         super().setUp()
         self.properties = Mock(name="Properties")
         self.delegate = Mock(spec=QueueConsumerDelegate)
@@ -525,7 +525,7 @@ class AsyncQueueConsumerHandlerMethodsTests(
 
 
 class EnsureConnectedDecoratorTests(IsolatedAsyncioTestCase):
-    async def setUp(self):
+    def setUp(self):
         self.seconds = 666
         self.queue = JsonQueue(
             "127.0.0.1",

@@ -5,7 +5,7 @@ from asyncworker.signals.base import Signal
 
 
 class SignalTests(IsolatedAsyncioTestCase):
-    async def setUp(self):
+    def setUp(self):
         self.owner = Mock(freeze=AsyncMock())
         self.signal = Signal(self.owner)
 

@@ -11,7 +11,7 @@ from asyncworker.signals.handlers.rabbitmq import RabbitMQ
 
 
 class AMQPTests(IsolatedAsyncioTestCase):
-    async def setUp(self):
+    def setUp(self):
         self.signal_handler = RabbitMQ()
 
         handler1 = Mock(return_value=AsyncMock())

@@ -28,9 +28,6 @@ class MyObject:
 
 
 class TestTypingFunctions(IsolatedAsyncioTestCase):
-    async def setUp(self):
-        pass
-
     async def test_get_args_generic_type(self):
         self.assertEqual((MyObject,), get_args(MyGeneric[MyObject]))
         self.assertEqual(

@@ -21,7 +21,7 @@ class MetricsEndpointTest(IsolatedAsyncioTestCase):
     use_default_loop = True
     maxDiff = None
 
-    async def setUp(self):
+    def setUp(self):
         self.METRICS_PATH = "/metrics-2"
         self.app = App()
         self.app.http.get([self.METRICS_PATH])(metrics_route_handler)

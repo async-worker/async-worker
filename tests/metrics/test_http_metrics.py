@@ -17,7 +17,7 @@ from asyncworker.http.wrapper import RequestWrapper
 class HTTPMetricsTests(IsolatedAsyncioTestCase):
     app_url = f"http://{settings.HTTP_HOST}:{settings.HTTP_PORT}"
 
-    async def setUp(self):
+    async def asyncSetUp(self):
         self.app = App()
         self.client = ClientSession()
 

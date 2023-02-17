@@ -11,7 +11,7 @@ from asyncworker.task_runners import ScheduledTaskRunner
 
 
 class ScheduledTaskRunnerTests(IsolatedAsyncioTestCase):
-    async def setUp(self):
+    def setUp(self):
         reload(task_runners)
         self.task = AsyncMock()
         self.app = Mock(spec=App)
