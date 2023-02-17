@@ -665,8 +665,10 @@ class ConsumerTest(IsolatedAsyncioTestCase):
             consumer, "keep_runnig", side_effect=[True, True, True, False]
         ):
             queue_mock = AsyncMock(
-                consume=AsyncMock(),
-                connect=AsyncMock(side_effect=[AioamqpException, True]),
+                consume=AsyncMock(side_effect=AioamqpException),
+                connection=Mock(
+                    has_channel_ready=Mock(return_value=False)
+                )
             )
             consumer.queue = queue_mock
 
@@ -708,9 +710,11 @@ class ConsumerTest(IsolatedAsyncioTestCase):
             "asgard/counts/errors",
         ]
         consumer = Consumer(self.one_route_fixture, *self.connection_parameters)
-        queue_mock = AsyncMock(
+        queue_mock = Mock(
             consume=AsyncMock(),
-            connect=AsyncMock(side_effect=[True, True]),
+            connection=Mock(
+                has_channel_ready=Mock(return_value=False),
+            ),
         )
 
         with patch.object(
