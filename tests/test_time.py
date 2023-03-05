@@ -58,7 +58,8 @@ class ClockTickerTests(IsolatedAsyncioTestCase):
             clock._sleep = AsyncMock(side_effect=tick_check)
 
             with patch(
-                "asyncworker.time.asyncio.sleep", AsyncMock(side_effect=tick_check)
+                "asyncworker.time.asyncio.sleep",
+                AsyncMock(side_effect=tick_check),
             ) as sleep:
                 clock._running = True
                 await self.loop.create_task(clock._run())
