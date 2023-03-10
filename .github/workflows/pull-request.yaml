@@ -38,7 +38,7 @@ jobs:
         run: pipenv run all-tests
 
       - name: Coverage upload
-        if: ${{matrix.python == '3.11'}}
+        if: env.CC_TEST_REPORTER_ID && matrix.python_version == '3.11'
         uses: paambaati/codeclimate-action@v2.7.5
         env:
           CC_TEST_REPORTER_ID: ${{secrets.CC_TEST_REPORTER_ID}}
