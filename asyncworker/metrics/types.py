@@ -3,7 +3,7 @@ from abc import ABCMeta
 import prometheus_client as prometheus
 
 from asyncworker.conf import settings
-from asyncworker.metrics.registry import REGISTRY, NAMESPACE
+from asyncworker.metrics.registry import NAMESPACE, REGISTRY
 
 
 class Metric(metaclass=ABCMeta):

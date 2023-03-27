@@ -9,7 +9,6 @@ T = TypeVar("T")
 
 
 def _extract_async_callable(handler) -> RouteHandler:
-
     cb = handler
 
     if not iscoroutinefunction(cb):

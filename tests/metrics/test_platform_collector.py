@@ -1,15 +1,15 @@
 import os
 from importlib import reload
+from unittest import IsolatedAsyncioTestCase
+from unittest.mock import patch
 
-from asynctest import TestCase, mock
 
-
-class PlatformCollectorest(TestCase):
+class PlatformCollectorest(IsolatedAsyncioTestCase):
     async def test_use_global_namespace(self):
         from asyncworker import conf
         from asyncworker.metrics import registry
 
-        with mock.patch.dict(os.environ, ASYNCWORKER_METRICS_APPPREFIX="myapp"):
+        with patch.dict(os.environ, ASYNCWORKER_METRICS_APPPREFIX="myapp"):
             reload(conf)
             reload(registry)
             pc = registry.PLATFORM_COLLECTOR

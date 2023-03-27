@@ -1,11 +1,11 @@
-from asynctest import TestCase
+from unittest import IsolatedAsyncioTestCase
 
 from asyncworker.connections import AMQPConnection, ConnectionsMapping
 from asyncworker.exceptions import InvalidConnection
 
 
-class ConnectionsMappingTest(TestCase):
-    async def setUp(self):
+class ConnectionsMappingTest(IsolatedAsyncioTestCase):
+    def setUp(self):
         self.connection = AMQPConnection(
             hostname="localhost", username="guest", password="pwd"
         )
@@ -28,7 +28,6 @@ class ConnectionsMappingTest(TestCase):
             del self.mapping["conn"]
 
     async def test_set_item_map_is_frozen(self):
-
         await self.mapping.freeze()
         with self.assertRaises(RuntimeError):
             self.mapping["conn"] = self.connection

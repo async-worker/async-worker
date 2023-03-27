@@ -1,7 +1,7 @@
 from http import HTTPStatus
+from unittest import IsolatedAsyncioTestCase, mock
 
 from aiohttp import web
-from asynctest import mock, TestCase
 
 from asyncworker import App
 from asyncworker.decorators import wraps
@@ -12,8 +12,8 @@ from asyncworker.routes import call_http_handler
 from asyncworker.testing import HttpClientContext
 
 
-class HTTPDecoratorsTest(TestCase):
-    async def setUp(self):
+class HTTPDecoratorsTest(IsolatedAsyncioTestCase):
+    def setUp(self):
         self.app = App()
 
         @self.app.http.post(["/get_by_id/{_id}"])
@@ -44,9 +44,7 @@ class HTTPDecoratorsTest(TestCase):
         lançamos uma exceção.
         Devemos gerar um logger.exception()
         """
-        logger_mock_template = mock.CoroutineMock(
-            exception=mock.CoroutineMock()
-        )
+        logger_mock_template = mock.AsyncMock(exception=mock.AsyncMock())
         with mock.patch.object(
             decorators, "logger", logger_mock_template
         ) as logger_mock:
@@ -88,7 +86,7 @@ class HTTPDecoratorsTest(TestCase):
 
     async def test_can_be_away_from_handler_and_away_from_http_entrypoint(self):
         """
-        Valida que o @parse_path pode estar longe do handler 
+        Valida que o @parse_path pode estar longe do handler
         *e* longe do @app.http.*
         Dessa forma:
 

@@ -1,16 +1,15 @@
 import json
-
-import asynctest
-from asynctest.mock import CoroutineMock, Mock
+from unittest import IsolatedAsyncioTestCase
+from unittest.mock import AsyncMock, Mock
 
 from asyncworker.easyqueue.message import AMQPMessage
 from asyncworker.options import Actions
 from asyncworker.rabbitmq import RabbitMQMessage
 
 
-class RabbitMQMessageTest(asynctest.TestCase):
+class RabbitMQMessageTest(IsolatedAsyncioTestCase):
     def setUp(self):
-        self.amqp_message = Mock(ack=CoroutineMock(), reject=CoroutineMock())
+        self.amqp_message = Mock(ack=AsyncMock(), reject=AsyncMock())
 
     async def test_process_success_default_action(self):
         """

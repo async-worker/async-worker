@@ -1,25 +1,25 @@
 from http import HTTPStatus
 from importlib import reload
+from unittest import IsolatedAsyncioTestCase, mock
 
 from aiohttp import web
-from asynctest import mock, TestCase
 from prometheus_client import CollectorRegistry, generate_latest
 from prometheus_client.parser import text_string_to_metric_families
 
-from asyncworker import App, RouteTypes
+from asyncworker import App
 from asyncworker.conf import settings
 from asyncworker.http.decorators import parse_path
 from asyncworker.metrics import Counter, Gauge, Histogram
 from asyncworker.metrics.aiohttp_resources import metrics_route_handler
-from asyncworker.metrics.registry import REGISTRY, NAMESPACE
+from asyncworker.metrics.registry import NAMESPACE, REGISTRY
 from asyncworker.testing import HttpClientContext
 
 
-class MetricsEndpointTest(TestCase):
+class MetricsEndpointTest(IsolatedAsyncioTestCase):
     use_default_loop = True
     maxDiff = None
 
-    async def setUp(self):
+    def setUp(self):
         self.METRICS_PATH = "/metrics-2"
         self.app = App()
         self.app.http.get([self.METRICS_PATH])(metrics_route_handler)
@@ -73,8 +73,9 @@ class MetricsEndpointTest(TestCase):
 
     async def test_metrics_with_app_prefix(self):
         import os
-        from asyncworker.metrics import types, registry
+
         from asyncworker import conf
+        from asyncworker.metrics import registry, types
 
         with mock.patch.dict(os.environ, ASYNCWORKER_METRICS_APPPREFIX="myapp"):
             reload(conf)
@@ -195,7 +196,6 @@ class MetricsEndpointTest(TestCase):
             )
 
     async def test_gc_collector_metric(self):
-
         async with HttpClientContext(self.app) as client:
             metrics = await client.get(self.METRICS_PATH)
             self.assertEqual(HTTPStatus.OK, metrics.status)
@@ -219,7 +219,6 @@ class MetricsEndpointTest(TestCase):
             )
 
     async def test_process_collector_metric(self):
-
         async with HttpClientContext(self.app) as client:
             metrics = await client.get(self.METRICS_PATH)
             self.assertEqual(HTTPStatus.OK, metrics.status)
@@ -246,7 +245,6 @@ class MetricsEndpointTest(TestCase):
             )
 
     async def test_platform_collector_metric(self):
-
         async with HttpClientContext(self.app) as client:
             metrics = await client.get(self.METRICS_PATH)
             self.assertEqual(HTTPStatus.OK, metrics.status)

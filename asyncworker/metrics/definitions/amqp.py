@@ -1,5 +1,5 @@
 from asyncworker.conf import settings
-from asyncworker.metrics.types import Counter, Histogram, Gauge
+from asyncworker.metrics.types import Counter, Gauge, Histogram
 
 # active_consumers = Gauge(
 #    name="amqp_active_consumers", documentation="Count of active consumers"

@@ -1,7 +1,7 @@
 from typing import Any
+from unittest import IsolatedAsyncioTestCase
 
 from aioamqp.exceptions import ChannelClosed
-from asynctest import TestCase
 
 from asyncworker.easyqueue.message import AMQPMessage
 from asyncworker.easyqueue.queue import (
@@ -16,8 +16,8 @@ class DumbConsumer(QueueConsumerDelegate):
         pass
 
 
-class JsonQueueTest(TestCase):
-    async def setUp(self):
+class JsonQueueTest(IsolatedAsyncioTestCase):
+    def setUp(self):
         self.queue = JsonQueue(
             "127.0.0.1", "guest", "guest", delegate=DumbConsumer()
         )
@@ -46,7 +46,7 @@ class JsonQueueTest(TestCase):
 
     async def test_consume_doesnt_open_write_connection(self):
         """
-        Certifica que se uma queue faz apenas consume ela não 
+        Certifica que se uma queue faz apenas consume ela não
         abre a conexão que é dedicada a escrita.
         """
         self.assertFalse(self.consume_conn.is_connected)

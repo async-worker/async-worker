@@ -1,16 +1,15 @@
 from collections.abc import ValuesView
 from typing import ItemsView
-
-import asynctest
-from asynctest import Mock
+from unittest import IsolatedAsyncioTestCase
+from unittest.mock import Mock, patch
 
 from asyncworker.conf import settings
 from asyncworker.connections import AMQPConnection
 from asyncworker.easyqueue.queue import JsonQueue
 
 
-class AMQPConnectionTests(asynctest.TestCase):
-    async def setUp(self):
+class AMQPConnectionTests(IsolatedAsyncioTestCase):
+    def setUp(self):
         self.username = "admin"
         self.password = "123456"
         self.hostname = "127.0.0.1"
@@ -20,23 +19,23 @@ class AMQPConnectionTests(asynctest.TestCase):
             password=self.password,
         )
 
-        self.body = asynctest.Mock()
-        self.routing_key = asynctest.Mock()
-        self.exchange = asynctest.Mock()
+        self.body = Mock()
+        self.routing_key = Mock()
+        self.exchange = Mock()
 
-    async def tearDown(self):
-        asynctest.patch.stopall()
+    async def asyncTearDown(self):
+        patch.stopall()
 
     def test_len_returns_the_number_of_registered_connections(self):
         self.assertEqual(len(self.rabbitmq_connection), 0)
 
-        self.rabbitmq_connection.register(asynctest.Mock())
+        self.rabbitmq_connection.register(Mock())
 
         self.assertEqual(len(self.rabbitmq_connection), 1)
 
     def test_rabbitmq_connection_is_iterable(self):
-        connection_a = asynctest.Mock(virtual_host="a", spec=JsonQueue)
-        connection_b = asynctest.Mock(virtual_host="b", spec=JsonQueue)
+        connection_a = Mock(virtual_host="a", spec=JsonQueue)
+        connection_b = Mock(virtual_host="b", spec=JsonQueue)
 
         self.rabbitmq_connection.register(connection_a)
         self.rabbitmq_connection.register(connection_b)
@@ -45,8 +44,8 @@ class AMQPConnectionTests(asynctest.TestCase):
         self.assertEqual(as_dict, {"a": connection_a, "b": connection_b})
 
     def test_register_registers_a_new_unique_connection_for_a_given_vhost(self):
-        connection_a = asynctest.Mock(virtual_host="a", spec=JsonQueue)
-        connection_b = asynctest.Mock(virtual_host="b", spec=JsonQueue)
+        connection_a = Mock(virtual_host="a", spec=JsonQueue)
+        connection_b = Mock(virtual_host="b", spec=JsonQueue)
 
         self.rabbitmq_connection.register(connection_a)
         self.rabbitmq_connection.register(connection_b)
@@ -55,8 +54,8 @@ class AMQPConnectionTests(asynctest.TestCase):
         self.assertEqual(self.rabbitmq_connection["b"], connection_b)
 
     async def test_put_uses_the_right_connection_for_a_given_vhost(self):
-        connection_a = asynctest.Mock(virtual_host="a", spec=JsonQueue)
-        connection_b = asynctest.Mock(virtual_host="b", spec=JsonQueue)
+        connection_a = Mock(virtual_host="a", spec=JsonQueue)
+        connection_b = Mock(virtual_host="b", spec=JsonQueue)
 
         self.rabbitmq_connection.register(connection_a)
         self.rabbitmq_connection.register(connection_b)
@@ -80,10 +79,10 @@ class AMQPConnectionTests(asynctest.TestCase):
         )
 
     async def test_put_uses_the_default_vhost_if_none_is_provided(self):
-        connection_a = asynctest.Mock(
+        connection_a = Mock(
             virtual_host=settings.AMQP_DEFAULT_VHOST, spec=JsonQueue
         )
-        connection_b = asynctest.Mock(virtual_host="b", spec=JsonQueue)
+        connection_b = Mock(virtual_host="b", spec=JsonQueue)
 
         self.rabbitmq_connection.register(connection_a)
         self.rabbitmq_connection.register(connection_b)
@@ -104,11 +103,11 @@ class AMQPConnectionTests(asynctest.TestCase):
         )
 
     async def test_put_initializes_a_new_connection_if_a_connection_wasnt_initialized_for_a_given_vhost(
-        self
+        self,
     ):
-        connection_a = asynctest.Mock(virtual_host="a", spec=JsonQueue)
+        connection_a = Mock(virtual_host="a", spec=JsonQueue)
 
-        with asynctest.patch(
+        with patch(
             "asyncworker.connections.JsonQueue", return_value=connection_a
         ):
             await self.rabbitmq_connection.put(
@@ -129,10 +128,10 @@ class AMQPConnectionTests(asynctest.TestCase):
             )
 
     async def test_initialize_with_connections(self):
-        connection_a = asynctest.Mock(
+        connection_a = Mock(
             virtual_host=settings.AMQP_DEFAULT_VHOST, spec=JsonQueue
         )
-        connection_b = asynctest.Mock(virtual_host="b", spec=JsonQueue)
+        connection_b = Mock(virtual_host="b", spec=JsonQueue)
         conn = AMQPConnection(
             hostname="localhost",
             username="guest",

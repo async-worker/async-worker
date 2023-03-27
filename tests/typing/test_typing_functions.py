@@ -1,14 +1,13 @@
 from typing import Generic, TypeVar
-
-from asynctest import TestCase
+from unittest import IsolatedAsyncioTestCase
 
 from asyncworker.decorators import wraps
 from asyncworker.typing import (
-    get_handler_original_qualname,
-    is_base_type,
     get_args,
-    get_origin,
+    get_handler_original_qualname,
     get_handler_original_typehints,
+    get_origin,
+    is_base_type,
 )
 
 T = TypeVar("T")
@@ -27,10 +26,7 @@ class MyObject:
     pass
 
 
-class TestTypingFunctions(TestCase):
-    async def setUp(self):
-        pass
-
+class TestTypingFunctions(IsolatedAsyncioTestCase):
     async def test_get_args_generic_type(self):
         self.assertEqual((MyObject,), get_args(MyGeneric[MyObject]))
         self.assertEqual(
@@ -51,7 +47,7 @@ class TestTypingFunctions(TestCase):
         self.assertIsNone(get_origin(MyObject))
 
 
-class TestGetOriginalHandlerTypeHints(TestCase):
+class TestGetOriginalHandlerTypeHints(IsolatedAsyncioTestCase):
     async def test_does_not_have_attribute(self):
         def func(a: int, b: bool):
             pass
@@ -86,7 +82,7 @@ class TestGetOriginalHandlerTypeHints(TestCase):
         self.assertTrue(hasattr(handler, "asyncworker_original_annotations"))
 
 
-class TestIsBaseType(TestCase):
+class TestIsBaseType(IsolatedAsyncioTestCase):
     async def test_is_base_when_generic(self):
         def _func(b: MyGeneric[int]):
             pass
@@ -116,7 +112,7 @@ class TestIsBaseType(TestCase):
         self.assertFalse(is_base_type(_type["b"], MyGeneric))
 
 
-class TestHandlerGetOriginalQualname(TestCase):
+class TestHandlerGetOriginalQualname(IsolatedAsyncioTestCase):
     async def test_get_qualname_no_decorators(self):
         async def handler(a: bool, s: str):
             return 42

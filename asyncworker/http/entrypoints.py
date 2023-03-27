@@ -3,16 +3,16 @@ from typing import Callable, List, Type
 from aiohttp.web import HTTPBadRequest
 
 from asyncworker.decorators import wraps
-from asyncworker.entrypoints import _extract_async_callable, EntrypointInterface
+from asyncworker.entrypoints import EntrypointInterface, _extract_async_callable
 from asyncworker.http import HTTPMethods
 from asyncworker.http.types import PathParam
 from asyncworker.http.wrapper import RequestWrapper
-from asyncworker.routes import RoutesRegistry, HTTPRoute, call_http_handler
+from asyncworker.routes import HTTPRoute, RoutesRegistry, call_http_handler
 from asyncworker.typing import (
-    is_base_type,
     get_args,
-    get_handler_original_typehints,
     get_handler_original_qualname,
+    get_handler_original_typehints,
+    is_base_type,
 )
 
 
@@ -60,7 +60,6 @@ def _register_http_handler(
     registry: RoutesRegistry, routes: List[str], method: HTTPMethods
 ) -> Callable:
     def _wrap(f):
-
         cb = _extract_async_callable(f)
 
         cb_with_parse_path = _install_request_parser_annotation(cb, PathParam)

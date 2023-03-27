@@ -1,15 +1,16 @@
+from unittest import IsolatedAsyncioTestCase
+
 from aioamqp.protocol import OPEN
-from asynctest import TestCase
 
 from asyncworker.easyqueue.queue import (
+    ConnType,
     JsonQueue,
     _ensure_conn_is_ready,
-    ConnType,
 )
 
 
-class EnsureConnectedTest(TestCase):
-    async def setUp(self):
+class EnsureConnectedTest(IsolatedAsyncioTestCase):
+    def setUp(self):
         self.queue = JsonQueue(
             host="127.0.0.1", username="guest", password="guest"
         )
@@ -19,7 +20,7 @@ class EnsureConnectedTest(TestCase):
     async def _func(self, arg1):
         return 42
 
-    async def tearDown(self):
+    async def asyncTearDown(self):
         await self.write_conn.close()
 
     async def test_create_new_channel_if_channel_is_closed(self):

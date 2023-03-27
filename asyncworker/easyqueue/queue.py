@@ -3,18 +3,18 @@ import asyncio
 import json
 import logging
 import traceback
-from asyncio import Task, AbstractEventLoop
+from asyncio import AbstractEventLoop, Task
 from enum import Enum, auto
 from functools import wraps
 from typing import (
-    Dict,
     Any,
     Callable,
     Coroutine,
-    TypeVar,
-    Optional,
+    Dict,
     Generic,
+    Optional,
     Type,
+    TypeVar,
     Union,
 )
 
@@ -184,21 +184,21 @@ class JsonQueue(BaseQueue, Generic[T]):
         host: str,
         username: str,
         password: str,
-        delegate_class: Type["QueueConsumerDelegate"] = None,
+        delegate_class: Optional[Type["QueueConsumerDelegate"]] = None,
         delegate: Optional["QueueConsumerDelegate"] = None,
         virtual_host: str = "/",
         heartbeat: int = 60,
         prefetch_count: int = 100,
-        loop: AbstractEventLoop = None,
+        loop: Optional[AbstractEventLoop] = None,
         seconds_between_conn_retry: int = 1,
-        logger: logging.Logger = None,
+        logger: Optional[logging.Logger] = None,
         connection_fail_callback: Optional[
             Callable[[Exception, int], Coroutine]
         ] = None,
     ) -> None:
         super().__init__(host, username, password, virtual_host, heartbeat)
 
-        self.loop = loop or asyncio.get_event_loop()
+        self.loop: AbstractEventLoop = loop or asyncio.get_event_loop()
 
         if delegate is not None and delegate_class is not None:
             raise ValueError("Cant provide both delegate and delegate_class")
@@ -219,7 +219,7 @@ class JsonQueue(BaseQueue, Generic[T]):
             virtual_host=virtual_host,
             heartbeat=heartbeat,
             on_error=on_error,
-            loop=loop,
+            loop=self.loop,
         )
 
         self._write_connection = AMQPConnection(
@@ -229,7 +229,7 @@ class JsonQueue(BaseQueue, Generic[T]):
             virtual_host=virtual_host,
             heartbeat=heartbeat,
             on_error=on_error,
-            loop=loop,
+            loop=self.loop,
         )
 
         self.conn_types = {
@@ -258,7 +258,7 @@ class JsonQueue(BaseQueue, Generic[T]):
         data: Any = None,
         serialized_data: Union[str, bytes] = "",
         exchange: str = "",
-        properties: dict = None,
+        properties: Optional[dict] = None,
         mandatory: bool = False,
         immediate: bool = False,
     ):

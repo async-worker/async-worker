@@ -1,8 +1,8 @@
 from http import HTTPStatus
+from unittest import IsolatedAsyncioTestCase
 
 from aiohttp.test_utils import make_mocked_request
 from aiohttp.web import json_response
-from asynctest import TestCase
 
 from asyncworker import App
 from asyncworker.decorators import wraps
@@ -14,10 +14,10 @@ from asyncworker.types.registry import TypesRegistry
 from asyncworker.types.resolver import ArgResolver
 
 
-class TestPathParamTypeHint(TestCase):
+class TestPathParamTypeHint(IsolatedAsyncioTestCase):
     maxDiff = None
 
-    async def setUp(self):
+    def setUp(self):
         self.app = App()
 
     async def test_parse_simple_int(self):
@@ -194,7 +194,6 @@ class TestPathParamTypeHint(TestCase):
         original_qualname = _path.__qualname__
 
         with self.assertRaises(TypeError) as exc:
-
             app = App()
 
             app.http.get(["/path/{n}"])(_path)
@@ -226,7 +225,6 @@ class TestPathParamTypeHint(TestCase):
         original_qualname = my_handler.__qualname__
 
         with self.assertRaises(TypeError) as exc:
-
             self.app.http.get(["/path/{n}"])(_deco_2(my_handler))
 
         self.assertIn(original_qualname, exc.exception.args[0])
@@ -285,7 +283,9 @@ class TestPathParamTypeHint(TestCase):
 
     async def test_path_param_bool_invalid_values(self):
         @self.app.http.get(["/bool/{on}"])
-        async def bool_true(on: PathParam[bool],):
+        async def bool_true(
+            on: PathParam[bool],
+        ):
             return json_response({"on": await on.unpack()})
 
         async with HttpClientContext(self.app) as client:

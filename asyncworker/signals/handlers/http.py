@@ -2,8 +2,8 @@ from aiohttp import web
 
 from asyncworker.conf import settings
 from asyncworker.metrics.aiohttp_resources import (
-    metrics_route_handler,
     http_metrics_middleware,
+    metrics_route_handler,
 )
 from asyncworker.options import RouteTypes
 from asyncworker.signals.handlers.base import SignalHandler

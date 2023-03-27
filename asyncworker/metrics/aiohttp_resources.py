@@ -1,5 +1,5 @@
 from http import HTTPStatus
-from typing import Callable, Awaitable
+from typing import Awaitable, Callable
 
 from aiohttp import web
 from aiohttp.web_middlewares import middleware

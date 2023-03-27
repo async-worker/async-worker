@@ -3,7 +3,7 @@ import functools
 import typing
 from functools import wraps
 from time import time as now
-from typing import Callable, Coroutine, Dict, Union, Optional
+from typing import Callable, Coroutine, Dict, Optional, Union
 
 TimeitCallback = Callable[..., Coroutine]
 
@@ -11,7 +11,9 @@ TimeitCallback = Callable[..., Coroutine]
 class Timeit:
     TRANSACTIONS_KEY = "transactions"
 
-    def __init__(self, name: str, callback: TimeitCallback = None) -> None:
+    def __init__(
+        self, name: str, callback: Optional[TimeitCallback] = None
+    ) -> None:
         self.name = name
         self.callback = callback
         self.start: Optional[float] = None
@@ -19,7 +21,9 @@ class Timeit:
         self._transactions: Dict[str, float] = {}
 
     def __call__(
-        self, coro: Optional[Callable[..., Coroutine]] = None, name: str = None
+        self,
+        coro: Optional[Callable[..., Coroutine]] = None,
+        name: Optional[str] = None,
     ) -> Union[Callable[..., Coroutine], "Timeit"]:
         if name:
             child = Timeit(name=name)

@@ -1,5 +1,5 @@
 import asyncio
-from typing import Callable, Union, Coroutine, Optional
+from typing import Callable, Coroutine, Optional, Union
 
 import aioamqp
 from aioamqp import AmqpProtocol
@@ -20,7 +20,7 @@ class AMQPConnection:
         password: str,
         heartbeat: int = 60,
         virtual_host: str = "/",
-        loop: asyncio.AbstractEventLoop = None,
+        loop: Optional[asyncio.AbstractEventLoop] = None,
         on_error: OnErrorCallback = None,
     ) -> None:
         self.host = host

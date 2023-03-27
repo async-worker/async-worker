@@ -1,20 +1,14 @@
-import asynctest
+from unittest import IsolatedAsyncioTestCase
 
 from asyncworker import App
 from asyncworker.conf import settings
 from asyncworker.connections import AMQPConnection
-from asyncworker.options import (
-    Options,
-    DefaultValues,
-    Events,
-    Actions,
-    RouteTypes,
-)
+from asyncworker.options import Actions, DefaultValues, Events, RouteTypes
 from asyncworker.rabbitmq import AMQPRouteOptions
 from asyncworker.routes import AMQPRoute
 
 
-class RabbitMQAppTest(asynctest.TestCase):
+class RabbitMQAppTest(IsolatedAsyncioTestCase):
     use_default_loop = True
 
     def setUp(self):
@@ -26,7 +20,7 @@ class RabbitMQAppTest(asynctest.TestCase):
         )
         self.app = App(connections=[self.connection])
 
-    async def tearDown(self):
+    async def asyncTearDown(self):
         await self.app.shutdown()
 
     async def test_check_route_registry_full_options(self):
@@ -129,7 +123,7 @@ class RabbitMQAppTest(asynctest.TestCase):
         self.assertEqual(42, await route["handler"](None))
 
     async def test_register_default_bulk_size_and_default_bulk_flush_timeout(
-        self
+        self,
     ):
         @self.app.amqp.consume(["my-queue"])
         async def _handler(message):
@@ -184,7 +178,7 @@ class RabbitMQAppTest(asynctest.TestCase):
         self.assertCountEqual(self.app.connections.values(), [self.connection])
 
     async def test_instantiate_one_consumer_per_handler_one_handler_registered(
-        self
+        self,
     ):
         """
         Para cada handler registrado, teremos um Consumer. Esse Consumer conseguirá consumir múltiplas
@@ -218,7 +212,7 @@ class RabbitMQAppTest(asynctest.TestCase):
         )
 
     async def test_instantiate_one_consumer_per_handler_multiple_handlers_registered_bla(
-        self
+        self,
     ):
         @self.app.amqp.consume(["asgard/counts"], vhost="/")
         async def _handler(message):

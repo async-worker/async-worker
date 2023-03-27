@@ -1,25 +1,26 @@
 import asyncio
 from http import HTTPStatus
+from unittest import IsolatedAsyncioTestCase
+from unittest.mock import AsyncMock, patch
 from uuid import uuid4
 
 from aiohttp import ClientSession
 from aiohttp.web_exceptions import HTTPNotFound
 from aiohttp.web_response import Response
-from asynctest import TestCase, patch, CoroutineMock
 
 from asyncworker import App
 from asyncworker.conf import settings
 from asyncworker.http.wrapper import RequestWrapper
 
 
-class HTTPMetricsTests(TestCase):
+class HTTPMetricsTests(IsolatedAsyncioTestCase):
     app_url = f"http://{settings.HTTP_HOST}:{settings.HTTP_PORT}"
 
-    async def setUp(self):
+    async def asyncSetUp(self):
         self.app = App()
         self.client = ClientSession()
 
-        self.callback = callback = CoroutineMock()
+        self.callback = callback = AsyncMock()
         self.route_path = "/mock_handler"
         self.route_method = "GET"
         self.metrics = metrics = patch(
@@ -52,7 +53,7 @@ class HTTPMetricsTests(TestCase):
 
         await self.app.startup()
 
-    async def tearDown(self):
+    async def asyncTearDown(self):
         await asyncio.gather(self.app.shutdown(), self.client.close())
         patch.stopall()
 

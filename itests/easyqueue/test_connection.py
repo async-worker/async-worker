@@ -1,14 +1,15 @@
+from unittest import IsolatedAsyncioTestCase
+
 from aioamqp.protocol import OPEN
-from asynctest import TestCase
 
 from asyncworker.easyqueue.connection import AMQPConnection
 
 
-class ConnectionTest(TestCase):
-    async def setUp(self):
+class ConnectionTest(IsolatedAsyncioTestCase):
+    def setUp(self):
         self.conn = AMQPConnection("127.0.0.1", "guest", "guest")
 
-    async def tearDown(self):
+    async def asyncTearDown(self):
         await self.conn.close()
 
     async def test_can_call_close_multiple_times(self):
@@ -23,7 +24,6 @@ class ConnectionTest(TestCase):
         self.assertNotEqual(self.conn._protocol.state, OPEN)
 
     async def test_has_channel_ready(self):
-
         await self.conn._connect()
         self.assertTrue(self.conn.has_channel_ready())
 
@@ -33,7 +33,7 @@ class ConnectionTest(TestCase):
         self.assertFalse(self.conn.has_channel_ready())
 
     async def test_call_connect_channel_closed_protocol_raised_aioamqp_exception(
-        self
+        self,
     ):
         await self.conn._connect()
 

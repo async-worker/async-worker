@@ -1,6 +1,5 @@
 import asyncio
-
-from asynctest import TestCase
+from unittest import IsolatedAsyncioTestCase
 
 from asyncworker import App, RouteTypes
 from asyncworker.connections import AMQPConnection
@@ -14,15 +13,15 @@ message_processed_multiple_connections = False
 message_processed_other_vhost = False
 
 
-class RabbitMQConsumerTest(TestCase):
-    async def setUp(self):
+class RabbitMQConsumerTest(IsolatedAsyncioTestCase):
+    def setUp(self):
         self.queue_name = "test"
         self.connection = AMQPConnection(
             hostname="127.0.0.1", username="guest", password="guest", prefetch=1
         )
         self.app = App(connections=[self.connection])
 
-    async def tearDown(self):
+    async def asyncTearDown(self):
         await self.app.connections.with_type(RouteTypes.AMQP_RABBITMQ)[0][
             "/"
         ].connection.channel.queue_delete(self.queue_name)
@@ -122,11 +121,11 @@ class RabbitMQConsumerTest(TestCase):
         self.assertFalse(consume_callback_shoud_not_be_called)
 
 
-class AMQPConsumerTestWithAdditionalParameters(TestCase):
+class AMQPConsumerTestWithAdditionalParameters(IsolatedAsyncioTestCase):
     maxDiff = None
 
-    async def setUp(self):
-        from aiohttp import ClientSession, BasicAuth
+    async def asyncSetUp(self):
+        from aiohttp import BasicAuth, ClientSession
 
         client = ClientSession()
 

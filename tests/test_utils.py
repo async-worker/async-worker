@@ -1,25 +1,24 @@
-import unittest
-from unittest.mock import patch, Mock
+from unittest import IsolatedAsyncioTestCase
+from unittest.mock import AsyncMock, Mock, patch
 
-import asynctest as asynctest
 from freezegun import freeze_time
 
 from asyncworker.utils import Timeit
 from tests.utils import typed_any
 
 
-class TimeitTests(asynctest.TestCase):
+class TimeitTests(IsolatedAsyncioTestCase):
     time = 1_149_573_966.0
 
     @freeze_time("2006-06-06 06:06:06")
     async def test_it_marks_starting_times(self):
-        coro = asynctest.CoroutineMock()
+        coro = AsyncMock()
         async with Timeit(name="Xablau", callback=coro) as timeit:
             self.assertEqual(timeit.start, 1_149_573_966.0)
 
     @freeze_time("2006-06-06 06:06:07")
     async def test_it_marks_finishing_times(self):
-        coro = asynctest.CoroutineMock()
+        coro = AsyncMock()
         async with Timeit(name="Xablau", callback=coro) as timeit:
             pass
         self.assertEqual(timeit.finish, 1_149_573_967.0)
@@ -27,15 +26,13 @@ class TimeitTests(asynctest.TestCase):
     async def test_it_calculates_time_delta(self):
         now = Mock(side_effect=[self.time, self.time + 1])
         with patch("asyncworker.utils.now", now):
-            async with Timeit(
-                name="Xablau", callback=asynctest.CoroutineMock()
-            ) as timeit:
+            async with Timeit(name="Xablau", callback=AsyncMock()) as timeit:
                 pass
 
         self.assertEqual(timeit._transactions["Xablau"], 1.0)
 
     async def test_it_calls_callback_on_context_end(self):
-        callback = asynctest.CoroutineMock()
+        callback = AsyncMock()
         times = [self.time, self.time + 1]
         with patch("asyncworker.utils.now", Mock(side_effect=times)):
             async with Timeit(name="Xablau", callback=callback) as timeit:
@@ -50,9 +47,9 @@ class TimeitTests(asynctest.TestCase):
         )
 
     async def test_it_calls_callback_with_exc_parameters_if_an_exception_is_raised(
-        self
+        self,
     ):
-        coro = asynctest.CoroutineMock()
+        coro = AsyncMock()
         try:
             async with Timeit(name="Xablau", callback=coro) as timeit:
                 raise KeyError("Xablau")
@@ -67,7 +64,7 @@ class TimeitTests(asynctest.TestCase):
             )
 
     async def test_it_can_be_used_as_a_decorator(self):
-        coro = asynctest.CoroutineMock()
+        coro = AsyncMock()
         now = Mock(side_effect=[self.time, self.time + 1])
 
         @Timeit(name="Xablau", callback=coro)
@@ -87,7 +84,7 @@ class TimeitTests(asynctest.TestCase):
         )
 
     async def test_timeit_children_share_a_common_transactions_state(self):
-        callback = asynctest.CoroutineMock()
+        callback = AsyncMock()
         async with Timeit(name="a", callback=callback) as timeit:
             pass
             async with timeit(name="b") as child1:
@@ -100,9 +97,9 @@ class TimeitTests(asynctest.TestCase):
                     )
 
     async def test_initializing_more_than_one_transation_with_the_same_name_on_the_same_scope_raises_an_error(
-        self
+        self,
     ):
-        callback = asynctest.CoroutineMock()
+        callback = AsyncMock()
         with self.assertRaises(ValueError):
             async with Timeit(name="a", callback=callback) as timeit:
                 pass
@@ -110,7 +107,7 @@ class TimeitTests(asynctest.TestCase):
                     pass
 
     async def test_it_can_have_multiple_nested_transactions(self):
-        callback = asynctest.CoroutineMock()
+        callback = AsyncMock()
         now = Mock(
             side_effect=[
                 self.time,
@@ -123,7 +120,6 @@ class TimeitTests(asynctest.TestCase):
         )
 
         with patch("asyncworker.utils.now", now):
-
             async with Timeit(name="a", callback=callback) as timeit:
                 # do some database access
                 async with timeit(name="b"):
@@ -141,7 +137,7 @@ class TimeitTests(asynctest.TestCase):
         )
 
 
-class TypedAnyTests(unittest.TestCase):
+class TypedAnyTests(IsolatedAsyncioTestCase):
     def test_instances_of_the_same_classes_are_equal(self):
         self.assertEqual(5, typed_any(int))
         self.assertEqual("abc", typed_any(str))

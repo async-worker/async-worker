@@ -1,9 +1,9 @@
-import asynctest
+from unittest import IsolatedAsyncioTestCase
 
 from asyncworker.bucket import Bucket, BucketFullException
 
 
-class BucketTest(asynctest.TestCase):
+class BucketTest(IsolatedAsyncioTestCase):
     def test_instantiate_with_max_size(self):
         bucket = Bucket(size=1024)
         self.assertEqual(1024, bucket.size)

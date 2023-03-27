@@ -2,27 +2,27 @@ import os
 from http import HTTPStatus
 from importlib import reload
 from random import randint
+from unittest import IsolatedAsyncioTestCase
+from unittest.mock import AsyncMock, Mock, patch
 
-import asynctest
 from aiohttp import web
 from aiohttp.client import ClientSession
-from asynctest import mock, CoroutineMock, Mock, patch
 
 from asyncworker import App, conf
-from asyncworker.conf import settings, Settings
+from asyncworker.conf import Settings, settings
 from asyncworker.http.wrapper import RequestWrapper
-from asyncworker.routes import call_http_handler, RouteTypes, RoutesRegistry
+from asyncworker.routes import RoutesRegistry, RouteTypes, call_http_handler
 from asyncworker.signals.handlers.http import HTTPServer
 from asyncworker.testing import HttpClientContext
 from asyncworker.types.registry import TypesRegistry
 
 
-class HTTPServerTests(asynctest.TestCase):
-    async def setUp(self):
+class HTTPServerTests(IsolatedAsyncioTestCase):
+    def setUp(self):
         self.signal_handler = HTTPServer()
 
-        handler1 = Mock(return_value=CoroutineMock())
-        handler2 = Mock(return_value=CoroutineMock())
+        handler1 = Mock(return_value=AsyncMock())
+        handler2 = Mock(return_value=AsyncMock())
 
         self.routes_registry = RoutesRegistry(
             {
@@ -40,10 +40,10 @@ class HTTPServerTests(asynctest.TestCase):
         )
         self.app = App(connections=[])
 
-    async def tearDown(self):
+    async def asyncTearDown(self):
         await self.app.shutdown()
 
-    @asynctest.patch("asyncworker.signals.handlers.http.web.TCPSite.start")
+    @patch("asyncworker.signals.handlers.http.web.TCPSite.start")
     async def test_startup_initializes_an_web_application(self, start):
         self.app.routes_registry = self.routes_registry
 
@@ -61,7 +61,7 @@ class HTTPServerTests(asynctest.TestCase):
 
         start.assert_awaited_once()
 
-    @asynctest.patch("asyncworker.signals.handlers.http.web.AppRunner.cleanup")
+    @patch("asyncworker.signals.handlers.http.web.AppRunner.cleanup")
     async def test_add_handler_for_metrics_endpoint(self, cleanup):
         await self.signal_handler.startup(self.app)
 
@@ -71,7 +71,7 @@ class HTTPServerTests(asynctest.TestCase):
             ) as resp:
                 self.assertEqual(200, resp.status)
 
-    @asynctest.patch("asyncworker.signals.handlers.http.web.AppRunner.cleanup")
+    @patch("asyncworker.signals.handlers.http.web.AppRunner.cleanup")
     async def test_shutdown_closes_the_running_http_server(self, cleanup):
         with patch(
             "asyncworker.signals.handlers.http.settings",
@@ -85,7 +85,7 @@ class HTTPServerTests(asynctest.TestCase):
         await self.signal_handler.shutdown(self.app)
         cleanup.assert_awaited_once()
 
-    @asynctest.patch("asyncworker.signals.handlers.http.web.AppRunner.cleanup")
+    @patch("asyncworker.signals.handlers.http.web.AppRunner.cleanup")
     async def test_shutdown_does_nothing_if_app_doesnt_have_an_http_runner(
         self, cleanup
     ):
@@ -108,7 +108,7 @@ class HTTPServerTests(asynctest.TestCase):
 
         async with HttpClientContext(self.app) as client:
             settings_mock = Settings()
-            with mock.patch(
+            with patch(
                 "asyncworker.signals.handlers.http.settings", settings_mock
             ):
                 resp = await client.get("/")
@@ -129,12 +129,11 @@ class HTTPServerTests(asynctest.TestCase):
 
         app = App()
 
-        with mock.patch.dict(
+        with patch.dict(
             os.environ, ASYNCWORKER_METRICS_ROUTE_PATH="/asyncworker-metrics"
         ):
-
             reload(conf)
-            with mock.patch.object(routes, "conf", conf):
+            with patch.object(routes, "conf", conf):
 
                 @app.http.get(["/metrics"])
                 async def _h():
@@ -174,7 +173,7 @@ class HTTPServerTests(asynctest.TestCase):
 
         async with HttpClientContext(self.app) as client:
             settings_mock = Settings()
-            with mock.patch(
+            with patch(
                 "asyncworker.signals.handlers.http.settings", settings_mock
             ):
                 resp = await client.get("/")
@@ -192,7 +191,7 @@ class HTTPServerTests(asynctest.TestCase):
 
         async with HttpClientContext(self.app) as client:
             settings_mock = Settings()
-            with mock.patch(
+            with patch(
                 "asyncworker.signals.handlers.http.settings", settings_mock
             ):
                 resp = await client.get("/")
@@ -219,7 +218,7 @@ class HTTPServerTests(asynctest.TestCase):
 
         async with HttpClientContext(self.app) as client:
             settings_mock = Settings()
-            with mock.patch(
+            with patch(
                 "asyncworker.signals.handlers.http.settings", settings_mock
             ):
                 resp = await client.get("/")
@@ -263,7 +262,7 @@ class HTTPServerTests(asynctest.TestCase):
 
         async with HttpClientContext(self.app) as client:
             settings_mock = Settings()
-            with mock.patch(
+            with patch(
                 "asyncworker.signals.handlers.http.settings", settings_mock
             ):
                 resp = await client.get("/")
@@ -278,7 +277,7 @@ class HTTPServerTests(asynctest.TestCase):
                 )
 
     async def test_resolves_handler_parameters_when_receiving_request_wrapper(
-        self
+        self,
     ):
         def my_decorator(handler):
             async def _wrapper(wrapper: RequestWrapper):
@@ -293,7 +292,7 @@ class HTTPServerTests(asynctest.TestCase):
 
         async with HttpClientContext(self.app) as client:
             settings_mock = Settings()
-            with mock.patch(
+            with patch(
                 "asyncworker.signals.handlers.http.settings", settings_mock
             ):
                 resp = await client.get("/", params={"num": 42})
@@ -308,7 +307,7 @@ class HTTPServerTests(asynctest.TestCase):
 
         async with HttpClientContext(self.app) as client:
             settings_mock = Settings()
-            with mock.patch(
+            with patch(
                 "asyncworker.signals.handlers.http.settings", settings_mock
             ):
                 resp = await client.get("/", params={"num": 42})
@@ -323,7 +322,7 @@ class HTTPServerTests(asynctest.TestCase):
 
         async with HttpClientContext(self.app) as client:
             settings_mock = Settings()
-            with mock.patch(
+            with patch(
                 "asyncworker.signals.handlers.http.settings", settings_mock
             ):
                 resp = await client.get("/", params={"num": 42})
@@ -349,7 +348,7 @@ class HTTPServerTests(asynctest.TestCase):
 
         async with HttpClientContext(self.app) as client:
             settings_mock = Settings()
-            with mock.patch(
+            with patch(
                 "asyncworker.signals.handlers.http.settings", settings_mock
             ):
                 resp = await client.get("/", params={"num": 42})

@@ -1,4 +1,4 @@
-from asynctest import TestCase
+from unittest import IsolatedAsyncioTestCase
 
 from asyncworker.decorators import wraps
 from asyncworker.types.registry import TypesRegistry
@@ -37,8 +37,8 @@ def _deco3(handler):
     return _wrapper
 
 
-class TestWrapsDecorator(TestCase):
-    async def setUp(self):
+class TestWrapsDecorator(IsolatedAsyncioTestCase):
+    def setUp(self):
         self.registry = TypesRegistry()
         self.resolver = ArgResolver(registry=self.registry)
 
@@ -148,7 +148,7 @@ class TestWrapsDecorator(TestCase):
 
     async def test_call_chain_two_decorators(self):
         """
-        Cada decorator fornece (acumula) um dos parametros necessários 
+        Cada decorator fornece (acumula) um dos parametros necessários
         para o handler ser chamado
         """
 

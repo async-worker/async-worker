@@ -1,12 +1,13 @@
 import os
 from http import HTTPStatus
+from unittest import IsolatedAsyncioTestCase, skip
+from unittest.mock import patch
 
 from aiohttp import web
 from aiohttp.test_utils import TestClient
-from asynctest import TestCase, mock, skip
 
 from asyncworker import App, RouteTypes
-from asyncworker.testing import http_client, HttpClientContext
+from asyncworker.testing import HttpClientContext, http_client
 
 global_app = App()
 
@@ -16,8 +17,8 @@ async def _h():
     return web.json_response({})
 
 
-class HttpClientTestCaseDecoratorTest(TestCase):
-    async def setUp(self):
+class HttpClientTestCaseDecoratorTest(IsolatedAsyncioTestCase):
+    def setUp(self):
         self.app = App()
 
     async def test_client_is_passed_to_test(self):
@@ -78,8 +79,8 @@ class HttpClientTestCaseDecoratorTest(TestCase):
         self.assertEqual({"OK": True}, await other_method())
 
 
-class HttpClientContextManagerTest(TestCase):
-    async def setUp(self):
+class HttpClientContextManagerTest(IsolatedAsyncioTestCase):
+    def setUp(self):
         self.app = App()
 
     async def test_client_can_perform_requests(self):
@@ -104,7 +105,7 @@ class HttpClientContextManagerTest(TestCase):
         async def index(request):
             return web.json_response({"OK": True})
 
-        with mock.patch.dict(os.environ, TEST_ASYNCWORKER_HTTP_PORT="10000"):
+        with patch.dict(os.environ, TEST_ASYNCWORKER_HTTP_PORT="10000"):
             async with HttpClientContext(self.app) as http_client:
                 resp = await http_client.get("/")
                 self.assertEqual({"OK": True}, await resp.json())

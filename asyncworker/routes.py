@@ -1,27 +1,27 @@
 import abc
 from collections import UserDict
 from typing import (
+    Any,
     Callable,
     Coroutine,
     Dict,
-    List,
-    Any,
-    Union,
     Iterable,
-    Type,
+    List,
     Optional,
+    Type,
+    Union,
 )
 
 from aiohttp import web
 from aiohttp.hdrs import METH_ALL
 from aiohttp.web_routedef import RouteDef
 from cached_property import cached_property
-from pydantic import Extra, BaseModel, validator, root_validator
+from pydantic import BaseModel, Extra, root_validator, validator
 
 from asyncworker import conf
-from asyncworker.connections import Connection, AMQPConnection
+from asyncworker.connections import AMQPConnection, Connection
 from asyncworker.http.wrapper import RequestWrapper
-from asyncworker.options import DefaultValues, RouteTypes, Actions
+from asyncworker.options import Actions, DefaultValues, RouteTypes
 from asyncworker.types.registry import TypesRegistry
 from asyncworker.types.resolver import ArgResolver, MissingTypeAnnotationError
 
@@ -204,7 +204,6 @@ class RoutesRegistry(UserDict):
         return self._get_routes_for_type(AMQPRoute)
 
     def __setitem__(self, key: RouteHandler, value: Union[Dict, Route]):
-
         if not isinstance(value, Route):
             route = Route.factory({"handler": key, **value})
         else:

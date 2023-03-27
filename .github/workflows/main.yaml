@@ -12,7 +12,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        python: [3.7, 3.8, 3.9, 3.x]
+        python: ['3.9', '3.10', '3.11', '3.x']
     services:
       rabbitmq:
         image: rabbitmq:3.7-management-alpine
@@ -40,12 +40,12 @@ jobs:
         run: pipenv run all-tests
 
       - name: Coverage upload
-        if: ${{matrix.python == '3.8'}}
+        if: ${{matrix.python == '3.11'}}
         uses: paambaati/codeclimate-action@v2.7.5
         env:
           CC_TEST_REPORTER_ID: ${{secrets.CC_TEST_REPORTER_ID}}
       - name: Coverage Skipped
-        if: ${{matrix.python != '3.8'}}
+        if: ${{matrix.python != '3.11'}}
         run: echo "Coverage uploaded only on python 3.8 run"
 
   lint:
@@ -55,13 +55,13 @@ jobs:
       - name: checkout
         uses: actions/checkout@v2
 
-      - name: Install python 3.8
+      - name: Install python 3.11
         uses: actions/setup-python@v2
         with:
-          python-version: 3.8
+          python-version: 3.11
 
       - name: Install pip/pipenv
-        run: pip install -U pip==22.0.4 pipenv==2022.4.30
+        run: pip install -U pip==22.3.1 pipenv==2023.2.4
 
       - name: pipenv install --dev
         run: pipenv install --system --deploy --ignore-pipfile --dev

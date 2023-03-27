@@ -1,23 +1,25 @@
-from aiohttp import web
-from asynctest import CoroutineMock, TestCase, MagicMock
+from unittest import IsolatedAsyncioTestCase
+from unittest.mock import AsyncMock, MagicMock
 
-from asyncworker import conf, RouteTypes, App
+from aiohttp import web
+
+from asyncworker import App, RouteTypes, conf
 from asyncworker.connections import AMQPConnection
 from asyncworker.http.wrapper import RequestWrapper
 from asyncworker.options import Actions
 from asyncworker.routes import (
-    call_http_handler,
-    RoutesRegistry,
-    HTTPRoute,
     AMQPRoute,
     AMQPRouteOptions,
+    HTTPRoute,
+    RoutesRegistry,
+    call_http_handler,
 )
 from asyncworker.testing import HttpClientContext
 from asyncworker.types.registry import TypesRegistry
 from asyncworker.types.resolver import MissingTypeAnnotationError
 
 
-class HTTPHandlerWrapperTest(TestCase):
+class HTTPHandlerWrapperTest(IsolatedAsyncioTestCase):
     async def test_raises_if_handler_has_any_missing_annotation(self):
         async def handler(other):
             return other
@@ -29,12 +31,12 @@ class HTTPHandlerWrapperTest(TestCase):
             await call_http_handler(wrapper, handler)
 
 
-class RoutesRegistryTests(TestCase):
+class RoutesRegistryTests(IsolatedAsyncioTestCase):
     def setUp(self):
         self.routes_registry = RoutesRegistry()
 
     def test_it_registers_routes(self):
-        handler = CoroutineMock()
+        handler = AsyncMock()
 
         route = HTTPRoute(
             routes=["/"], methods=["POST"], handler=handler, default_options={}
@@ -45,7 +47,7 @@ class RoutesRegistryTests(TestCase):
         self.assertEqual(route, self.routes_registry.route_for(handler))
 
     def test_route_for(self):
-        handler = CoroutineMock()
+        handler = AsyncMock()
 
         route = HTTPRoute(
             routes=["/"], methods=["POST"], handler=handler, default_options={}
@@ -58,7 +60,7 @@ class RoutesRegistryTests(TestCase):
     def test_it_raise_an_error_if_the_route_has_an_invalid_type(self):
         routes_registry = RoutesRegistry()
 
-        handler = CoroutineMock()
+        handler = AsyncMock()
         route_data = {
             "type": "Xablau",
             "routes": ["/"],
@@ -71,7 +73,7 @@ class RoutesRegistryTests(TestCase):
             routes_registry[handler] = route_data
 
     def test_it_raises_an_error_if_route_dict_dosnt_have_a_type(self):
-        handler = CoroutineMock()
+        handler = AsyncMock()
         route_data = {
             "routes": ["/"],
             "methods": ["POST"],
@@ -83,7 +85,7 @@ class RoutesRegistryTests(TestCase):
             self.routes_registry[handler] = route_data
 
     def test_routes_are_subscriptables(self):
-        handler = CoroutineMock()
+        handler = AsyncMock()
         route = HTTPRoute(
             routes=["/"], methods=["POST"], handler=handler, default_options={}
         )
@@ -95,7 +97,7 @@ class RoutesRegistryTests(TestCase):
             _ = route["Invalid key"]
 
     def test_routes_get_method(self):
-        handler = CoroutineMock()
+        handler = AsyncMock()
         route = HTTPRoute(
             routes=["/"], methods=["POST"], handler=handler, default_options={}
         )
@@ -106,9 +108,7 @@ class RoutesRegistryTests(TestCase):
         self.assertEqual(route.get("Invalid key", "Default"), "Default")
 
     def test_register_http_handler(self):
-        route = HTTPRoute(
-            handler=CoroutineMock(), routes=["/foo"], methods=["GET"]
-        )
+        route = HTTPRoute(handler=AsyncMock(), routes=["/foo"], methods=["GET"])
         self.routes_registry.add_http_route(route)
 
         self.assertEqual(len(self.routes_registry.http_routes), 1)
@@ -116,7 +116,7 @@ class RoutesRegistryTests(TestCase):
 
     def test_register_amqp_handler(self):
         route = AMQPRoute(
-            handler=CoroutineMock(),
+            handler=AsyncMock(),
             routes=["queue1", "queue2"],
             options=AMQPRouteOptions(),
         )
@@ -127,12 +127,12 @@ class RoutesRegistryTests(TestCase):
         self.assertEqual(self.routes_registry.amqp_routes[0], route)
 
 
-class HTTPRouteModelTests(TestCase):
+class HTTPRouteModelTests(IsolatedAsyncioTestCase):
     def test_it_raise_an_error_for_invalid_methods(self):
         with self.assertRaises(ValueError):
             HTTPRoute(
                 methods=["POST", "Xablau"],
-                handler=CoroutineMock(),
+                handler=AsyncMock(),
                 routes=["/"],
             )
 
@@ -149,13 +149,13 @@ class HTTPRouteModelTests(TestCase):
                 "TRACE",
                 "connect",
             ],
-            handler=CoroutineMock(),
+            handler=AsyncMock(),
             routes=["/"],
         )
         self.assertIsInstance(route, HTTPRoute)
 
 
-class HTTPRouteRegisterTest(TestCase):
+class HTTPRouteRegisterTest(IsolatedAsyncioTestCase):
     async def test_can_registrer_a_callable_as_a_valid_handler(self):
         app = App()
 
@@ -173,7 +173,7 @@ class HTTPRouteRegisterTest(TestCase):
             self.assertEqual({"OK": True}, data)
 
     async def test_can_registrer_a_callable_as_a_valid_handler_new_decorator(
-        self
+        self,
     ):
         app = App()
 
@@ -202,7 +202,7 @@ class HTTPRouteRegisterTest(TestCase):
             self.assertEqual({"OK": True}, data)
 
     async def test_can_registrer_a_coroutine_as_a_valid_handler_new_decorator(
-        self
+        self,
     ):
         app = App()
 
@@ -307,7 +307,7 @@ class HTTPRouteRegisterTest(TestCase):
             self.assertEqual({"a": "30", "b": "42"}, data)
 
 
-class AMQPRouteModelTests(TestCase):
+class AMQPRouteModelTests(IsolatedAsyncioTestCase):
     async def test_it_raises_an_error_if_route_connection_is_invalid(self):
         with self.assertRaises(ValueError):
             AMQPRoute(
@@ -317,7 +317,7 @@ class AMQPRouteModelTests(TestCase):
             )
 
 
-class AMQPRouteRegiterTest(TestCase):
+class AMQPRouteRegiterTest(IsolatedAsyncioTestCase):
     async def test_can_registrer_a_callable_as_a_valid_handler(self):
         app = App()
 
@@ -335,7 +335,7 @@ class AMQPRouteRegiterTest(TestCase):
         )
 
     async def test_can_registrer_a_callable_as_a_valid_handler_amqp_route_register(
-        self
+        self,
     ):
         app = App()
 
@@ -353,7 +353,7 @@ class AMQPRouteRegiterTest(TestCase):
         )
 
     async def test_raise_if_object_is_not_callable_register_with_app_amqp_consume(
-        self
+        self,
     ):
         app = App()
 
@@ -366,7 +366,7 @@ class AMQPRouteRegiterTest(TestCase):
             app.amqp.consume(["/"])(handler)
 
     async def test_raise_if_object_is_not_callable_register_with_amqp_route_register(
-        self
+        self,
     ):
         app = App()
 

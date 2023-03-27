@@ -1,33 +1,31 @@
 import asyncio
 from http import HTTPStatus
 from signal import Signals
+from unittest import IsolatedAsyncioTestCase
+from unittest.mock import AsyncMock, Mock, call, patch
 
-import asynctest
 from aiohttp import web
-from asynctest import Mock, CoroutineMock, patch, call
 
 from asyncworker.app import App
 from asyncworker.connections import AMQPConnection
 from asyncworker.exceptions import InvalidConnection
 from asyncworker.http import HTTPMethods
-from asyncworker.options import RouteTypes, DefaultValues, Options
+from asyncworker.options import DefaultValues, Options, RouteTypes
 from asyncworker.routes import AMQPRoute
 from asyncworker.task_runners import ScheduledTaskRunner
 from asyncworker.testing import HttpClientContext
 
 
-class AppTests(asynctest.TestCase):
-    async def setUp(self):
+class AppTests(IsolatedAsyncioTestCase):
+    def setUp(self):
         class MyApp(App):
-            handlers = (
-                Mock(startup=CoroutineMock(), shutdown=CoroutineMock()),
-            )
+            handlers = (Mock(startup=AsyncMock(), shutdown=AsyncMock()),)
 
         self.appCls = MyApp
         self.app = MyApp(connections=[])
 
     async def test_setitem_changes_internal_state_if_not_frozen(self):
-        self.app["foo"] = foo = asynctest.Mock()
+        self.app["foo"] = foo = Mock()
         self.assertEqual(foo, self.app._state["foo"])
 
         await self.app.freeze()
@@ -60,7 +58,7 @@ class AppTests(asynctest.TestCase):
         self.app.update(pet="dog", name="Xablau")
 
         state = dict(**self.app)
-        self.assertDictContainsSubset({"pet": "dog", "name": "Xablau"}, state)
+        self.assertEqual(state, state | {"pet": "dog", "name": "Xablau"})
 
     async def test_startup_freezes_applications_and_sends_the_on_startup_signal(
         self,
@@ -88,7 +86,7 @@ class AppTests(asynctest.TestCase):
     async def test_run_on_startup_registers_a_coroutine_to_be_executed_on_startup(
         self,
     ):
-        coro = CoroutineMock()
+        coro = AsyncMock()
 
         self.app.run_on_startup(coro)
 
@@ -100,7 +98,7 @@ class AppTests(asynctest.TestCase):
     async def test_startup_calls_user_registered_startup_routines_after_app_signal_handlers_startup(
         self,
     ):
-        coro = CoroutineMock()
+        coro = AsyncMock()
 
         self.app.run_on_startup(coro)
 
@@ -112,7 +110,7 @@ class AppTests(asynctest.TestCase):
     async def test_run_on_shutdown_registers_a_coroutine_to_be_executed_on_shutdown(
         self,
     ):
-        coro = CoroutineMock()
+        coro = AsyncMock()
 
         self.app.run_on_shutdown(coro)
         self.assertIn(coro, self.app._on_shutdown)
@@ -122,7 +120,7 @@ class AppTests(asynctest.TestCase):
 
     async def test_shutdown_is_registered_as_a_signal_handler(self):
         with patch.object(
-            self.loop, "add_signal_handler"
+            asyncio.get_running_loop(), "add_signal_handler"
         ) as add_signal_handler:
             app = self.appCls()
             add_signal_handler.assert_has_calls(
@@ -154,7 +152,7 @@ class AppTests(asynctest.TestCase):
             "asyncworker.app.ScheduledTaskRunner", spec=ScheduledTaskRunner
         ) as Runner:
             seconds = 10
-            coro = Mock(start=CoroutineMock(), stop=CoroutineMock())
+            coro = Mock(start=AsyncMock(), stop=AsyncMock())
 
             self.app.run_every(seconds=seconds)(coro)
 
@@ -175,7 +173,7 @@ class AppTests(asynctest.TestCase):
             "asyncworker.app.ScheduledTaskRunner", spec=ScheduledTaskRunner
         ) as Runner:
             seconds = 10
-            coro = Mock(start=CoroutineMock(), stop=CoroutineMock())
+            coro = Mock(start=AsyncMock(), stop=AsyncMock())
 
             self.app.run_every(
                 seconds=seconds, options={Options.MAX_CONCURRENCY: 666}
@@ -186,7 +184,6 @@ class AppTests(asynctest.TestCase):
             )
 
     async def test_http_route_decorator(self):
-
         app = App()
 
         @app.http._route(["/"], method=HTTPMethods.GET)
@@ -285,7 +282,7 @@ class AppTests(asynctest.TestCase):
             self.assertEqual({HTTPMethods.PUT: True}, data)
 
 
-class AppConnectionsTests(asynctest.TestCase):
+class AppConnectionsTests(IsolatedAsyncioTestCase):
     def setUp(self):
         super(AppConnectionsTests, self).setUp()
         self.connections = [

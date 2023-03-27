@@ -1,21 +1,22 @@
-import asynctest
-from asynctest import CoroutineMock, Mock, call, patch, ANY
+import asyncio
+from unittest import IsolatedAsyncioTestCase
+from unittest.mock import ANY, AsyncMock, Mock, call, patch
 
 from asyncworker import App
 from asyncworker.connections import AMQPConnection
 from asyncworker.consumer import Consumer
-from asyncworker.exceptions import InvalidRoute, InvalidConnection
+from asyncworker.exceptions import InvalidConnection, InvalidRoute
 from asyncworker.options import RouteTypes
 from asyncworker.routes import RoutesRegistry
 from asyncworker.signals.handlers.rabbitmq import RabbitMQ
 
 
-class AMQPTests(asynctest.TestCase):
-    async def setUp(self):
+class AMQPTests(IsolatedAsyncioTestCase):
+    def setUp(self):
         self.signal_handler = RabbitMQ()
 
-        handler1 = Mock(return_value=CoroutineMock())
-        handler2 = Mock(return_value=CoroutineMock())
+        handler1 = Mock(return_value=AsyncMock())
+        handler2 = Mock(return_value=AsyncMock())
 
         self.routes_registry = RoutesRegistry(
             {
@@ -33,7 +34,7 @@ class AMQPTests(asynctest.TestCase):
             }
         )
 
-    @asynctest.patch("asyncworker.signals.handlers.rabbitmq.Consumer")
+    @patch("asyncworker.signals.handlers.rabbitmq.Consumer")
     async def test_startup_initializes_and_starts_one_consumer_per_route(
         self, Consumer
     ):
@@ -45,14 +46,14 @@ class AMQPTests(asynctest.TestCase):
         )
         app = App(connections=[connection])
         app.routes_registry = self.routes_registry
-        app.loop = Mock(create_task=CoroutineMock())
+        app.loop = Mock(create_task=AsyncMock())
         # asynctest.MagicMock(
         #     routes_registry=,
-        #     loop=Mock(create_task=CoroutineMock()),
+        #     loop=Mock(create_task=AsyncMock()),
         # )
 
         app[RouteTypes.AMQP_RABBITMQ] = {"connections": [connection]}
-        await self.signal_handler.startup(app)
+        tasks = await self.signal_handler.startup(app)
 
         Consumer.assert_has_calls(
             [
@@ -79,9 +80,9 @@ class AMQPTests(asynctest.TestCase):
             [Consumer.return_value, Consumer.return_value],
         )
 
-    @asynctest.patch(
-        "asyncworker.signals.handlers.rabbitmq.AMQPConnection.register"
-    )
+        await asyncio.gather(*tasks)
+
+    @patch("asyncworker.signals.handlers.rabbitmq.AMQPConnection.register")
     async def test_startup_registers_one_connection_per_vhost_into_app_state(
         self, register
     ):
@@ -104,7 +105,7 @@ class AMQPTests(asynctest.TestCase):
         )
 
     async def test_it_raises_an_error_if_theres_multiple_connections_and_route_doesnt_define_a_connection(
-        self
+        self,
     ):
         conn1 = AMQPConnection(
             hostname="127.0.0.1",
@@ -128,7 +129,7 @@ class AMQPTests(asynctest.TestCase):
             await self.signal_handler.startup(app)
 
     async def test_it_raises_an_error_if_an_amqp_route_is_registered_without_any_defined_connections(
-        self
+        self,
     ):
         app = App(connections=[])
 
@@ -140,7 +141,7 @@ class AMQPTests(asynctest.TestCase):
             await self.signal_handler.startup(app)
 
     async def test_it_uses_the_connection_provided_by_the_route_if_one_exists(
-        self
+        self,
     ):
         conn = AMQPConnection(
             hostname="127.0.0.1",
@@ -173,7 +174,7 @@ class AMQPTests(asynctest.TestCase):
         )
 
     async def test_it_uses_the_connection_name_provided_by_the_route_if_one_exists(
-        self
+        self,
     ):
         app = App(connections=[])
 

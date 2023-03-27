@@ -1,10 +1,9 @@
 import os
 from importlib import reload
+from unittest import IsolatedAsyncioTestCase, mock
 
-from asynctest import TestCase, mock
 
-
-class ProcessCollectorTest(TestCase):
+class ProcessCollectorTest(IsolatedAsyncioTestCase):
     async def test_use_global_namespace(self):
         from asyncworker import conf
         from asyncworker.metrics import registry
