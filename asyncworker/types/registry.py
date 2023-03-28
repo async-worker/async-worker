@@ -13,7 +13,7 @@ class RegistryItem:
 
 
 class TypesRegistry:
-    def __init__(self):
+    def __init__(self) -> None:
         self._data: Dict[Tuple, RegistryItem] = {}
         self._by_name: Dict[str, RegistryItem] = {}
 
