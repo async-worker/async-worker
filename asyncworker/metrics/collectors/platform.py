@@ -1,9 +1,10 @@
 import platform as pf
 
 from prometheus_client.metrics_core import GaugeMetricFamily
+from prometheus_client.registry import Collector
 
 
-class PlatformCollector(object):
+class PlatformCollector(Collector):
     """
     Collector for python platform information
 
