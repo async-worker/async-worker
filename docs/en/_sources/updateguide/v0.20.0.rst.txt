@@ -1,0 +1,10 @@
+Atualizando para 0.20.0
+=======================
+
+Changelog: `0.20.0 <https://github.com/async-worker/async-worker/releases/tag/0.20.0>`_
+
+Nessa versão, removemos o suporte ao python 3.6 a adicionamos suporte ao python 3.11.
+
+Não há nenhum passo necessária para atualizar para essa nova versão a não ser confirmar que
+as versões do python sendo usadas pelo seu projeto estão em conformidade com as versões suportadas
+pelo async-worker
