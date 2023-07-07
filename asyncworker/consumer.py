@@ -22,6 +22,7 @@ class Consumer(QueueConsumerDelegate):
         host: str,
         username: str,
         password: str,
+        port: int = 5672,
         prefetch_count: int = 128,
         bucket_class: Type[Bucket] = Bucket[RabbitMQMessage],
     ) -> None:
@@ -38,6 +39,7 @@ class Consumer(QueueConsumerDelegate):
             host,
             username,
             password,
+            port=port,
             virtual_host=self.vhost,
             delegate=self,
             prefetch_count=prefetch_count,

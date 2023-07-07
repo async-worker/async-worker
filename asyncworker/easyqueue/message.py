@@ -44,7 +44,6 @@ class AMQPMessage(Generic[T]):
         self._envelope = envelope
         self._properties = properties
         self._deserialization_method = deserialization_method
-
         self._deserialized_data: Optional[T] = None
         self._queue = queue
 

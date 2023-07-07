@@ -18,12 +18,14 @@ class AMQPConnection:
         host: str,
         username: str,
         password: str,
+        port: int = 5672,
         heartbeat: int = 60,
         virtual_host: str = "/",
         loop: Optional[asyncio.AbstractEventLoop] = None,
         on_error: OnErrorCallback = None,
     ) -> None:
         self.host = host
+        self.port = port
         self.username = username
         self.password = password
         self.virtual_host = virtual_host
@@ -41,6 +43,7 @@ class AMQPConnection:
     def connection_parameters(self):
         return {
             "host": self.host,
+            "port": self.port,
             "login": self.username,
             "password": self.password,
             "virtualhost": self.virtual_host,

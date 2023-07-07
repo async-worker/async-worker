@@ -21,6 +21,7 @@ class RabbitMQ(SignalHandler):
             consumer = Consumer(
                 route_info=route_info,
                 host=conn.hostname,
+                port=conn.port,
                 username=conn.username,
                 password=conn.password,
                 prefetch_count=conn.prefetch,

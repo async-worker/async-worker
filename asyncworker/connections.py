@@ -103,6 +103,7 @@ class AMQPConnection(Connection):
     hostname: str
     username: str
     password: str
+    port: int = 5672
     route_type = RouteTypes.AMQP_RABBITMQ
     prefetch: int = settings.AMQP_DEFAULT_PREFETCH_COUNT
     heartbeat: int = settings.AMQP_DEFAULT_HEARTBEAT
@@ -134,6 +135,7 @@ class AMQPConnection(Connection):
         except KeyError:
             conn: JsonQueue = JsonQueue(
                 host=self.hostname,
+                port=self.port,
                 username=self.username,
                 password=self.password,
                 virtual_host=key,
