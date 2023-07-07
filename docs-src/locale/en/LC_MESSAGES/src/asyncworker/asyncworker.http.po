@@ -9,14 +9,14 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Asyncworker \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-06-11 19:05-0300\n"
+"POT-Creation-Date: 2023-07-07 17:16-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.10.1\n"
+"Generated-By: Babel 2.12.1\n"
 
 #: ../../src/asyncworker/asyncworker.http.rst:2
 msgid "asyncworker.http package"
@@ -56,10 +56,6 @@ msgstr ""
 
 #: asyncworker.http.methods.HTTPMethods:1 of
 msgid "Base: :py:class:`asyncworker.options.AutoNameEnum`"
-msgstr ""
-
-#: asyncworker.http.methods.HTTPMethods:1 of
-msgid "An enumeration."
 msgstr ""
 
 #: ../../src/asyncworker/asyncworker.http.rst:32
