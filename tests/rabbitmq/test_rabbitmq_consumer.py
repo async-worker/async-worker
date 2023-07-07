@@ -31,7 +31,12 @@ class ConsumerTest(IsolatedAsyncioTestCase):
         self.logger_mock = AsyncMock(
             info=AsyncMock(), debug=AsyncMock(), error=AsyncMock()
         )
-        self.connection_parameters = ("127.0.0.1", "guest", "guest", 1024)
+        self.connection_parameters = {
+            "host": "127.0.0.1",
+            "username": "guest",
+            "password": "guest",
+            "prefetch_count": 1024,
+        }
         self.one_route_fixture = {
             "routes": ["/asgard/counts/ok"],
             "handler": _handler,
@@ -81,7 +86,9 @@ class ConsumerTest(IsolatedAsyncioTestCase):
         Vamos setar o bulk_size com sendo min(bulk_size, prefetch_count)
         """
         self.one_route_fixture["options"]["bulk_size"] = 2048
-        consumer = Consumer(self.one_route_fixture, *self.connection_parameters)
+        consumer = Consumer(
+            self.one_route_fixture, **self.connection_parameters
+        )
         self.assertEqual(1024, consumer.bucket.size)
 
         self.one_route_fixture["options"]["bulk_size"] = 4096
@@ -100,20 +107,24 @@ class ConsumerTest(IsolatedAsyncioTestCase):
 
         consumer = Consumer(
             self.one_route_fixture,
-            *self.connection_parameters,
+            **self.connection_parameters,
             bucket_class=MyBucket,
         )
         self.assertTrue(isinstance(consumer.bucket, MyBucket))
 
     def test_consumer_instantiate_correct_size_bucket(self):
-        consumer = Consumer(self.one_route_fixture, *self.connection_parameters)
+        consumer = Consumer(
+            self.one_route_fixture, **self.connection_parameters
+        )
         self.assertEqual(
             self.one_route_fixture["options"]["bulk_size"], consumer.bucket.size
         )
 
     def test_consumer_instantiate_async_queue_default_vhost(self):
         del self.one_route_fixture["vhost"]
-        consumer = Consumer(self.one_route_fixture, *self.connection_parameters)
+        consumer = Consumer(
+            self.one_route_fixture, **self.connection_parameters
+        )
         connection_parameters = consumer.queue.connection.connection_parameters
 
         self.assertTrue(isinstance(consumer.queue, JsonQueue))
@@ -124,7 +135,9 @@ class ConsumerTest(IsolatedAsyncioTestCase):
 
     def test_consumer_instantiate_async_queue_other_vhost(self):
         self.one_route_fixture["vhost"] = "fluentd"
-        consumer = Consumer(self.one_route_fixture, *self.connection_parameters)
+        consumer = Consumer(
+            self.one_route_fixture, **self.connection_parameters
+        )
         connection_parameters = consumer.queue.connection.connection_parameters
 
         self.assertTrue(isinstance(consumer.queue, JsonQueue))
@@ -134,7 +147,9 @@ class ConsumerTest(IsolatedAsyncioTestCase):
         self,
     ):
         self.one_route_fixture["vhost"] = "/fluentd"
-        consumer = Consumer(self.one_route_fixture, *self.connection_parameters)
+        consumer = Consumer(
+            self.one_route_fixture, **self.connection_parameters
+        )
         connection_parameters = consumer.queue.connection.connection_parameters
 
         self.assertTrue(isinstance(consumer.queue, JsonQueue))
@@ -142,7 +157,9 @@ class ConsumerTest(IsolatedAsyncioTestCase):
 
     def test_consumer_instantiate_async_queue_prefetch_count(self):
         self.one_route_fixture["vhost"] = "/fluentd"
-        consumer = Consumer(self.one_route_fixture, *self.connection_parameters)
+        consumer = Consumer(
+            self.one_route_fixture, **self.connection_parameters
+        )
         connection_parameters = consumer.queue.connection.connection_parameters
 
         self.assertTrue(isinstance(consumer.queue, JsonQueue))
@@ -150,11 +167,15 @@ class ConsumerTest(IsolatedAsyncioTestCase):
         self.assertEqual(1024, consumer.queue.prefetch_count)
 
     def test_consumer_returns_correct_queue_name(self):
-        consumer = Consumer(self.one_route_fixture, *self.connection_parameters)
+        consumer = Consumer(
+            self.one_route_fixture, **self.connection_parameters
+        )
         self.assertEqual(["/asgard/counts/ok"], consumer.queue_name)
 
     async def test_on_queue_message_calls_inner_handler(self):
-        consumer = Consumer(self.one_route_fixture, *self.connection_parameters)
+        consumer = Consumer(
+            self.one_route_fixture, **self.connection_parameters
+        )
         result = await consumer.on_queue_message(msg=self.mock_message)
 
         self.assertEqual((42, self.mock_message.deserialized_data), result)
@@ -171,7 +192,7 @@ class ConsumerTest(IsolatedAsyncioTestCase):
             raise Exception("BOOM!")
 
         route = self.app.routes_registry.amqp_routes[0]
-        consumer = Consumer(route, *self.connection_parameters)
+        consumer = Consumer(route, **self.connection_parameters)
 
         with self.assertRaises(Exception):
             await consumer.on_queue_message(msg=self.mock_message)
@@ -185,7 +206,7 @@ class ConsumerTest(IsolatedAsyncioTestCase):
             raise Exception("BOOM!")
 
         route = self.app.routes_registry.amqp_routes[0]
-        consumer = Consumer(route, *self.connection_parameters)
+        consumer = Consumer(route, **self.connection_parameters)
 
         with self.assertRaises(Exception):
             await consumer.on_queue_message(msg=self.mock_message)
@@ -199,7 +220,7 @@ class ConsumerTest(IsolatedAsyncioTestCase):
             raise Exception("BOOM!")
 
         route = self.app.routes_registry.amqp_routes[0]
-        consumer = Consumer(route, *self.connection_parameters)
+        consumer = Consumer(route, **self.connection_parameters)
         with self.assertRaises(Exception):
             await consumer.on_queue_message(msg=self.mock_message)
 
@@ -213,7 +234,7 @@ class ConsumerTest(IsolatedAsyncioTestCase):
             return 42
 
         route = self.app.routes_registry.amqp_routes[0]
-        consumer = Consumer(route, *self.connection_parameters)
+        consumer = Consumer(route, **self.connection_parameters)
 
         await consumer.on_queue_message(msg=self.mock_message)
         self.mock_message.ack.assert_awaited_once()
@@ -226,7 +247,7 @@ class ConsumerTest(IsolatedAsyncioTestCase):
             return 42
 
         route = self.app.routes_registry.amqp_routes[0]
-        consumer = Consumer(route, *self.connection_parameters)
+        consumer = Consumer(route, **self.connection_parameters)
 
         await consumer.on_queue_message(msg=self.mock_message)
         self.mock_message.reject.assert_awaited_once_with(requeue=False)
@@ -239,7 +260,7 @@ class ConsumerTest(IsolatedAsyncioTestCase):
             return 42
 
         route = self.app.routes_registry.amqp_routes[0]
-        consumer = Consumer(route, *self.connection_parameters)
+        consumer = Consumer(route, **self.connection_parameters)
 
         await consumer.on_queue_message(msg=self.mock_message)
         self.mock_message.reject.assert_awaited_once_with(requeue=True)
@@ -249,7 +270,9 @@ class ConsumerTest(IsolatedAsyncioTestCase):
         Se o handler registrado no @app.amqp.consume() rodar com sucesso,
         devemos fazer o ack da mensagem
         """
-        consumer = Consumer(self.one_route_fixture, *self.connection_parameters)
+        consumer = Consumer(
+            self.one_route_fixture, **self.connection_parameters
+        )
 
         result = await consumer.on_queue_message(msg=self.mock_message)
 
@@ -269,7 +292,9 @@ class ConsumerTest(IsolatedAsyncioTestCase):
         self.one_route_fixture["handler"] = exception_handler
         self.one_route_fixture["options"]["bulk_size"] = 2
 
-        consumer = Consumer(self.one_route_fixture, *self.connection_parameters)
+        consumer = Consumer(
+            self.one_route_fixture, **self.connection_parameters
+        )
 
         msgs = [self._make_msg(delivery_tag=1), self._make_msg(delivery_tag=2)]
         with self.assertRaises(AttributeError):
@@ -283,7 +308,9 @@ class ConsumerTest(IsolatedAsyncioTestCase):
         msgs[1].ack.assert_not_awaited()
 
     async def test_on_queue_message_precondition_failed_on_ack(self):
-        consumer = Consumer(self.one_route_fixture, *self.connection_parameters)
+        consumer = Consumer(
+            self.one_route_fixture, **self.connection_parameters
+        )
         self.mock_message.ack.side_effect = AioamqpException
 
         with self.assertRaises(AioamqpException):
@@ -300,7 +327,7 @@ class ConsumerTest(IsolatedAsyncioTestCase):
 
         consumer = Consumer(
             self.one_route_fixture,
-            *self.connection_parameters,
+            **self.connection_parameters,
             bucket_class=MyBucket,
         )
         msg = self._make_msg(delivery_tag=20)
@@ -327,7 +354,7 @@ class ConsumerTest(IsolatedAsyncioTestCase):
 
         consumer = Consumer(
             self.one_route_fixture,
-            *self.connection_parameters,
+            **self.connection_parameters,
             bucket_class=MyBucket,
         )
         msgs = [
@@ -354,7 +381,9 @@ class ConsumerTest(IsolatedAsyncioTestCase):
         self.one_route_fixture["handler"] = handler
         self.one_route_fixture["options"]["bulk_size"] = 5
 
-        consumer = Consumer(self.one_route_fixture, *self.connection_parameters)
+        consumer = Consumer(
+            self.one_route_fixture, **self.connection_parameters
+        )
 
         msgs = [self._make_msg(delivery_tag=i) for i in range(5)]
         for msg in msgs:
@@ -386,7 +415,9 @@ class ConsumerTest(IsolatedAsyncioTestCase):
         self.one_route_fixture["options"]["bulk_size"] = 5
         self.one_route_fixture["options"][Events.ON_SUCCESS] = Actions.REJECT
 
-        consumer = Consumer(self.one_route_fixture, *self.connection_parameters)
+        consumer = Consumer(
+            self.one_route_fixture, **self.connection_parameters
+        )
 
         msgs = [self._make_msg(delivery_tag=i) for i in range(5)]
         for msg in msgs:
@@ -412,7 +443,7 @@ class ConsumerTest(IsolatedAsyncioTestCase):
 
         consumer = Consumer(
             self.one_route_fixture,
-            *self.connection_parameters,
+            **self.connection_parameters,
             bucket_class=MyBucket,
         )
 
@@ -454,7 +485,7 @@ class ConsumerTest(IsolatedAsyncioTestCase):
 
         consumer = Consumer(
             self.one_route_fixture,
-            *self.connection_parameters,
+            **self.connection_parameters,
             bucket_class=MyBucket,
         )
 
@@ -480,7 +511,7 @@ class ConsumerTest(IsolatedAsyncioTestCase):
 
         consumer = Consumer(
             self.one_route_fixture,
-            *self.connection_parameters,
+            **self.connection_parameters,
             bucket_class=MyBucket,
         )
         await consumer.on_queue_message(self._make_msg())
@@ -501,7 +532,9 @@ class ConsumerTest(IsolatedAsyncioTestCase):
         Logamos a exception lançada pelo handler.
         Aqui o try/except serve apenas para termos uma exception real, com traceback.
         """
-        consumer = Consumer(self.one_route_fixture, *self.connection_parameters)
+        consumer = Consumer(
+            self.one_route_fixture, **self.connection_parameters
+        )
         with patch.object(conf, "logger", self.logger_mock):
             try:
                 1 / 0
@@ -518,7 +551,9 @@ class ConsumerTest(IsolatedAsyncioTestCase):
         """
         Logamos qualquer erro de conexão com o Rabbit, inclusive acesso negado
         """
-        consumer = Consumer(self.one_route_fixture, *self.connection_parameters)
+        consumer = Consumer(
+            self.one_route_fixture, **self.connection_parameters
+        )
         with patch.object(conf, "logger", self.logger_mock):
             try:
                 1 / 0
@@ -539,7 +574,9 @@ class ConsumerTest(IsolatedAsyncioTestCase):
         body = "not a JSON"
         queue_mock = AsyncMock(ack=AsyncMock())
 
-        consumer = Consumer(self.one_route_fixture, *self.connection_parameters)
+        consumer = Consumer(
+            self.one_route_fixture, **self.connection_parameters
+        )
         with patch.object(conf, "logger", self.logger_mock):
             await consumer.on_queue_error(
                 body, delivery_tag, "Error: not a JSON", queue_mock
@@ -557,7 +594,9 @@ class ConsumerTest(IsolatedAsyncioTestCase):
         """
         consumer.quene_name deve retornar o nome da fila que está sendo consumida.
         """
-        consumer = Consumer(self.one_route_fixture, *self.connection_parameters)
+        consumer = Consumer(
+            self.one_route_fixture, **self.connection_parameters
+        )
         self.assertEqual(self.one_route_fixture["routes"], consumer.queue_name)
 
     async def test_consume_all_queues(self):
@@ -566,7 +605,9 @@ class ConsumerTest(IsolatedAsyncioTestCase):
             "asgard/counts",
             "asgard/counts/errors",
         ]
-        consumer = Consumer(self.one_route_fixture, *self.connection_parameters)
+        consumer = Consumer(
+            self.one_route_fixture, **self.connection_parameters
+        )
         queue_mock = AsyncMock(consume=AsyncMock())
         await consumer.consume_all_queues(queue_mock)
 
@@ -587,7 +628,9 @@ class ConsumerTest(IsolatedAsyncioTestCase):
             "asgard/counts",
             "asgard/counts/errors",
         ]
-        consumer = Consumer(self.one_route_fixture, *self.connection_parameters)
+        consumer = Consumer(
+            self.one_route_fixture, **self.connection_parameters
+        )
         queue_mock = AsyncMock(consume=AsyncMock())
 
         with patch.object(consumer, "queue", queue_mock), patch.object(
@@ -622,7 +665,9 @@ class ConsumerTest(IsolatedAsyncioTestCase):
             "asgard/counts",
             "asgard/counts/errors",
         ]
-        consumer = Consumer(self.one_route_fixture, *self.connection_parameters)
+        consumer = Consumer(
+            self.one_route_fixture, **self.connection_parameters
+        )
         with patch.object(
             consumer, "keep_runnig", side_effect=[True, True, True, False]
         ), patch.object(asyncio, "sleep") as sleep_mock, patch.object(
@@ -645,7 +690,9 @@ class ConsumerTest(IsolatedAsyncioTestCase):
             "asgard/counts",
             "asgard/counts/errors",
         ]
-        consumer = Consumer(self.one_route_fixture, *self.connection_parameters)
+        consumer = Consumer(
+            self.one_route_fixture, **self.connection_parameters
+        )
         with patch.object(
             consumer, "keep_runnig", side_effect=[True, True, True, False]
         ):
@@ -667,7 +714,9 @@ class ConsumerTest(IsolatedAsyncioTestCase):
             "asgard/counts",
             "asgard/counts/errors",
         ]
-        consumer = Consumer(self.one_route_fixture, *self.connection_parameters)
+        consumer = Consumer(
+            self.one_route_fixture, **self.connection_parameters
+        )
         with patch.object(
             consumer, "keep_runnig", side_effect=[True, True, True, False]
         ):
@@ -692,7 +741,9 @@ class ConsumerTest(IsolatedAsyncioTestCase):
             "asgard/counts",
             "asgard/counts/errors",
         ]
-        consumer = Consumer(self.one_route_fixture, *self.connection_parameters)
+        consumer = Consumer(
+            self.one_route_fixture, **self.connection_parameters
+        )
         queue_mock = Mock(
             consume=AsyncMock(),
             connection=Mock(

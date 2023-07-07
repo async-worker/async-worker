@@ -103,7 +103,7 @@ class AMQPConnection(Connection):
     hostname: str
     username: str
     password: str
-    port: int = 5672
+    port: int = settings.AMQP_DEFAULT_PORT
     route_type = RouteTypes.AMQP_RABBITMQ
     prefetch: int = settings.AMQP_DEFAULT_PREFETCH_COUNT
     heartbeat: int = settings.AMQP_DEFAULT_HEARTBEAT

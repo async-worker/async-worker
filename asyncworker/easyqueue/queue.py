@@ -22,6 +22,7 @@ from aioamqp.channel import Channel
 from aioamqp.envelope import Envelope
 from aioamqp.properties import Properties
 
+from asyncworker.conf import settings
 from asyncworker.easyqueue.connection import AMQPConnection
 from asyncworker.easyqueue.exceptions import UndecodableMessageException
 from asyncworker.easyqueue.message import AMQPMessage
@@ -43,7 +44,7 @@ class BaseQueue(metaclass=abc.ABCMeta):
         host: str,
         username: str,
         password: str,
-        port: int = 5672,
+        port: int = settings.AMQP_DEFAULT_PORT,
         virtual_host: str = "/",
         heartbeat: int = 60,
     ) -> None:
@@ -186,7 +187,7 @@ class JsonQueue(BaseQueue, Generic[T]):
         host: str,
         username: str,
         password: str,
-        port: int = 5672,
+        port: int = settings.AMQP_DEFAULT_PORT,
         delegate_class: Optional[Type["QueueConsumerDelegate"]] = None,
         delegate: Optional["QueueConsumerDelegate"] = None,
         virtual_host: str = "/",
@@ -199,7 +200,14 @@ class JsonQueue(BaseQueue, Generic[T]):
             Callable[[Exception, int], Coroutine]
         ] = None,
     ) -> None:
-        super().__init__(host, username, password, port, virtual_host, heartbeat)
+        super().__init__(
+            host=host,
+            username=username,
+            password=password,
+            port=port,
+            virtual_host=virtual_host,
+            heartbeat=heartbeat,
+        )
 
         self.loop: AbstractEventLoop = loop or asyncio.get_event_loop()
 

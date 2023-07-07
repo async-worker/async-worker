@@ -13,6 +13,7 @@ class Settings(BaseSettings):
     LOGLEVEL: str = "ERROR"
 
     AMQP_DEFAULT_VHOST: str = "/"
+    AMQP_DEFAULT_PORT: int = 5672
     AMQP_DEFAULT_PREFETCH_COUNT: int = 128
     AMQP_DEFAULT_HEARTBEAT: int = 60
 

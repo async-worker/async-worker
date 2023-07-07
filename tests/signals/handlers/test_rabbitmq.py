@@ -3,6 +3,7 @@ from unittest import IsolatedAsyncioTestCase
 from unittest.mock import ANY, AsyncMock, Mock, call, patch
 
 from asyncworker import App
+from asyncworker.conf import settings
 from asyncworker.connections import AMQPConnection
 from asyncworker.consumer import Consumer
 from asyncworker.exceptions import InvalidConnection, InvalidRoute
@@ -60,6 +61,7 @@ class AMQPTests(IsolatedAsyncioTestCase):
                 call(
                     route_info=self.routes_registry.amqp_routes[0],
                     host=connection.hostname,
+                    port=settings.AMQP_DEFAULT_PORT,
                     username=connection.username,
                     password=connection.password,
                     prefetch_count=connection.prefetch,
@@ -67,6 +69,7 @@ class AMQPTests(IsolatedAsyncioTestCase):
                 call(
                     route_info=self.routes_registry.amqp_routes[1],
                     host=connection.hostname,
+                    port=settings.AMQP_DEFAULT_PORT,
                     username=connection.username,
                     password=connection.password,
                     prefetch_count=connection.prefetch,
@@ -168,6 +171,7 @@ class AMQPTests(IsolatedAsyncioTestCase):
         MockedConsumer.assert_called_once_with(
             route_info=ANY,
             host=conn.hostname,
+            port=conn.port,
             username=conn.username,
             password=conn.password,
             prefetch_count=conn.prefetch,

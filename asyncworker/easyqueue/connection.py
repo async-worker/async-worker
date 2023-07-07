@@ -7,6 +7,8 @@ from aioamqp.channel import Channel
 from aioamqp.exceptions import AioamqpException
 from aioamqp.protocol import OPEN
 
+from asyncworker.conf import settings
+
 OnErrorCallback = Union[
     None, Callable[[Exception], None], Callable[[Exception], Coroutine]
 ]
@@ -18,7 +20,7 @@ class AMQPConnection:
         host: str,
         username: str,
         password: str,
-        port: int = 5672,
+        port: int = settings.AMQP_DEFAULT_PORT,
         heartbeat: int = 60,
         virtual_host: str = "/",
         loop: Optional[asyncio.AbstractEventLoop] = None,
