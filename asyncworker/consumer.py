@@ -12,6 +12,7 @@ from asyncworker.routes import AMQPRoute
 from asyncworker.time import ClockTicker
 
 from .bucket import Bucket
+from .conf import settings
 from .rabbitmq import RabbitMQMessage
 
 
@@ -23,6 +24,7 @@ class Consumer(QueueConsumerDelegate):
         username: str,
         password: str,
         prefetch_count: int = 128,
+        port: int = settings.AMQP_DEFAULT_PORT,
         bucket_class: Type[Bucket] = Bucket[RabbitMQMessage],
     ) -> None:
         self.route = route_info
@@ -38,6 +40,7 @@ class Consumer(QueueConsumerDelegate):
             host,
             username,
             password,
+            port=port,
             virtual_host=self.vhost,
             delegate=self,
             prefetch_count=prefetch_count,

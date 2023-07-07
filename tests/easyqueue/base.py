@@ -14,6 +14,7 @@ class AsyncBaseTestCase:
             host="money.que.é.good",
             username="nós",
             password="não",
+            port=5671,
             virtual_host="have",
             heartbeat=5,
         )

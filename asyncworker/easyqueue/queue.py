@@ -22,6 +22,7 @@ from aioamqp.channel import Channel
 from aioamqp.envelope import Envelope
 from aioamqp.properties import Properties
 
+from asyncworker.conf import settings
 from asyncworker.easyqueue.connection import AMQPConnection
 from asyncworker.easyqueue.exceptions import UndecodableMessageException
 from asyncworker.easyqueue.message import AMQPMessage
@@ -43,12 +44,14 @@ class BaseQueue(metaclass=abc.ABCMeta):
         host: str,
         username: str,
         password: str,
+        port: int = settings.AMQP_DEFAULT_PORT,
         virtual_host: str = "/",
         heartbeat: int = 60,
     ) -> None:
         self.host = host
         self.username = username
         self.password = password
+        self.port = port
         self.virtual_host = virtual_host
         self.heartbeat = heartbeat
 
@@ -184,6 +187,7 @@ class JsonQueue(BaseQueue, Generic[T]):
         host: str,
         username: str,
         password: str,
+        port: int = settings.AMQP_DEFAULT_PORT,
         delegate_class: Optional[Type["QueueConsumerDelegate"]] = None,
         delegate: Optional["QueueConsumerDelegate"] = None,
         virtual_host: str = "/",
@@ -196,7 +200,14 @@ class JsonQueue(BaseQueue, Generic[T]):
             Callable[[Exception, int], Coroutine]
         ] = None,
     ) -> None:
-        super().__init__(host, username, password, virtual_host, heartbeat)
+        super().__init__(
+            host=host,
+            username=username,
+            password=password,
+            port=port,
+            virtual_host=virtual_host,
+            heartbeat=heartbeat,
+        )
 
         self.loop: AbstractEventLoop = loop or asyncio.get_event_loop()
 
@@ -216,6 +227,7 @@ class JsonQueue(BaseQueue, Generic[T]):
             host=host,
             username=username,
             password=password,
+            port=port,
             virtual_host=virtual_host,
             heartbeat=heartbeat,
             on_error=on_error,
@@ -224,6 +236,7 @@ class JsonQueue(BaseQueue, Generic[T]):
 
         self._write_connection = AMQPConnection(
             host=host,
+            port=port,
             username=username,
             password=password,
             virtual_host=virtual_host,

@@ -37,6 +37,7 @@ class AMQPConnectionTests(AsyncBaseTestCase, IsolatedAsyncioTestCase):
                     host=self.conn_params["host"],
                     password=self.conn_params["password"],
                     virtualhost=self.conn_params["virtual_host"],
+                    port=self.conn_params["port"],
                     login=self.conn_params["username"],
                     on_error=self.connection._on_error,
                     loop=ANY,
