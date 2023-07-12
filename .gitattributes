@@ -1,4 +1,5 @@
 Pipfile.lock linguist-generated=true
+docs-src/Makefile -linguist-detectable
 docs/** linguist-generated=true
 docs-src/locale/** linguist-generated=true
 docs-src/src/** linguist-generated=true
