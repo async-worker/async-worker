@@ -1,4 +1,5 @@
 import asyncio
+from ssl import SSLContext
 from typing import Callable, Coroutine, Optional, Union
 
 import aioamqp
@@ -20,6 +21,7 @@ class AMQPConnection:
         username: str,
         password: str,
         port: int = settings.AMQP_DEFAULT_PORT,
+        ssl: Optional[SSLContext] = None,
         verify_ssl: bool = True,
         heartbeat: int = 60,
         virtual_host: str = "/",
@@ -28,6 +30,7 @@ class AMQPConnection:
     ) -> None:
         self.host = host
         self.port = port
+        self.ssl = ssl
         self.verify_ssl = verify_ssl
         self.username = username
         self.password = password
@@ -47,6 +50,7 @@ class AMQPConnection:
         return {
             "host": self.host,
             "port": self.port,
+            "ssl": self.ssl,
             "verify_ssl": self.verify_ssl,
             "login": self.username,
             "password": self.password,

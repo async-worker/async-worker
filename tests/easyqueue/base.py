@@ -14,6 +14,7 @@ class AsyncBaseTestCase:
             username="nós",
             password="não",
             port=5671,
+            ssl=None,
             verify_ssl=True,
             virtual_host="have",
             heartbeat=5,
