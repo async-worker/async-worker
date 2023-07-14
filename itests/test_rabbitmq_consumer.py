@@ -17,7 +17,10 @@ class RabbitMQConsumerTest(IsolatedAsyncioTestCase):
     def setUp(self):
         self.queue_name = "test"
         self.connection = AMQPConnection(
-            hostname="127.0.0.1", username="guest", password="guest", prefetch=1
+            hostname="127.0.0.1",
+            username="guest",
+            password="guest",
+            prefetch=1,
         )
         self.app = App(connections=[self.connection])
 
