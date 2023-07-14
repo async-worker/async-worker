@@ -22,6 +22,7 @@ from typing import (
 from aioamqp.channel import Channel
 from aioamqp.envelope import Envelope
 from aioamqp.properties import Properties
+
 from asyncworker.conf import settings
 from asyncworker.easyqueue.connection import AMQPConnection
 from asyncworker.easyqueue.exceptions import UndecodableMessageException

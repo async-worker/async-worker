@@ -1,6 +1,7 @@
 from unittest.mock import AsyncMock, patch
 
 import aioamqp
+
 from asyncworker.easyqueue.queue import JsonQueue, QueueConsumerDelegate
 
 

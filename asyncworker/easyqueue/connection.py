@@ -7,6 +7,7 @@ from aioamqp import AmqpProtocol
 from aioamqp.channel import Channel
 from aioamqp.exceptions import AioamqpException
 from aioamqp.protocol import OPEN
+
 from asyncworker.conf import settings
 
 OnErrorCallback = Union[
