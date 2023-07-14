@@ -257,6 +257,16 @@
          Parametros adicionais para o decorator app.amqp.consume()
         </a>
        </li>
+       <li class="toctree-l4">
+        <a class="reference internal" href="../../userguide/handlers/rabbitmq/ssl-conn.html">
+         Conectando a um Broker usando SSL
+        </a>
+       </li>
+       <li class="toctree-l4">
+        <a class="reference internal" href="../../userguide/handlers/rabbitmq/exposed-metrics.html">
+         Métricas expostas para aplicações RabbitMQ
+        </a>
+       </li>
       </ul>
      </li>
     </ul>
@@ -456,7 +466,8 @@ title="Source repository"
   <h1>Source code for asyncworker.consumer</h1><div class="highlight"><pre>
 <span></span><span class="kn">import</span> <span class="nn">asyncio</span>
 <span class="kn">import</span> <span class="nn">traceback</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Type</span><span class="p">,</span> <span class="n">Union</span>
+<span class="kn">from</span> <span class="nn">ssl</span> <span class="kn">import</span> <span class="n">SSLContext</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Type</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Optional</span>
 
 <span class="kn">from</span> <span class="nn">aioamqp.exceptions</span> <span class="kn">import</span> <span class="n">AioamqpException</span>
 
@@ -481,6 +492,8 @@ title="Source repository"
         <span class="n">password</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
         <span class="n">prefetch_count</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">128</span><span class="p">,</span>
         <span class="n">port</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">settings</span><span class="o">.</span><span class="n">AMQP_DEFAULT_PORT</span><span class="p">,</span>
+        <span class="n">ssl</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">SSLContext</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">verify_ssl</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
         <span class="n">bucket_class</span><span class="p">:</span> <span class="n">Type</span><span class="p">[</span><span class="n">Bucket</span><span class="p">]</span> <span class="o">=</span> <span class="n">Bucket</span><span class="p">[</span><span class="n">RabbitMQMessage</span><span class="p">],</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">route</span> <span class="o">=</span> <span class="n">route_info</span>
@@ -488,6 +501,8 @@ title="Source repository"
         <span class="bp">self</span><span class="o">.</span><span class="n">_queue_name</span> <span class="o">=</span> <span class="n">route_info</span><span class="p">[</span><span class="s2">&quot;routes&quot;</span><span class="p">]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_route_options</span> <span class="o">=</span> <span class="n">route_info</span><span class="p">[</span><span class="s2">&quot;options&quot;</span><span class="p">]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">host</span> <span class="o">=</span> <span class="n">host</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ssl</span> <span class="o">=</span> <span class="n">ssl</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">verify_ssl</span> <span class="o">=</span> <span class="n">verify_ssl</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">vhost</span> <span class="o">=</span> <span class="n">route_info</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;vhost&quot;</span><span class="p">,</span> <span class="s2">&quot;/&quot;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">bucket</span> <span class="o">=</span> <span class="n">bucket_class</span><span class="p">(</span>
             <span class="n">size</span><span class="o">=</span><span class="nb">min</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_route_options</span><span class="p">[</span><span class="s2">&quot;bulk_size&quot;</span><span class="p">],</span> <span class="n">prefetch_count</span><span class="p">)</span>
@@ -497,6 +512,8 @@ title="Source repository"
             <span class="n">username</span><span class="p">,</span>
             <span class="n">password</span><span class="p">,</span>
             <span class="n">port</span><span class="o">=</span><span class="n">port</span><span class="p">,</span>
+            <span class="n">ssl</span><span class="o">=</span><span class="n">ssl</span><span class="p">,</span>
+            <span class="n">verify_ssl</span><span class="o">=</span><span class="n">verify_ssl</span><span class="p">,</span>
             <span class="n">virtual_host</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">vhost</span><span class="p">,</span>
             <span class="n">delegate</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span>
             <span class="n">prefetch_count</span><span class="o">=</span><span class="n">prefetch_count</span><span class="p">,</span>

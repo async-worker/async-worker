@@ -22,6 +22,8 @@ class RabbitMQ(SignalHandler):
                 route_info=route_info,
                 host=conn.hostname,
                 port=conn.port,
+                ssl=conn.ssl,
+                verify_ssl=conn.verify_ssl,
                 username=conn.username,
                 password=conn.password,
                 prefetch_count=conn.prefetch,

@@ -1,6 +1,7 @@
 import asyncio
 import traceback
-from typing import Dict, List, Type, Union
+from ssl import SSLContext
+from typing import Dict, List, Type, Union, Optional
 
 from aioamqp.exceptions import AioamqpException
 
@@ -25,6 +26,8 @@ class Consumer(QueueConsumerDelegate):
         password: str,
         prefetch_count: int = 128,
         port: int = settings.AMQP_DEFAULT_PORT,
+        ssl: Optional[SSLContext] = None,
+        verify_ssl: bool = True,
         bucket_class: Type[Bucket] = Bucket[RabbitMQMessage],
     ) -> None:
         self.route = route_info
@@ -32,6 +35,8 @@ class Consumer(QueueConsumerDelegate):
         self._queue_name = route_info["routes"]
         self._route_options = route_info["options"]
         self.host = host
+        self.ssl = ssl
+        self.verify_ssl = verify_ssl
         self.vhost = route_info.get("vhost", "/")
         self.bucket = bucket_class(
             size=min(self._route_options["bulk_size"], prefetch_count)
@@ -41,6 +46,8 @@ class Consumer(QueueConsumerDelegate):
             username,
             password,
             port=port,
+            ssl=ssl,
+            verify_ssl=verify_ssl,
             virtual_host=self.vhost,
             delegate=self,
             prefetch_count=prefetch_count,

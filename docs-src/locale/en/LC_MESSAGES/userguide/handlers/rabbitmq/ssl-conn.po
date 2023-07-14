@@ -1,0 +1,94 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C)
+# This file is distributed under the same license as the async-worker
+# package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2023.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: async-worker \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2023-07-14 16:46-0300\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: en\n"
+"Language-Team: en <LL@li.org>\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.12.1\n"
+
+#: ../../userguide/handlers/rabbitmq/ssl-conn.rst:2
+msgid "Conectando a um Broker usando SSL"
+msgstr ""
+
+#: ../../userguide/handlers/rabbitmq/ssl-conn.rst:6
+msgid ""
+"Para que possamos conectar em um Broker usando ssl precisamos criar um "
+"`SSLContext` e passar esse objeto para o nosso objeto "
+":py:class:`AMQPConnection <asyncworker.connections.AMQPConnection>`."
+msgstr ""
+
+#: ../../userguide/handlers/rabbitmq/ssl-conn.rst:8
+msgid ""
+"Esse contexto é criado usando o módulo `ssl "
+"<https://docs.python.org/3/library/ssl.html>`_ da stdlib do Python mesmo."
+" Uma forma simples de criar um contexto é usar:"
+msgstr ""
+
+#: ../../userguide/handlers/rabbitmq/ssl-conn.rst:18
+msgid ""
+"Esse contexto deve ser passado ao Objeto :py:class:`AMQPConnection "
+"<asyncworker.connections.AMQPConnection>`, dessa forma:"
+msgstr ""
+
+#: ../../userguide/handlers/rabbitmq/ssl-conn.rst:42
+msgid ""
+"Esse código consegue se conectar a um broker que usa ssl. Nesse caso o "
+"asyncworker vai conferir so certificados do servidor. Caso você esteja se"
+" conectando a um broker com certificados auto-assinados, você deverá "
+"carregar os arquivos de certificado que sejam capazes de validar a "
+"conexão com esse broker."
+msgstr ""
+
+#~ msgid "Conectando usando SSL"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Esse contexto é criado usando o "
+#~ "módulo `ssl <https://docs.python.org/3/library/ssl.html>`"
+#~ " da stdlib do Python mesmo."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Esse contexto é criado usando o "
+#~ "módulo `ssl <https://docs.python.org/3/library/ssl.html>`_"
+#~ " da stdlib do Python mesmo."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Esse código consegue se conectar a "
+#~ "um broker que usa ssl. Nesse caso"
+#~ " o asyncworker vai conferir so "
+#~ "certificados do servidor. Caso você "
+#~ "esteja se conectando a um broker "
+#~ "com certificados auto-assinados, você "
+#~ "poderá passar o parametro `verify_ssl=False`"
+#~ " para o objeto :py:class:`AMQPConnection "
+#~ "<asyncworker.connections.AMQPConnection>`."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Esse código consegue se conectar a "
+#~ "um broker que usa ssl. Nesse caso"
+#~ " o asyncworker vai conferir so "
+#~ "certificados do servidor. Caso você "
+#~ "esteja se conectando a um broker "
+#~ "com certificados auto-assinados, você "
+#~ "poderá passar o parametro ``verify_ssl=False``"
+#~ " para o objeto :py:class:`AMQPConnection "
+#~ "<asyncworker.connections.AMQPConnection>`."
+#~ msgstr ""
+

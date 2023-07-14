@@ -1,6 +1,7 @@
 import abc
 import collections
 from collections.abc import KeysView, ValuesView
+from ssl import SSLContext
 from typing import (
     Any,
     Counter,
@@ -104,6 +105,8 @@ class AMQPConnection(Connection):
     username: str
     password: str
     port: int = settings.AMQP_DEFAULT_PORT
+    ssl: Optional[SSLContext] = None
+    verify_ssl: bool = True
     route_type = RouteTypes.AMQP_RABBITMQ
     prefetch: int = settings.AMQP_DEFAULT_PREFETCH_COUNT
     heartbeat: int = settings.AMQP_DEFAULT_HEARTBEAT
@@ -136,6 +139,8 @@ class AMQPConnection(Connection):
             conn: JsonQueue = JsonQueue(
                 host=self.hostname,
                 port=self.port,
+                ssl=self.ssl,
+                verify_ssl=self.verify_ssl,
                 username=self.username,
                 password=self.password,
                 virtual_host=key,

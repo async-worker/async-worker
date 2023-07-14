@@ -258,6 +258,16 @@
          Parametros adicionais para o decorator app.amqp.consume()
         </a>
        </li>
+       <li class="toctree-l4">
+        <a class="reference internal" href="../../userguide/handlers/rabbitmq/ssl-conn.html">
+         Conectando a um Broker usando SSL
+        </a>
+       </li>
+       <li class="toctree-l4">
+        <a class="reference internal" href="../../userguide/handlers/rabbitmq/exposed-metrics.html">
+         Métricas expostas para aplicações RabbitMQ
+        </a>
+       </li>
       </ul>
      </li>
     </ul>
@@ -458,6 +468,7 @@ title="Source repository"
 <span></span><span class="kn">import</span> <span class="nn">abc</span>
 <span class="kn">import</span> <span class="nn">collections</span>
 <span class="kn">from</span> <span class="nn">collections.abc</span> <span class="kn">import</span> <span class="n">KeysView</span><span class="p">,</span> <span class="n">ValuesView</span>
+<span class="kn">from</span> <span class="nn">ssl</span> <span class="kn">import</span> <span class="n">SSLContext</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="p">(</span>
     <span class="n">Any</span><span class="p">,</span>
     <span class="n">Counter</span><span class="p">,</span>
@@ -561,6 +572,8 @@ title="Source repository"
     <span class="n">username</span><span class="p">:</span> <span class="nb">str</span>
     <span class="n">password</span><span class="p">:</span> <span class="nb">str</span>
     <span class="n">port</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">settings</span><span class="o">.</span><span class="n">AMQP_DEFAULT_PORT</span>
+    <span class="n">ssl</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">SSLContext</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">verify_ssl</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
     <span class="n">route_type</span> <span class="o">=</span> <span class="n">RouteTypes</span><span class="o">.</span><span class="n">AMQP_RABBITMQ</span>
     <span class="n">prefetch</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">settings</span><span class="o">.</span><span class="n">AMQP_DEFAULT_PREFETCH_COUNT</span>
     <span class="n">heartbeat</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">settings</span><span class="o">.</span><span class="n">AMQP_DEFAULT_HEARTBEAT</span>
@@ -593,6 +606,8 @@ title="Source repository"
             <span class="n">conn</span><span class="p">:</span> <span class="n">JsonQueue</span> <span class="o">=</span> <span class="n">JsonQueue</span><span class="p">(</span>
                 <span class="n">host</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">hostname</span><span class="p">,</span>
                 <span class="n">port</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">port</span><span class="p">,</span>
+                <span class="n">ssl</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ssl</span><span class="p">,</span>
+                <span class="n">verify_ssl</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">verify_ssl</span><span class="p">,</span>
                 <span class="n">username</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">username</span><span class="p">,</span>
                 <span class="n">password</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">password</span><span class="p">,</span>
                 <span class="n">virtual_host</span><span class="o">=</span><span class="n">key</span><span class="p">,</span>

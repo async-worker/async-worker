@@ -6,6 +6,7 @@ import traceback
 from asyncio import AbstractEventLoop, Task
 from enum import Enum, auto
 from functools import wraps
+from ssl import SSLContext
 from typing import (
     Any,
     Callable,
@@ -45,6 +46,8 @@ class BaseQueue(metaclass=abc.ABCMeta):
         username: str,
         password: str,
         port: int = settings.AMQP_DEFAULT_PORT,
+        ssl: Optional[SSLContext] = None,
+        verify_ssl: bool = True,
         virtual_host: str = "/",
         heartbeat: int = 60,
     ) -> None:
@@ -52,6 +55,8 @@ class BaseQueue(metaclass=abc.ABCMeta):
         self.username = username
         self.password = password
         self.port = port
+        self.ssl = ssl
+        self.verify_ssl = verify_ssl
         self.virtual_host = virtual_host
         self.heartbeat = heartbeat
 
@@ -188,6 +193,8 @@ class JsonQueue(BaseQueue, Generic[T]):
         username: str,
         password: str,
         port: int = settings.AMQP_DEFAULT_PORT,
+        ssl: Optional[SSLContext] = None,
+        verify_ssl: bool = True,
         delegate_class: Optional[Type["QueueConsumerDelegate"]] = None,
         delegate: Optional["QueueConsumerDelegate"] = None,
         virtual_host: str = "/",
@@ -205,6 +212,8 @@ class JsonQueue(BaseQueue, Generic[T]):
             username=username,
             password=password,
             port=port,
+            ssl=ssl,
+            verify_ssl=verify_ssl,
             virtual_host=virtual_host,
             heartbeat=heartbeat,
         )
@@ -228,6 +237,8 @@ class JsonQueue(BaseQueue, Generic[T]):
             username=username,
             password=password,
             port=port,
+            ssl=ssl,
+            verify_ssl=verify_ssl,
             virtual_host=virtual_host,
             heartbeat=heartbeat,
             on_error=on_error,
@@ -237,6 +248,8 @@ class JsonQueue(BaseQueue, Generic[T]):
         self._write_connection = AMQPConnection(
             host=host,
             port=port,
+            ssl=ssl,
+            verify_ssl=verify_ssl,
             username=username,
             password=password,
             virtual_host=virtual_host,
