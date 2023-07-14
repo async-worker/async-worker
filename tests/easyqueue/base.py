@@ -1,7 +1,6 @@
 from unittest.mock import AsyncMock, patch
 
 import aioamqp
-
 from asyncworker.easyqueue.queue import JsonQueue, QueueConsumerDelegate
 
 
@@ -15,6 +14,7 @@ class AsyncBaseTestCase:
             username="nós",
             password="não",
             port=5671,
+            verify_ssl=True,
             virtual_host="have",
             heartbeat=5,
         )

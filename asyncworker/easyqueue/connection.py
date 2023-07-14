@@ -6,7 +6,6 @@ from aioamqp import AmqpProtocol
 from aioamqp.channel import Channel
 from aioamqp.exceptions import AioamqpException
 from aioamqp.protocol import OPEN
-
 from asyncworker.conf import settings
 
 OnErrorCallback = Union[
@@ -21,6 +20,7 @@ class AMQPConnection:
         username: str,
         password: str,
         port: int = settings.AMQP_DEFAULT_PORT,
+        verify_ssl: bool = True,
         heartbeat: int = 60,
         virtual_host: str = "/",
         loop: Optional[asyncio.AbstractEventLoop] = None,
@@ -28,6 +28,7 @@ class AMQPConnection:
     ) -> None:
         self.host = host
         self.port = port
+        self.verify_ssl = verify_ssl
         self.username = username
         self.password = password
         self.virtual_host = virtual_host
@@ -46,6 +47,7 @@ class AMQPConnection:
         return {
             "host": self.host,
             "port": self.port,
+            "verify_ssl": self.verify_ssl,
             "login": self.username,
             "password": self.password,
             "virtualhost": self.virtual_host,

@@ -21,7 +21,6 @@ from typing import (
 from aioamqp.channel import Channel
 from aioamqp.envelope import Envelope
 from aioamqp.properties import Properties
-
 from asyncworker.conf import settings
 from asyncworker.easyqueue.connection import AMQPConnection
 from asyncworker.easyqueue.exceptions import UndecodableMessageException
@@ -45,6 +44,7 @@ class BaseQueue(metaclass=abc.ABCMeta):
         username: str,
         password: str,
         port: int = settings.AMQP_DEFAULT_PORT,
+        verify_ssl: bool = True,
         virtual_host: str = "/",
         heartbeat: int = 60,
     ) -> None:
@@ -52,6 +52,7 @@ class BaseQueue(metaclass=abc.ABCMeta):
         self.username = username
         self.password = password
         self.port = port
+        self.verify_ssl = verify_ssl
         self.virtual_host = virtual_host
         self.heartbeat = heartbeat
 
@@ -188,6 +189,7 @@ class JsonQueue(BaseQueue, Generic[T]):
         username: str,
         password: str,
         port: int = settings.AMQP_DEFAULT_PORT,
+        verify_ssl: bool = True,
         delegate_class: Optional[Type["QueueConsumerDelegate"]] = None,
         delegate: Optional["QueueConsumerDelegate"] = None,
         virtual_host: str = "/",
@@ -205,6 +207,7 @@ class JsonQueue(BaseQueue, Generic[T]):
             username=username,
             password=password,
             port=port,
+            verify_ssl=verify_ssl,
             virtual_host=virtual_host,
             heartbeat=heartbeat,
         )

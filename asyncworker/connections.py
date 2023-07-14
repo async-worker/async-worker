@@ -104,6 +104,7 @@ class AMQPConnection(Connection):
     username: str
     password: str
     port: int = settings.AMQP_DEFAULT_PORT
+    verify_ssl: bool = True
     route_type = RouteTypes.AMQP_RABBITMQ
     prefetch: int = settings.AMQP_DEFAULT_PREFETCH_COUNT
     heartbeat: int = settings.AMQP_DEFAULT_HEARTBEAT
@@ -136,6 +137,7 @@ class AMQPConnection(Connection):
             conn: JsonQueue = JsonQueue(
                 host=self.hostname,
                 port=self.port,
+                verify_ssl=self.verify_ssl,
                 username=self.username,
                 password=self.password,
                 virtual_host=key,
