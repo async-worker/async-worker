@@ -257,6 +257,16 @@
          Parametros adicionais para o decorator app.amqp.consume()
         </a>
        </li>
+       <li class="toctree-l4">
+        <a class="reference internal" href="../../../userguide/handlers/rabbitmq/ssl-conn.html">
+         Conectando a um Broker usando SSL
+        </a>
+       </li>
+       <li class="toctree-l4">
+        <a class="reference internal" href="../../../userguide/handlers/rabbitmq/exposed-metrics.html">
+         Métricas expostas para aplicações RabbitMQ
+        </a>
+       </li>
       </ul>
      </li>
     </ul>
@@ -455,6 +465,7 @@ title="Source repository"
                 
   <h1>Source code for asyncworker.easyqueue.connection</h1><div class="highlight"><pre>
 <span></span><span class="kn">import</span> <span class="nn">asyncio</span>
+<span class="kn">from</span> <span class="nn">ssl</span> <span class="kn">import</span> <span class="n">SSLContext</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Coroutine</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Union</span>
 
 <span class="kn">import</span> <span class="nn">aioamqp</span>
@@ -477,6 +488,8 @@ title="Source repository"
         <span class="n">username</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
         <span class="n">password</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
         <span class="n">port</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">settings</span><span class="o">.</span><span class="n">AMQP_DEFAULT_PORT</span><span class="p">,</span>
+        <span class="n">ssl</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">SSLContext</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">verify_ssl</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
         <span class="n">heartbeat</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">60</span><span class="p">,</span>
         <span class="n">virtual_host</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;/&quot;</span><span class="p">,</span>
         <span class="n">loop</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">asyncio</span><span class="o">.</span><span class="n">AbstractEventLoop</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -484,6 +497,8 @@ title="Source repository"
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">host</span> <span class="o">=</span> <span class="n">host</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">port</span> <span class="o">=</span> <span class="n">port</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ssl</span> <span class="o">=</span> <span class="n">ssl</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">verify_ssl</span> <span class="o">=</span> <span class="n">verify_ssl</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">username</span> <span class="o">=</span> <span class="n">username</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">password</span> <span class="o">=</span> <span class="n">password</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">virtual_host</span> <span class="o">=</span> <span class="n">virtual_host</span>
@@ -502,6 +517,8 @@ title="Source repository"
         <span class="k">return</span> <span class="p">{</span>
             <span class="s2">&quot;host&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">host</span><span class="p">,</span>
             <span class="s2">&quot;port&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">port</span><span class="p">,</span>
+            <span class="s2">&quot;ssl&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">ssl</span><span class="p">,</span>
+            <span class="s2">&quot;verify_ssl&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">verify_ssl</span><span class="p">,</span>
             <span class="s2">&quot;login&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">username</span><span class="p">,</span>
             <span class="s2">&quot;password&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">password</span><span class="p">,</span>
             <span class="s2">&quot;virtualhost&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">virtual_host</span><span class="p">,</span>

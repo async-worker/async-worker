@@ -1,12 +1,12 @@
 
 <!DOCTYPE html>
 
-<html lang="en">
+<html lang="pt_BR">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-    <title>RabbitMQ &#8212; async-worker</title>
+    <title>Conectando a um Broker usando SSL &#8212; async-worker</title>
     
   <!-- Loaded before other Sphinx assets -->
   <link href="../../../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
@@ -31,12 +31,13 @@
     <script src="../../../_static/underscore.js"></script>
     <script src="../../../_static/doctools.js"></script>
     <script src="../../../_static/scripts/sphinx-book-theme.js?digest=9c920249402e914e316237a7dbc6769907cce411"></script>
-    <link rel="index" title="Index" href="../../../genindex.html" />
-    <link rel="search" title="Search" href="../../../search.html" />
-    <link rel="next" title="Parametros adicionais para o decorator app.amqp.consume()" href="doc.html" />
-    <link rel="prev" title="Métricas expostas para aplicações HTTP" href="../http/exposed-metrics.html" />
+    <script src="../../../_static/translations.js"></script>
+    <link rel="index" title="Índice" href="../../../genindex.html" />
+    <link rel="search" title="Buscar" href="../../../search.html" />
+    <link rel="next" title="Métricas expostas para aplicações RabbitMQ" href="exposed-metrics.html" />
+    <link rel="prev" title="Parametros adicionais para o decorator app.amqp.consume()" href="doc.html" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="docsearch:language" content="en">
+    <meta name="docsearch:language" content="pt_BR">
     
 
     <!-- Google Analytics -->
@@ -246,7 +247,7 @@
       </ul>
      </li>
      <li class="toctree-l3 current active has-children">
-      <a class="current reference internal" href="#">
+      <a class="reference internal" href="index.html">
        RabbitMQ
       </a>
       <input checked="" class="toctree-checkbox" id="toctree-checkbox-7" name="toctree-checkbox-7" type="checkbox"/>
@@ -254,14 +255,14 @@
        <i class="fas fa-chevron-down">
        </i>
       </label>
-      <ul>
+      <ul class="current">
        <li class="toctree-l4">
         <a class="reference internal" href="doc.html">
          Parametros adicionais para o decorator app.amqp.consume()
         </a>
        </li>
-       <li class="toctree-l4">
-        <a class="reference internal" href="ssl-conn.html">
+       <li class="toctree-l4 current active">
+        <a class="current reference internal" href="#">
          Conectando a um Broker usando SSL
         </a>
        </li>
@@ -454,7 +455,7 @@ title="Source repository"
         <div class="col pl-md-3 pl-lg-5 content-container">
             <!-- Table of contents that is only displayed when printing the page -->
             <div id="jb-print-docs-body" class="onlyprint">
-                <h1>RabbitMQ</h1>
+                <h1>Conectando a um Broker usando SSL</h1>
                 <!-- Table of contents -->
                 <div id="print-main-content">
                     <div id="jb-print-toc">
@@ -466,64 +467,53 @@ title="Source repository"
                 
               <div>
                 
-  <section id="rabbitmq">
-<h1>RabbitMQ<a class="headerlink" href="#rabbitmq" title="Permalink to this headline">#</a></h1>
-<p>Aqui você verá como escrever um handler que recebe mensagens de um broker RabbitMQ</p>
-<p>Todo handler desse tipo recebe o mesmo parametro, que é uma lista de objetos <a class="reference internal" href="../../../src/asyncworker/asyncworker.rabbitmq.html#asyncworker.rabbitmq.message.RabbitMQMessage" title="asyncworker.rabbitmq.message.RabbitMQMessage"><code class="xref py py-class docutils literal notranslate"><span class="pre">asyncworker.rabbitmq.message.RabbitMQMessage</span></code></a>.</p>
-<p>Isso significa que a assinatura dos seus handlers são fixas, ou seja, todos eles possuem essa assinatura:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">asyncworker.rabbitmq.message</span> <span class="kn">import</span> <span class="n">RabbitMQMessage</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span>
+  <section id="conectando-a-um-broker-usando-ssl">
+<h1>Conectando a um Broker usando SSL<a class="headerlink" href="#conectando-a-um-broker-usando-ssl" title="Link permanente para este título">#</a></h1>
+<div class="versionadded">
+<p><span class="versionmodified added">Novo na versão 0.20.2.</span></p>
+</div>
+<p>Para que possamos conectar em um Broker usando ssl precisamos criar um <cite>SSLContext</cite> e passar esse objeto para o nosso objeto <a class="reference internal" href="../../../src/asyncworker/asyncworker.html#asyncworker.connections.AMQPConnection" title="asyncworker.connections.AMQPConnection"><code class="xref py py-class docutils literal notranslate"><span class="pre">AMQPConnection</span></code></a>.</p>
+<p>Esse contexto é criado usando o módulo <a class="reference external" href="https://docs.python.org/3/library/ssl.html">ssl</a> da stdlib do Python mesmo. Uma forma simples de criar um contexto é usar:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">ssl</span>
 
-<span class="k">async</span> <span class="k">def</span> <span class="nf">handler</span><span class="p">(</span><span class="n">msgs</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">RabbitMQMessage</span><span class="p">]):</span>
-  <span class="o">...</span>
+<span class="n">ctx</span> <span class="o">=</span> <span class="n">ssl</span><span class="o">.</span><span class="n">create_default_context</span><span class="p">()</span>
 </pre></div>
 </div>
-<p>Como no caso de handlers RabitMQ é preciso ter uma conexão prévia com o servidor de filas, precisamos criar uma instância de <a class="reference internal" href="../../../src/asyncworker/asyncworker.html#asyncworker.connections.AMQPConnection" title="asyncworker.connections.AMQPConnection"><code class="xref py py-class docutils literal notranslate"><span class="pre">asyncworker.connections.AMQPConnection</span></code></a>. Essa instância deve ser passada no momento da criação de sua <a class="reference internal" href="../../asyncworker-app/intro.html#asyncworker-app"><span class="std std-ref">Asyncworker App</span></a>.</p>
-<p>Essa instância de conexão pode também ser usada dentro do handler, caso necessário.</p>
-<p>Um exemplo disso é quando precisamos de um handler que lê mensagens de um fila e publica em outra. Esse exemplo pode ser escrito assim:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span>
-
-<span class="kn">from</span> <span class="nn">asyncworker</span> <span class="kn">import</span> <span class="n">App</span>
+<p>Esse contexto deve ser passado ao Objeto <a class="reference internal" href="../../../src/asyncworker/asyncworker.html#asyncworker.connections.AMQPConnection" title="asyncworker.connections.AMQPConnection"><code class="xref py py-class docutils literal notranslate"><span class="pre">AMQPConnection</span></code></a>, dessa forma:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">asyncworker</span> <span class="kn">import</span> <span class="n">App</span>
 <span class="kn">from</span> <span class="nn">asyncworker.connections</span> <span class="kn">import</span> <span class="n">AMQPConnection</span>
-<span class="kn">from</span> <span class="nn">asyncworker.rabbitmq</span> <span class="kn">import</span> <span class="n">RabbitMQMessage</span>
+<span class="kn">import</span> <span class="nn">ssl</span>
 
-<span class="n">amqp_conn</span> <span class="o">=</span> <span class="n">AMQPConnection</span><span class="p">(</span>
-              <span class="n">hostname</span><span class="o">=</span><span class="s2">&quot;127.0.0.1&quot;</span><span class="p">,</span>
-              <span class="n">username</span><span class="o">=</span><span class="s2">&quot;guest&quot;</span><span class="p">,</span>
+
+<span class="n">amqp_conn</span> <span class="o">=</span> <span class="n">AMQPConnection</span><span class="p">(</span><span class="n">host</span><span class="o">=</span><span class="s2">&quot;127.0.0.1&quot;</span><span class="p">,</span>
+              <span class="n">user</span><span class="o">=</span><span class="s2">&quot;guest&quot;</span><span class="p">,</span>
               <span class="n">password</span><span class="o">=</span><span class="s2">&quot;guest&quot;</span><span class="p">,</span>
-              <span class="n">prefetch_count</span><span class="o">=</span><span class="mi">256</span>
+              <span class="n">prefetch_count</span><span class="o">=</span><span class="mi">256</span><span class="p">,</span>
+              <span class="n">ssl</span><span class="o">=</span><span class="n">ssl</span><span class="o">.</span><span class="n">create_default_context</span><span class="p">()</span>
             <span class="p">)</span>
-
 <span class="n">app</span> <span class="o">=</span> <span class="n">App</span><span class="p">(</span><span class="n">connections</span><span class="o">=</span><span class="p">[</span><span class="n">amqp_conn</span><span class="p">])</span>
 
+<span class="nd">@app</span><span class="o">.</span><span class="n">amqp</span><span class="o">.</span><span class="n">consume</span><span class="p">([</span><span class="s2">&quot;asgard/counts&quot;</span><span class="p">,</span> <span class="s2">&quot;asgard/counts/errors&quot;</span><span class="p">],</span>
+           <span class="n">vhost</span><span class="o">=</span><span class="s2">&quot;fluentd&quot;</span><span class="p">)</span>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">drain_handler</span><span class="p">(</span><span class="n">message</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Esse código consegue se conectar a um broker que usa ssl. Nesse caso o asyncworker vai conferir so certificados do servidor. Caso você esteja se conectando a um broker com certificados auto-assinados, você poderá passar o parametro <code class="docutils literal notranslate"><span class="pre">verify_ssl=False</span></code> para o objeto <a class="reference internal" href="../../../src/asyncworker/asyncworker.html#asyncworker.connections.AMQPConnection" title="asyncworker.connections.AMQPConnection"><code class="xref py py-class docutils literal notranslate"><span class="pre">AMQPConnection</span></code></a>.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">asyncworker</span> <span class="kn">import</span> <span class="n">App</span>
+<span class="kn">from</span> <span class="nn">asyncworker.connections</span> <span class="kn">import</span> <span class="n">AMQPConnection</span>
+<span class="kn">import</span> <span class="nn">ssl</span>
 
-<span class="nd">@app</span><span class="o">.</span><span class="n">amqp</span><span class="o">.</span><span class="n">consume</span><span class="p">([</span><span class="s2">&quot;original_queue&quot;</span><span class="p">])</span>
-<span class="k">async</span> <span class="k">def</span> <span class="nf">handler</span><span class="p">(</span><span class="n">messages</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">RabbitMQMessage</span><span class="p">]):</span>
-    <span class="k">await</span> <span class="n">amqp_conn</span><span class="o">.</span><span class="n">put</span><span class="p">(</span>
-        <span class="n">data</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;dogs&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;Xablau&quot;</span><span class="p">,</span> <span class="s2">&quot;Xena&quot;</span><span class="p">]},</span>
-        <span class="n">exchange</span><span class="o">=</span><span class="s2">&quot;ANOTHER_EXCHANGE&quot;</span><span class="p">,</span>
-        <span class="n">routing_key</span><span class="o">=</span><span class="s2">&quot;another-routing-key&quot;</span>
-    <span class="p">)</span>
+
+<span class="n">amqp_conn</span> <span class="o">=</span> <span class="n">AMQPConnection</span><span class="p">(</span><span class="n">host</span><span class="o">=</span><span class="s2">&quot;127.0.0.1&quot;</span><span class="p">,</span>
+              <span class="n">user</span><span class="o">=</span><span class="s2">&quot;guest&quot;</span><span class="p">,</span>
+              <span class="n">password</span><span class="o">=</span><span class="s2">&quot;guest&quot;</span><span class="p">,</span>
+              <span class="n">prefetch_count</span><span class="o">=</span><span class="mi">256</span><span class="p">,</span>
+              <span class="n">ssl</span><span class="o">=</span><span class="n">ssl</span><span class="o">.</span><span class="n">create_default_context</span><span class="p">(),</span>
+              <span class="n">verify_ssl</span><span class="o">=</span><span class="kc">False</span>
+            <span class="p">)</span>
+<span class="n">app</span> <span class="o">=</span> <span class="n">App</span><span class="p">(</span><span class="n">connections</span><span class="o">=</span><span class="p">[</span><span class="n">amqp_conn</span><span class="p">])</span>
 </pre></div>
-</div>
-<p>se a fila de destino estiver um outro virtual host, basta pegar uma nova conexão com esse virtual host acessando o atributo (dict like) com o nome do virtual host desejado, no objeto da conexão, assim:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@app</span><span class="o">.</span><span class="n">amqp</span><span class="o">.</span><span class="n">consume</span><span class="p">([</span><span class="s2">&quot;original_queue&quot;</span><span class="p">])</span>
-<span class="k">async</span> <span class="k">def</span> <span class="nf">handler</span><span class="p">(</span><span class="n">messages</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">RabbitMQMessage</span><span class="p">]):</span>
-    <span class="k">await</span> <span class="n">amqp_conn</span><span class="p">[</span><span class="s2">&quot;other-vhost&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">put</span><span class="p">(</span>
-        <span class="n">data</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;dogs&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;Xablau&quot;</span><span class="p">,</span> <span class="s2">&quot;Xena&quot;</span><span class="p">]},</span>
-        <span class="n">exchange</span><span class="o">=</span><span class="s2">&quot;ANOTHER_EXCHANGE&quot;</span><span class="p">,</span>
-        <span class="n">routing_key</span><span class="o">=</span><span class="s2">&quot;another-routing-key&quot;</span>
-    <span class="p">)</span>
-</pre></div>
-</div>
-<div class="toctree-wrapper compound">
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="doc.html">Parametros adicionais para o decorator app.amqp.consume()</a></li>
-<li class="toctree-l1"><a class="reference internal" href="doc.html#escolhendo-individualmente-qual-acao-sera-dada-a-cada-mensgem-recebida">Escolhendo, individualmente, qual ação será dada a cada mensgem recebida</a></li>
-<li class="toctree-l1"><a class="reference internal" href="doc.html#sobre-amqpconnection">Sobre AMQPConnection</a></li>
-<li class="toctree-l1"><a class="reference internal" href="ssl-conn.html">Conectando a um Broker usando SSL</a></li>
-<li class="toctree-l1"><a class="reference internal" href="exposed-metrics.html">Métricas expostas para aplicações RabbitMQ</a></li>
-</ul>
 </div>
 </section>
 
@@ -535,17 +525,17 @@ title="Source repository"
                 
     <!-- Previous / next buttons -->
 <div class='prev-next-area'>
-    <a class='left-prev' id="prev-link" href="../http/exposed-metrics.html" title="previous page">
+    <a class='left-prev' id="prev-link" href="doc.html" title="anterior página">
         <i class="fas fa-angle-left"></i>
         <div class="prev-next-info">
-            <p class="prev-next-subtitle">previous</p>
-            <p class="prev-next-title">Métricas expostas para aplicações HTTP</p>
+            <p class="prev-next-subtitle">anterior</p>
+            <p class="prev-next-title">Parametros adicionais para o decorator app.amqp.consume()</p>
         </div>
     </a>
-    <a class='right-next' id="next-link" href="doc.html" title="next page">
+    <a class='right-next' id="next-link" href="exposed-metrics.html" title="próximo página">
     <div class="prev-next-info">
-        <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">Parametros adicionais para o decorator app.amqp.consume()</p>
+        <p class="prev-next-subtitle">próximo</p>
+        <p class="prev-next-title">Métricas expostas para aplicações RabbitMQ</p>
     </div>
     <i class="fas fa-angle-right"></i>
     </a>
