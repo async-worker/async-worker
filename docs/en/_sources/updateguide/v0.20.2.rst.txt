@@ -1,0 +1,4 @@
+Atualizando para 0.20.2
+=======================
+
+Changelog: `0.20.2 <https://github.com/async-worker/async-worker/releases/tag/0.20.2>`_
