@@ -39,7 +39,7 @@ Esse contexto deve ser passado ao Objeto :py:class:`AMQPConnection <asyncworker.
         print(message)
 
 
-Esse código consegue se conectar a um broker que usa ssl. Nesse caso o asyncworker vai conferir so certificados do servidor. Caso você esteja se conectando a um broker com certificados auto-assinados, você poderá passar o parametro ``verify_ssl=False`` para o objeto :py:class:`AMQPConnection <asyncworker.connections.AMQPConnection>`.
+Esse código consegue se conectar a um broker que usa ssl. Nesse caso o asyncworker vai conferir so certificados do servidor. Caso você esteja se conectando a um broker com certificados auto-assinados, você deverá carregar os arquivos de certificado que sejam capazes de validar a conexão com esse broker.
 
 
 .. code-block:: python
@@ -49,11 +49,13 @@ Esse código consegue se conectar a um broker que usa ssl. Nesse caso o asyncwor
     import ssl
 
 
+    ctx = ssl.create_default_context()
+    context.load_verify_locations('path/to/cabundle.pem')
+
     amqp_conn = AMQPConnection(host="127.0.0.1",
                   user="guest",
                   password="guest",
                   prefetch_count=256,
-                  ssl=ssl.create_default_context(),
-                  verify_ssl=False
+                  ssl=ctx,
                 )
     app = App(connections=[amqp_conn])
