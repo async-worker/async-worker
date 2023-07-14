@@ -499,18 +499,20 @@ title="Source repository"
     <span class="nb">print</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>Esse código consegue se conectar a um broker que usa ssl. Nesse caso o asyncworker vai conferir so certificados do servidor. Caso você esteja se conectando a um broker com certificados auto-assinados, você poderá passar o parametro <code class="docutils literal notranslate"><span class="pre">verify_ssl=False</span></code> para o objeto <a class="reference internal" href="../../../src/asyncworker/asyncworker.html#asyncworker.connections.AMQPConnection" title="asyncworker.connections.AMQPConnection"><code class="xref py py-class docutils literal notranslate"><span class="pre">AMQPConnection</span></code></a>.</p>
+<p>Esse código consegue se conectar a um broker que usa ssl. Nesse caso o asyncworker vai conferir so certificados do servidor. Caso você esteja se conectando a um broker com certificados auto-assinados, você deverá carregar os arquivos de certificado que sejam capazes de validar a conexão com esse broker.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">asyncworker</span> <span class="kn">import</span> <span class="n">App</span>
 <span class="kn">from</span> <span class="nn">asyncworker.connections</span> <span class="kn">import</span> <span class="n">AMQPConnection</span>
 <span class="kn">import</span> <span class="nn">ssl</span>
 
 
+<span class="n">ctx</span> <span class="o">=</span> <span class="n">ssl</span><span class="o">.</span><span class="n">create_default_context</span><span class="p">()</span>
+<span class="n">context</span><span class="o">.</span><span class="n">load_verify_locations</span><span class="p">(</span><span class="s1">&#39;path/to/cabundle.pem&#39;</span><span class="p">)</span>
+
 <span class="n">amqp_conn</span> <span class="o">=</span> <span class="n">AMQPConnection</span><span class="p">(</span><span class="n">host</span><span class="o">=</span><span class="s2">&quot;127.0.0.1&quot;</span><span class="p">,</span>
               <span class="n">user</span><span class="o">=</span><span class="s2">&quot;guest&quot;</span><span class="p">,</span>
               <span class="n">password</span><span class="o">=</span><span class="s2">&quot;guest&quot;</span><span class="p">,</span>
               <span class="n">prefetch_count</span><span class="o">=</span><span class="mi">256</span><span class="p">,</span>
-              <span class="n">ssl</span><span class="o">=</span><span class="n">ssl</span><span class="o">.</span><span class="n">create_default_context</span><span class="p">(),</span>
-              <span class="n">verify_ssl</span><span class="o">=</span><span class="kc">False</span>
+              <span class="n">ssl</span><span class="o">=</span><span class="n">ctx</span><span class="p">,</span>
             <span class="p">)</span>
 <span class="n">app</span> <span class="o">=</span> <span class="n">App</span><span class="p">(</span><span class="n">connections</span><span class="o">=</span><span class="p">[</span><span class="n">amqp_conn</span><span class="p">])</span>
 </pre></div>
