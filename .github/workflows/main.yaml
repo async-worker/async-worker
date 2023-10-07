@@ -12,7 +12,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        python: ['3.9', '3.10', '3.11', '3.x']
+        python: ['3.9', '3.10', '3.11', '3.12', '3.x']
     services:
       rabbitmq:
         image: rabbitmq:3.7-management-alpine
