@@ -15,5 +15,5 @@ NAMESPACE = (
 REGISTRY = CollectorRegistry(auto_describe=True)
 
 PLATFORM_COLLECTOR = PlatformCollector(registry=REGISTRY, namespace=NAMESPACE)
-PROCESS_COLLECTOR = ProcessCollector(namespace=NAMESPACE, registry=REGISTRY)
+PROCESS_COLLECTOR = ProcessCollector(registry=REGISTRY, namespace=NAMESPACE)
 GC_COLLECTOR = GCCollector(registry=REGISTRY, namespace=NAMESPACE)

@@ -28,9 +28,10 @@ async def http_metrics_middleware(request: web.Request, handler: _Handler):
             method=request.method, path=route_path
         ).inc()
         response = await handler(request)
-        metrics.response_size.labels(
-            method=request.method, path=route_path
-        ).observe(response.content_length)
+        if response.content_length:
+            metrics.response_size.labels(
+                method=request.method, path=route_path
+            ).observe(response.content_length)
         metrics.request_duration.labels(
             method=request.method, path=route_path, status=response.status
         ).observe(now() - start)
@@ -40,9 +41,10 @@ async def http_metrics_middleware(request: web.Request, handler: _Handler):
         metrics.request_duration.labels(
             method=request.method, path=route_path, status=e.status
         ).observe(now() - start)
-        metrics.response_size.labels(
-            method=request.method, path=route_path
-        ).observe(e.content_length)
+        if e.content_length:
+            metrics.response_size.labels(
+                method=request.method, path=route_path
+            ).observe(e.content_length)
         raise e
     except Exception as e:
         metrics.request_duration.labels(
