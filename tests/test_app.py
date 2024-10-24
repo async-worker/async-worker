@@ -1,9 +1,10 @@
 import asyncio
 from http import HTTPStatus
-from signal import Signals
+
 from unittest import IsolatedAsyncioTestCase
 from unittest.mock import AsyncMock, Mock, call, patch
 
+from signal import Signals
 from aiohttp import web
 
 from asyncworker.app import App
@@ -76,9 +77,8 @@ class AppTests(IsolatedAsyncioTestCase):
         async def handler(request):
             pass
 
-        self.app.route(["route"], type=RouteTypes.AMQP_RABBITMQ, dog="Xablau")(
-            handler
-        )
+        self.app.route(["route"], type=RouteTypes.AMQP_RABBITMQ,
+                       dog="Xablau")(handler)
 
         self.assertEqual(len(self.app.routes_registry), 1)
         self.assertIsInstance(self.app.routes_registry[handler], AMQPRoute)
@@ -175,9 +175,9 @@ class AppTests(IsolatedAsyncioTestCase):
             seconds = 10
             coro = Mock(start=AsyncMock(), stop=AsyncMock())
 
-            self.app.run_every(
-                seconds=seconds, options={Options.MAX_CONCURRENCY: 666}
-            )(coro)
+            self.app.run_every(seconds=seconds, options={Options.MAX_CONCURRENCY: 666})(
+                coro
+            )
 
             Runner.assert_called_once_with(
                 seconds=seconds, task=coro, app=self.app, max_concurrency=666
@@ -298,9 +298,8 @@ class AppConnectionsTests(IsolatedAsyncioTestCase):
                 username="guest",
                 password="guest",
             ),
-            AMQPConnection(
-                hostname="localhost", username="guest", password="guest"
-            ),
+            AMQPConnection(hostname="localhost",
+                           username="guest", password="guest"),
         ]
 
     def test_connections_gets_registered_into_a_connection_mapping(self):

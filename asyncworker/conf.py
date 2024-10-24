@@ -2,7 +2,7 @@ import logging
 from typing import List, Optional
 
 from aiologger.loggers.json import JsonLogger
-from pydantic import BaseSettings
+from pydantic_settings import SettingsConfigDict, BaseSettings
 
 from asyncworker.options import DefaultValues
 
@@ -24,7 +24,7 @@ class Settings(BaseSettings):
 
     # metrics
     METRICS_NAMESPACE: str = "asyncworker"
-    METRICS_APPPREFIX: Optional[str]
+    METRICS_APPPREFIX: Optional[str] = None
     METRICS_ROUTE_PATH: str = "/metrics"
     METRICS_ROUTE_ENABLED: bool = True
     METRICS_DEFAULT_HISTOGRAM_BUCKETS_IN_MS: List[float] = [
@@ -37,10 +37,11 @@ class Settings(BaseSettings):
         5000,
         INFINITY,
     ]
-
-    class Config:
-        allow_mutation = False
-        env_prefix = "ASYNCWORKER_"
+    # TODO[pydantic]: The following keys were removed: `allow_mutation`.
+    # Check https://docs.pydantic.dev/dev-v2/migration/#changes-to-config for more information.
+    model_config = SettingsConfigDict(
+        allow_mutation=False, env_prefix="ASYNCWORKER_"
+    )
 
 
 settings = Settings()

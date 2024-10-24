@@ -16,7 +16,7 @@ from aiohttp import web
 from aiohttp.hdrs import METH_ALL
 from aiohttp.web_routedef import RouteDef
 from cached_property import cached_property
-from pydantic import BaseModel, Extra, root_validator, validator
+from pydantic import field_validator, ConfigDict, BaseModel, root_validator
 
 from asyncworker import conf
 from asyncworker.connections import AMQPConnection, Connection
@@ -73,9 +73,9 @@ class Route(Model, abc.ABC):
     """
 
     type: RouteTypes
-    handler: Any
+    handler: Any = None
     routes: List[str]
-    connection: Optional[Connection]
+    connection: Optional[Connection] = None
     options: _RouteOptions = _RouteOptions()
 
     @staticmethod
@@ -104,7 +104,8 @@ class HTTPRoute(Route):
             raise ValueError(f"'{method}' isn't a valid supported HTTP method.")
         return method
 
-    @validator("methods")
+    @field_validator("methods")
+    @classmethod
     def validate_method(cls, v: Union[str, List[str]]):
         # compatibility with older versions of pydantic
         if isinstance(v, str):  # pragma: no cover
@@ -151,17 +152,14 @@ class AMQPRouteOptions(_RouteOptions):
     connection_fail_callback: Optional[
         Callable[[Exception, int], Coroutine]
     ] = None
-    connection: Optional[Union[AMQPConnection, str]]
-
-    class Config:
-        arbitrary_types_allowed = False
-        extra = Extra.forbid
+    connection: Optional[Union[AMQPConnection, str]] = None
+    model_config = ConfigDict(arbitrary_types_allowed=False, extra="forbid")
 
 
 class AMQPRoute(Route):
     type: RouteTypes = RouteTypes.AMQP_RABBITMQ
     vhost: str = conf.settings.AMQP_DEFAULT_VHOST
-    connection: Optional[AMQPConnection]
+    connection: Optional[AMQPConnection] = None
     options: AMQPRouteOptions
 
 
