@@ -24,7 +24,8 @@ setup(
     install_requires=[
         "aioamqp==0.15.0",
         "aiologger==0.7.0",
-        "pydantic >= 0.32.2, <= 1.8",
+        "pydantic==2.4.*",
+        "pydanti-settings==2.0.3",
         "cached-property==1.5.1",
         "aiohttp==3.8.4",
         "prometheus_client==0.7.1",
