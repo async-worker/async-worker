@@ -107,7 +107,7 @@ class AMQPConnection(Connection):
     port: int = settings.AMQP_DEFAULT_PORT
     ssl: Optional[SSLContext] = None
     verify_ssl: bool = True
-    route_type = RouteTypes.AMQP_RABBITMQ
+    route_type: RouteTypes  = RouteTypes.AMQP_RABBITMQ
     prefetch: int = settings.AMQP_DEFAULT_PREFETCH_COUNT
     heartbeat: int = settings.AMQP_DEFAULT_HEARTBEAT
     name: Optional[str] = None
