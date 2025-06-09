@@ -24,10 +24,10 @@ setup(
     install_requires=[
         "aioamqp==0.15.0",
         "aiologger==0.7.0",
-        "pydantic >= 0.32.2, <= 1.8",
-        "cached-property==1.5.1",
-        "aiohttp==3.8.4",
-        "prometheus_client==0.7.1",
+        "pydantic >= 2.0.0",
+        "cached-property==2.0.1",
+        "aiohttp==3.12.11",
+        "prometheus_client==0.22.1",
     ],
     entry_points={},
 )
