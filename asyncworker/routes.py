@@ -20,6 +20,7 @@ from pydantic import BaseModel, model_validator, field_validator
 
 from asyncworker import conf
 from asyncworker.connections import AMQPConnection, Connection
+from asyncworker.http.methods import HTTPMethods
 from asyncworker.http.wrapper import RequestWrapper
 from asyncworker.options import Actions, DefaultValues, RouteTypes
 from asyncworker.types.registry import TypesRegistry
