@@ -47,8 +47,11 @@ class Model(BaseModel, abc.ABC):
 
     def __eq__(self, other):
         if isinstance(other, dict):
-            return self.dict() == other
+            return self.model_dump() == other
         return super(Model, self).__eq__(other)
+
+    def __contains__(self, key):
+        return key in self.__fields__
 
     def __len__(self):
         return len(self.__fields__)
@@ -73,8 +76,8 @@ class Route(Model, abc.ABC):
     """
 
     type: RouteTypes
-    handler: Any
     routes: List[str]
+    handler: Optional[Any] = None
     connection: Optional[Connection] = None
     options: _RouteOptions = _RouteOptions()
 
