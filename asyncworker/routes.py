@@ -116,7 +116,7 @@ class HTTPRoute(Route):
 
         return [cls._validate_method(method) for method in v]
 
-    @model_validator(mode='after')
+    @model_validator(mode='after')  # type: ignore[arg-type]
     def _validate_metrics_route(cls, values: dict) -> dict:
         if not conf.settings.METRICS_ROUTE_ENABLED:
             return values
@@ -142,7 +142,7 @@ class HTTPRoute(Route):
                 yield RouteDef(
                     method=method,
                     path=route,
-                    handler=self.handler,
+                    handler=self.handler,  # type: ignore[arg-type]
                     kwargs=kwargs,
                 )
 
@@ -219,13 +219,13 @@ class RoutesRegistry(UserDict):
         super(RoutesRegistry, self).__setitem__(key, route)
 
     def add_route(self, route: Route) -> None:
-        self[route.handler] = route
+        self[route.handler] = route  # type: ignore[index]
 
     def add_http_route(self, route: HTTPRoute) -> None:
-        self[route.handler] = route
+        self[route.handler] = route  # type: ignore[index]
 
     def add_amqp_route(self, route: AMQPRoute) -> None:
-        self[route.handler] = route
+        self[route.handler] = route  # type: ignore[index]
 
     def route_for(self, handler: RouteHandler) -> Route:
         return self[handler]
