@@ -116,7 +116,7 @@ class HTTPRoute(Route):
 
         return [cls._validate_method(method) for method in v]
 
-    @model_validator(mode='after')  # type: ignore[arg-type]
+    @model_validator(mode="after")  # type: ignore[arg-type]
     def _validate_metrics_route(cls, values: dict) -> dict:
         if not conf.settings.METRICS_ROUTE_ENABLED:
             return values

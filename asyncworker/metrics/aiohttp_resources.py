@@ -28,7 +28,9 @@ async def http_metrics_middleware(request: web.Request, handler: _Handler):
             method=request.method, path=route_path
         ).inc()
         response = await handler(request)
-        content_length = float(response.content_length) if response.content_length else 0
+        content_length = (
+            float(response.content_length) if response.content_length else 0
+        )
         metrics.response_size.labels(
             method=request.method, path=route_path
         ).observe(content_length)

@@ -2,8 +2,8 @@ import gc
 import platform
 
 from prometheus_client import CollectorRegistry
-from prometheus_client.registry import Collector
 from prometheus_client.metrics_core import CounterMetricFamily
+from prometheus_client.registry import Collector
 
 
 class GCCollector(Collector):
