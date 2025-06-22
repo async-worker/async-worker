@@ -31,6 +31,10 @@ jobs:
       - name: Install pip/pipenv
         run: pip install -U pip pipenv
 
+      - name: Regenerate Pipfile.lock
+        if: matrix.python == '3.9'
+        run: pipenv lock --clear --python ${{matrix.python}}
+
       - name: pipenv install --dev
         run: pipenv install --system --deploy --ignore-pipfile --dev
 
