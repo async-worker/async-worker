@@ -10,7 +10,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        python: ['3.9', '3.10', '3.11', '3.12', '3.x']
+        python: ["3.9", "3.10", "3.11", "3.12", "3.x"]
     services:
       rabbitmq:
         image: rabbitmq:3.7-management-alpine
@@ -29,7 +29,7 @@ jobs:
           python-version: ${{matrix.python}}
 
       - name: Install pip/pipenv
-        run: pip install -U pip==22.0.4 pipenv==2022.4.30
+        run: pip install -U pip pipenv
 
       - name: pipenv install --dev
         run: pipenv install --system --deploy --ignore-pipfile --dev
