@@ -24,7 +24,6 @@ twine = "==4.0.2"
 sphinx-issues = "*"
 cryptography = "==39.0.1"
 typing-extensions = "==4.4.0"
-#myst-parser = "==0.18.1"
 sphinx-book-theme = "==0.3.3"
 
 [requires]
