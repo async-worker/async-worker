@@ -15,7 +15,7 @@ from typing import (
     Union,
 )
 
-from pydantic import BaseModel, validator
+from pydantic import BaseModel, field_validator
 
 from asyncworker.conf import settings
 from asyncworker.easyqueue.queue import JsonQueue
@@ -107,7 +107,7 @@ class AMQPConnection(Connection):
     port: int = settings.AMQP_DEFAULT_PORT
     ssl: Optional[SSLContext] = None
     verify_ssl: bool = True
-    route_type = RouteTypes.AMQP_RABBITMQ
+    route_type: RouteTypes = RouteTypes.AMQP_RABBITMQ
     prefetch: int = settings.AMQP_DEFAULT_PREFETCH_COUNT
     heartbeat: int = settings.AMQP_DEFAULT_HEARTBEAT
     name: Optional[str] = None
@@ -116,7 +116,7 @@ class AMQPConnection(Connection):
     class Config:
         arbitrary_types_allowed = True
 
-    @validator("connections", pre=True, always=True, check_fields=False)
+    @field_validator("connections", mode="after", check_fields=False)
     def set_connections(cls, v):
         return v or {}
 

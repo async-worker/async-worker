@@ -28,21 +28,25 @@ async def http_metrics_middleware(request: web.Request, handler: _Handler):
             method=request.method, path=route_path
         ).inc()
         response = await handler(request)
+        content_length = (
+            float(response.content_length) if response.content_length else 0
+        )
         metrics.response_size.labels(
             method=request.method, path=route_path
-        ).observe(response.content_length)
+        ).observe(content_length)
         metrics.request_duration.labels(
             method=request.method, path=route_path, status=response.status
         ).observe(now() - start)
 
         return response
     except web.HTTPException as e:
+        content_length = float(e.content_length) if e.content_length else 0
         metrics.request_duration.labels(
             method=request.method, path=route_path, status=e.status
         ).observe(now() - start)
         metrics.response_size.labels(
             method=request.method, path=route_path
-        ).observe(e.content_length)
+        ).observe(content_length)
         raise e
     except Exception as e:
         metrics.request_duration.labels(

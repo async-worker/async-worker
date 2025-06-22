@@ -7,7 +7,7 @@ from asyncworker.routes import HTTPRoute, Model
 
 
 class MyModel(Model):
-    field: Optional[int]
+    field: Optional[int] = None
 
 
 class RouteModelTest(TestCase):

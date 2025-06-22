@@ -3,11 +3,10 @@ import platform
 
 from prometheus_client import CollectorRegistry
 from prometheus_client.metrics_core import CounterMetricFamily
+from prometheus_client.registry import Collector
 
-from asyncworker.metrics.collectors.base import BaseCollector
 
-
-class GCCollector(BaseCollector):
+class GCCollector(Collector):
     """
     Collector for Garbage collection statistics.
     Esse código veio do prometheus_client (https://github.com/prometheus/client_python/blob/6b091aba77db44459290808368bd4ab913ef8ba5/prometheus_client/gc_collector.py)

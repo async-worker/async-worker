@@ -16,10 +16,11 @@ from aiohttp import web
 from aiohttp.hdrs import METH_ALL
 from aiohttp.web_routedef import RouteDef
 from cached_property import cached_property
-from pydantic import BaseModel, Extra, root_validator, validator
+from pydantic import BaseModel, model_validator, field_validator
 
 from asyncworker import conf
 from asyncworker.connections import AMQPConnection, Connection
+from asyncworker.http.methods import HTTPMethods
 from asyncworker.http.wrapper import RequestWrapper
 from asyncworker.options import Actions, DefaultValues, RouteTypes
 from asyncworker.types.registry import TypesRegistry
@@ -47,8 +48,11 @@ class Model(BaseModel, abc.ABC):
 
     def __eq__(self, other):
         if isinstance(other, dict):
-            return self.dict() == other
+            return self.model_dump() == other
         return super(Model, self).__eq__(other)
+
+    def __contains__(self, key):
+        return key in self.__fields__
 
     def __len__(self):
         return len(self.__fields__)
@@ -73,9 +77,9 @@ class Route(Model, abc.ABC):
     """
 
     type: RouteTypes
-    handler: Any
     routes: List[str]
-    connection: Optional[Connection]
+    handler: Optional[Any] = None
+    connection: Optional[Connection] = None
     options: _RouteOptions = _RouteOptions()
 
     @staticmethod
@@ -94,7 +98,7 @@ class Route(Model, abc.ABC):
 
 class HTTPRoute(Route):
     type: RouteTypes = RouteTypes.HTTP
-    methods: List[str]
+    methods: str | List[str] = ["GET"]
     options: _RouteOptions = _RouteOptions()
 
     @classmethod
@@ -104,7 +108,7 @@ class HTTPRoute(Route):
             raise ValueError(f"'{method}' isn't a valid supported HTTP method.")
         return method
 
-    @validator("methods")
+    @field_validator("methods")
     def validate_method(cls, v: Union[str, List[str]]):
         # compatibility with older versions of pydantic
         if isinstance(v, str):  # pragma: no cover
@@ -112,7 +116,7 @@ class HTTPRoute(Route):
 
         return [cls._validate_method(method) for method in v]
 
-    @root_validator
+    @model_validator(mode="after")  # type: ignore[arg-type]
     def _validate_metrics_route(cls, values: dict) -> dict:
         if not conf.settings.METRICS_ROUTE_ENABLED:
             return values
@@ -138,7 +142,7 @@ class HTTPRoute(Route):
                 yield RouteDef(
                     method=method,
                     path=route,
-                    handler=self.handler,
+                    handler=self.handler,  # type: ignore[arg-type]
                     kwargs=kwargs,
                 )
 
@@ -151,18 +155,18 @@ class AMQPRouteOptions(_RouteOptions):
     connection_fail_callback: Optional[
         Callable[[Exception, int], Coroutine]
     ] = None
-    connection: Optional[Union[AMQPConnection, str]]
+    connection: Optional[Union[AMQPConnection, str]] = None
 
     class Config:
         arbitrary_types_allowed = False
-        extra = Extra.forbid
+        extra = "forbid"
 
 
 class AMQPRoute(Route):
     type: RouteTypes = RouteTypes.AMQP_RABBITMQ
     vhost: str = conf.settings.AMQP_DEFAULT_VHOST
-    connection: Optional[AMQPConnection]
-    options: AMQPRouteOptions
+    connection: Optional[AMQPConnection] = None
+    options: AMQPRouteOptions = AMQPRouteOptions()
 
 
 async def call_http_handler(request: RequestWrapper, handler: RouteHandler):
@@ -215,13 +219,13 @@ class RoutesRegistry(UserDict):
         super(RoutesRegistry, self).__setitem__(key, route)
 
     def add_route(self, route: Route) -> None:
-        self[route.handler] = route
+        self[route.handler] = route  # type: ignore[index]
 
     def add_http_route(self, route: HTTPRoute) -> None:
-        self[route.handler] = route
+        self[route.handler] = route  # type: ignore[index]
 
     def add_amqp_route(self, route: AMQPRoute) -> None:
-        self[route.handler] = route
+        self[route.handler] = route  # type: ignore[index]
 
     def route_for(self, handler: RouteHandler) -> Route:
         return self[handler]
