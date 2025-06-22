@@ -31,7 +31,7 @@ jobs:
           python-version: ${{matrix.python}}
 
       - name: Install pip/pipenv
-        run: pip install -U pip==22.0.4 pipenv==2022.4.30
+        run: pip install -U pip pipenv
 
       - name: pipenv install --dev
         run: pipenv install --system --deploy --ignore-pipfile --dev
