@@ -4,7 +4,6 @@ on:
   release:
     types: [published]
 
-
 jobs:
   publish:
     name: publish
@@ -19,10 +18,10 @@ jobs:
           python-version: 3.11
 
       - name: Install pip
-        run: pip install -U pip==22.3.1
+        run: pip install -U pip
 
       - name: Install twine
-        run: pip install twine==4.0.2
+        run: pip install twine==6.1.0
 
       - name: Generate Packages
         run: python setup.py sdist
