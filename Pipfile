@@ -12,7 +12,7 @@ aioamqp = "==0.15.0"
 [dev-packages]
 pytest = "==7.2.2"
 pytest-cov = "==4.0.0"
-freezegun = "==1.2.2"
+freezegun = "==1.5.2"
 async-worker = {editable = true,path = "."}
 mypy = "==1.0.0"
 black = "==23.1.0"
