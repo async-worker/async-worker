@@ -3,6 +3,7 @@ from typing import TYPE_CHECKING, List
 
 from asyncworker.connections import AMQPConnection
 from asyncworker.consumer import Consumer
+from asyncworker.metrics.definitions.amqp import active_consumers
 from asyncworker.options import RouteTypes
 from asyncworker.signals.handlers.base import SignalHandler
 
@@ -29,6 +30,7 @@ class RabbitMQ(SignalHandler):
                 prefetch_count=conn.prefetch,
             )
             app[RouteTypes.AMQP_RABBITMQ]["consumers"].append(consumer)
+            active_consumers.inc()
             conn.register(consumer.queue)
             task = app.loop.create_task(consumer.start())
 

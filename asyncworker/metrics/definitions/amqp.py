@@ -1,9 +1,9 @@
 from asyncworker.conf import settings
 from asyncworker.metrics.types import Counter, Gauge, Histogram
 
-# active_consumers = Gauge(
-#    name="amqp_active_consumers", documentation="Count of active consumers"
-# )
+active_consumers = Gauge(
+    name="amqp_active_consumers", documentation="Count of active consumers"
+)
 #
 # processed_messages = Counter(
 #    name="amqp_processed_messages",
@@ -23,7 +23,8 @@ from asyncworker.metrics.types import Counter, Gauge, Histogram
 #
 # flushed_buckets = Counter(
 #    name="amqp_flushed_buckets",
-#    documentation="Count of total AMQP buckets flushed due to ",
+#     labelnames=["reason"],
+#    documentation="Count of total AMQP buckets flushed due to size/timeout",
 # )
 #
 # bucket_handle_duration = Histogram(
